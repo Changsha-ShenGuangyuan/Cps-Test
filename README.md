@@ -121,14 +121,21 @@ src/
 │   ├── ClickTest.vue         # 点击测试组件
 │   ├── DoubleClickTest.vue   # 双击测试组件
 │   └── ...
-├── data/             # 静态数据
 ├── i18n/             # 国际化配置
 │   └── index.ts      # 多语言支持
 ├── router/           # 路由配置
 │   └── index.ts      # 路由定义
+├── utils/            # 工具函数
+│   └── cookie.ts     # Cookie管理
 ├── App.vue           # 根组件
 ├── main.ts           # 入口文件
 └── style.css         # 全局样式
+
+public/               # 公共静态资源
+├── favicon.ico       # 网站图标
+├── logo.png          # 网站Logo
+├── robots.txt        # 搜索引擎爬虫配置
+└── sitemap.xml       # 网站站点地图
 ```
 
 ## 多语言支持
