@@ -7,6 +7,11 @@ yarn-error.log* # Yarn错误日志
 pnpm-debug.log* # PNPM调试日志
 lerna-debug.log* # Lerna调试日志
 
+# Environment variables - 忽略环境变量文件
+.env           # 主环境变量文件
+.env.local     # 本地环境变量文件
+.env.*.local   # 特定环境的本地环境变量文件
+
 # Dependencies and Build Output - 忽略依赖和构建输出
 node_modules   # 依赖包目录
 dist           # 生产构建输出目录
