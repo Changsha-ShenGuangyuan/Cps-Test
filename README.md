@@ -164,9 +164,3 @@ MIT License
 
 欢迎提交Issue和Pull Request！
 
-## 联系方式
-
-如有问题或建议，欢迎通过以下方式联系：
-- 邮箱：example@example.com
-- GitHub Issues: https://github.com/yourusername/cps-test-platform/issues
-
