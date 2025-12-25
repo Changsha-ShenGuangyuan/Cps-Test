@@ -1,18 +1,19 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Logs - 忽略日志文件
+logs           # 日志目录
+*.log          # 所有.log文件
+npm-debug.log* # npm调试日志
+yarn-debug.log* # Yarn调试日志
+yarn-error.log* # Yarn错误日志
+pnpm-debug.log* # PNPM调试日志
+lerna-debug.log* # Lerna调试日志
 
-node_modules
-dist
-dist-ssr
-*.local
+# Dependencies and Build Output - 忽略依赖和构建输出
+node_modules   # 依赖包目录
+dist           # 生产构建输出目录
+dist-ssr       # SSR构建输出目录
+*.local        # 本地环境配置文件
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-*.sw?
+# Editor directories and files - 忽略编辑器相关文件
+.vscode/*      # VS Code配置目录
+!.vscode/extensions.json # 保留VS Code扩展配置
+*.sw?          # Vim交换文件
