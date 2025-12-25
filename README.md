@@ -56,8 +56,6 @@ npm install
 npm run dev
 ```
 
-应用将在 http://localhost:5173 启动
-
 ### 构建生产版本
 
 ```bash
