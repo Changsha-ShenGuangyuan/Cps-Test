@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tags Test</title>
+    <meta name="description" content="CPSTest - 免费、专业、快速的点击速度测试平台，提供实时反馈和全面的测试项目，支持多语言，记录历史成绩">
+    <meta name="keywords" content="CPSTest,免费测试,专业测试,实时测试,快速测试,全面测试,点击速度测试,反应时间测试,打字测试,鼠标滚动测试,空格点击测试">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js"></script>
+</head>
+<body>
+    <h1>Meta Tags Test</h1>
+    <p>Current description meta tag content: <span id="description-content"></span></p>
+    <p>Current keywords meta tag content: <span id="keywords-content"></span></p>
+    <p>Current title tag content: <span id="title-content"></span></p>
+    
+    <h2>Test Different Routes</h2>
+    <button onclick="testRoute('/')">Home Page</button>
+    <button onclick="testRoute('/click-test/5')">5 Second Click Test</button>
+    <button onclick="testRoute('/click-test/10')">10 Second Click Test</button>
+    <button onclick="testRoute('/space-click-test/5')">5 Second Space Click Test</button>
+    <button onclick="testRoute('/typing-test/1')">1 Minute Typing Test</button>
+    <button onclick="testRoute('/reaction-time-test')">Reaction Time Test</button>
+    <button onclick="testRoute('/color-reaction-test')">Color Reaction Test</button>
+    <button onclick="testRoute('/kohi-click-test')">Kohi Click Test</button>
+    
+    <script>
+        // Mock translation function
+        const translations = {
+            'zh-CN': {
+                'websiteName': 'CPS Test - 点击速度与反应能力训练平台',
+                'metaDescription': 'CPS Test - 免费、专业、快速的点击速度测试平台，提供实时反馈和全面的测试项目，包括反应时间测试、打字测试等多种测试，支持多语言，记录历史成绩',
+                'metaKeywords': 'CPS Test,免费测试,专业测试,实时测试,快速测试,全面测试,点击速度测试,反应时间测试,打字测试,鼠标滚动测试,空格点击测试',
+                'clickTest': '点击速度测试',
+                'clickTestDescription': 'CPSTest点击速度测试，支持1秒、2秒、5秒、10秒、15秒、30秒、60秒等多种时间测试，实时显示点击速度和总点击次数，测试结束后提供详细的统计数据和历史记录',
+                'clickTestKeywords': '点击速度测试,CPSTest,鼠标点击测试,点击速度,点击速度测试在线,点击速度测试工具,CPS测试',
+                'spaceClickTest': '空格点击测试',
+                'spaceClickTestDescription': 'CPSTest空格点击测试，支持1秒、2秒、5秒、10秒、15秒、30秒、60秒等多种时间测试，专门测试你的空格键点击速度和耐力',
+                'spaceClickTestKeywords': '空格点击测试,空格键测试,空格速度测试,空格点击速度,空格键点击测试工具,CPSTest',
+                'typingTest': '打字测试',
+                'typingTestDescription': 'CPSTest打字测试，测试你的打字速度和准确率，支持1分钟、3分钟、5分钟、10分钟、15分钟等多种时间测试，实时显示打字速度和准确率',
+                'typingTestKeywords': '打字测试,打字速度测试,打字准确率测试,打字练习,打字速度,CPSTest',
+                'reactionTest': '反应时间测试',
+                'reactionTestDescription': 'CPSTest反应时间测试，测量你的视觉反应速度，从绿色方块出现到鼠标点击的时间间隔，提供平均反应时间和最佳反应时间统计',
+                'reactionTestKeywords': '反应时间测试,反应速度测试,视觉反应测试,反应测试,反应速度测试工具,CPSTest',
+                'colorReactionTest': '颜色反应测试',
+                'colorReactionTestDescription': 'CPSTest颜色反应测试，测试你的颜色识别和反应速度，忽略文字内容，点击与文字匹配的颜色方块，挑战你的大脑反应能力',
+                'colorReactionTestKeywords': '颜色反应测试,颜色识别测试,视觉反应测试,颜色反应速度测试,颜色测试,CPSTest',
+                'kohiClickTest': 'Kohi点击测试',
+                'kohiClickTestDescription': 'CPSTest Kohi点击测试，源自Minecraft服务器Kohi，固定10秒时长，专门为Minecraft玩家设计，测试持续点击的稳定性和速度',
+                'kohiClickTestKeywords': 'Kohi测试,Kohi点击测试,Minecraft点击测试,MC点击测试,10秒点击测试,CPSTest',
+                '1secClickTest': '1秒点击测试',
+                '2secClickTest': '2秒点击测试',
+                '5secClickTest': '5秒点击测试',
+                '10secClickTest': '10秒点击测试',
+                '15secClickTest': '15秒点击测试',
+                '30secClickTest': '30秒点击测试',
+                '60secClickTest': '60秒点击测试',
+                '1minTypingTest': '1分钟打字速度测试',
+                '3minTypingTest': '3分钟打字速度测试',
+                '5minTypingTest': '5分钟打字速度测试',
+                '10minTypingTest': '10分钟打字速度测试',
+                '15minTypingTest': '15分钟打字速度测试',
+                'ogDescription': 'CPS Test平台，免费、专业的点击速度测试训练系统，提供快速、实时的测试反馈和全面的训练项目，支持多语言，记录历史成绩',
+                'schemaName': 'CPS Test - 点击速度与反应能力训练平台',
+                'schemaDescription': 'CPS Test平台，免费、专业的点击速度测试训练系统，提供快速、实时的测试反馈和全面的训练项目，支持多语言，记录历史成绩',
+                'schemaPublisher': 'CPS Test平台'
+            }
+        };
+        
+        const t = (key) => {
+            return translations['zh-CN'][key] || key;
+        };
+        
+        // Mock router routes
+        const routes = [
+            {
+                path: '/',
+                name: 'Home',
+                meta: {
+                    title: 'CPSTest - 点击速度、反应时间、打字测试',
+                    description: 'CPSTest - 免费、专业、快速的点击速度测试平台，提供实时反馈和全面的测试项目，支持多语言，记录历史成绩',
+                    keywords: 'CPSTest,免费测试,专业测试,实时测试,快速测试,全面测试,点击速度测试,反应时间测试,打字测试,鼠标滚动测试,空格点击测试,多语言测试',
+                    i18n: {
+                        titleKey: 'websiteName',
+                        descriptionKey: 'metaDescription',
+                        keywordsKey: 'metaKeywords'
+                    }
+                }
+            },
+            {
+                path: '/click-test/:time(\d+)',
+                name: 'ClickTest',
+                meta: {
+                    title: '点击速度测试 - CPSTest',
+                    description: '测试您的点击速度，支持1秒、2秒、5秒、10秒、15秒、30秒、60秒等多种时间测试',
+                    keywords: '点击速度测试,CPSTest,鼠标点击测试,点击速度,点击速度测试在线,点击速度测试工具',
+                    i18n: {
+                        titleKey: 'clickTest',
+                        descriptionKey: 'clickTestDescription',
+                        keywordsKey: 'clickTestKeywords'
+                    }
+                }
+            },
+            {
+                path: '/space-click-test/:time(\d+)',
+                name: 'SpaceClickTest',
+                meta: {
+                    title: '空格点击测试 - CPSTest',
+                    description: '测试您的空格点击速度，支持1秒、5秒、10秒、15秒、30秒、60秒等多种时间测试',
+                    keywords: '空格点击测试,空格键测试,空格速度测试,空格点击速度,空格键点击测试工具',
+                    i18n: {
+                        titleKey: 'spaceClickTest',
+                        descriptionKey: 'spaceClickTestDescription',
+                        keywordsKey: 'spaceClickTestKeywords'
+                    }
+                }
+            },
+            {
+                path: '/typing-test/:time(\d+)',
+                name: 'TypingTest',
+                meta: {
+                    title: '打字测试 - CPSTest',
+                    description: '测试您的打字速度和准确率，支持1分钟、3分钟、5分钟、10分钟、15分钟等多种时间测试',
+                    keywords: '打字测试,打字速度测试,打字准确率测试,打字练习,打字速度',
+                    i18n: {
+                        titleKey: 'typingTest',
+                        descriptionKey: 'typingTestDescription',
+                        keywordsKey: 'typingTestKeywords'
+                    }
+                }
+            },
+            {
+                path: '/reaction-time-test',
+                name: 'ReactionTimeTest',
+                meta: {
+                    title: '反应时间测试 - CPSTest',
+                    description: '测试您的反应速度，测量从视觉刺激到鼠标点击的时间间隔',
+                    keywords: '反应时间测试,反应速度测试,视觉反应测试,反应测试,反应速度测试工具',
+                    i18n: {
+                        titleKey: 'reactionTest',
+                        descriptionKey: 'reactionTestDescription',
+                        keywordsKey: 'reactionTestKeywords'
+                    }
+                }
+            },
+            {
+                path: '/color-reaction-test',
+                name: 'ColorReactionTest',
+                meta: {
+                    title: '颜色反应测试 - CPSTest',
+                    description: '测试您的颜色识别和反应速度，忽略文字内容，点击与文字匹配的颜色',
+                    keywords: '颜色反应测试,颜色识别测试,视觉反应测试,颜色反应速度测试,颜色测试',
+                    i18n: {
+                        titleKey: 'colorReactionTest',
+                        descriptionKey: 'colorReactionTestDescription',
+                        keywordsKey: 'colorReactionTestKeywords'
+                    }
+                }
+            },
+            {
+                path: '/kohi-click-test',
+                name: 'KohiClickTest',
+                meta: {
+                    title: 'Kohi点击测试 - CPSTest',
+                    description: '专业的Minecraft点击测试，固定10秒，模拟Kohi服务器点击环境',
+                    keywords: 'Kohi测试,Kohi点击测试,Minecraft点击测试,MC点击测试,10秒点击测试',
+                    i18n: {
+                        titleKey: 'kohiClickTest',
+                        descriptionKey: 'kohiClickTestDescription',
+                        keywordsKey: 'kohiClickTestKeywords'
+                    }
+                }
+            }
+        ];
+        
+        // Mock updateMetaTags function
+        const updateMetaTags = (to) => {
+            // 设置页面标题
+            let pageTitle = '';
+            if (to.meta.i18n && to.meta.i18n.titleKey) {
+                // 根据路由参数动态生成标题
+                if ((to.name === 'ClickTest' || to.name === 'SpaceClickTest') && to.params.time) {
+                    const time = to.params.time;
+                    if (time === '1') {
+                        pageTitle = t('1secClickTest');
+                    } else if (time === '2') {
+                        pageTitle = t('2secClickTest');
+                    } else if (time === '5') {
+                        pageTitle = t('5secClickTest');
+                    } else if (time === '10') {
+                        pageTitle = t('10secClickTest');
+                    } else if (time === '15') {
+                        pageTitle = t('15secClickTest');
+                    } else if (time === '30') {
+                        pageTitle = t('30secClickTest');
+                    } else if (time === '60') {
+                        pageTitle = t('60secClickTest');
+                    } else {
+                        pageTitle = t(to.meta.i18n.titleKey);
+                    }
+                } else if (to.name === 'TypingTest' && to.params.time) {
+                    const time = to.params.time;
+                    if (time === '1') {
+                        pageTitle = t('1minTypingTest');
+                    } else if (time === '3') {
+                        pageTitle = t('3minTypingTest');
+                    } else if (time === '5') {
+                        pageTitle = t('5minTypingTest');
+                    } else if (time === '10') {
+                        pageTitle = t('10minTypingTest');
+                    } else if (time === '15') {
+                        pageTitle = t('15minTypingTest');
+                    } else {
+                        pageTitle = t(to.meta.i18n.titleKey);
+                    }
+                } else {
+                    pageTitle = t(to.meta.i18n.titleKey);
+                }
+            } else {
+                pageTitle = to.meta.title || t('websiteName');
+            }
+            document.title = pageTitle;
+            
+            // 设置meta描述 - 根据路由参数动态生成
+            let metaDesc = '';
+            if (to.meta.i18n?.descriptionKey) {
+                metaDesc = t(to.meta.i18n.descriptionKey);
+            } else {
+                metaDesc = t('metaDescription');
+            }
+            
+            let metaDescription = document.querySelector('meta[name="description"]');
+            if (metaDescription) {
+                metaDescription.setAttribute('content', metaDesc);
+            }
+            
+            // 设置meta关键词 - 根据路由参数动态生成
+            let metaKeywords = '';
+            if (to.meta.i18n?.keywordsKey) {
+                metaKeywords = t(to.meta.i18n.keywordsKey);
+            } else {
+                metaKeywords = t('metaKeywords');
+            }
+            
+            let metaKeywordsEl = document.querySelector('meta[name="keywords"]');
+            if (metaKeywordsEl) {
+                metaKeywordsEl.setAttribute('content', metaKeywords);
+            }
+            
+            // 更新页面显示
+            updateDisplay();
+        };
+        
+        // Update display of current meta tags
+        const updateDisplay = () => {
+            const description = document.querySelector('meta[name="description"]');
+            const keywords = document.querySelector('meta[name="keywords"]');
+            
+            document.getElementById('description-content').textContent = description?.getAttribute('content') || 'Not found';
+            document.getElementById('keywords-content').textContent = keywords?.getAttribute('content') || 'Not found';
+            document.getElementById('title-content').textContent = document.title;
+        };
+        
+        // Test a specific route
+        const testRoute = (path) => {
+            // Find the matching route
+            let matchedRoute = null;
+            let params = {};
+            
+            for (const route of routes) {
+                const regex = new RegExp(route.path.replace(/:\w+\(\\d+\)/g, '(\\d+)'));
+                const match = path.match(regex);
+                
+                if (match) {
+                    matchedRoute = route;
+                    
+                    // Extract params
+                    const paramNames = route.path.match(/:\w+\(\\d+\)/g) || [];
+                    paramNames.forEach((param, index) => {
+                        const paramName = param.match(/:\w+/)[0].substring(1);
+                        params[paramName] = match[index + 1];
+                    });
+                    
+                    break;
+                }
+            }
+            
+            if (matchedRoute) {
+                updateMetaTags({
+                    path: path,
+                    name: matchedRoute.name,
+                    meta: matchedRoute.meta,
+                    params: params
+                });
+            } else {
+                console.error('Route not found:', path);
+            }
+        };
+        
+        // Initial update
+        updateDisplay();
+    </script>
+</body>
+</html>

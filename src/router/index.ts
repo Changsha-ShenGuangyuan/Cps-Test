@@ -1,0 +1,688 @@
+import { createRouter, createWebHistory } from 'vue-router';
+
+// 定义公共路由规则（不包含404路由）
+const publicRoutes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: () => import(/* rollupChunkName: "home" */ '../components/HomePage.vue'),
+    meta: {
+      title: 'CPSTest - 点击速度、反应时间、打字测试',
+      description:
+        'CPSTest - 免费、专业、快速的点击速度测试平台，提供实时反馈和全面的测试项目，支持多语言，记录历史成绩',
+      keywords:
+        'CPSTest,免费测试,专业测试,实时测试,快速测试,全面测试,点击速度测试,反应时间测试,打字测试,鼠标滚动测试,空格点击测试,多语言测试',
+      // 添加翻译键，用于动态生成多语言meta标签
+      i18n: {
+        titleKey: 'websiteName',
+        descriptionKey: 'metaDescription',
+        keywordsKey: 'metaKeywords',
+      },
+    },
+  },
+  {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: () => import(/* rollupChunkName: "page" */ '../components/PrivacyPolicy.vue'),
+    meta: {
+      title: '隐私政策 - CPSTest',
+      description: 'CPSTest隐私政策，详细说明我们如何收集、使用和保护您的数据',
+      keywords: 'CPSTest,隐私政策,数据保护,用户隐私',
+      // 添加翻译键，用于动态生成多语言meta标签
+      i18n: {
+        titleKey: 'privacyPolicyTitle',
+        descriptionKey: 'privacyPolicyDescription',
+        keywordsKey: 'privacyPolicyKeywords',
+      },
+    },
+  },
+  {
+    path: '/home',
+    redirect: '/', // 重定向到首页
+  },
+  {
+    path: '/click-test',
+    redirect: '/click-test/5', // 重定向到5秒点击测试
+  },
+  {
+    path: '/click-test/:time(\\d+)',
+    name: 'ClickTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/ClickTest.vue'), // 点击测试组件
+    props: true,
+    meta: {
+      title: '点击速度测试 - CPSTest',
+      description: '测试您的点击速度，支持1秒、2秒、5秒、10秒、15秒、30秒、60秒等多种时间测试',
+      keywords: '点击速度测试,CPSTest,鼠标点击测试,点击速度,点击速度测试在线,点击速度测试工具',
+      i18n: {
+        titleKey: 'clickTest',
+        descriptionKey: 'clickTestDescription',
+        keywordsKey: 'clickTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/multi-click-test/double',
+    name: 'DoubleClickTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/DoubleClickTest.vue'), // 双击连点测试组件
+    props: true,
+    meta: {
+      title: '双击连点测试 - CPSTest',
+      description: '测试您的双击连点速度，记录双击次数和CPS',
+      keywords: '双击测试,连点测试,双击连点测试,双击速度测试,双击次数测试',
+      i18n: {
+        titleKey: 'doubleClickTest',
+        descriptionKey: 'doubleClickTestDescription',
+        keywordsKey: 'doubleClickTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/multi-click-test/triple',
+    name: 'TripleClickTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/TripleClickTest.vue'), // 三连击测试组件
+    props: true,
+    meta: {
+      title: '三连击测试 - CPSTest',
+      description: '测试您的三连击速度，记录三连击次数和最佳三连击速度',
+      keywords: '三连击测试,三连点击测试,三连击速度测试,三连击次数测试,三连击测试工具',
+      i18n: {
+        titleKey: 'tripleClickTest',
+        descriptionKey: 'tripleClickTestDescription',
+        keywordsKey: 'tripleClickTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/space-click-test',
+    redirect: '/space-click-test/5', // 重定向到5秒空格点击测试
+  },
+  {
+    path: '/space-click-test/:time(\\d+)',
+    name: 'SpaceClickTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/SpaceClickTest.vue'), // 空格点击测试组件
+    props: true,
+    meta: {
+      title: '空格点击测试 - CPSTest',
+      description: '测试您的空格点击速度，支持1秒、5秒、10秒、15秒、30秒、60秒等多种时间测试',
+      keywords: '空格点击测试,空格键测试,空格速度测试,空格点击速度,空格键点击测试工具',
+      i18n: {
+        titleKey: 'spaceClickTest',
+        descriptionKey: 'spaceClickTestDescription',
+        keywordsKey: 'spaceClickTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/kohi-click-test',
+    name: 'KohiClickTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/KohiClickTest.vue'), // 科霍点击测试组件
+    props: true,
+    meta: {
+      title: 'Kohi点击测试 - CPSTest',
+      description: '专业的Minecraft点击测试，固定10秒，模拟Kohi服务器点击环境',
+      keywords: 'Kohi测试,Kohi点击测试,Minecraft点击测试,MC点击测试,10秒点击测试',
+      i18n: {
+        titleKey: 'kohiClickTest',
+        descriptionKey: 'kohiClickTestDescription',
+        keywordsKey: 'kohiClickTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/reaction-time-test',
+    name: 'ReactionTimeTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/ReactionTimeTest.vue'), // 反应时间测试组件
+    props: true,
+    meta: {
+      title: '反应时间测试 - CPSTest',
+      description: '测试您的反应速度，测量从视觉刺激到鼠标点击的时间间隔',
+      keywords: '反应时间测试,反应速度测试,视觉反应测试,反应测试,反应速度测试工具',
+      i18n: {
+        titleKey: 'reactionTest',
+        descriptionKey: 'reactionTestDescription',
+        keywordsKey: 'reactionTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/color-reaction-test',
+    name: 'ColorReactionTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/ColorReactionTest.vue'), // 颜色反应测试组件
+    props: true,
+    meta: {
+      title: '颜色反应测试 - CPSTest',
+      description: '测试您的颜色识别和反应速度，忽略文字内容，点击与文字匹配的颜色',
+      keywords: '颜色反应测试,颜色识别测试,视觉反应测试,颜色反应速度测试,颜色测试',
+      i18n: {
+        titleKey: 'colorReactionTest',
+        descriptionKey: 'colorReactionTestDescription',
+        keywordsKey: 'colorReactionTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/key-reaction-test',
+    name: 'KeyReactionTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/KeyReactionTest.vue'), // 按键反应测试组件
+    props: true,
+    meta: {
+      title: '按键反应测试 - CPSTest',
+      description: '测试您的WASD按键反应速度，适合游戏玩家训练',
+      keywords: '按键反应测试,WASD反应测试,游戏反应测试,按键速度测试,游戏玩家训练',
+      i18n: {
+        titleKey: 'keyReactionTest',
+        descriptionKey: 'keyReactionTestDescription',
+        keywordsKey: 'keyReactionTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/target-elimination-game',
+    name: 'TargetEliminationGame',
+    component: () => import(/* rollupChunkName: "test" */ '../components/TargetEliminationGame.vue'), // 目标消除游戏组件
+    props: true,
+    meta: {
+      title: '目标消除游戏 - CPSTest',
+      description: '测试您的反应速度和手眼协调能力，消除屏幕上的彩色目标',
+      keywords: '目标消除游戏,反应速度训练,手眼协调训练,反应游戏,目标消除测试',
+      i18n: {
+        titleKey: 'targetEliminationGame',
+        descriptionKey: 'targetEliminationGameDescription',
+        keywordsKey: 'targetEliminationGameKeywords',
+      },
+    },
+  },
+  {
+    path: '/mouse-scroll-test',
+    name: 'MouseScrollTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/MouseScrollTest.vue'), // 鼠标滚动测试组件
+    props: true,
+    meta: {
+      title: '鼠标滚动测试 - CPSTest',
+      description: '测试您的鼠标滚动速度，测量每秒滚动像素数',
+      keywords: '鼠标滚动测试,滚动速度测试,鼠标滚动速度,滚动测试,鼠标测试',
+      i18n: {
+        titleKey: 'mouseScrollTest',
+        descriptionKey: 'mouseScrollTestDescription',
+        keywordsKey: 'mouseScrollTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/mouse-drag-test',
+    name: 'MouseDragTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/MouseDragTest.vue'), // 鼠标拖动测试组件
+    props: true,
+    meta: {
+      title: '鼠标拖动测试 - CPSTest',
+      description: '测试您的鼠标拖动速度和精度，记录拖动距离和平均速度',
+      keywords: '鼠标拖动测试,拖动速度测试,鼠标拖动速度,拖动测试,鼠标测试',
+      i18n: {
+        titleKey: 'mouseDragTest',
+        descriptionKey: 'mouseDragTestDescription',
+        keywordsKey: 'mouseDragTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/keyboard-test',
+    name: 'KeyboardTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/KeyboardTest.vue'), // 键盘测试组件
+    props: true,
+    meta: {
+      title: '键盘测试 - CPSTest',
+      description: '测试您的键盘按键功能，显示按键状态和已按下的按键列表',
+      keywords: '键盘测试,键盘按键测试,键盘功能测试,按键测试,键盘检测',
+      i18n: {
+        titleKey: 'keyboardTest',
+        descriptionKey: 'keyboardTestDescription',
+        keywordsKey: 'keyboardTestKeywords',
+      },
+    },
+  },
+  {
+    path: '/typing-test',
+    redirect: '/typing-test/1', // 重定向到1分钟打字测试
+  },
+  {
+    path: '/typing-test/:time(\\d+)',
+    name: 'TypingTest',
+    component: () => import(/* rollupChunkName: "test" */ '../components/TypingTest.vue'), //打字测试组件
+    props: true,
+    meta: {
+      title: '打字测试 - CPSTest',
+      description:
+        '测试您的打字速度和准确率，支持1分钟、3分钟、5分钟、10分钟、15分钟等多种时间测试',
+      keywords: '打字测试,打字速度测试,打字准确率测试,打字练习,打字速度',
+      i18n: {
+        titleKey: 'typingTest',
+        descriptionKey: 'typingTestDescription',
+        keywordsKey: 'typingTestKeywords',
+      },
+    },
+  },
+];
+
+// 定义404路由
+const notFoundRoute = {
+  // 404页面路由
+  path: '/:pathMatch(.*)*',
+  name: 'NotFound',
+  component: () => import(/* rollupChunkName: "error" */ '../components/NotFound.vue'),
+  meta: {
+    title: '页面未找到 - CPSTest',
+    description: '抱歉，您访问的页面不存在。请检查URL是否正确，或返回首页继续浏览。',
+    keywords: '404,页面未找到,CPSTest,错误页面',
+    i18n: {
+      titleKey: 'notFoundTitle',
+      descriptionKey: 'notFoundDescription',
+      keywordsKey: 'notFoundKeywords',
+    },
+  },
+};
+
+// 定义支持的语言
+const supportedLanguages = ['en', 'ja', 'ko'];
+
+// 定义路由规则 - 支持多语言路径前缀
+const routes = [
+  // 默认语言路由（中文，无需前缀）
+  ...publicRoutes,
+
+  // 其他语言路由（带前缀）
+  ...supportedLanguages.flatMap((lang) => {
+    // 为每个语言创建扁平的路由配置，而不是嵌套路由
+    return publicRoutes.map((route) => {
+      // 移除原始路由的name属性，避免重复命名
+      const { name, ...routeWithoutName } = route;
+      return {
+        ...routeWithoutName,
+        // 为路由添加语言前缀
+        path: `/${lang}${route.path === '/' ? '' : route.path}`,
+        // 保留原始路由的meta属性
+        meta: route.meta,
+      };
+    });
+  }),
+
+  // 404路由（放在最后，匹配所有未匹配的路径）
+  notFoundRoute,
+];
+
+// 创建路由实例
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+// 导入i18n翻译函数
+import { t } from '../i18n/index';
+
+// 提取meta标签更新逻辑为独立函数，支持响应式更新
+export const updateMetaTags = (to: any) => {
+  // 动态获取当前域名，避免硬编码
+  const baseUrl = window.location.origin;
+  const currentUrl = `${baseUrl}${to.path}`;
+
+  // 调试日志已移除
+
+  // 设置页面标题
+  let pageTitle = '';
+  if (to.meta.i18n && to.meta.i18n.titleKey) {
+    // 根据路由参数动态生成标题
+    if ((to.name === 'ClickTest' || to.name === 'SpaceClickTest') && to.params.time) {
+      const time = to.params.time;
+      if (time === '1') {
+        pageTitle = t('1secClickTest');
+      } else if (time === '2') {
+        pageTitle = t('2secClickTest');
+      } else if (time === '5') {
+        pageTitle = t('5secClickTest');
+      } else if (time === '10') {
+        pageTitle = t('10secClickTest');
+      } else if (time === '15') {
+        pageTitle = t('15secClickTest');
+      } else if (time === '30') {
+        pageTitle = t('30secClickTest');
+      } else if (time === '60') {
+        pageTitle = t('60secClickTest');
+      } else {
+        pageTitle = t(to.meta.i18n.titleKey);
+      }
+    } else if (to.name === 'TypingTest' && to.params.time) {
+      const time = to.params.time;
+      if (time === '1') {
+        pageTitle = t('1minTypingTest');
+      } else if (time === '3') {
+        pageTitle = t('3minTypingTest');
+      } else if (time === '5') {
+        pageTitle = t('5minTypingTest');
+      } else if (time === '10') {
+        pageTitle = t('10minTypingTest');
+      } else if (time === '15') {
+        pageTitle = t('15minTypingTest');
+      } else {
+        pageTitle = t(to.meta.i18n.titleKey);
+      }
+    } else {
+      pageTitle = t(to.meta.i18n.titleKey);
+    }
+  } else {
+    pageTitle = to.meta.title || t('websiteName');
+  }
+  // 完整标题格式：页面标题 - 网站名称（用于SEO和品牌推广）
+  const fullPageTitle = to.name === 'Home' ? `${pageTitle}` : `${pageTitle} | CpsTestGo`;
+  document.title = fullPageTitle;
+
+  // 设置meta描述 - 根据路由参数动态生成
+  let metaDesc = '';
+  if (to.meta.i18n?.descriptionKey) {
+    metaDesc = t(to.meta.i18n.descriptionKey);
+  } else {
+    metaDesc = t('metaDescription');
+  }
+
+  // 先尝试找到现有的meta标签，如果没有则创建
+  let metaDescription = document.querySelector('meta[name="description"]');
+  if (!metaDescription) {
+    metaDescription = document.createElement('meta');
+    metaDescription.setAttribute('name', 'description');
+    document.head.appendChild(metaDescription);
+  }
+  metaDescription.setAttribute('content', metaDesc);
+
+  // 设置meta关键词 - 根据路由参数动态生成
+  let metaKeywords = '';
+  if (to.meta.i18n?.keywordsKey) {
+    metaKeywords = t(to.meta.i18n.keywordsKey);
+  } else {
+    metaKeywords = t('metaKeywords');
+  }
+
+  // 先尝试找到现有的meta标签，如果没有则创建
+  let metaKeywordsEl = document.querySelector('meta[name="keywords"]');
+  if (!metaKeywordsEl) {
+    metaKeywordsEl = document.createElement('meta');
+    metaKeywordsEl.setAttribute('name', 'keywords');
+    document.head.appendChild(metaKeywordsEl);
+  }
+  metaKeywordsEl.setAttribute('content', metaKeywords);
+
+  // 设置Open Graph标签
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) {
+    ogTitle.setAttribute('content', pageTitle);
+  }
+
+  // 设置Open Graph描述 - 使用页面特定的描述
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (ogDescription) {
+    // 优先使用页面特定的og描述，如果没有则使用meta描述
+    const pageOgDesc = to.meta.i18n?.ogDescriptionKey ? t(to.meta.i18n.ogDescriptionKey) : metaDesc;
+    ogDescription.setAttribute('content', pageOgDesc);
+  }
+
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) {
+    ogUrl.setAttribute('content', currentUrl);
+  }
+
+  // 设置Twitter Cards标签
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twitterTitle) {
+    twitterTitle.setAttribute('content', pageTitle);
+  }
+
+  // 设置Twitter Cards描述 - 使用页面特定的描述
+  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+  if (twitterDescription) {
+    // 优先使用页面特定的twitter描述，如果没有则使用meta描述
+    const pageTwitterDesc = to.meta.i18n?.twitterDescriptionKey
+      ? t(to.meta.i18n.twitterDescriptionKey)
+      : metaDesc;
+    twitterDescription.setAttribute('content', pageTwitterDesc);
+  }
+
+  const twitterUrl = document.querySelector('meta[name="twitter:url"]');
+  if (twitterUrl) {
+    twitterUrl.setAttribute('content', currentUrl);
+  }
+
+  // 更新schema.org结构化数据
+  const schemaScript = document.querySelector('script[type="application/ld+json"]');
+  if (schemaScript) {
+    try {
+      // 根据页面类型生成不同的结构化数据
+      let schemaData: any = {};
+
+      // 检测页面类型
+      const isTestPage = to.path.includes('-test') || to.path.includes('game');
+
+      if (isTestPage) {
+        // 测试页面结构化数据
+        schemaData = {
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: pageTitle,
+          description: metaDesc,
+          url: currentUrl,
+          applicationCategory: 'GameApplication',
+          operatingSystem: 'Any',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'CNY',
+          },
+          inLanguage: ['zh-CN', 'en', 'ja', 'ko'],
+          publisher: {
+            '@type': 'Organization',
+            name: t('schemaPublisher'),
+            logo: {
+              '@type': 'ImageObject',
+              url: `${baseUrl}/logo.png`,
+            },
+          },
+        };
+      } else {
+        // 非测试页面使用默认结构化数据
+        schemaData = {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: t('schemaName'),
+          description: metaDesc,
+          url: currentUrl,
+          publisher: {
+            '@type': 'Organization',
+            name: t('schemaPublisher'),
+            logo: {
+              '@type': 'ImageObject',
+              url: `${baseUrl}/logo.png`,
+            },
+          },
+          inLanguage: ['zh-CN', 'en', 'ja', 'ko'],
+        };
+      }
+
+      // 更新结构化数据
+      schemaScript.textContent = JSON.stringify(schemaData);
+    } catch (error) {
+      console.error('Failed to parse schema.org data:', error);
+    }
+  }
+};
+
+// 获取不带语言前缀的路径
+const getPathWithoutLangPrefix = (path: string): string => {
+  const supportedLanguages = ['en', 'ja', 'ko'];
+  const pathSegments = path.split('/').filter((segment) => segment !== '');
+
+  if (pathSegments.length > 0 && pathSegments[0] && supportedLanguages.includes(pathSegments[0])) {
+    // 移除语言前缀
+    return `/${pathSegments.slice(1).join('/')}`;
+  }
+
+  return path;
+};
+
+// 为指定语言生成带前缀的路径
+const generateLangPath = (path: string, lang: string): string => {
+  const basePath = getPathWithoutLangPrefix(path);
+
+  // 默认语言（中文）不需要前缀
+  if (lang === 'zh-CN') {
+    return basePath;
+  }
+
+  // 其他语言需要添加前缀
+  return `/${lang}${basePath === '/' ? '' : basePath}`;
+};
+
+// hreflang标签验证逻辑
+const validateHreflangTags = () => {
+  // 获取所有hreflang标签
+  const hreflangTags = document.querySelectorAll('link[rel="alternate"][hreflang]');
+
+  // 检查是否存在hreflang标签
+  if (hreflangTags.length === 0) {
+    console.warn('No hreflang tags found on the page.');
+    return false;
+  }
+
+  // 检查是否存在x-default标签
+  const hasDefaultTag = Array.from(hreflangTags).some(
+    (tag) => tag.getAttribute('hreflang') === 'x-default'
+  );
+  if (!hasDefaultTag) {
+    console.warn('No x-default hreflang tag found.');
+  }
+
+  // 支持的语言列表
+  const supportedLanguages = ['zh-CN', 'en', 'ja', 'ko'];
+
+  // 检查每个语言是否都有对应的hreflang标签
+  supportedLanguages.forEach((lang) => {
+    const hasLangTag = Array.from(hreflangTags).some(
+      (tag) => tag.getAttribute('hreflang') === lang
+    );
+    if (!hasLangTag) {
+      console.warn(`No hreflang tag found for language: ${lang}`);
+    }
+  });
+
+  // 检查每个hreflang标签的有效性
+  let allValid = true;
+
+  hreflangTags.forEach((tag) => {
+    const hreflang = tag.getAttribute('hreflang');
+    const href = tag.getAttribute('href');
+
+    // 检查hreflang属性是否存在且非空
+    if (!hreflang) {
+      console.error('Invalid hreflang tag: missing hreflang attribute.');
+      allValid = false;
+      return;
+    }
+
+    // 检查href属性是否存在且非空
+    if (!href) {
+      console.error(`Invalid hreflang tag for ${hreflang}: missing href attribute.`);
+      allValid = false;
+      return;
+    }
+
+    // 检查href是否为有效的URL
+    try {
+      new URL(href);
+    } catch (error) {
+      console.error(`Invalid hreflang tag for ${hreflang}: invalid href URL.`);
+      allValid = false;
+      return;
+    }
+  });
+
+  return allValid;
+};
+
+// 全局路由守卫 - 设置页面标题和meta标签
+router.beforeEach((to, _from, next) => {
+  // 调用meta标签更新函数
+  updateMetaTags(to);
+
+  // 设置canonical标签（使用默认语言版本作为规范URL）
+  try {
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (!canonicalTag) {
+      canonicalTag = document.createElement('link') as HTMLLinkElement;
+      (canonicalTag as HTMLLinkElement).rel = 'canonical';
+      document.head.appendChild(canonicalTag);
+    }
+
+    // 规范URL使用默认语言版本
+    const canonicalUrl = `${window.location.origin}${getPathWithoutLangPrefix(to.path)}`;
+    canonicalTag.setAttribute('href', canonicalUrl);
+  } catch (error) {
+    console.error('Failed to set canonical tag:', error);
+  }
+
+  // 设置hreflang标签
+  const languages = ['zh-CN', 'en', 'ja', 'ko'];
+
+  // 先移除所有现有hreflang标签
+  const existingHreflangTags = document.querySelectorAll('link[rel="alternate"][hreflang]');
+  existingHreflangTags.forEach((tag) => tag.remove());
+
+  // 添加默认语言标签
+  const defaultTag = document.createElement('link');
+  defaultTag.rel = 'alternate';
+  defaultTag.hreflang = 'x-default';
+  defaultTag.href = `${window.location.origin}${getPathWithoutLangPrefix(to.path)}`;
+  document.head.appendChild(defaultTag);
+
+  // 添加各语言标签
+  languages.forEach((lang) => {
+    const tag = document.createElement('link');
+    tag.rel = 'alternate';
+    tag.hreflang = lang;
+    tag.href = `${window.location.origin}${generateLangPath(to.path, lang)}`;
+    document.head.appendChild(tag);
+  });
+
+  // 验证hreflang标签 - 使用环境变量检查，兼容浏览器环境
+  if (import.meta.env.DEV) {
+    setTimeout(() => {
+      // 使用setTimeout确保DOM已更新
+      validateHreflangTags();
+    }, 0);
+  }
+
+  // 验证路由参数 - 确保只有有效的数字参数才能访问测试页面
+  const pathWithoutLang = getPathWithoutLangPrefix(to.path);
+
+  // 定义各测试类型支持的时间参数
+  const supportedTimes = {
+    '/click-test': [1, 2, 5, 10, 15, 30, 60],
+    '/space-click-test': [1, 2, 5, 10, 15, 30, 60],
+    '/typing-test': [1, 3, 5, 10, 15],
+  };
+
+  // 检查当前路由是否是时间测试路由
+  for (const [routePrefix, times] of Object.entries(supportedTimes)) {
+    if (pathWithoutLang.startsWith(routePrefix)) {
+      // 提取时间参数
+      const timeParam = to.params.time;
+      if (timeParam) {
+        const parsedTime = parseInt(timeParam.toString());
+        // 验证时间参数是否为纯数字且在支持的时间列表中
+        if (!/^\d+$/.test(timeParam.toString()) || !times.includes(parsedTime)) {
+          // 如果参数无效，重定向到404页面
+          return next({ name: 'NotFound' });
+        }
+      }
+      break;
+    }
+  }
+
+  next();
+});
+
+export default router;

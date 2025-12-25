@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 首页 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- 首页 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- 首页 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- 首页 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- 点击测试页面 -->
+  <!-- 1秒点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/click-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1秒点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/click-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1秒点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/click-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1秒点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/click-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 2秒点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/click-test/2</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 2秒点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/click-test/2</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 2秒点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/click-test/2</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 2秒点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/click-test/2</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5秒点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/click-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5秒点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/click-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5秒点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/click-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5秒点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/click-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10秒点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/click-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10秒点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/click-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10秒点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/click-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10秒点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/click-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15秒点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/click-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15秒点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/click-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15秒点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/click-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15秒点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/click-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 30秒点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/click-test/30</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 30秒点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/click-test/30</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 30秒点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/click-test/30</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 30秒点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/click-test/30</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 60秒点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/click-test/60</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 60秒点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/click-test/60</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 60秒点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/click-test/60</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 60秒点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/click-test/60</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- 连点测试页面 -->
+  <!-- 双击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/multi-click-test/double</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 双击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/multi-click-test/double</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 双击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/multi-click-test/double</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 双击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/multi-click-test/double</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 三连击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/multi-click-test/triple</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 三连击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/multi-click-test/triple</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 三连击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/multi-click-test/triple</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 三连击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/multi-click-test/triple</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 空格点击测试页面 -->
+  <!-- 1秒空格点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/space-click-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1秒空格点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/space-click-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1秒空格点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/space-click-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1秒空格点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/space-click-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5秒空格点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/space-click-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5秒空格点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/space-click-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5秒空格点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/space-click-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5秒空格点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/space-click-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10秒空格点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/space-click-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10秒空格点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/space-click-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10秒空格点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/space-click-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10秒空格点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/space-click-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15秒空格点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/space-click-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15秒空格点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/space-click-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15秒空格点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/space-click-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15秒空格点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/space-click-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 30秒空格点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/space-click-test/30</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 30秒空格点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/space-click-test/30</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 30秒空格点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/space-click-test/30</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 30秒空格点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/space-click-test/30</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 60秒空格点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/space-click-test/60</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 60秒空格点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/space-click-test/60</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 60秒空格点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/space-click-test/60</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 60秒空格点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/space-click-test/60</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Kohi点击测试页面 -->
+  <!-- Kohi点击测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/kohi-click-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- Kohi点击测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/kohi-click-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- Kohi点击测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/kohi-click-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- Kohi点击测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/kohi-click-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 反应时间测试页面 -->
+  <!-- 反应时间测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/reaction-time-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 反应时间测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/reaction-time-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 反应时间测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/reaction-time-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 反应时间测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/reaction-time-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 颜色反应测试页面 -->
+  <!-- 颜色反应测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/color-reaction-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 颜色反应测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/color-reaction-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 颜色反应测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/color-reaction-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 颜色反应测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/color-reaction-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 按键反应测试页面 -->
+  <!-- 按键反应测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/key-reaction-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 按键反应测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/key-reaction-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 按键反应测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/key-reaction-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 按键反应测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/key-reaction-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 目标消除游戏页面 -->
+  <!-- 目标消除游戏 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/target-elimination-game</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 目标消除游戏 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/target-elimination-game</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 目标消除游戏 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/target-elimination-game</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 目标消除游戏 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/target-elimination-game</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 鼠标滚动测试页面 -->
+  <!-- 鼠标滚动测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/mouse-scroll-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 鼠标滚动测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/mouse-scroll-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 鼠标滚动测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/mouse-scroll-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 鼠标滚动测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/mouse-scroll-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 鼠标拖动测试页面 -->
+  <!-- 鼠标拖动测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/mouse-drag-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 鼠标拖动测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/mouse-drag-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 鼠标拖动测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/mouse-drag-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 鼠标拖动测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/mouse-drag-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 键盘测试页面 -->
+  <!-- 键盘测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/keyboard-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 键盘测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/keyboard-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 键盘测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/keyboard-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 键盘测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/keyboard-test</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 打字测试页面 -->
+  <!-- 1分钟打字测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/typing-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1分钟打字测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/typing-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1分钟打字测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/typing-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 1分钟打字测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/typing-test/1</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 3分钟打字测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/typing-test/3</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 3分钟打字测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/typing-test/3</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 3分钟打字测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/typing-test/3</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 3分钟打字测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/typing-test/3</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5分钟打字测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/typing-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5分钟打字测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/typing-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5分钟打字测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/typing-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 5分钟打字测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/typing-test/5</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10分钟打字测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/typing-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10分钟打字测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/typing-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10分钟打字测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/typing-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 10分钟打字测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/typing-test/10</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15分钟打字测试 - 中文 -->
+  <url>
+    <loc>https://cpstestgo.com/typing-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15分钟打字测试 - 英文 -->
+  <url>
+    <loc>https://cpstestgo.com/en/typing-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15分钟打字测试 - 日文 -->
+  <url>
+    <loc>https://cpstestgo.com/ja/typing-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 15分钟打字测试 - 韩文 -->
+  <url>
+    <loc>https://cpstestgo.com/ko/typing-test/15</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
