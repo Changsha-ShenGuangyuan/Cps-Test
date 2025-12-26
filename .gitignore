@@ -37,3 +37,4 @@ dist-ssr
 .vscode
 # Vim交换文件
 *.sw?
+docker-compose_back.yml
