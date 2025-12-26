@@ -6,6 +6,8 @@
   import FAQComponent from './FAQComponent.vue';
   // 导入相关测试推荐组件
   import RelatedTests from './RelatedTests.vue';
+  // 导入结果弹窗组件
+  import ResultModal from './ResultModal.vue';
 
   // 组件功能：空格点击速度测试组件
 
@@ -79,6 +81,7 @@
   const timer = ref(0); // 定时器ID
   const elapsedTime = ref(0); // 已用时间（毫秒级精度）
   const isSpacePressed = ref(false); // 空格键是否被按住
+  const showResultModal = ref(false); // 结果弹窗显示状态
 
   // 历史记录相关
   const historyRecords = ref<HistoryRecord[]>([]); // 历史记录数组
@@ -163,9 +166,8 @@
     isGameOver.value = true; // 设置最终结束状态
     endTime.value = Date.now(); // 记录结束时间
 
-    // 计算最终CPS
-    const totalTime = (endTime.value - startTime.value) / 1000;
-    cps.value = totalTime > 0 ? Math.round((clicks.value / totalTime) * 100) / 100 : 0;
+    // 计算最终CPS，使用规定的测试时间，确保与clicks保持一致
+    cps.value = testTime.value > 0 ? Math.round((clicks.value / testTime.value) * 100) / 100 : 0;
 
     // 确保已用时间显示为规定的测试时间，而不是实际的游戏持续时间
     elapsedTime.value = testTime.value;
@@ -192,6 +194,9 @@
 
     // 保存到localStorage
     saveHistory();
+
+    // 显示结果弹窗
+    showResultModal.value = true;
 
     // 游戏结束时不移除空格键事件监听，继续阻止默认行为
     // removeSpaceListener()
@@ -306,6 +311,7 @@
     cps.value = 0;
     elapsedTime.value = 0;
     showPressHint.value = true; // 重置提示显示
+    showResultModal.value = false; // 关闭结果弹窗
 
     // 清除定时器
     clearInterval(timer.value);
@@ -363,10 +369,8 @@
           }"
         >
           <!-- 游戏结束显示 -->
-          <div v-if="isGameOver" class="result-container">
-            <div class="result">{{ t('finish') }}!</div>
-            <div class="final-cps">{{ t('cps') }}: {{ cps }}</div>
-            <button class="reset-btn" @click="resetGame">{{ t('tryAgain') }}</button>
+          <div v-if="isGameOver" class="game-over-content">
+            <!-- 游戏结束后显示空内容，结果通过弹窗展示 -->
           </div>
 
           <!-- 游戏进行中显示 -->
@@ -475,6 +479,15 @@
       </div>
     </div>
   </div>
+
+  <!-- 结果弹窗组件 -->
+  <ResultModal
+    :visible="showResultModal"
+    :type="'space'"
+    :cps="cps"
+    :time="testTime"
+    @close="resetGame"
+  />
 </template>
 
 <style scoped>
@@ -968,59 +981,7 @@
     z-index: 2;
   }
 
-  /* 结果容器 */
-  .result-container {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-  }
 
-  .result {
-    font-size: 36px;
-    margin-bottom: 15px;
-    color: #ffffff;
-  }
-
-  .final-cps {
-    font-size: 48px;
-    margin-bottom: 20px;
-    color: #4caf50;
-    font-weight: bold;
-  }
-
-  /* 重置按钮 */
-  .reset-btn {
-    padding: 12px 24px;
-    font-size: 20px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: bold;
-    margin-top: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    outline: none; /* 移除默认轮廓 */
-    -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
-  }
-
-  .reset-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-  }
-
-  .reset-btn:active {
-    background-color: #388e3c;
-    transform: scale(0.98);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    outline: none; /* 移除点击时的轮廓 */
-  }
-
-  .reset-btn:focus {
-    outline: none; /* 移除聚焦轮廓 */
-  }
 
   /* FAQ 部分 */
   .faq-section {
@@ -1083,28 +1044,9 @@
       font-size: 16px;
     }
 
-    /* 文字大小优化 */
-    .clicks {
-      font-size: 48px;
-    }
-
-    .result {
-      font-size: 28px;
-    }
-
-    .final-cps {
-      font-size: 36px;
-    }
-
     /* 准备就绪文字优化 */
     .ready-text {
       font-size: 48px;
-    }
-
-    /* 按钮优化 */
-    .reset-btn {
-      padding: 12px 24px;
-      font-size: 18px;
     }
 
     /* 历史记录优化 - 移动端显示在点击区域下方 */
