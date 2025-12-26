@@ -58,14 +58,14 @@
 
   // 语言选择相关
   const languages = [
-    { code: 'en', name: 'ENGLISH', flag: '/src/assets/flags/um.png' },
-    { code: 'zh-CN', name: '简体中文', flag: '/src/assets/flags/cn.png' },
-    { code: 'ja', name: '日本語', flag: '/src/assets/flags/jp.png' },
-    { code: 'ko', name: '한국어', flag: '/src/assets/flags/kr.png' },
+    { code: 'en', name: 'ENGLISH', flag: new URL('@/assets/flags/um.png', import.meta.url).href },
+    { code: 'zh-CN', name: '简体中文', flag: new URL('@/assets/flags/cn.png', import.meta.url).href },
+    { code: 'ja', name: '日本語', flag: new URL('@/assets/flags/jp.png', import.meta.url).href },
+    { code: 'ko', name: '한국어', flag: new URL('@/assets/flags/kr.png', import.meta.url).href },
   ];
 
   // 检测设备类型（true为移动端，false为桌面端）
-  const isMobile = ref(window.innerWidth <= 768);
+  const isMobile = ref(window.innerWidth <= 1000);
   const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
   // 移动端菜单状态管理
@@ -479,8 +479,21 @@
     });
   };
 
+  // 导入图标资源
+  const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
+
   // 初始化菜单数据
   const initMenuItems = () => {
+    // 导入所有图标资源
+    const icons = {
+      home: new URL('@/assets/icons/home.png', import.meta.url).href,
+      chick: new URL('@/assets/icons/chick.png', import.meta.url).href,
+      mouse02: new URL('@/assets/icons/mouse02.png', import.meta.url).href,
+      keyboard02: new URL('@/assets/icons/keyboard02.png', import.meta.url).href,
+      reaction: new URL('@/assets/icons/reaction.png', import.meta.url).href,
+      game02: new URL('@/assets/icons/game02.png', import.meta.url).href,
+    };
+
     menuItems.value = [
       {
         id: 0,
@@ -488,12 +501,12 @@
         path: '/',
         children: [],
         isExpanded: false,
-        icon: '/src/assets/icons/home.png',
+        icon: icons.home,
       },
       {
         id: 1,
         name: t('clickTest'),
-        icon: '/src/assets/icons/chick.png',
+        icon: icons.chick,
         children: [
           { id: 11, name: t('1secClickTest'), path: '/click-test/1' },
           { id: 12, name: t('2secClickTest'), path: '/click-test/2' },
@@ -508,7 +521,7 @@
       {
         id: 8,
         name: t('clickSeriesTest'),
-        icon: '/src/assets/icons/mouse02.png',
+        icon: icons.mouse02,
         children: [
           { id: 81, name: t('doubleClickTest'), path: '/multi-click-test/double' },
           { id: 82, name: t('tripleClickTest'), path: '/multi-click-test/triple' },
@@ -518,7 +531,7 @@
       {
         id: 2,
         name: t('spaceClickTest'),
-        icon: '/src/assets/icons/keyboard02.png',
+        icon: icons.keyboard02,
         children: [
           { id: 21, name: t('1secSpaceTest'), path: '/space-click-test/1' },
           { id: 22, name: t('5secSpaceTest'), path: '/space-click-test/5' },
@@ -535,7 +548,7 @@
         path: '/kohi-click-test',
         children: [],
         isExpanded: false,
-        icon: '/src/assets/icons/chick.png',
+        icon: icons.chick,
       },
       {
         id: 9,
@@ -543,7 +556,7 @@
         path: '/mouse-drag-test',
         children: [],
         isExpanded: false,
-        icon: '/src/assets/icons/mouse02.png',
+        icon: icons.mouse02,
       },
       {
         id: 10,
@@ -551,12 +564,12 @@
         path: '/keyboard-test',
         children: [],
         isExpanded: false,
-        icon: '/src/assets/icons/keyboard02.png',
+        icon: icons.keyboard02,
       },
       {
         id: 4,
         name: t('typingTest'),
-        icon: '/src/assets/icons/keyboard02.png',
+        icon: icons.keyboard02,
         children: [
           { id: 41, name: t('1minTypingTest'), path: '/typing-test/1' },
           { id: 42, name: t('3minTypingTest'), path: '/typing-test/3' },
@@ -569,7 +582,7 @@
       {
         id: 5,
         name: t('reactionTest'),
-        icon: '/src/assets/icons/reaction.png',
+        icon: icons.reaction,
         children: [
           { id: 51, name: t('simpleReactionTest'), path: '/reaction-time-test', icon: '' },
           { id: 52, name: t('colorReactionTest'), path: '/color-reaction-test', icon: '' },
@@ -583,7 +596,7 @@
         path: '/target-elimination-game',
         children: [],
         isExpanded: false,
-        icon: '/src/assets/icons/game02.png',
+        icon: icons.game02,
       },
       {
         id: 7,
@@ -591,7 +604,7 @@
         path: '/mouse-scroll-test',
         children: [],
         isExpanded: false,
-        icon: '/src/assets/icons/mouse02.png',
+        icon: icons.mouse02,
       },
     ];
   };
@@ -675,9 +688,9 @@
   // 窗口大小改变时的处理函数
   const handleResize = () => {
     // 更新设备类型检测
-    isMobile.value = window.innerWidth <= 768;
-    // 当窗口宽度大于768px时，自动关闭侧边栏
-    if (window.innerWidth > 768) {
+    isMobile.value = window.innerWidth <= 1000;
+    // 当窗口宽度大于1000px时，自动关闭侧边栏
+    if (window.innerWidth > 1000) {
       isSidebarOpen.value = false;
     }
   };
@@ -981,7 +994,7 @@
           @click.stop="toggleHistory"
         >
           <img
-            src="/src/assets/icons/history.png"
+            :src="historyIconUrl"
             class="language-image"
             width="30"
             height="30"
@@ -1261,7 +1274,7 @@
   }
 
   /* 移动端导航栏优化 */
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     /* 在移动端隐藏主导航 */
     .main-nav {
       display: none;
@@ -1370,7 +1383,7 @@
   }
 
   /* 桌面端显示完整的网站名称 */
-  @media (min-width: 769px) {
+  @media (min-width: 1001px) {
     .desktop-logo {
       display: inline;
     }
@@ -1436,7 +1449,7 @@
   }
 
   /* 移动端显示汉堡菜单 */
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     .hamburger-menu {
       display: flex;
     }
@@ -1887,7 +1900,7 @@
   }
 
   /* 移动端适配 */
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     /* 移动端菜单优化 */
     .language-selector,
     .history-selector {
@@ -1984,7 +1997,7 @@
   }
 
   /* 移动端默认隐藏侧边栏 */
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     .sidebar {
       transform: translateX(-100%);
       width: 280px; /* 优化移动端侧边栏宽度 */
@@ -2278,7 +2291,7 @@
   }
 
   /* 移动端主内容区域 */
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     .content {
       margin-left: 0;
     }
@@ -2286,11 +2299,9 @@
 
   /* 全局游戏容器样式 - 确保所有组件都靠近左侧 */
   .content > .game-container {
-    max-width: 1200px;
-    margin: 0;
+    margin: 0 auto;
     text-align: center;
     width: 100%;
-    padding: 0;
   }
 
   /* 通用样式 - 确保所有直接子元素都靠近左侧 */

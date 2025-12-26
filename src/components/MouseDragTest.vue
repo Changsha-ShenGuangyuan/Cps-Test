@@ -46,12 +46,22 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, computed } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
   import { t } from '../i18n/index';
   // 导入通用FAQ组件
   import FAQComponent from './FAQComponent.vue';
   // 导入相关测试推荐组件
   import RelatedTests from './RelatedTests.vue';
+
+  // 响应式变量：屏幕尺寸
+  const isDesktop = ref(window.innerWidth >= 1201);
+
+  // 监听窗口大小变化
+  const handleResize = () => {
+    isDesktop.value = window.innerWidth >= 1201;
+    // 重新计算中心位置
+    calculateCenterPosition();
+  };
 
   // 测试状态
   const isDragging = ref(false);
@@ -278,15 +288,15 @@
     calculateCenterPosition();
 
     // 添加窗口大小变化监听
-    window.addEventListener('resize', calculateCenterPosition);
+    window.addEventListener('resize', handleResize);
 
     initTest();
   });
 
   // 组件卸载前清理
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     // 移除窗口大小变化监听
-    window.removeEventListener('resize', calculateCenterPosition);
+    window.removeEventListener('resize', handleResize);
   });
 
   // 获取当前FAQ内容
@@ -318,64 +328,35 @@
 
 <style scoped>
   .mouse-drag-test-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0px;
+    padding: clamp(10px, 2vw, 20px);
     text-align: center;
+    background-color: #121212;
+    border-radius: 10px;
+    box-shadow: none;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   h1 {
-    font-size: 36px;
+    font-size: clamp(24px, 4vw, 36px);
     color: #4caf50;
-    margin-bottom: 20px;
+    margin-bottom: clamp(15px, 2vw, 20px);
   }
 
   .test-panel {
     background-color: #2a2a2a;
-    padding: 30px;
+    padding: clamp(20px, 3vw, 30px);
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    margin-bottom: 40px;
-  }
-
-  .stats-container {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-  }
-
-  .stat-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    background-color: #333;
-    padding: 15px 25px;
-    border-radius: 8px;
-    min-width: 180px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .stat-label {
-    font-size: 14px;
-    color: #cccccc;
-    white-space: nowrap;
-  }
-
-  .stat-value {
-    font-size: 24px;
-    font-weight: bold;
-    color: #4caf50;
-    text-align: right;
-    min-width: 80px;
+    margin-bottom: clamp(30px, 4vw, 40px);
   }
 
   .test-area-drag {
-    width: 100%;
+    width: clamp(90%, 98vw, 100%);
     max-width: 800px;
-    height: 400px;
+    height: clamp(300px, 50vh, 400px);
     margin: 0 auto 25px;
     background-color: #333;
     border: 4px solid #4caf50;
@@ -386,7 +367,7 @@
   }
 
   .hand-icon {
-    font-size: 64px;
+    font-size: clamp(50px, 8vw, 64px);
     position: absolute;
     left: 0;
     top: 0;
@@ -400,96 +381,18 @@
     touch-action: none; /* 阻止触摸动作的默认行为 */
   }
 
-  .control-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 10px;
-  }
-
-  .control-btn {
-    padding: 10px 25px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .reset-btn {
-    background-color: #f44336;
-    color: white;
-  }
-
-  .reset-btn:hover {
-    background-color: #da190b;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-  }
-
-  /* 网格布局 */
-  .faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
-  }
-
-  /* 单列布局 */
-  .faq-column {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  /* 全宽样式 */
-  .full-width {
-    grid-column: 1 / -1;
-    background-color: rgba(40, 40, 40, 0.8);
-    margin-bottom: 15px;
-  }
-
-  /* FAQ 项目 */
-  .faq-item {
-    background-color: rgba(50, 50, 50, 0.7);
-    padding: 25px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(80, 80, 80, 0.5);
-    text-align: left;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .faq-item:hover {
-    background-color: rgba(60, 60, 60, 0.9);
-    border-color: #4caf50;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    transform: translateY(-3px);
-  }
-
-  /* FAQ 标题 */
-  .faq-item h4 {
-    color: #4caf50;
-    margin: 0 0 15px 0;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.3;
-  }
-
-  /* FAQ 内容 */
-  .faq-item p {
-    color: #e0e0e0;
-    margin: 0;
-    line-height: 1.7;
-    font-size: 16px;
-    text-align: left;
-    opacity: 0.9;
+  /* 响应式设计 */
+  @media (max-width: 1200px) {
+    /* 中等屏幕布局优化 */
+    .test-area-drag {
+      max-width: 100%;
+    }
   }
 
   /* 响应式设计 */
   @media (max-width: 768px) {
     h1 {
-      font-size: 28px;
+      font-size: clamp(24px, 4vw, 28px);
       margin-bottom: 15px;
     }
 
@@ -499,65 +402,23 @@
     }
 
     .test-area-drag {
-      width: 100%;
-      height: 300px;
+      height: clamp(250px, 40vh, 300px);
       border-width: 3px;
     }
 
     .hand-icon {
-      font-size: 50px;
+      font-size: clamp(40px, 10vw, 50px);
     }
+  }
 
-    .stats-container {
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 20px;
+  /* 超小屏幕适配 */
+  @media (max-width: 480px) {
+    .test-area-drag {
+      height: clamp(200px, 35vh, 250px);
     }
-
-    .stat-item {
-      min-width: 250px;
-      padding: 12px 20px;
-    }
-
-    .stat-label {
-      font-size: 13px;
-    }
-
-    .stat-value {
-      font-size: 20px;
-    }
-
-    .control-buttons {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .control-btn {
-      width: 200px;
-    }
-
-    .faq-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-
-    .faq-column {
-      gap: 20px;
-    }
-
-    .faq-item {
-      padding: 20px;
-    }
-
-    .faq-item h4 {
-      font-size: 16px;
-      margin-bottom: 12px;
-    }
-
-    .faq-item p {
-      font-size: 14px;
-      line-height: 1.6;
+    
+    .hand-icon {
+      font-size: clamp(36px, 12vw, 44px);
     }
   }
 </style>

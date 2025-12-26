@@ -2,6 +2,14 @@
   import { ref, computed, onMounted } from 'vue';
   import { t } from '../i18n/index';
 
+  // 响应式变量：屏幕尺寸
+  const isDesktop = ref(window.innerWidth >= 1201);
+
+  // 监听窗口大小变化
+  const handleResize = () => {
+    isDesktop.value = window.innerWidth >= 1201;
+  };
+
   // 组件功能：反应时间测试组件，测试用户的反应速度
   // 支持随机出现目标，计算反应时间，显示统计数据等功能
   // 支持两种测试模式：简单反应测试和颜色反应测试
@@ -167,10 +175,13 @@
 
       // 窗口大小变化时更新
       window.addEventListener('resize', updateContainerSize);
+      // 添加屏幕尺寸监听
+      window.addEventListener('resize', handleResize);
 
       // 组件卸载前清理
       return () => {
         window.removeEventListener('resize', updateContainerSize);
+        window.removeEventListener('resize', handleResize);
       };
     }
   });
@@ -449,12 +460,15 @@
           </div>
         </div>
 
-        <!-- 历史记录区域 - 移到游戏区域下方，FAQ上方 -->
-        <div class="history-sidebar">
+        <!-- 相关测试推荐组件 -->
+        <RelatedTests current-test="reactionTimeTest" />
+
+        <!-- 历史记录区域 - 中等屏幕和移动端显示在相关测试推荐组件下方 -->
+        <div v-if="!isDesktop" class="history-sidebar">
           <div class="history-header">
             <h3>
               <img
-                src="/src/assets/icons/history.png"
+                src="@/assets/icons/history.png"
                 width="30"
                 height="30"
                 :alt="t('historyIconAlt')"
@@ -491,9 +505,6 @@
           </div>
         </div>
 
-        <!-- 相关测试推荐组件 -->
-        <RelatedTests current-test="reactionTimeTest" />
-
         <!-- 游戏说明 -->
         <div class="faq-section">
           <!-- 使用通用FAQ组件 -->
@@ -505,6 +516,48 @@
           />
         </div>
       </div>
+
+      <!-- 历史记录区域 - 桌面端显示在右侧 -->
+      <div v-if="isDesktop" class="history-sidebar">
+        <div class="history-header">
+          <h3>
+            <img
+              src="@/assets/icons/history.png"
+              width="30"
+              height="30"
+              :alt="t('historyIconAlt')"
+              class="history-icon"
+              loading="lazy"
+            />
+            {{ t('history') }}
+          </h3>
+        </div>
+
+        <div class="history-list">
+          <div v-if="historyRecords.length === 0" class="no-history">
+            {{ t('noHistory') }}
+          </div>
+          <div v-for="record in historyRecords" :key="record.id" class="history-item">
+            <div class="history-item-content">
+              <div class="history-date">{{ record.date }}</div>
+              <div class="history-stats">
+                <div class="stat-item">
+                  <span class="stat-label">{{ t('best') }} {{ t('time') }}:</span>
+                  <span class="stat-value best-time"
+                    >{{ record.bestTime.toFixed(2) }} {{ t('ms') }}</span
+                  >
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">{{ t('average') }} {{ t('time') }}:</span>
+                  <span class="stat-value avg-time"
+                    >{{ record.averageTime.toFixed(2) }} {{ t('ms') }}</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -512,94 +565,177 @@
 <style scoped>
   /* 游戏容器 */
   .game-container {
-    max-width: 1400px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: none;
+    margin: 20px auto;
     text-align: center;
-    padding: 20px;
+    padding: clamp(20px, 4vw, 30px);
     background-color: #121212;
     color: white;
     position: relative;
     box-sizing: border-box;
-    border-radius: 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   }
 
   /* 主内容区域 - 左侧游戏 + 右侧历史记录 */
   .main-content {
     display: flex;
-    gap: 20px;
+    gap: clamp(10px, 2vw, 20px);
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0 auto;
   }
 
   /* 左侧游戏区域 */
   .game-main-area {
     flex: 1;
-    max-width: 800px;
+    width: 100%;
+    min-width: 0;
   }
 
   /* 电脑端布局：历史记录显示在右侧 */
-  @media (min-width: 1200px) {
+  @media (min-width: 1201px) {
+    .main-content {
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+    
     .game-main-area {
-      position: relative;
-      max-width: 800px;
+      flex: 1;
+      width: auto;
+      max-width: none;
     }
 
-    .game-main-area .history-sidebar {
-      position: absolute;
-      right: -380px;
-      top: 0;
-      margin-right: 0px;
-      width: 350px;
+    .history-sidebar {
+      flex: 0 0 clamp(250px, 20vw, 350px);
+      margin-top: 0;
+      margin-right: 0;
+      height: clamp(280px, 50vh, 400px);
     }
   }
 
   /* 游戏区域内部 */
   .game-area-inner {
     width: 100%;
-    height: 400px;
+    max-width: 1400px;
+    height: clamp(300px, 55vh, 500px);
     background-color: #000000;
-    border-radius: 15px;
+    border-radius: 20px;
     position: relative;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin: 20px auto 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 2px solid #333;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+    background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+  }
+
+  /* 准备状态 */
+  .ready-state {
+    padding: 30px;
+    text-align: center;
+  }
+
+  .ready-state h3 {
+    font-size: clamp(24px, 4vw, 32px);
+    margin-bottom: 20px;
+    color: #4caf50;
+  }
+
+  .ready-state p {
+    font-size: clamp(14px, 2vw, 16px);
+    margin-bottom: 30px;
+    opacity: 0.9;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 倒计时状态 */
+  .countdown-state {
+    padding: 30px;
+    text-align: center;
+  }
+
+  .countdown-state h2 {
+    font-size: clamp(48px, 10vw, 80px);
+    margin-bottom: 20px;
+    color: #ff9800;
+  }
+
+  .countdown-state p {
+    font-size: clamp(14px, 2vw, 16px);
+    opacity: 0.9;
+  }
+
+  /* 等待状态 */
+  .waiting-state {
+    padding: 30px;
+    text-align: center;
+  }
+
+  .waiting-state h3 {
+    font-size: clamp(24px, 4vw, 32px);
+    margin-bottom: 20px;
+    color: #2196f3;
+  }
+
+  .waiting-state p {
+    font-size: clamp(14px, 2vw, 16px);
+    margin-bottom: 20px;
+    opacity: 0.9;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 结果显示状态 */
+  .result-state {
+    padding: 30px;
+    text-align: center;
+  }
+
+  .result-state h3 {
+    font-size: clamp(24px, 4vw, 32px);
+    margin-bottom: 20px;
+    color: #4caf50;
+  }
+
+  .reaction-time {
+    font-size: clamp(48px, 10vw, 80px);
+    margin-bottom: 20px;
+    color: #4caf50;
+    font-weight: bold;
+  }
+
+  .result-state p {
+    font-size: clamp(14px, 2vw, 16px);
+    opacity: 0.9;
   }
 
   /* 右侧历史记录侧边栏 */
   .history-sidebar {
-    /* 宽度自适应父容器，确保在不同屏幕尺寸下都能良好显示 */
     width: 100%;
-    /* 最大宽度限制，防止在大屏幕上过度拉伸 */
-    max-width: 800px;
-    /* 深色背景主题，与整体设计风格保持一致 */
     background-color: #1a1a1a;
-    /* 圆角边框，增强视觉美观度 */
-    border-radius: 10px;
-    /* 内边距，为内部内容提供呼吸空间 */
-    padding: 10px;
-    /* 固定高度，确保历史记录区域有足够的显示空间 */
-    height: 400px;
-    /* 使用flex布局，使历史记录项垂直排列 */
+    border-radius: 15px;
+    padding: clamp(20px, 4vw, 25px);
+    height: clamp(300px, 55vh, 500px);
     display: flex;
-    /* 设置flex方向为垂直，使内容从上到下排列 */
     flex-direction: column;
-    /* 阴影效果，增强视觉层次感 */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    /* 隐藏溢出内容，配合overflow-y: auto使用 */
-    overflow: hidden;
-    /* 顶部外边距，与上方内容保持适当距离 */
-    margin-top: 10px;
-    /* 底部外边距，与下方内容保持适当距离 */
-    margin-bottom: 20px;
-    /* 左侧外边距，调整位置使其居中对齐 */
-    margin-left: 0px;
-
-    transform: translateX(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+    margin-right: 0;
+    box-sizing: border-box;
+    flex-shrink: 0;
   }
 
   /* 历史记录标题 */
@@ -742,33 +878,42 @@
   /* 游戏标题样式 */
   .game-title {
     color: #4caf50;
-    margin: 0 0 20px 0;
-    font-size: 28px;
+    margin: 0 0 clamp(10px, 2vw, 20px) 0;
+    font-size: clamp(24px, 4vw, 28px);
     font-weight: bold;
     text-align: center;
-    margin-top: 15px;
+    margin-top: 10px;
   }
 
   /* 统计信息容器 */
   .stats-container {
     display: flex;
-    gap: 30px;
+    gap: clamp(15px, 3vw, 40px);
     justify-content: center;
-    margin-bottom: 20px;
+    margin: 20px auto;
     flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
   }
 
   /* 统计卡片 */
   .stat-card {
-    width: 200px;
-    padding: 25px;
-    border-radius: 15px;
+    flex: 1;
+    min-width: clamp(150px, 22vw, 180px);
+    max-width: 220px;
+    padding: clamp(15px, 3vw, 20px);
+    border-radius: 12px;
     color: white;
     font-weight: bold;
     text-align: center;
     background-color: #646cff;
     box-shadow: 0 4px 15px rgba(100, 108, 255, 0.3);
-    transition: transform 0.2s ease;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    aspect-ratio: 2.5 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .stat-card:hover {
@@ -797,21 +942,23 @@
 
   /* 统计值 */
   .stat-value {
-    font-size: 36px;
-    margin-bottom: 5px;
+    font-size: 28px;
+    margin-bottom: 8px;
+    line-height: 1.2;
   }
 
   /* 统计标签 */
   .stat-label {
-    font-size: 18px;
+    font-size: 16px;
     opacity: 0.9;
+    line-height: 1.4;
   }
 
   /* 进度条样式 */
   .progress-container {
     margin: 20px auto;
-    width: 80%;
-    max-width: 800px;
+    width: 100%;
+    max-width: none;
   }
 
   .progress-bar {
@@ -1008,26 +1155,6 @@
     opacity: 0.8;
   }
 
-  /* 停止按钮 */
-  .stop-btn {
-    padding: 12px 24px;
-    font-size: 18px;
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .stop-btn:hover {
-    background-color: #da190b;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-  }
-
   /* 重置按钮 */
   .reset-btn {
     padding: 12px 24px;
@@ -1050,67 +1177,67 @@
 
   /* FAQ 部分 */
   .faq-section {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
-    margin-bottom: 10px;
-    margin-left: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
   }
 
   /* 网格布局 */
   .faq-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(300px, 100%, 400px), 1fr));
+    gap: clamp(15px, 3vw, 25px);
   }
 
   /* 单列布局 */
   .faq-column {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: clamp(15px, 3vw, 25px);
   }
 
   /* 全宽样式 */
   .full-width {
     grid-column: 1 / -1;
-    background-color: rgba(50, 50, 50, 0.7);
+    background-color: rgba(40, 40, 40, 0.8);
+    margin-bottom: 15px;
   }
 
   /* FAQ 项目 */
   .faq-item {
-    background-color: rgba(50, 50, 50, 0.5);
-    padding: 25px;
-    border-radius: 8px;
+    background-color: rgba(50, 50, 50, 0.7);
+    padding: clamp(20px, 3vw, 25px);
+    border-radius: 10px;
     transition: all 0.3s ease;
-    border: 1px solid transparent;
+    border: 1px solid rgba(80, 80, 80, 0.5);
     text-align: left;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .faq-item:hover {
-    background-color: rgba(50, 50, 50, 0.8);
+    background-color: rgba(60, 60, 60, 0.9);
     border-color: #4caf50;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-3px);
   }
 
   /* FAQ 标题 */
   .faq-item h4 {
     color: #4caf50;
     margin: 0 0 15px 0;
-    font-size: 20px;
+    font-size: clamp(16px, 2vw, 18px);
     font-weight: bold;
+    line-height: 1.3;
   }
 
   /* FAQ 内容 */
   .faq-item p {
-    color: #cccccc;
+    color: #e0e0e0;
     margin: 0;
     line-height: 1.7;
-    font-size: 16px;
+    font-size: clamp(14px, 2vw, 16px);
     text-align: left;
+    opacity: 0.9;
   }
 
   /* 脉动动画 */
@@ -1139,21 +1266,23 @@
     }
   }
 
-  /* 平板和移动端适配（1200px以下） */
-  @media (max-width: 1200px) {
-    /* 主内容区域垂直排列 */
+  /* 中等屏幕布局优化：历史记录显示在相关测试推荐组件下方 */
+  @media (min-width: 769px) and (max-width: 1200px) {
     .main-content {
       flex-direction: column;
       align-items: center;
     }
 
-    /* 历史记录容器优化 */
+    .game-main-area {
+      max-width: 100%;
+      width: 100%;
+    }
+
     .history-sidebar {
       width: 100%;
-      max-width: 800px;
-      height: 350px;
-      margin-top: 20px;
-      margin-left: 0px;
+      max-width: 100%;
+      margin: 20px auto 0;
+      height: clamp(280px, 40vh, 350px);
     }
   }
 
@@ -1187,16 +1316,19 @@
 
     /* 统计卡片优化 */
     .stat-card {
-      width: 120px;
-      padding: 15px;
+      width: 80px;
+      min-width: 80px;
+      max-width: 120px;
+      padding: 8px;
+      aspect-ratio: 3 / 1;
     }
 
     .stat-value {
-      font-size: 24px;
+      font-size: 16px;
     }
 
     .stat-label {
-      font-size: 14px;
+      font-size: 10px;
     }
 
     /* 进度条优化 */
@@ -1307,14 +1439,12 @@
 
     /* 历史记录侧边栏优化 */
     .history-sidebar {
-      width: 90%;
-      max-width: 800px;
-      margin-top: 15px;
-      height: 300px;
-      /* 将历史记录侧边栏向右移动15px，不影响外边距 */
-      transform: translateX(15px);
-      margin-left: 0px;
-      margin-right: 0px; /** 右侧外边距：10px，确保历史记录区域与游戏区域保持适当间距 */
+      width: 100%;
+      max-width: 100%;
+      margin: 15px auto 0;
+      height: clamp(250px, 40vh, 300px);
+      margin-left: 0;
+      margin-right: 0;
     }
 
     /* 历史记录项优化 */

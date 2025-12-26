@@ -8,7 +8,7 @@
         <div class="hero-features">
           <div class="feature-card">
             <img
-              src="/src/assets/icons/keyboard02.png"
+              src="@/assets/icons/keyboard02.png"
               :alt="t('multipleTestTypesIconAlt')"
               width="100"
               height="100"
@@ -19,7 +19,7 @@
           </div>
           <div class="feature-card">
             <img
-              src="/src/assets/icons/statistics.png"
+              src="@/assets/icons/statistics.png"
               :alt="t('realTimeStatsIconAlt')"
               width="100"
               height="100"
@@ -30,7 +30,7 @@
           </div>
           <div class="feature-card">
             <img
-              src="/src/assets/icons/reaction.png"
+              src="@/assets/icons/reaction.png"
               :alt="t('historyIconAlt')"
               width="100"
               height="100"
@@ -41,7 +41,7 @@
           </div>
           <div class="feature-card">
             <img
-              src="/src/assets/icons/game02.png"
+              src="@/assets/icons/game02.png"
               :alt="t('gameifiedExperienceIconAlt')"
               width="100"
               height="100"
@@ -178,9 +178,17 @@
 
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted } from 'vue';
 
   import { t } from '../i18n/index';
+
+  // 响应式变量：屏幕尺寸
+  const isDesktop = ref(window.innerWidth >= 1201);
+
+  // 监听窗口大小变化
+  const handleResize = () => {
+    isDesktop.value = window.innerWidth >= 1201;
+  };
 
   const router = useRouter();
 
@@ -244,13 +252,14 @@
     return htmlAnswer;
   };
 
-  // 组件挂载时添加结构化数据
+  // 组件挂载时添加结构化数据和窗口大小监听
   onMounted(() => {
     renderFeatureStructuredData();
     renderGuideStructuredData();
+    window.addEventListener('resize', handleResize);
   });
 
-  // 组件卸载时移除结构化数据
+  // 组件卸载时移除结构化数据和窗口大小监听
   onUnmounted(() => {
     const existingFeatureData = document.getElementById('feature-structured-data');
     if (existingFeatureData) {
@@ -261,6 +270,8 @@
     if (existingGuideData) {
       existingGuideData.remove();
     }
+
+    window.removeEventListener('resize', handleResize);
   });
 
   // 生成功能特性结构化数据
@@ -829,7 +840,7 @@
     display: inline-block;
     width: 24px; /* 图片宽度 */
     height: 24px; /* 图片高度 */
-    background-image: url('/src/assets/icons/question.png'); /* 使用资源图片 */
+    background-image: url('@/assets/icons/question.png'); /* 使用资源图片 */
     background-size: contain; /* 背景图片自适应 */
     background-repeat: no-repeat; /* 不重复 */
     background-position: center; /* 居中显示 */
@@ -865,30 +876,88 @@
     text-decoration: none; /* 确保没有下划线 */
   }
 
-  /* 响应式设计 - 针对平板设备 */
-  @media (max-width: 1024px) {
-    /* FAQ容器调整为2列布局 */
+  /* 桌面端布局优化 */
+  @media (min-width: 1201px) {
+    /* 增加内容最大宽度，优化桌面端显示 */
+    .home-container {
+      max-width: 1400px;
+    }
+
+    /* 功能卡片使用4列布局 */
+    .hero-features {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* 快速开始按钮使用6列布局 */
+    .quick-start-buttons {
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    /* 测试指南使用4列布局 */
+    .guide-steps {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* FAQ使用3列布局 */
     .faq-container {
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
     }
   }
 
-  /* 响应式设计 - 针对移动设备 */
+  /* 中等屏幕布局优化 */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    /* 功能卡片使用2列布局 */
+    .hero-features {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 快速开始按钮使用3列布局 */
+    .quick-start-buttons {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* 测试指南使用2列布局 */
+    .guide-steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* FAQ容器调整为2列布局 */
+    .faq-container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  /* 移动端适配 */
   @media (max-width: 768px) {
+    /* 调整主容器内边距 */
+    .home-container {
+      padding: 10px;
+    }
+
     /* 调整英雄区域标题字号 */
-    .hero-content h1 {
+    .hero-title {
       font-size: 36px; /* 减小字号 */
+      margin-bottom: 10px;
     }
 
     /* 调整英雄区域副标题字号 */
     .hero-subtitle {
       font-size: 18px; /* 减小字号 */
+      margin-bottom: 20px;
     }
 
     /* 功能特性改为单列布局 */
     .hero-features {
       grid-template-columns: 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    /* 功能卡片调整 */
+    .feature-card {
+      padding: 20px 15px;
     }
 
     /* 快速开始按钮改为单列布局 */
@@ -901,21 +970,36 @@
     .start-btn {
       padding: 15px 10px; /* 减小内边距 */
       font-size: 15px; /* 调整字号 */
+      min-height: 60px;
     }
 
     /* 测试指南步骤改为单列布局 */
     .guide-steps {
       grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    /* 测试指南标题调整 */
+    .guide-section h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    /* 调整指南步骤卡片 */
+    .guide-step {
+      padding: 20px 15px;
     }
 
     /* FAQ响应式调整 */
     .faq-section {
       padding: 20px 10px; /* 减小内边距 */
+      margin-bottom: 20px;
     }
 
     /* 调整FAQ标题字号 */
     .faq-section h2 {
       font-size: 24px; /* 减小字号 */
+      margin-bottom: 20px;
     }
 
     /* FAQ容器改为单列布局 */
@@ -923,6 +1007,7 @@
       grid-template-columns: 1fr;
       gap: 15px;
       padding: 0 5px;
+      margin-bottom: 0;
     }
 
     /* FAQ项目调整 */
@@ -951,8 +1036,25 @@
     }
   }
 
-  /* 响应式设计 - 针对小屏移动设备 */
+  /* 超小屏幕适配 */
   @media (max-width: 480px) {
+    /* 调整英雄区域标题字号 */
+    .hero-title {
+      font-size: 30px;
+    }
+
+    /* 调整英雄区域副标题字号 */
+    .hero-subtitle {
+      font-size: 16px;
+    }
+
+    /* 按钮优化 */
+    .start-btn {
+      padding: 12px 8px;
+      font-size: 14px;
+      min-height: 50px;
+    }
+
     /* FAQ项目进一步调整 */
     .faq-item {
       padding: 18px 14px;

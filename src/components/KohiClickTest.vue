@@ -1,7 +1,15 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
   import { onBeforeRouteUpdate } from 'vue-router';
   import { t } from '../i18n'; // 导入翻译函数
+
+  // 响应式变量：屏幕尺寸
+  const isDesktop = ref(window.innerWidth >= 1201);
+
+  // 监听窗口大小变化
+  const handleResize = () => {
+    isDesktop.value = window.innerWidth >= 1201;
+  };
 
   // 组件功能：Kohi点击测试组件，支持10秒固定时间测试
   // 支持涟漪特效、实时CPS计算、毫秒级计时等功能
@@ -304,6 +312,16 @@
     ripples.value = [];
   };
 
+  // 组件挂载时添加事件监听
+  onMounted(() => {
+    window.addEventListener('resize', handleResize);
+  });
+
+  // 组件卸载时移除事件监听
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', handleResize);
+  });
+
   // 路由更新前钩子：当路由切换时重置游戏数据
   // 实现每次点击侧边栏切换路由时，重置当前组件的数据
   onBeforeRouteUpdate(() => {
@@ -380,12 +398,12 @@
         <!-- 相关测试推荐组件 -->
         <RelatedTests current-test="kohiClickTest" />
 
-        <!-- 历史记录区域 - 移到点击区域下方，FAQ上方 -->
-        <div class="history-sidebar">
+        <!-- 历史记录区域 - 中等屏幕和移动端显示在相关测试推荐组件下方 -->
+        <div v-if="!isDesktop" class="history-sidebar">
           <div class="history-header">
             <h3>
               <img
-                src="/src/assets/icons/history.png"
+                src="@/assets/icons/history.png"
                 width="30"
                 height="30"
                 :alt="t('historyIconAlt')"
@@ -429,6 +447,43 @@
           <FAQComponent :title="t('faq')" :faq="currentFaq" :show-popular="false" />
         </div>
       </div>
+
+      <!-- 历史记录区域 - 桌面端显示在右侧 -->
+      <div v-if="isDesktop" class="history-sidebar">
+        <div class="history-header">
+          <h3>
+            <img
+              src="@/assets/icons/history.png"
+              width="30"
+              height="30"
+              :alt="t('historyIconAlt')"
+              class="history-icon"
+              loading="lazy"
+            />
+            {{ t('history') }}
+          </h3>
+        </div>
+
+        <div class="history-list">
+          <div v-if="filteredHistory.length === 0" class="no-history">
+            {{ t('noHistory') }}
+          </div>
+          <div v-for="record in filteredHistory" :key="record.id" class="history-item">
+            <div class="history-item-content">
+              <div class="main-data">
+                <span class="cps-value">{{ record.cps }}</span>
+                <span class="unit">CPS</span>
+              </div>
+              <div class="tags">
+                <span class="tag clicks-tag">{{ record.clicks }}次</span>
+              </div>
+              <div class="record-time">
+                {{ record.date }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -445,51 +500,81 @@
 <style scoped>
   /* 游戏容器 */
   .game-container {
-    max-width: 1400px;
-    margin: 0 0 0 auto;
+    margin: 0 auto;
     text-align: center;
-    padding: 20px;
+    padding: clamp(10px, 2vw, 20px);
     background-color: #121212;
-    border-radius: 10px;
     box-shadow: none;
-    width: calc(100% - 20px);
+    width: 100%;
+    border-radius: 10px;
+    box-sizing: border-box;
   }
 
   /* 主内容区域 - 左侧游戏 + 右侧历史记录 */
   .main-content {
     display: flex;
-    gap: 20px;
+    gap: clamp(10px, 2vw, 20px);
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  /* 电脑端布局：历史记录显示在右侧 */
+  @media (min-width: 1201px) {
+    .main-content {
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+    
+    .game-area {
+      flex: 1;
+      width: auto;
+      max-width: none;
+    }
+
+    .history-sidebar {
+      flex: 0 0 clamp(250px, 20vw, 350px);
+      margin-top: 0;
+      margin-right: 0;
+      height: clamp(280px, 50vh, 400px);
+    }
+  }
+
+  /* 中等屏幕布局优化：历史记录显示在相关测试推荐组件下方 */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    .main-content {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .game-area {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .history-sidebar {
+      width: 100%;
+      max-width: 100%;
+      margin: 20px auto 0;
+      height: clamp(280px, 40vh, 350px);
+    }
   }
 
   /* 左侧游戏区域 */
   .game-area {
     flex: 1;
-    max-width: 800px;
-  }
-
-  /* 电脑端布局：历史记录显示在右侧 */
-  @media (min-width: 1201px) {
-    .game-area {
-      position: relative;
-      max-width: 800px;
-    }
-
-    .game-area .history-sidebar {
-      position: absolute;
-      right: -300px;
-      top: 0;
-      margin-right: 0;
-      width: 280px;
-    }
+    width: 100%;
+    min-width: 0;
   }
 
   /* 游戏标题样式 */
   .game-title {
     color: #4caf50;
-    margin: 0 0 20px 0;
-    font-size: 28px;
+    margin: 0 0 clamp(10px, 2vw, 20px) 0;
+    font-size: clamp(24px, 4vw, 28px);
     font-weight: bold;
     text-align: center;
     margin-top: 10px;
@@ -497,16 +582,18 @@
 
   /* 右侧历史记录侧边栏 */
   .history-sidebar {
-    width: 280px;
+    width: 100%;
     background-color: #1a1a1a;
     border-radius: 8px;
-    padding: 15px;
-    height: 280px;
+    padding: clamp(10px, 2vw, 15px);
+    height: clamp(280px, 50vh, 400px);
     display: flex;
     flex-direction: column;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     margin-top: 10px;
-    margin-right: 10px;
+    margin-right: 0;
+    box-sizing: border-box;
+    flex-shrink: 0;
   }
 
   /* 历史记录标题 */
@@ -662,33 +749,19 @@
     background: #1a1a1a;
   }
 
-  /* 响应式设计 */
-  @media (max-width: 1200px) {
-    .main-content {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .history-sidebar {
-      width: 100%;
-      max-width: 800px;
-      margin-top: 20px;
-    }
-  }
-
   /* 统计卡片 */
   .stats-cards {
     display: flex; /* 使用flex布局 */
-    gap: 16px; /* 卡片之间的间距 */
+    gap: clamp(8px, 2vw, 16px); /* 卡片之间的间距 */
     justify-content: center; /* 卡片居中对齐 */
-    margin-bottom: 20px; /* 底部外边距 */
+    margin-bottom: clamp(15px, 3vw, 20px); /* 底部外边距 */
     flex-wrap: wrap; /* 允许卡片换行 */
   }
 
   .stat-card {
-    flex: 0 0 auto; /* 固定大小，不伸缩 */
-    width: 180px; /* 卡片宽度 */
-    padding: 16px 20px; /* 内边距 */
+    flex: 1;
+    min-width: clamp(100px, 25vw, 150px);
+    padding: clamp(12px, 3vw, 16px) clamp(15px, 3vw, 20px); /* 内边距 */
     border-radius: 12px; /* 圆角边框 */
     color: white; /* 文字颜色 */
     font-weight: bold; /* 文字粗细 */
@@ -714,13 +787,13 @@
   }
 
   .stat-value {
-    font-size: 32px; /* 数值字体大小 */
+    font-size: clamp(24px, 5vw, 32px); /* 数值字体大小 */
     margin-bottom: 4px; /* 数值与标签间距 */
     line-height: 1;
   }
 
   .stat-label {
-    font-size: 16px; /* 标签字体大小 */
+    font-size: clamp(14px, 2.5vw, 16px); /* 标签字体大小 */
     opacity: 0.95; /* 标签透明度 */
     line-height: 1;
     font-weight: normal; /* 标签字体粗细 */
@@ -728,9 +801,8 @@
 
   /* 点击区域 */
   .click-area {
-    width: 90%; /* 点击区域宽度，响应式设计 */
-    max-width: 800px; /* 最大宽度限制，防止在大屏幕上过大 */
-    height: 400px; /* 固定高度 */
+    width: clamp(90%, 98vw, 100%); /* 点击区域宽度，响应式设计 */
+    height: clamp(250px, 50vh, 400px); /* 固定高度 */
     background-color: #000000; /* 背景颜色：黑色 */
     color: white; /* 文字颜色：白色 */
     display: flex; /* 使用flex布局 */
@@ -740,9 +812,9 @@
     border-radius: 20px; /* 圆角边框 */
     cursor: pointer; /* 鼠标指针样式：手型 */
     transition: all 0.2s ease; /* 过渡效果：所有属性变化0.2秒完成 */
-    font-size: 24px; /* 字体大小 */
+    font-size: clamp(20px, 4vw, 24px); /* 字体大小 */
     font-weight: bold; /* 字体粗细：粗体 */
-    margin: 0 auto 20px; /* 居中对齐，下外边距20px */
+    margin: 0 auto clamp(15px, 3vw, 20px); /* 居中对齐，下外边距20px */
     border: 2px solid #333; /* 边框：2px实线，深灰色 */
     position: relative; /* 相对定位，用于涟漪特效 */
     overflow: hidden; /* 溢出隐藏，用于涟漪特效 */
@@ -787,13 +859,11 @@
   .start-text {
     position: relative;
     z-index: 2;
-    font-size: 24px;
+    font-size: clamp(20px, 4vw, 24px);
     font-weight: bold;
     color: white;
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
-
-
 
   /* FAQ 部分 */
   .faq-section {
@@ -810,80 +880,82 @@
     background-color: rgba(20, 20, 20, 0.8);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .faq-intro h4 {
     color: #4caf50;
     margin: 0 0 10px 0;
-    font-size: 22px;
+    font-size: clamp(18px, 3vw, 22px);
   }
 
   .faq-intro p {
     color: #cccccc;
     margin: 0;
     line-height: 1.6;
-    font-size: 14px;
+    font-size: clamp(12px, 2vw, 14px);
+    padding: 0 10px;
   }
 
   /* 移动端适配 */
   @media (max-width: 768px) {
     /* 历史记录在移动端显示在点击区域下方，FAQ上方 */
+    .main-content {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .game-area {
+      max-width: 100%;
+    }
+    
     .history-sidebar {
-      width: 90%;
-      max-width: 800px;
+      width: 100%;
+      max-width: 100%;
       margin: 20px auto 0;
+      height: clamp(250px, 40vh, 300px);
     }
 
     .faq-section {
-      margin-top: 20px; /* 确保FAQ在历史记录下方 */
-      margin-left: 0px; /* 确保FAQ在历史记录下方 */
+      margin-top: 20px;
+      margin-left: 0;
     }
+    
     /* 统计卡片横向排列，缩小样式 */
     .stats-cards {
       flex-direction: row;
       align-items: center;
-      gap: 8px;
+      gap: clamp(5px, 1vw, 8px);
       justify-content: center;
     }
 
     .stat-card {
-      flex: none;
-      width: 80px;
+      flex: 1;
+      min-width: clamp(70px, 20vw, 80px);
       max-width: none;
-      padding: 8px 12px;
-      min-width: auto;
+      padding: clamp(6px, 2vw, 8px) clamp(8px, 2vw, 12px);
     }
 
     .stat-value {
-      font-size: 24px;
+      font-size: clamp(20px, 5vw, 24px);
       margin-bottom: 2px;
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: clamp(10px, 2vw, 12px);
     }
 
     /* 点击区域优化 */
     .click-area {
-      height: 300px;
-      width: 95%;
-    }
-
-
-
-    /* FAQ部分优化 */
-    .faq-grid {
-      grid-template-columns: 1fr;
-      gap: 15px;
-    }
-
-    .faq-item {
-      padding: 20px;
+      height: clamp(200px, 40vh, 300px);
+      font-size: clamp(18px, 4vw, 20px);
+      width: clamp(95%, 98vw, 98%);
     }
 
     /* 历史记录列表优化 */
     .history-item {
-      padding: 12px;
+      padding: clamp(8px, 2vw, 12px);
     }
 
     .history-item-content {
@@ -899,14 +971,22 @@
     .record-time {
       width: 100%;
       text-align: left;
+      font-size: clamp(10px, 2vw, 12px);
     }
+  }
 
-    .stat-card {
-      flex: none;
-      width: 80px;
-      max-width: none;
-      padding: 8px 12px;
-      min-width: auto;
+  /* 超小屏幕适配 */
+  @media (max-width: 480px) {
+    .click-area {
+      height: clamp(180px, 35vh, 250px);
+    }
+    
+    .history-sidebar {
+      height: clamp(220px, 35vh, 280px);
+    }
+    
+    .game-title {
+      font-size: clamp(20px, 5vw, 24px);
     }
   }
 </style>

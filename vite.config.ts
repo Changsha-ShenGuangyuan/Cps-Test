@@ -4,9 +4,15 @@ import viteCompression from 'vite-plugin-compression';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import sitemapPlugin from 'vite-plugin-sitemap';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   plugins: [
     vue(),
     viteCompression({

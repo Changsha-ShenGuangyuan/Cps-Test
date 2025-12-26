@@ -1,11 +1,29 @@
 <script setup lang="ts">
-  import { ref, computed, onUnmounted, watch, onMounted } from 'vue';
+  import { ref, computed, onUnmounted, watch, onMounted, onBeforeUnmount } from 'vue';
   import { useRouter } from 'vue-router';
   import { t } from '../i18n'; // 导入翻译函数
   // 导入通用FAQ组件
   import FAQComponent from './FAQComponent.vue';
   // 导入相关测试推荐组件
   import RelatedTests from './RelatedTests.vue';
+
+  // 响应式变量：屏幕尺寸
+  const isDesktop = ref(window.innerWidth >= 1201);
+
+  // 监听窗口大小变化
+  const handleResize = () => {
+    isDesktop.value = window.innerWidth >= 1201;
+  };
+
+  // 组件挂载时添加事件监听
+  onMounted(() => {
+    window.addEventListener('resize', handleResize);
+  });
+
+  // 组件卸载时移除事件监听
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', handleResize);
+  });
 
   // 组件功能：打字速度测试，支持不同时长
 
@@ -380,122 +398,126 @@
 
 <template>
   <div class="typing-test-container">
-    <!-- 标题栏 -->
-    <h2 class="game-title">{{ props.time }} {{ t('minTypingTest') }}</h2>
+    <!-- 主内容区域 -->
+    <div class="main-content">
+      <!-- 左侧游戏区域 -->
+      <div class="game-area">
+        <!-- 标题栏 -->
+        <h2 class="game-title">{{ props.time }} {{ t('minTypingTest') }}</h2>
 
-    <!-- 游戏信息 -->
-    <div class="game-info">
-      <div class="info-item">
-        <span class="label">{{ t('time') }}:</span>
-        <span class="value">{{ formattedTime }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">WPM:</span>
-        <span class="value">{{ wpm }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ t('accuracy') }}:</span>
-        <span class="value">{{ accuracy }}%</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ t('characters') }}:</span>
-        <span class="value">{{ totalTypedChars + typedChars }}</span>
-      </div>
-    </div>
-
-    <!-- 游戏区域 -->
-    <div class="game-area">
-      <!-- 庆祝动画 -->
-      <div v-if="showCelebration" class="celebration">
-        <div class="celebration-text">{{ t('textCompleted') }}！</div>
-        <div class="confetti-container">
-          <div v-for="i in 50" :key="i" class="confetti"></div>
-        </div>
-      </div>
-
-      <!-- 文本显示 -->
-      <div class="text-display">
-        <span
-          v-for="(char, index) in currentText"
-          :key="index"
-          :class="{
-            correct: index < inputText.length && inputText[index] === char,
-            incorrect: index < inputText.length && inputText[index] !== char,
-            current: index === inputText.length,
-          }"
-        >
-          {{ char }}
-        </span>
-      </div>
-
-      <!-- 输入区域 -->
-      <div class="input-area">
-        <input
-          v-if="!isGameOver"
-          v-model="inputText"
-          type="text"
-          class="typing-input"
-          :disabled="!isPlaying"
-          :placeholder="t('clickToStartThenTypeHere')"
-          autofocus
-          @input="handleInput"
-          @paste.prevent
-          @drop.prevent
-        />
-        <div v-else class="game-over-message">
-          <h3>{{ t('testFinished') }}！</h3>
-          <h4>{{ t('finalScore') }}</h4>
-          <div class="final-score">
-            <div class="score-item primary">
-              <div class="score-label">WPM</div>
-              <div class="score-value">{{ wpm }}</div>
-            </div>
-            <div class="score-item">
-              <div class="score-label">{{ t('accuracy') }}</div>
-              <div class="score-value">{{ accuracy }}%</div>
-            </div>
-            <div class="score-item">
-              <div class="score-label">{{ t('totalCharacters') }}</div>
-              <div class="score-value">{{ totalTypedChars + typedChars }}</div>
-            </div>
-            <div class="score-item">
-              <div class="score-label">{{ t('correctCharacters') }}</div>
-              <div class="score-value">{{ totalCorrectChars + correctChars }}</div>
-            </div>
-            <div class="score-item">
-              <div class="score-label">{{ t('wrongCharacters') }}</div>
-              <div class="score-value">{{ totalErrorChars + errorChars }}</div>
-            </div>
+        <!-- 游戏信息 -->
+        <div class="game-info">
+          <div class="info-item">
+            <span class="label">{{ t('time') }}:</span>
+            <span class="value">{{ formattedTime }}</span>
           </div>
-          <div class="button-container">
-            <button class="restart-btn" @click="resetGame">{{ t('restartGame') }}</button>
+          <div class="info-item">
+            <span class="label">WPM:</span>
+            <span class="value">{{ wpm }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">{{ t('accuracy') }}:</span>
+            <span class="value">{{ accuracy }}%</span>
+          </div>
+          <div class="info-item">
+            <span class="label">{{ t('characters') }}:</span>
+            <span class="value">{{ totalTypedChars + typedChars }}</span>
           </div>
         </div>
-      </div>
 
-      <!-- 开始按钮 -->
-      <div v-if="!isPlaying && !isGameOver" class="start-section">
-        <button class="start-btn" @click="startGame">{{ t('startTest') }}</button>
-        <p>
-          {{ t('clickToStartThenTypeHere') }}。{{ t('time') }}：{{ props.time }}
-          {{ t('minTypingTest').split(' ')[0] }}
-        </p>
-      </div>
-    </div>
+        <!-- 游戏区域 -->
+        <div class="typing-game-area">
+          <!-- 庆祝动画 -->
+          <div v-if="showCelebration" class="celebration">
+            <div class="celebration-text">{{ t('textCompleted') }}！</div>
+            <div class="confetti-container">
+              <div v-for="i in 50" :key="i" class="confetti"></div>
+            </div>
+          </div>
 
-    <!-- 相关测试推荐组件 -->
-    <RelatedTests current-test="typingTest" />
+          <!-- 文本显示 -->
+          <div class="text-display">
+            <span
+              v-for="(char, index) in currentText"
+              :key="index"
+              :class="{
+                correct: index < inputText.length && inputText[index] === char,
+                incorrect: index < inputText.length && inputText[index] !== char,
+                current: index === inputText.length,
+              }"
+            >
+              {{ char }}
+            </span>
+          </div>
 
-    <!-- 游戏说明 -->
-    <div class="game-instructions info">
-      <div class="faq-section">
-        <!-- 使用通用FAQ组件 -->
-        <FAQComponent
-          :title="t('typingTest')"
-          :faq="currentFaq"
-          :show-popular="true"
-          :popular-questions="popularQuestions"
-        />
+          <!-- 输入区域 -->
+          <div class="input-area">
+            <input
+              v-if="!isGameOver"
+              v-model="inputText"
+              type="text"
+              class="typing-input"
+              :disabled="!isPlaying"
+              :placeholder="t('clickToStartThenTypeHere')"
+              autofocus
+              @input="handleInput"
+              @paste.prevent
+              @drop.prevent
+            />
+            <div v-else class="game-over-message">
+              <h3>{{ t('testFinished') }}！</h3>
+              <h4>{{ t('finalScore') }}</h4>
+              <div class="final-score">
+                <div class="score-item primary">
+                  <div class="score-label">WPM</div>
+                  <div class="score-value">{{ wpm }}</div>
+                </div>
+                <div class="score-item">
+                  <div class="score-label">{{ t('accuracy') }}</div>
+                  <div class="score-value">{{ accuracy }}%</div>
+                </div>
+                <div class="score-item">
+                  <div class="score-label">{{ t('totalCharacters') }}</div>
+                  <div class="score-value">{{ totalTypedChars + typedChars }}</div>
+                </div>
+                <div class="score-item">
+                  <div class="score-label">{{ t('correctCharacters') }}</div>
+                  <div class="score-value">{{ totalCorrectChars + correctChars }}</div>
+                </div>
+                <div class="score-item">
+                  <div class="score-label">{{ t('wrongCharacters') }}</div>
+                  <div class="score-value">{{ totalErrorChars + errorChars }}</div>
+                </div>
+              </div>
+              <div class="button-container">
+                <button class="restart-btn" @click="resetGame">{{ t('restartGame') }}</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 开始按钮 -->
+          <div v-if="!isPlaying && !isGameOver" class="start-section">
+            <button class="start-btn" @click="startGame">{{ t('startTest') }}</button>
+            <p>
+              {{ t('clickToStartThenTypeHere') }}。{{ t('time') }}：{{ props.time }}
+              {{ t('minTypingTest').split(' ')[0] }}
+            </p>
+          </div>
+        </div>
+
+        <!-- 相关测试推荐组件 -->
+        <RelatedTests current-test="typingTest" />
+
+        <!-- FAQ区域 -->
+        <div class="faq-section">
+          <!-- 使用通用FAQ组件 -->
+          <FAQComponent
+            :title="t('typingTest')"
+            :faq="currentFaq"
+            :show-popular="true"
+            :popular-questions="popularQuestions"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -504,10 +526,10 @@
 <style scoped>
   /* 打字测试容器 */
   .typing-test-container {
-    max-width: 1000px;
+    width: 100%;
     margin: 0 auto;
     text-align: center;
-    padding: 20px;
+    padding: clamp(10px, 2vw, 20px);
     background-color: #121212;
     color: white;
     position: relative;
@@ -515,22 +537,69 @@
     border-radius: 10px;
   }
 
+  /* 主内容区域 */
+  .main-content {
+    display: flex;
+    gap: clamp(10px, 2vw, 20px);
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  /* 电脑端布局 */
+  @media (min-width: 1201px) {
+    .main-content {
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+    
+    .game-area {
+      flex: 1;
+      width: auto;
+    }
+  }
+
+  /* 中等屏幕布局优化 */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    .main-content {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .game-area {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+
+  /* 左侧游戏区域 */
+  .game-area {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+  }
+
   /* 游戏标题样式 */
   .game-title {
     color: #4caf50;
-    margin: 0 0 20px 0;
-    font-size: 28px;
+    margin: 0 0 clamp(10px, 2vw, 20px) 0;
+    font-size: clamp(24px, 4vw, 28px);
     font-weight: bold;
     text-align: center;
+    margin-top: 10px;
   }
 
   /* 游戏信息 */
   .game-info {
     display: flex;
-    gap: 20px;
+    gap: clamp(8px, 2vw, 20px);
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: clamp(15px, 3vw, 20px);
     flex-wrap: wrap;
+    width: 100%;
   }
 
   /* 信息项 */
@@ -538,34 +607,34 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 120px;
-    padding: 15px;
+    min-width: clamp(100px, 25vw, 120px);
+    padding: clamp(12px, 3vw, 15px);
     background-color: #1a1a1a;
     border-radius: 8px;
   }
 
   /* 信息标签 */
   .label {
-    font-size: 16px;
+    font-size: clamp(14px, 2.5vw, 16px);
     opacity: 0.8;
     margin-bottom: 5px;
   }
 
   /* 信息值 */
   .value {
-    font-size: 28px;
+    font-size: clamp(24px, 5vw, 28px);
     font-weight: bold;
     color: #4caf50;
   }
 
-  /* 游戏区域 */
-  .game-area {
+  /* 打字游戏区域 */
+  .typing-game-area {
     width: 100%;
     background: linear-gradient(135deg, #1a1a1a, #2a2a2a, #1a1a1a);
     background-size: 400% 400%;
     border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: clamp(15px, 3vw, 20px);
+    margin-bottom: clamp(15px, 3vw, 20px);
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
@@ -587,14 +656,14 @@
 
   /* 文本显示 */
   .text-display {
-    font-size: 24px;
+    font-size: clamp(16px, 3vw, 24px);
     line-height: 1.6;
-    margin-bottom: 20px;
-    padding: 20px;
+    margin-bottom: clamp(15px, 3vw, 20px);
+    padding: clamp(15px, 3vw, 20px);
     background-color: #000000;
     border-radius: 10px;
     text-align: left;
-    min-height: 150px;
+    min-height: clamp(120px, 20vh, 150px);
     white-space: pre-wrap;
     word-wrap: break-word;
     font-family: monospace;
@@ -834,14 +903,14 @@
 
   /* 输入区域 */
   .input-area {
-    margin-bottom: 20px;
+    margin-bottom: clamp(15px, 3vw, 20px);
   }
 
   /* 打字输入框 */
   .typing-input {
     width: 100%;
-    padding: 15px;
-    font-size: 24px;
+    padding: clamp(12px, 3vw, 15px);
+    font-size: clamp(16px, 3vw, 24px);
     border: 2px solid #333;
     border-radius: 10px;
     background-color: #000000;
@@ -1058,66 +1127,96 @@
 
   /* FAQ 部分 */
   .faq-section {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
   }
 
   /* 网格布局 */
   .faq-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(300px, 100%, 400px), 1fr));
+    gap: clamp(15px, 3vw, 25px);
   }
 
   /* 单列布局 */
   .faq-column {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: clamp(15px, 3vw, 25px);
   }
 
   /* 全宽样式 */
   .full-width {
     grid-column: 1 / -1;
-    background-color: rgba(50, 50, 50, 0.7);
+    background-color: rgba(40, 40, 40, 0.8);
+    margin-bottom: 15px;
   }
 
   /* FAQ 项目 */
   .faq-item {
-    background-color: rgba(50, 50, 50, 0.5);
-    padding: 25px;
-    border-radius: 8px;
+    background-color: rgba(50, 50, 50, 0.7);
+    padding: clamp(20px, 3vw, 25px);
+    border-radius: 10px;
     transition: all 0.3s ease;
-    border: 1px solid transparent;
+    border: 1px solid rgba(80, 80, 80, 0.5);
     text-align: left;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .faq-item:hover {
-    background-color: rgba(50, 50, 50, 0.8);
+    background-color: rgba(60, 60, 60, 0.9);
     border-color: #4caf50;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-3px);
   }
 
   /* FAQ 标题 */
   .faq-item h4 {
     color: #4caf50;
     margin: 0 0 15px 0;
-    font-size: 20px;
+    font-size: clamp(16px, 2vw, 18px);
     font-weight: bold;
+    line-height: 1.3;
   }
 
   /* FAQ 内容 */
   .faq-item p {
-    color: #cccccc;
+    color: #e0e0e0;
     margin: 0;
     line-height: 1.7;
-    font-size: 16px;
+    font-size: clamp(14px, 2vw, 16px);
     text-align: left;
+    opacity: 0.9;
   }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .faq-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .faq-column {
+      gap: 20px;
+    }
+
+    .faq-item {
+      padding: 20px;
+    }
+
+    .faq-item h4 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .faq-item p {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  }
+
+
 
   /* 移动端适配 */
   @media (max-width: 768px) {

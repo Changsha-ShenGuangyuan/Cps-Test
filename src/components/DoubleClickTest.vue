@@ -107,12 +107,30 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
   import { t } from '../i18n/index';
   // 导入通用FAQ组件
   import FAQComponent from './FAQComponent.vue';
   // 导入相关测试推荐组件
   import RelatedTests from './RelatedTests.vue';
+
+  // 响应式变量：屏幕尺寸
+  const isDesktop = ref(window.innerWidth >= 1201);
+
+  // 监听窗口大小变化
+  const handleResize = () => {
+    isDesktop.value = window.innerWidth >= 1201;
+  };
+
+  // 组件挂载时添加窗口大小监听
+  onMounted(() => {
+    window.addEventListener('resize', handleResize);
+  });
+
+  // 组件卸载时移除窗口大小监听
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', handleResize);
+  });
 
   // 测试状态
   const isTesting = ref(false);
@@ -558,7 +576,29 @@
     opacity: 0.9;
   }
 
-  /* 响应式设计 */
+  /* 桌面端布局优化 */
+  @media (min-width: 1201px) {
+    /* 增加内容最大宽度，优化桌面端显示 */
+    .double-click-test-container {
+      max-width: 1400px;
+    }
+  }
+
+  /* 中等屏幕布局优化 */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    /* 保持响应式布局，适当调整间距 */
+    .keys-stats {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 900px;
+    }
+
+    .test-button {
+      max-width: 800px;
+    }
+  }
+
+  /* 移动端适配 */
   @media (max-width: 768px) {
     /* 游戏容器样式优化 */
     .double-click-test-container {
@@ -575,6 +615,7 @@
       padding: 10px 5px; /* 调整内边距，上下10px，左右5px，在小屏幕上提供更多空间 */
       box-sizing: border-box; /* 确保内边距和边框不增加元素总宽度 */
     }
+
     /* 统计面板横向排列，确保不超出屏幕 */
     .keys-stats {
       display: flex;
@@ -665,6 +706,41 @@
       width: 100%;
       max-width: none;
       box-sizing: border-box;
+    }
+  }
+
+  /* 超小屏幕适配 */
+  @media (max-width: 480px) {
+    /* 调整标题字号 */
+    h1 {
+      font-size: 28px;
+      margin: 5px 0 15px 0;
+    }
+
+    /* 进一步优化统计卡片 */
+    .key-stats-panel {
+      min-width: 100px;
+      padding: 8px 6px;
+    }
+
+    .key-title {
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+    }
+
+    .stat-value {
+      font-size: 13px;
+      min-width: 25px;
+    }
+
+    /* 调整测试按钮尺寸 */
+    .test-button {
+      height: 120px;
+      font-size: 14px;
     }
   }
 </style>
