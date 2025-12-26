@@ -1,23 +1,39 @@
 # Logs - 忽略日志文件
-logs           # 日志目录
-*.log          # 所有.log文件
-npm-debug.log* # npm调试日志
-yarn-debug.log* # Yarn调试日志
-yarn-error.log* # Yarn错误日志
-pnpm-debug.log* # PNPM调试日志
-lerna-debug.log* # Lerna调试日志
+# 日志目录
+logs
+# 所有.log文件
+*.log
+# npm调试日志
+npm-debug.log*
+# Yarn调试日志
+yarn-debug.log*
+# Yarn错误日志
+yarn-error.log*
+# PNPM调试日志
+pnpm-debug.log*
+# Lerna调试日志
+lerna-debug.log*
 
 # Environment variables - 忽略环境变量文件
-.env           # 主环境变量文件
-.env.local     # 本地环境变量文件
-.env.*.local   # 特定环境的本地环境变量文件
+# 主环境变量文件
+.env
+# 本地环境变量文件
+.env.local
+# 特定环境的本地环境变量文件
+.env.*.local
 
 # Dependencies and Build Output - 忽略依赖和构建输出
-node_modules   # 依赖包目录
-dist           # 生产构建输出目录
-dist-ssr       # SSR构建输出目录
-*.local        # 本地环境配置文件
+# 依赖包目录
+node_modules
+# 生产构建输出目录
+dist
+# SSR构建输出目录
+dist-ssr
+# 本地环境配置文件
+*.local
 
 # Editor directories and files - 忽略编辑器相关文件
-.vscode        # VS Code配置目录
-*.sw?          # Vim交换文件
+# VS Code配置目录
+.vscode
+# Vim交换文件
+*.sw?
