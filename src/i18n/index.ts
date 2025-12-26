@@ -3,11 +3,13 @@ import { updateMetaTags } from '../router/index';
 import router from '../router/index';
 import { CookieManager, COOKIE_NAMES } from '../utils/cookie';
 
-// 定义翻译资源类型
+// 定义翻译资源类型 - 支持嵌套对象
+interface TranslationValue {
+  [key: string]: string | TranslationValue;
+}
+
 interface TranslationResources {
-  [key: string]: {
-    [key: string]: string;
-  };
+  [key: string]: TranslationValue;
 }
 
 // 翻译资源
@@ -689,6 +691,42 @@ const resources: TranslationResources = {
     privacyDataRetention3:
       '删除政策：当您要求删除数据或数据不再需要时，我们会安全地删除或匿名化您的数据。',
     copyright: '© 2025 CPSTestGo - 版权所有',
+    // ResultModal组件翻译
+    resultModal: {
+      // 详细信息
+      details: '{time}秒内单击{clicks}次点击次',
+      // 按钮文本
+      okButton: '好',
+      // 不同CPS范围的描述
+      slow: {
+        desc1: '你的点击速度较慢，还需要多加练习！',
+        desc2: '不要灰心，继续努力，你会变得更快！'
+      },
+      average: {
+        desc1: '你的点击速度一般，还有提升空间！',
+        desc2: '不错的表现，继续保持这个节奏！'
+      },
+      fast: {
+        desc1: '你的点击速度很快，已经超过了大多数人！',
+        desc2: '太棒了，你的手速真的很快！'
+      },
+      superFast: {
+        desc1: '你的点击速度超级快，简直像闪电一样！',
+        desc2: '太惊人了，你是天生的点击高手！'
+      },
+      ultraFast: {
+        desc1: '你的点击速度突破了极限，你是点击之神！',
+        desc2: '不可能！你的手速已经超越了人类的认知！'
+      },
+      // CPS反馈
+      feedback: {
+        slow: '结果不好，很慢。',
+        average: '结果不错，继续努力！',
+        fast: '结果很好，你是点击高手！',
+        superFast: '结果非常好，你是点击大师！',
+        ultraFast: '结果太棒了，你是点击之神！'
+      }
+    },
   },
   en: {
     websiteName: 'CPS Test - Click Speed and Reaction Training Platform',
@@ -1414,6 +1452,42 @@ const resources: TranslationResources = {
     privacyDataRetention3:
       'Deletion policy: When you request data deletion or when data is no longer needed, we will securely delete or anonymize your data.',
     copyright: '© 2025 CPSTestGo - All Rights Reserved',
+    // ResultModal component
+    resultModal: {
+      // Details
+      details: '{time} seconds with {clicks} clicks',
+      // Button text
+      okButton: 'Okay',
+      // Different CPS range descriptions
+      slow: {
+        desc1: 'Your clicking speed is slow, you need more practice!',
+        desc2: 'Don\'t be discouraged, keep trying, you will get faster!'
+      },
+      average: {
+        desc1: 'Your clicking speed is average, there is still room for improvement!',
+        desc2: 'Good performance, keep this rhythm!'
+      },
+      fast: {
+        desc1: 'Your clicking speed is fast, you have surpassed most people!',
+        desc2: 'Great job, your hand speed is really fast!'
+      },
+      superFast: {
+        desc1: 'Your clicking speed is super fast, like lightning!',
+        desc2: 'Amazing, you are a natural clicking master!'
+      },
+      ultraFast: {
+        desc1: 'Your clicking speed has broken the limit, you are the clicking god!',
+        desc2: 'Impossible! Your hand speed has exceeded human cognition!'
+      },
+      // CPS feedback
+      feedback: {
+        slow: 'The result is not good, very slow.',
+        average: 'Good result, keep trying!',
+        fast: 'Great result, you are a clicking master!',
+        superFast: 'Excellent result, you are a clicking legend!',
+        ultraFast: 'Incredible result, you are the clicking god!'
+      }
+    },
   },
   ja: {
     websiteName: 'CPS Test - クリックスピードと反応トレーニングプラットフォーム',
@@ -2129,6 +2203,42 @@ const resources: TranslationResources = {
     tripleClickTestKeywords:
       'トリプルクリックテスト,トリプルクリック連続テスト,トリプルクリックスピードテスト,トリプルクリック数テスト,トリプルクリックテストツール,CPSTest',
     copyright: '© 2025 CPSTestGo - 全著作権所有',
+    // ResultModalコンポーネント
+    resultModal: {
+      // 詳細情報
+      details: '{time}秒間に{clicks}回クリックしました',
+      // ボタンテキスト
+      okButton: 'OK',
+      // 異なるCPS範囲の説明
+      slow: {
+        desc1: 'クリック速度が遅いです、もっと練習が必要です！',
+        desc2: '落胆しないで、頑張ってください、より速くなります！'
+      },
+      average: {
+        desc1: 'クリック速度は普通です、まだ改善の余地があります！',
+        desc2: '良いパフォーマンスです、このリズムを維持してください！'
+      },
+      fast: {
+        desc1: 'クリック速度が速いです、ほとんどの人を超えました！',
+        desc2: '素晴らしいです、あなたの手速は本当に速いです！'
+      },
+      superFast: {
+        desc1: 'クリック速度が超高速です、稲妻のようです！',
+        desc2: '驚きました、あなたは生まれつきのクリックマスターです！'
+      },
+      ultraFast: {
+        desc1: 'クリック速度が限界を突破しました、あなたはクリックの神です！',
+        desc2: '不可能！あなたの手速は人間の認知を超えました！'
+      },
+      // CPSフィードバック
+      feedback: {
+        slow: '結果は良くない、非常に遅いです。',
+        average: '良い結果です、続けて頑張ってください！',
+        fast: '素晴らしい結果です、あなたはクリックマスターです！',
+        superFast: '優れた結果です、あなたはクリックの伝説です！',
+        ultraFast: '信じられない結果です、あなたはクリックの神です！'
+      }
+    },
   },
   ko: {
     websiteName: 'CPS Test - 클릭 속도 및 반응 능력 훈련 플랫폼',
@@ -2845,6 +2955,42 @@ const resources: TranslationResources = {
     tripleClickTestKeywords:
       '트리플 클릭 테스트,트리플 클릭 연속 테스트,트리플 클릭 속도 테스트,트리플 클릭 수 테스트,트리플 클릭 테스트 도구,CPSTest',
     copyright: '© 2025 CPSTestGo - 모든 권리 보유',
+    // ResultModal 컴포넌트
+    resultModal: {
+      // 상세 정보
+      details: '{time}초 동안 {clicks}번 클릭했습니다',
+      // 버튼 텍스트
+      okButton: '확인',
+      // 다른 CPS 범위 설명
+      slow: {
+        desc1: '클릭 속도가 느립니다, 더 많은 연습이 필요합니다!',
+        desc2: '실망하지 마세요, 계속 노력하세요, 더 빨라질 것입니다!'
+      },
+      average: {
+        desc1: '클릭 속도가 평균 수준입니다, 아직 개선의 여지가 있습니다!',
+        desc2: '좋은 성능입니다, 이 리듬을 유지하세요!'
+      },
+      fast: {
+        desc1: '클릭 속도가 빠릅니다, 대부분의 사람을 앞서갔습니다!',
+        desc2: '훌륭합니다, 당신의 손속도 정말 빠릅니다!'
+      },
+      superFast: {
+        desc1: '클릭 속도가 초고속입니다, 번개처럼 빠릅니다!',
+        desc2: '놀랍습니다, 당신은 타고난 클릭 마스터입니다!'
+      },
+      ultraFast: {
+        desc1: '클릭 속도가 한계를 넘었습니다, 당신은 클릭의 신입니다!',
+        desc2: '불가능합니다! 당신의 손속도는 인간의 인지력을 초과했습니다!'
+      },
+      // CPS 피드백
+      feedback: {
+        slow: '결과가 좋지 않습니다, 매우 느립니다.',
+        average: '좋은 결과입니다, 계속 노력하세요!',
+        fast: '훌륭한 결과입니다, 당신은 클릭 마스터입니다!',
+        superFast: '우수한 결과입니다, 당신은 클릭 레전드입니다!',
+        ultraFast: '놀라운 결과입니다, 당신은 클릭의 신입니다!'
+      }
+    },
   },
 };
 
@@ -2910,9 +3056,26 @@ export const initLanguage = () => {
   }
 };
 
-// 翻译函数 - 支持参数替换
+// 翻译函数 - 支持参数替换和嵌套对象
 export const t = (key: string, params: Record<string, any> = {}): string => {
-  let translation = resources[langState.current]?.[key] || key;
+  // 分解键路径
+  const keys = key.split('.');
+  let translation: any = resources[langState.current];
+
+  // 遍历键路径，查找对应的翻译值
+  for (const k of keys) {
+    if (translation && typeof translation === 'object' && k in translation) {
+      translation = translation[k];
+    } else {
+      // 如果找不到对应翻译，返回原始键
+      return key;
+    }
+  }
+
+  // 如果找到的翻译是对象而不是字符串，返回原始键
+  if (typeof translation !== 'string') {
+    return key;
+  }
 
   // 替换参数
   Object.keys(params).forEach((paramKey) => {

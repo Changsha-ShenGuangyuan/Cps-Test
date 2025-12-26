@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { computed, onUnmounted, watch } from 'vue';
+  import { t } from '../i18n/index';
 
   // 组件属性
   const props = defineProps<{
@@ -75,63 +76,26 @@
     enableScroll();
   });
 
-  // CPS结果的描述语句，每个CPS范围2条
-  const descriptions = {
-    slow: [
-      '你的点击速度较慢，还需要多加练习！',
-      '不要灰心，继续努力，你会变得更快！'
-    ],
-    average: [
-      '你的点击速度一般，还有提升空间！',
-      '不错的表现，继续保持这个节奏！'
-    ],
-    fast: [
-      '你的点击速度很快，已经超过了大多数人！',
-      '太棒了，你的手速真的很快！'
-    ],
-    superFast: [
-      '你的点击速度超级快，简直像闪电一样！',
-      '太惊人了，你是天生的点击高手！'
-    ],
-    ultraFast: [
-      '你的点击速度突破了极限，你是点击之神！',
-      '不可能！你的手速已经超越了人类的认知！'
-    ]
+  // 根据CPS值获取描述类型
+  const getDescType = () => {
+    const cps = props.cps;
+    if (cps < 3) return 'slow';
+    if (cps < 6) return 'average';
+    if (cps < 9) return 'fast';
+    if (cps < 12) return 'superFast';
+    return 'ultraFast';
   };
-
-   // 图片映射
-  const getImageUrl = (cps: number) => {
-    if (cps < 3) return '/src/assets/images/slow.png';
-    if (cps < 6) return '/src/assets/images/average.png';
-    if (cps < 9) return '/src/assets/images/fast.png';
-    if (cps < 12) return '/src/assets/images/super-fast.png';
-    return '/src/assets/images/ultra-fast.png';
-  };
-
-  // 计算属性：当前图片URL
-  const currentImage = computed(() => getImageUrl(props.cps));
 
   // 随机获取描述语句
   const getRandomDescription = () => {
-    const cps = props.cps;
-    let descType: keyof typeof descriptions;
-    
-    // 根据CPS值确定描述类型
-    if (cps < 3) {
-      descType = 'slow';
-    } else if (cps < 6) {
-      descType = 'average';
-    } else if (cps < 9) {
-      descType = 'fast';
-    } else if (cps < 12) {
-      descType = 'superFast';
-    } else {
-      descType = 'ultraFast';
-    }
-    
-    const descList = descriptions[descType];
-    const randomIndex = Math.floor(Math.random() * descList.length);
-    return descList[randomIndex];
+    const descType = getDescType();
+    // 从i18n中获取对应类型的描述数组
+    const descKeys = [
+      t(`resultModal.${descType}.desc1`),
+      t(`resultModal.${descType}.desc2`)
+    ];
+    const randomIndex = Math.floor(Math.random() * descKeys.length);
+    return descKeys[randomIndex];
   };
 
   // 计算属性：当前描述语句
@@ -150,13 +114,8 @@
 
       <!-- 分数结果 -->
       <div class="cps-result">
-        <h2>{{ cps }} CPS</h2>
+        <h2>{{ cps }} {{ t('cps') }}</h2>
       </div>
-
-      <!-- 图片 -->
-      <!-- <div class="result-image">
-        <img :src="currentImage" :alt="currentDescription" />
-      </div> -->
 
       <!-- 描述语句 -->
       <div class="result-description">
@@ -165,17 +124,17 @@
 
       <!-- 详细信息 -->
       <div class="result-details">
-        <p>{{ time }}秒内单击{{ Math.round(cps * time) }}次点击次</p>
-        <p v-if="cps < 3">结果不好，很慢。</p>
-        <p v-else-if="cps < 6">结果不错，继续努力！</p>
-        <p v-else-if="cps < 9">结果很好，你是点击高手！</p>
-        <p v-else-if="cps < 12">结果非常好，你是点击大师！</p>
-        <p v-else>结果太棒了，你是点击之神！</p>
+        <p>{{ t('resultModal.details', { time: time, clicks: Math.round(cps * time) }) }}</p>
+        <p v-if="cps < 3">{{ t('resultModal.feedback.slow') }}</p>
+        <p v-else-if="cps < 6">{{ t('resultModal.feedback.average') }}</p>
+        <p v-else-if="cps < 9">{{ t('resultModal.feedback.fast') }}</p>
+        <p v-else-if="cps < 12">{{ t('resultModal.feedback.superFast') }}</p>
+        <p v-else>{{ t('resultModal.feedback.ultraFast') }}</p>
       </div>
 
       <!-- 按钮区域 -->
       <div class="modal-buttons">
-        <button class="ok-btn" @click="handleClose">好</button>
+        <button class="ok-btn" @click="handleClose">{{ t('resultModal.okButton') }}</button>
       </div>
     </div>
   </div>
