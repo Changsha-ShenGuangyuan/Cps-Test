@@ -114,7 +114,7 @@
 
       <!-- 分数结果 -->
       <div class="cps-result">
-        <h2>{{ cps }} {{ t('cps') }}</h2>
+        <h2>{{ cps }} CPS</h2>
       </div>
 
       <!-- 描述语句 -->
