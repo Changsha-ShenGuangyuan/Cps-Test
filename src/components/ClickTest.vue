@@ -5,6 +5,8 @@
   // 导入通用FAQ组件
   import FAQComponent from './FAQComponent.vue';
   import RelatedTests from './RelatedTests.vue';
+  // 导入结果弹窗组件
+  import ResultModal from './ResultModal.vue';
 
   // 组件功能：点击速度测试组件，支持固定时间测试和自定义时间测试
   // 支持涟漪特效、实时CPS计算、毫秒级计时等功能
@@ -87,6 +89,7 @@
   const elapsedTime = ref(0); // 已用时间（毫秒级精度）
   const ripples = ref<Ripple[]>([]); // 涟漪特效数组
   const clickAreaRef = ref<HTMLElement | null>(null); // 点击区域DOM引用
+  const showResultModal = ref(false); // 结果弹窗显示状态
 
   // 鼠标按键选择状态
   const mouseButtonOptions = computed(() => [
@@ -183,9 +186,8 @@
     isGameOver.value = true; // 设置最终结束状态
     endTime.value = Date.now(); // 记录结束时间
 
-    // 计算最终CPS
-    const totalTime = (endTime.value - startTime.value) / 1000;
-    cps.value = totalTime > 0 ? Math.round((clicks.value / totalTime) * 100) / 100 : 0;
+    // 计算最终CPS，使用规定的测试时间，确保与clicks保持一致
+    cps.value = testTime.value > 0 ? Math.round((clicks.value / testTime.value) * 100) / 100 : 0;
 
     // 确保已用时间显示为规定的测试时间，而不是实际的游戏持续时间
     elapsedTime.value = testTime.value;
@@ -212,6 +214,9 @@
 
     // 保存到localStorage
     saveHistory();
+
+    // 显示结果弹窗
+    showResultModal.value = true;
   };
 
   // 点击事件处理函数
@@ -328,6 +333,9 @@
 
     // 清除所有涟漪特效
     ripples.value = [];
+
+    // 关闭结果弹窗
+    showResultModal.value = false;
   };
 
   // 路由更新前钩子：当路由切换时重置游戏数据
@@ -409,12 +417,7 @@
             ></div>
           </div>
 
-          <div v-if="isGameOver" class="result-container">
-            <div class="result">{{ t('finish') }}!</div>
-            <div class="final-cps">{{ t('cps') }}: {{ cps }}</div>
-            <button class="reset-btn" @click="resetGame">{{ t('tryAgain') }}</button>
-          </div>
-          <div v-else-if="isPlaying">
+          <div v-if="isPlaying">
             <!-- 游戏进行中 -->
           </div>
           <div v-else class="start-text">{{ t('clickHere') }} {{ t('startGame') }}</div>
@@ -479,6 +482,15 @@
       </div>
     </div>
   </div>
+
+  <!-- 结果弹窗组件 -->
+  <ResultModal
+    :visible="showResultModal"
+    :type="'click'"
+    :cps="cps"
+    :time="testTime"
+    @close="resetGame"
+  />
 </template>
 
 <style scoped>
@@ -883,57 +895,7 @@
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
 
-  /* 结果容器 */
-  .result-container {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-  }
 
-  .result {
-    font-size: 36px;
-    margin-bottom: 15px;
-    color: #ffffff;
-  }
-
-  .final-cps {
-    font-size: 48px;
-    margin-bottom: 20px;
-    color: #4caf50;
-    font-weight: bold;
-  }
-
-  .reset-btn {
-    padding: 12px 24px;
-    font-size: 20px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: bold;
-    outline: none; /* 移除默认轮廓 */
-    -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .reset-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-  }
-
-  .reset-btn:active {
-    background-color: #388e3c;
-    transform: scale(0.98);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    outline: none; /* 移除点击时的轮廓 */
-  }
-
-  .reset-btn:focus {
-    outline: none; /* 移除聚焦轮廓 */
-  }
 
   /* FAQ 部分 */
   .faq-section {
