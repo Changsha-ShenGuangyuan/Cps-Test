@@ -8,10 +8,16 @@
 
   // 组件功能：鼠标滚动测试，测试玩家在滚动区域内每秒最高滚动像素
 
+  // 滚动数据类型定义
+  interface ScrollData {
+    delta: number;
+    timestamp: number;
+  }
+
   // 状态管理
   const currentSpeed = ref(0); // 当前滚动速度
   const maxSpeed = ref(0); // 最大滚动速度
-  const scrollHistory = ref<number[]>([]); // 滚动历史
+  const scrollHistory = ref<ScrollData[]>([]); // 滚动历史
   const speedDecayTimer = ref<number | null>(null); // 速度衰减定时器
   const isMouseInside = ref(false); // 鼠标是否在测试区域内
   const lastScrollTime = ref(Date.now()); // 最后一次滚动时间
@@ -43,16 +49,14 @@
     // 阻止默认滚动行为
     event.preventDefault();
 
-    // 记录当前滚动位置作为历史
-    const currentScroll = event.deltaY;
+    // 记录当前滚动数据，包含时间戳
+    const scrollData: ScrollData = {
+      delta: event.deltaY,
+      timestamp: Date.now()
+    };
 
     // 记录滚动历史
-    scrollHistory.value.push(currentScroll);
-
-    // 只保留最近1秒的滚动记录（60帧）
-    if (scrollHistory.value.length > 60) {
-      scrollHistory.value.shift();
-    }
+    scrollHistory.value.push(scrollData);
 
     // 更新最后滚动时间
     lastScrollTime.value = Date.now();
@@ -81,11 +85,18 @@
   const updateScrollSpeed = () => {
     if (scrollHistory.value.length === 0) return;
 
-    // 计算最近60帧（约1秒）内的总滚动距离
-    const recentScroll = scrollHistory.value.slice(-60); // 最近1秒的滚动数据
+    // 获取当前时间
+    const now = Date.now();
+    
+    // 只保留最近1秒内的滚动数据
+    const oneSecondAgo = now - 1000;
+    const recentScroll = scrollHistory.value.filter(item => item.timestamp >= oneSecondAgo);
+    
+    // 更新滚动历史，移除过期数据，优化性能
+    scrollHistory.value = recentScroll;
 
     // 计算总滚动距离（deltaY绝对值之和）
-    const totalDistance = recentScroll.reduce((sum, delta) => sum + Math.abs(delta as number), 0);
+    const totalDistance = recentScroll.reduce((sum, item) => sum + Math.abs(item.delta), 0);
 
     // 总距离即为像素/秒
     const speed = Math.round(totalDistance);
@@ -285,47 +296,10 @@
     max-width: 700px; /* 设置最大宽度为700px */
   }
 
-  /* FAQ 网格 */
-  .faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 10px;
-  }
-
-  /* FAQ 项 */
-  .faq-item {
-    background-color: rgba(50, 50, 50, 0.5);
-    border-radius: 8px;
-    padding: 20px;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-  }
-
-  .faq-item:hover {
-    background-color: rgba(50, 50, 50, 0.8);
-    border-color: #4caf50;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  }
-
-  .faq-item h3 {
-    font-size: 18px;
-    font-weight: bold;
-    color: #4caf50;
-    margin: 0 0 10px 0;
-  }
-
-  .faq-item p {
-    font-size: 14px;
-    color: #cccccc;
-    margin: 0;
-    line-height: 1.6;
-  }
-
   /* 响应式设计 */
   @media (max-width: 600px) {
-    .header h1 {
-      font-size: 28px;
+    .game-title {
+      font-size: 24px;
     }
 
     .header .subtitle {
@@ -341,11 +315,13 @@
     }
 
     .test-area {
-      height: 250px;
+      height: 200px;
+      width: 90%;
     }
 
-    .faq-grid {
-      grid-template-columns: 1fr;
+    .game-instructions {
+      width: 90%;
+      padding: 15px;
     }
   }
 </style>
