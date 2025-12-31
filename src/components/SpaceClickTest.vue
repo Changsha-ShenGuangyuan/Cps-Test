@@ -897,7 +897,7 @@
 
   /* 空格键图标 */
   .spacebar-icon {
-    margin-bottom: 20px;
+    margin-bottom: clamp(10px, 3vw, 20px);
     perspective: 1000px;
   }
 
@@ -1129,21 +1129,24 @@
 
     /* 点击区域优化 */
     .click-area {
-      height: clamp(200px, 40vh, 300px);
+      height: clamp(250px, 50vh, 350px);
       font-size: clamp(18px, 4vw, 20px);
       width: clamp(95%, 98vw, 98%);
     }
 
     /* 空格键优化 */
     .spacebar-key {
-      width: 250px;
-      height: 50px;
-      font-size: 16px;
+      width: clamp(180px, 70vw, 250px);
+      height: clamp(40px, 10vw, 50px);
+      font-size: clamp(14px, 3vw, 16px);
     }
 
     /* 准备就绪文字优化 */
     .ready-text {
-      font-size: 48px;
+      font-size: clamp(24px, 8vw, 36px);
+      margin-bottom: 20px;
+      line-height: 1.2;
+      text-align: center;
     }
 
     /* 历史记录列表优化 */
