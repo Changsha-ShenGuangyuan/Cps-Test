@@ -9,10 +9,10 @@
     cps: number;
     time: number;
   }>();
-  
+
   // 对比数据响应式变量
   const friendData = ref<any>(null);
-  
+
   // 从sessionStorage获取分享参数
   const getShareParams = () => {
     try {
@@ -25,7 +25,7 @@
     }
     return null;
   };
-  
+
   // 解密分享参数的函数
   const decodeShareParams = (encodedParams: string) => {
     try {
@@ -40,12 +40,12 @@
       return null;
     }
   };
-  
+
   // 检查分享参数的函数
   const checkShareParams = () => {
     // 先检查sessionStorage中是否有分享参数
     let sharedParams = getShareParams();
-    
+
     if (!sharedParams) {
       // 如果sessionStorage中没有，再检查URL中是否有分享参数
       const shareParams = new URLSearchParams(window.location.search).get('share');
@@ -63,11 +63,11 @@
         }
       }
     }
-    
+
     if (sharedParams) {
       // 打印解密后的参数（可以根据需要使用这些参数）
       console.log('Decoded share params in ResultModal:', sharedParams);
-      
+
       // 检查是否与当前测试匹配
       if (sharedParams.type === props.type && sharedParams.time === props.time) {
         // 匹配成功，保存对比数据
@@ -83,12 +83,12 @@
       friendData.value = null;
     }
   };
-  
+
   // 在组件挂载时检查分享参数
   onMounted(() => {
     checkShareParams();
   });
-  
+
   // 监听visible变化，重新检查分享参数
   watch(
     () => props.visible,
@@ -172,17 +172,17 @@
   // 计算对比结果
   const comparisonResult = computed(() => {
     if (!friendData.value) return null;
-    
+
     const difference = props.cps - friendData.value.cps;
     const isBetter = difference > 0;
     const isWorse = difference < 0;
     const isEqual = difference === 0;
-    
+
     return {
       difference: Math.abs(difference).toFixed(2),
       isBetter,
       isWorse,
-      isEqual
+      isEqual,
     };
   });
 
@@ -190,28 +190,17 @@
   const getAllFragmentIdentifiers = () => {
     switch (props.type) {
       case 'clickTest':
-        return [
-          '#CpsTest',
-          '#ClickTest',
-          '#ClickSpeedTest',
-          '#MouseClickTest'
-        ];
+        return ['#CpsTest', '#ClickTest', '#ClickSpeedTest', '#MouseClickTest'];
       case 'spaceClickTest':
         return [
           '#CpsTest',
           '#SpaceClickTest',
           '#SpacebarTest',
           '#SpaceClickSpeed',
-          '#SpacebarClickTest'
+          '#SpacebarClickTest',
         ];
       case 'kohiClickTest':
-        return [
-          '#CpsTest',
-          '#KohiClickTest',
-          '#KohiTest',
-          '#MinecraftClickTest',
-          '#McClickTest'
-        ];
+        return ['#CpsTest', '#KohiClickTest', '#KohiTest', '#MinecraftClickTest', '#McClickTest'];
       default:
         return ['#CpsTest'];
     }
@@ -232,7 +221,7 @@
           return 'CPSTest';
       }
     };
-    
+
     const count = Math.round(props.cps * props.time);
     const testType = getFriendlyTestType();
     return `${t('resultModal.shareText', { cps: props.cps, time: props.time, testType, count })}`;
@@ -241,21 +230,21 @@
   // 分享链接生成
   const getShareLinks = () => {
     const text = getShareText();
-    
+
     // 创建包含参数的对象
     const shareParams = {
       cps: props.cps,
       time: props.time,
-      type: props.type
+      type: props.type,
     };
-    
+
     // 将参数对象转换为JSON字符串，然后进行Base64编码（前端简单加密）
     const paramsJson = JSON.stringify(shareParams);
     const encodedParams = btoa(paramsJson);
-    
+
     // 获取所有片段标识符并使用第一个作为URL片段（URL规范只允许一个片段标识符）
     const fragmentIds = getAllFragmentIdentifiers();
-    
+
     // 构建包含参数和片段标识符的分享链接
     const shareUrl = `${window.location.origin}?share=${encodedParams}`;
     // 生成完整的分享文本，包含标签和所有片段标识符
@@ -263,12 +252,12 @@
     const fullShareText = `${text} ${shareUrl} ${allFragmentIdsText}`;
     // 编码分享文本和链接
     const encodedText = encodeURIComponent(fullShareText);
-    
+
     return {
       // X (Twitter) 分享链接 - 包含完整的分享文本、加密参数和标签
       x: `https://twitter.com/intent/tweet?text=${encodedText}`,
       // WhatsApp 分享链接 - 包含完整的分享文本和参数化链接
-      whatsapp: `https://wa.me/?text=${encodedText}`
+      whatsapp: `https://wa.me/?text=${encodedText}`,
     };
   };
 
@@ -300,8 +289,6 @@
         <h2>{{ cps }} CPS</h2>
       </div>
 
-
-
       <!-- 详细信息 -->
       <div class="result-details">
         <p>
@@ -323,33 +310,31 @@
       <div v-if="friendData" class="comparison-section">
         <!-- 分割线 -->
         <div class="divider"></div>
-        
-        <h3 class="comparison-title">好友对比</h3>
-        
+
+        <h3 class="comparison-title">{{ t('resultModal.comparisonTitle') }}</h3>
+
         <div class="comparison-content">
           <div class="comparison-item">
-            <div class="comparison-label">你的CPS</div>
+            <div class="comparison-label">{{ t('resultModal.yourCps') }}</div>
             <div class="comparison-value user-value">{{ cps.toFixed(2) }}</div>
           </div>
-          
-          <div class="comparison-vs">VS</div>
-          
+
+          <div class="comparison-vs">{{ t('resultModal.vs') }}</div>
+
           <div class="comparison-item">
-            <div class="comparison-label">好友CPS</div>
+            <div class="comparison-label">{{ t('resultModal.friendCps') }}</div>
             <div class="comparison-value friend-value">{{ friendData.cps.toFixed(2) }}</div>
           </div>
         </div>
-        
+
         <div v-if="comparisonResult" class="comparison-result">
           <div v-if="comparisonResult.isBetter" class="result-better">
-            ✅ 你赢了！比好友快 {{ comparisonResult.difference }} CPS
+            {{ t('resultModal.resultBetter', { difference: comparisonResult.difference }) }}
           </div>
           <div v-else-if="comparisonResult.isWorse" class="result-worse">
-            ❌ 好友赢了！比你快 {{ comparisonResult.difference }} CPS
+            {{ t('resultModal.resultWorse', { difference: comparisonResult.difference }) }}
           </div>
-          <div v-else class="result-equal">
-            🤝 平局！你们的CPS完全相同
-          </div>
+          <div v-else class="result-equal">{{ t('resultModal.resultEqual') }}</div>
         </div>
       </div>
 
@@ -360,23 +345,43 @@
       <div class="share-section">
         <p class="share-title">{{ t('resultModal.shareTitle') }}</p>
         <div class="share-buttons">
-          <button 
-            class="share-btn x-btn" 
-            @click="shareTo('x')"
-            title="Share to X"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+          <button class="share-btn x-btn" title="Share to X" @click="shareTo('x')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"
+              ></path>
             </svg>
             <span>{{ t('resultModal.shareX') }}</span>
           </button>
-          <button 
-            class="share-btn whatsapp-btn" 
-            @click="shareTo('whatsapp')"
+          <button
+            class="share-btn whatsapp-btn"
             title="Share to WhatsApp"
+            @click="shareTo('whatsapp')"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              ></path>
             </svg>
             <span>{{ t('resultModal.shareWhatsApp') }}</span>
           </button>
@@ -424,7 +429,9 @@
     opacity: 0;
     transform: scale(0.6) translateY(50px);
     animation: scaleIn 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+      'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     font-size: 16px;
   }
 
@@ -460,8 +467,6 @@
     transform: scale(0.8) translateY(20px);
     animation: cpsFadeIn 0.8s cubic-bezier(0.68, -0.6, 0.32, 1.6) 0.4s forwards;
   }
-
-
 
   /* 详细信息动画 */
   .result-details p {
@@ -545,8 +550,6 @@
     transform: scale(0.95);
   }
 
-
-
   /* 分数结果 */
   .cps-result {
     text-align: center;
@@ -591,7 +594,7 @@
 
   /* 详细信息文本样式 */
   .detail-text {
-    color: #CCCCCC;
+    color: #cccccc;
     font-size: 24px;
   }
 
@@ -677,7 +680,7 @@
 
   /* X (Twitter) 按钮样式 */
   .share-btn.x-btn {
-    background-color: #1DA1F2;
+    background-color: #1da1f2;
     color: white;
   }
 
@@ -689,7 +692,7 @@
 
   /* WhatsApp 按钮样式 */
   .share-btn.whatsapp-btn {
-    background-color: #25D366;
+    background-color: #25d366;
     color: white;
   }
 

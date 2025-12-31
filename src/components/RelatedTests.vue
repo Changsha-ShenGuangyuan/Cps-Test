@@ -7,7 +7,16 @@
 
   // 导航到指定路由
   const navigateTo = (path: string) => {
-    router.push(path);
+    // 根据当前语言添加语言前缀
+    import('../i18n/index').then((i18n) => {
+      let fullPath = path;
+      if (i18n.langState.current !== 'en') {
+        // 确保路径以斜杠开头
+        const basePath = path.startsWith('/') ? path : `/${path}`;
+        fullPath = `/${i18n.langState.current}${basePath}`;
+      }
+      router.push(fullPath);
+    });
   };
 
   // 定义测试类型接口

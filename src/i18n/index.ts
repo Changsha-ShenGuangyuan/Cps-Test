@@ -696,13 +696,13 @@ const resources: TranslationResources = {
       // 按钮文本
       okButton: '好',
       // 结果对比
-      comparisonTitle: '结果对比',
+      comparisonTitle: '好友对比',
       yourCps: '你的CPS',
-      friendCps: '朋友的CPS',
-      vs: '对比',
-      resultBetter: '你赢了！',
-      resultWorse: '你输了！',
-      resultEqual: '平局！',
+      friendCps: '好友CPS',
+      vs: 'VS',
+      resultBetter: '✅ 你赢了！比好友快 {difference} CPS',
+      resultWorse: '❌ 好友赢了！比你快 {difference} CPS',
+      resultEqual: '🤝 平局！你们的CPS完全相同',
       // 不同CPS范围的描述
       slow: {
         desc1: '你的点击速度较慢，还需要多加练习！',
@@ -737,7 +737,8 @@ const resources: TranslationResources = {
       shareX: '分享到X',
       shareWhatsApp: '分享到WhatsApp',
       shareWeChat: '分享到微信',
-      shareText: '我在 {testType} 测试中获得了 {cps} CPS（{time} 秒内点击了 {count} 次）！你能打败我的成绩吗？立即尝试！',
+      shareText:
+        '我在 {testType} 测试中获得了 {cps} CPS（{time} 秒内点击了 {count} 次）！你能打败我的成绩吗？立即尝试！',
       ShareClickTest: 'CPS',
       ShareSpaceClickTest: '空格键点击器',
       ShareKohiClickTest: 'Kohi',
@@ -1472,13 +1473,13 @@ const resources: TranslationResources = {
       // Button text
       okButton: 'Okay',
       // Comparison
-      comparisonTitle: 'Result Comparison',
+      comparisonTitle: 'Friend Comparison',
       yourCps: 'Your CPS',
-      friendCps: 'Friend\'s CPS',
-      vs: 'vs',
-      resultBetter: 'You won!',
-      resultWorse: 'You lost!',
-      resultEqual: 'It\'s a tie!',
+      friendCps: "Friend's CPS",
+      vs: 'VS',
+      resultBetter: '✅ You won! {difference} CPS faster than your friend',
+      resultWorse: '❌ Your friend won! {difference} CPS faster than you',
+      resultEqual: '🤝 It\'s a tie! Your CPS is exactly the same',
       // Different CPS range descriptions
       slow: {
         desc1: 'Your clicking speed is slow, you need more practice!',
@@ -1513,7 +1514,8 @@ const resources: TranslationResources = {
       shareX: 'Share to X',
       shareWhatsApp: 'Share to WhatsApp',
       shareWeChat: 'Share to WeChat',
-      shareText: 'I got {cps} CPS in {testType} test ({count} clicks in {time} seconds)! Can you beat my score? Try now！',
+      shareText:
+        'I got {cps} CPS in {testType} test ({count} clicks in {time} seconds)! Can you beat my score? Try now！',
       ShareClickTest: 'CPS',
       ShareSpaceClickTest: 'SpacebarClicker',
       ShareKohiClickTest: 'Kohi',
@@ -2238,13 +2240,13 @@ const resources: TranslationResources = {
       // ボタンテキスト
       okButton: 'OK',
       // 比較結果
-      comparisonTitle: '結果比較',
+      comparisonTitle: 'フレンド比較',
       yourCps: 'あなたのCPS',
-      friendCps: '友達のCPS',
-      vs: '対戦',
-      resultBetter: 'あなたの勝ち！',
-      resultWorse: 'あなたの負け！',
-      resultEqual: '引き分け！',
+      friendCps: 'フレンドのCPS',
+      vs: 'VS',
+      resultBetter: '✅ あなたの勝ち！フレンドより {difference} CPS 速いです！',
+      resultWorse: '❌ フレンドの勝ち！あなたより {difference} CPS 速いです！',
+      resultEqual: '🤝 引き分け！CPSが完全に同じです！',
       // 異なるCPS範囲の説明
       slow: {
         desc1: 'クリック速度が遅いです、もっと練習が必要です！',
@@ -2279,7 +2281,8 @@ const resources: TranslationResources = {
       shareX: 'Xに共有',
       shareWhatsApp: 'WhatsAppに共有',
       shareWeChat: 'WeChatに共有',
-      shareText: '{testType}で{cps} CPSを獲得しました（{time}秒間で{count}回クリック）！私のスコアを打ち負かすことができますか？今すぐ挑戦してください！',
+      shareText:
+        '{testType}で{cps} CPSを獲得しました（{time}秒間で{count}回クリック）！私のスコアを打ち負かすことができますか？今すぐ挑戦してください！',
       ShareClickTest: 'CPS',
       ShareSpaceClickTest: 'スペースバークリック',
       ShareKohiClickTest: 'Kohi',
@@ -3005,13 +3008,13 @@ const resources: TranslationResources = {
       // 버튼 텍스트
       okButton: '확인',
       // 결과 비교
-      comparisonTitle: '결과 비교',
+      comparisonTitle: '친구 비교',
       yourCps: '당신의 CPS',
       friendCps: '친구의 CPS',
-      vs: '대결',
-      resultBetter: '당신이 이겼어요!',
-      resultWorse: '당신이 졌어요!',
-      resultEqual: '무승부!',
+      vs: 'VS',
+      resultBetter: '✅ 당신이 이겼어요! 친구보다 {difference} CPS 빠릅니다!',
+      resultWorse: '❌ 친구가 이겼어요! 당신보다 {difference} CPS 빠릅니다!',
+      resultEqual: '🤝 무승부! CPS가 완전히 같습니다!',
       // 다른 CPS 범위 설명
       slow: {
         desc1: '클릭 속도가 느립니다, 더 많은 연습이 필요합니다!',
@@ -3046,7 +3049,8 @@ const resources: TranslationResources = {
       shareX: 'X에 공유',
       shareWhatsApp: 'WhatsApp에 공유',
       shareWeChat: '위챗으로 공유',
-      shareText: '{testType}에서 {cps} CPS를 얻었습니다 ({time}초 동안 {count}번 클릭)! 내 점수를 이길 수 있나요? 지금 시도해보세요！',
+      shareText:
+        '{testType}에서 {cps} CPS를 얻었습니다 ({time}초 동안 {count}번 클릭)! 내 점수를 이길 수 있나요? 지금 시도해보세요！',
       ShareClickTest: 'CPS',
       ShareSpaceClickTest: '스페이스바 클릭기',
       ShareKohiClickTest: 'Kohi',
@@ -3111,20 +3115,50 @@ export const initLanguage = () => {
 
   if (detectedLang && supportedLanguages.includes(detectedLang)) {
     finalLang = detectedLang;
-  } else if (savedLang && supportedLanguages.includes(savedLang)) {
-    finalLang = savedLang;
+  } else {
+    // 检查是否是新会话（新打开浏览器）
+    const isNewSession = !sessionStorage.getItem('session_started');
+    if (isNewSession && savedLang && supportedLanguages.includes(savedLang)) {
+      // 如果是新会话，使用Cookie中保存的语言偏好
+      finalLang = savedLang;
+      // 设置会话标记
+      sessionStorage.setItem('session_started', 'true');
+      // 导航到带有语言前缀的URL，确保URL和语言一致
+      const path = window.location.pathname;
+      const basePath = path === '/' ? '' : path;
+      window.location.href = `/${finalLang}${basePath}`;
+      return; // 终止当前函数执行
+    }
   }
 
-  // 设置最终语言并更新Cookie
+  // 直接设置最终语言
   langState.current = finalLang;
-  CookieManager.setCookie(COOKIE_NAMES.LANGUAGE, finalLang, 365);
+
+  // 只有当URL中有语言前缀时，才更新Cookie
+  // 这样当用户使用浏览器后退按钮回退到默认语言版本时，Cookie中保存的仍然是之前选择的语言
+  if (detectedLang) {
+    CookieManager.setCookie(COOKIE_NAMES.LANGUAGE, finalLang, 365);
+  }
+
+  // 更新meta标签
+  nextTick(() => {
+    updateMetaTags(router.currentRoute.value);
+  });
 };
+
+// 监听路由变化，更新语言状态
+router.afterEach(() => {
+  initLanguage();
+});
+
+// 当前语言资源 - 使用computed使其成为响应式
+export const currentResources = computed(() => resources[langState.current]);
 
 // 翻译函数 - 支持参数替换和嵌套对象
 export const t = (key: string, params: Record<string, any> = {}): string => {
   // 分解键路径
   const keys = key.split('.');
-  let translation: any = resources[langState.current];
+  let translation: any = currentResources.value;
 
   // 遍历键路径，查找对应的翻译值
   for (const k of keys) {

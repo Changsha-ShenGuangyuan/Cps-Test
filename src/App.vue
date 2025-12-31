@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, watch, onMounted, onUnmounted, computed, nextTick } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
-  import { t, setLanguage, getLanguage, initLanguage, langState } from './i18n/index';
+  import { t, setLanguage, initLanguage, langState } from './i18n/index';
   import Breadcrumb from './components/Breadcrumb.vue';
   import { updateMetaTags } from './router/index';
 
@@ -92,7 +92,8 @@
     toggleHistory(e);
   };
 
-  const currentLanguage = ref(getLanguage());
+  // 使用 computed 确保 currentLanguage 始终与 langState.current 保持同步
+  const currentLanguage = computed(() => langState.current);
   const isLanguageMenuOpen = ref(false);
 
   // 计算当前语言的国旗和名称
@@ -412,14 +413,28 @@
     }
   };
 
+  // 菜单展开状态接口
+  interface MenuExpandedStates {
+    [key: number]: boolean;
+  }
+
+  // 菜单项目接口
+  interface MenuItem {
+    id: number;
+    name: string;
+    path?: string;
+    children?: MenuItem[];
+    isExpanded: boolean;
+    icon?: string;
+  }
+
   // 切换语言 - 使用路径跳转实现
   const switchLanguage = (languageCode: string) => {
     // 设置语言状态
-    currentLanguage.value = languageCode;
     setLanguage(languageCode);
 
     // 保存当前菜单的展开状态
-    const expandedStates = menuItems.value.reduce((states: any, item: any) => {
+    const expandedStates = menuItems.value.reduce((states: MenuExpandedStates, item: MenuItem) => {
       if (item.children && item.children.length > 0) {
         states[item.id] = item.isExpanded;
       }
@@ -498,7 +513,7 @@
       game02: new URL('@/assets/icons/game02.png', import.meta.url).href,
     };
 
-    menuItems.value = [
+    const items: MenuItem[] = [
       {
         id: 0,
         name: t('home'),
@@ -512,13 +527,13 @@
         name: t('clickTest'),
         icon: icons.chick,
         children: [
-          { id: 11, name: t('1secClickTest'), path: '/click-test/1' },
-          { id: 12, name: t('2secClickTest'), path: '/click-test/2' },
-          { id: 13, name: t('5secClickTest'), path: '/click-test/5' },
-          { id: 14, name: t('10secClickTest'), path: '/click-test/10' },
-          { id: 15, name: t('15secClickTest'), path: '/click-test/15' },
-          { id: 16, name: t('30secClickTest'), path: '/click-test/30' },
-          { id: 17, name: t('60secClickTest'), path: '/click-test/60' },
+          { id: 11, name: t('1secClickTest'), path: '/click-test/1', children: [], isExpanded: false },
+          { id: 12, name: t('2secClickTest'), path: '/click-test/2', children: [], isExpanded: false },
+          { id: 13, name: t('5secClickTest'), path: '/click-test/5', children: [], isExpanded: false },
+          { id: 14, name: t('10secClickTest'), path: '/click-test/10', children: [], isExpanded: false },
+          { id: 15, name: t('15secClickTest'), path: '/click-test/15', children: [], isExpanded: false },
+          { id: 16, name: t('30secClickTest'), path: '/click-test/30', children: [], isExpanded: false },
+          { id: 17, name: t('60secClickTest'), path: '/click-test/60', children: [], isExpanded: false },
         ],
         isExpanded: false,
       },
@@ -527,8 +542,8 @@
         name: t('clickSeriesTest'),
         icon: icons.mouse02,
         children: [
-          { id: 81, name: t('doubleClickTest'), path: '/multi-click-test/double' },
-          { id: 82, name: t('tripleClickTest'), path: '/multi-click-test/triple' },
+          { id: 81, name: t('doubleClickTest'), path: '/multi-click-test/double', children: [], isExpanded: false },
+          { id: 82, name: t('tripleClickTest'), path: '/multi-click-test/triple', children: [], isExpanded: false },
         ],
         isExpanded: false,
       },
@@ -537,12 +552,12 @@
         name: t('spaceClickTest'),
         icon: icons.keyboard02,
         children: [
-          { id: 21, name: t('1secSpaceTest'), path: '/space-click-test/1' },
-          { id: 22, name: t('5secSpaceTest'), path: '/space-click-test/5' },
-          { id: 23, name: t('10secSpaceTest'), path: '/space-click-test/10' },
-          { id: 24, name: t('15secSpaceTest'), path: '/space-click-test/15' },
-          { id: 25, name: t('30secSpaceTest'), path: '/space-click-test/30' },
-          { id: 26, name: t('60secSpaceTest'), path: '/space-click-test/60' },
+          { id: 21, name: t('1secSpaceTest'), path: '/space-click-test/1', children: [], isExpanded: false },
+          { id: 22, name: t('5secSpaceTest'), path: '/space-click-test/5', children: [], isExpanded: false },
+          { id: 23, name: t('10secSpaceTest'), path: '/space-click-test/10', children: [], isExpanded: false },
+          { id: 24, name: t('15secSpaceTest'), path: '/space-click-test/15', children: [], isExpanded: false },
+          { id: 25, name: t('30secSpaceTest'), path: '/space-click-test/30', children: [], isExpanded: false },
+          { id: 26, name: t('60secSpaceTest'), path: '/space-click-test/60', children: [], isExpanded: false },
         ],
         isExpanded: false,
       },
@@ -575,11 +590,11 @@
         name: t('typingTest'),
         icon: icons.keyboard02,
         children: [
-          { id: 41, name: t('1minTypingTest'), path: '/typing-test/1' },
-          { id: 42, name: t('3minTypingTest'), path: '/typing-test/3' },
-          { id: 43, name: t('5minTypingTest'), path: '/typing-test/5' },
-          { id: 44, name: t('10minTypingTest'), path: '/typing-test/10' },
-          { id: 45, name: t('15minTypingTest'), path: '/typing-test/15' },
+          { id: 41, name: t('1minTypingTest'), path: '/typing-test/1', children: [], isExpanded: false },
+          { id: 42, name: t('3minTypingTest'), path: '/typing-test/3', children: [], isExpanded: false },
+          { id: 43, name: t('5minTypingTest'), path: '/typing-test/5', children: [], isExpanded: false },
+          { id: 44, name: t('10minTypingTest'), path: '/typing-test/10', children: [], isExpanded: false },
+          { id: 45, name: t('15minTypingTest'), path: '/typing-test/15', children: [], isExpanded: false },
         ],
         isExpanded: false,
       },
@@ -588,9 +603,9 @@
         name: t('reactionTest'),
         icon: icons.reaction,
         children: [
-          { id: 51, name: t('simpleReactionTest'), path: '/reaction-time-test', icon: '' },
-          { id: 52, name: t('colorReactionTest'), path: '/color-reaction-test', icon: '' },
-          { id: 53, name: t('keyReactionTest'), path: '/key-reaction-test', icon: '' },
+          { id: 51, name: t('simpleReactionTest'), path: '/reaction-time-test', children: [], isExpanded: false, icon: '' },
+          { id: 52, name: t('colorReactionTest'), path: '/color-reaction-test', children: [], isExpanded: false, icon: '' },
+          { id: 53, name: t('keyReactionTest'), path: '/key-reaction-test', children: [], isExpanded: false, icon: '' },
         ],
         isExpanded: false,
       },
@@ -611,11 +626,22 @@
         icon: icons.mouse02,
       },
     ];
+    menuItems.value = items;
   };
 
   // 初始化菜单数据
-  const menuItems = ref<any[]>([]);
+  const menuItems = ref<MenuItem[]>([]);
   initMenuItems();
+
+  // 监听语言状态变化，确保菜单项目的翻译始终是最新的
+  watch(
+    () => langState.current,
+    () => {
+      nextTick(() => {
+        initMenuItems();
+      });
+    }
+  );
 
   // 解密分享参数的函数
   const decodeShareParams = (encodedParams: string) => {
@@ -712,7 +738,7 @@
       isSidebarOpen.value = false;
     }
   };
-  
+
   // 存储分享参数到sessionStorage
   const saveShareParams = (params: any) => {
     try {
@@ -805,57 +831,62 @@
 
   // 监听路由变化，更新当前路径并滚动到顶部
   watch(
-    () => route.path,
-    (newPath) => {
+    () => route,
+    (newRoute) => {
+      const newPath = newRoute.path;
       currentPath.value = newPath;
       // 路由变化时将内容区域滚动到顶部
       scrollToTop();
       // 路由变化时关闭历史记录面板
       isHistoryOpen.value = false;
 
-      // 从路径中移除语言前缀，以便正确匹配菜单项
-      const supportedLanguages = ['en', 'ja', 'ko'];
-      let basePath = newPath;
-      const pathSegments = newPath.split('/').filter((segment) => segment !== '');
+      // 确保菜单已使用当前语言正确初始化，然后再处理路径匹配
+      nextTick(() => {
+        // 从路径中移除语言前缀，以便正确匹配菜单项
+        const supportedLanguages = ['zh-CN', 'ja', 'ko'];
+        let basePath = newPath;
+        const pathSegments = newPath.split('/').filter((segment) => segment !== '');
 
-      if (
-        pathSegments.length > 0 &&
-        pathSegments[0] &&
-        supportedLanguages.includes(pathSegments[0])
-      ) {
-        // 移除语言前缀
-        basePath = `/${pathSegments.slice(1).join('/')}`;
-      }
+        if (
+          pathSegments.length > 0 &&
+          pathSegments[0] &&
+          supportedLanguages.includes(pathSegments[0])
+        ) {
+          // 移除语言前缀
+          basePath = `/${pathSegments.slice(1).join('/')}`;
+        }
 
-      // 展开对应的侧边栏菜单
-      if (basePath !== '/') {
-        menuItems.value.forEach((item) => {
-          // 检查当前菜单项是否有子项
-          if (item.children && item.children.length > 0) {
-            // 检查是否有子项的路径与当前路径匹配或当前路径以子项路径开头
-            const hasMatchingChild = item.children.some((child: any) => {
-              // 检查完全匹配或当前路径以子项路径开头（处理带参数的路径）
-              return (
-                basePath === child.path ||
-                basePath.startsWith(child.path + '/') ||
-                child.path === '/' + basePath.split('/')[1]
-              );
-            });
+        // 展开对应的侧边栏菜单
+        if (basePath !== '/') {
+          menuItems.value.forEach((item) => {
+            // 检查当前菜单项是否有子项
+            if (item.children && item.children.length > 0) {
+              // 检查是否有子项的路径与当前路径匹配或当前路径以子项路径开头
+              const hasMatchingChild = item.children.some((child: any) => {
+                // 检查完全匹配或当前路径以子项路径开头（处理带参数的路径）
+                return (
+                  basePath === child.path ||
+                  basePath.startsWith(child.path + '/') ||
+                  child.path === '/' + basePath.split('/')[1]
+                );
+              });
 
-            // 如果有匹配的子项，展开当前菜单项，否则折叠
-            item.isExpanded = hasMatchingChild;
-          } else {
-            // 没有子项的菜单项直接折叠
+              // 如果有匹配的子项，展开当前菜单项，否则折叠
+              item.isExpanded = hasMatchingChild;
+            } else {
+              // 没有子项的菜单项直接折叠
+              item.isExpanded = false;
+            }
+          });
+        } else {
+          // 如果导航到首页，缩回所有侧边栏菜单
+          menuItems.value.forEach((item) => {
             item.isExpanded = false;
-          }
-        });
-      } else {
-        // 如果导航到首页，缩回所有侧边栏菜单
-        menuItems.value.forEach((item) => {
-          item.isExpanded = false;
-        });
-      }
-    }
+          });
+        }
+      });
+    },
+    { deep: true }
   );
 
   // 监听语言变化，响应式更新meta标签
@@ -872,7 +903,15 @@
 
   // 导航到指定路由
   const navigateTo = (path: string) => {
-    router.push(path);
+    // 根据当前语言添加语言前缀
+    let fullPath = path;
+    if (langState.current !== 'en') {
+      // 确保路径以斜杠开头
+      const basePath = path.startsWith('/') ? path : `/${path}`;
+      fullPath = `/${langState.current}${basePath}`;
+    }
+    
+    router.push(fullPath);
     // 导航后将内容区域滚动到顶部
     scrollToTop();
     // 导航后关闭侧边栏（移动端）
@@ -888,7 +927,7 @@
 
   // 辅助函数：从路径中移除语言前缀
   const removeLanguagePrefix = (path: string) => {
-    const supportedLanguages = ['en', 'ja', 'ko'];
+    const supportedLanguages = ['zh-CN', 'ja', 'ko'];
     const pathSegments = path.split('/').filter((segment) => segment !== '');
 
     if (
@@ -1159,7 +1198,7 @@
                   loading="lazy"
                 />
                 <span class="menu-item-name">{{ item.name }}</span>
-                <span v-if="item.children.length > 0" class="menu-toggle" aria-hidden="true">
+                <span v-if="item.children && item.children.length > 0" class="menu-toggle" aria-hidden="true">
                   {{ item.isExpanded ? '▼' : '▶' }}
                 </span>
               </div>
@@ -1172,8 +1211,8 @@
                       v-for="child in item.children"
                       :key="child.id"
                       class="submenu-item"
-                      :class="{ active: isSubItemActive(child.path) }"
-                      @click.stop="navigateTo(child.path)"
+                      :class="{ active: isSubItemActive(child.path || '') }"
+                      @click.stop="navigateTo(child.path || '')"
                     >
                       {{ child.name }}
                     </li>
