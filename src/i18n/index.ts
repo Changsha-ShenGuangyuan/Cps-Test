@@ -497,18 +497,9 @@ const resources: TranslationResources = {
     homeFaqQ1: '什么是CPS Test？',
     homeFaqA1:
       'CPS Test（点击速度测试）是一种测量你在特定时间内能够点击鼠标多少次的测试，通过计算每秒点击次数（Clicks Per Second）来评估你的点击速度。它不仅可以帮助你了解自己的手速水平，还能通过长期训练追踪进步，对于游戏玩家、电竞选手和需要快速操作的职业从业者具有重要参考价值。',
-    homeFaqQ2: '如何科学地提高点击速度？',
+    homeFaqQ2: '如何提高点击速度？',
     homeFaqA2:
       '提高点击速度需要系统的练习和正确的方法：\n1. 技巧选择：根据个人习惯选择适合的点击方式（蝴蝶点击、抖动点击、拖动点击等）\n2. 定期训练：每天进行15-30分钟的针对性练习，保持肌肉记忆\n3. 手部热身：测试前进行简单的手部拉伸和放松运动\n4. 设备优化：使用高回报率鼠标（1000Hz）和适合的鼠标垫\n5. 节奏控制：建立稳定的点击节奏，避免过度紧张导致的速度下降\n6. 交叉训练：结合不同时长的测试（1秒、5秒、30秒）全面提升爆发力和耐力',
-    homeFaqQ3: 'CPS测试结果的准确性如何保证？',
-    homeFaqA3:
-      '我们的CPS测试采用可靠的计时和计算方法，确保结果准确可信：\n1. 高精度计时：使用专业的时间测量技术，精度可达0.1毫秒，确保每一次点击都被准确记录\n2. 智能防作弊：内置算法检测异常点击模式，确保测试结果真实可靠\n3. 设备自适应：自动调整不同设备和浏览器的延迟差异，保证公平性\n4. 多次测试建议：建议进行3-5次测试，取平均值作为参考，这样结果更能反映真实水平\n5. 结果影响因素：设备性能、网络状况、测试环境和个人状态都会对结果产生轻微影响，建议在稳定环境下测试',
-    homeFaqQ4: '移动设备上的CPS测试与桌面设备有何不同？',
-    homeFaqA4:
-      '移动设备上的CPS测试具有以下特点：\n1. 操作方式：使用触摸屏点击，而非鼠标物理按键\n2. 速度差异：由于触摸延迟和操作方式不同，移动端CPS通常比桌面端低20-30%\n3. 设备影响：不同手机的屏幕刷新率和触摸响应速度会影响测试结果\n4. 测试体验：我们优化了移动端界面，确保在各种尺寸的设备上都能获得良好的测试体验\n5. 结果参考：移动端测试结果适合横向比较，而非与桌面端直接对比',
-    homeFaqQ5: '测试数据如何存储和保护？',
-    homeFaqA5:
-      '我们采用本地存储机制保护你的测试数据：\n1. 存储位置：所有测试结果保存在你的浏览器本地存储中，不会上传到服务器\n2. 数据安全：数据仅存储在你的设备上，不会被第三方访问\n3. 数据管理：你可以随时清除浏览器缓存来删除测试记录\n4. 跨设备同步：目前不支持跨设备数据同步，建议在固定设备上进行测试\n5. 隐私保护：我们不会收集或分析你的个人测试数据，完全尊重用户隐私',
     homeFaqQ6: '蝴蝶点击（Butterfly Clicking）的原理和技巧是什么？',
     homeFaqA6:
       '蝴蝶点击是一种高级点击技巧，通过快速交替使用食指和中指点击鼠标左键：\n1. 工作原理：利用鼠标微动开关的物理特性，通过双手手指的快速交替动作产生连续点击\n2. 速度范围：熟练掌握后可达到20-30 CPS，甚至更高\n3. 练习方法：保持手腕稳定，手指放松，通过反复练习找到最佳的交替节奏\n4. 适用场景：适合需要短时间爆发高CPS的游戏场景\n5. 设备要求：需要点击感清脆、回弹快的鼠标，不适合按键沉重的办公鼠标',
@@ -521,15 +512,9 @@ const resources: TranslationResources = {
     homeFaqQ9: '不同时长的CPS测试分别评估什么能力？',
     homeFaqA9:
       '不同时长的测试评估不同维度的能力：\n1. 1秒测试：评估瞬时爆发力和手速潜力\n2. 5秒测试：平衡爆发力与短期稳定性，是最常用的综合评估指标\n3. 10秒测试：评估持续点击的耐力和节奏保持能力\n4. 30秒测试：标准耐力测试，适合评估长时间操作的稳定性\n5. 60秒测试：极限耐力测试，考验手部肌肉的抗疲劳能力\n建议结合多种时长的测试，全面了解自己的手速特点',
-    homeFaqQ10: 'CPS测试结果与实际游戏表现有何关联？',
-    homeFaqA10:
-      'CPS测试结果与游戏表现有一定关联，但并非绝对：\n1. 相关性：高CPS在需要快速点击的游戏（如Minecraft、CS:GO等）中具有优势\n2. 局限性：游戏表现还取决于反应速度、手眼协调、策略意识等多种因素\n3. 参考价值：CPS测试可以作为手速训练的参考指标，但不能完全代表游戏水平\n4. 专项训练：针对特定游戏的操作需求进行针对性训练，比单纯追求高CPS更有效\n5. 平衡发展：建议将CPS训练与反应速度、准确性训练结合起来',
     homeFaqQ11: '如何避免CPS训练导致的手部疲劳或损伤？',
     homeFaqA11:
       '保护手部健康至关重要，建议遵循以下原则：\n1. 适度训练：每次练习不超过30分钟，避免长时间高强度操作\n2. 正确姿势：保持手腕自然伸直，避免过度弯曲或扭曲\n3. 定期休息：每练习10分钟休息1-2分钟，活动手腕和手指\n4. 手部放松：练习前后进行手部拉伸和按摩\n5. 设备适配：选择符合人体工学的鼠标，调整适合的鼠标灵敏度\n6. 注意信号：如出现手腕疼痛或麻木，应立即停止练习并休息\n7. 交叉活动：定期进行其他非鼠标操作的活动，避免单一动作重复',
-    homeFaqQ12: 'CPS测试的历史和发展趋势是什么？',
-    homeFaqA12:
-      'CPS测试的发展历程和趋势：\n1. 起源：最早源于Minecraft等游戏社区，用于评估玩家的PvP能力\n2. 发展：逐渐扩展到电竞领域，成为手速评估的标准工具\n3. 技术进步：从简单的计数工具发展到具有数据分析和训练建议的专业平台\n4. 多样化：除了鼠标点击，还扩展到空格键点击、键盘按键等多种测试类型\n5. 智能化：未来将融入AI分析，提供个性化的训练方案和进步预测\n6. 社区化：建立玩家排行榜和训练社区，促进相互交流和进步',
     // 鼠标拖动测试相关
     mouseDragTest: '鼠标拖动测试',
     totalDistance: '总距离',
@@ -1263,18 +1248,9 @@ const resources: TranslationResources = {
     homeFaqQ1: 'What is CPS Test?',
     homeFaqA1:
       'CPS Test (Click Speed Test) is a test to measure how many times you can click the mouse within a specific time, evaluating your clicking speed by calculating Clicks Per Second. It not only helps you understand your hand speed level but also tracks progress through long-term training, which has important reference value for gamers, esports players, and professionals who need fast operation.',
-    homeFaqQ2: 'How to scientifically improve clicking speed?',
+    homeFaqQ2: 'How to increase clicking speed?',
     homeFaqA2:
       'Improving clicking speed requires systematic practice and correct methods:\n1. Technique selection: Choose a clicking method that suits your habits (butterfly clicking, jitter clicking, drag clicking, etc.)\n2. Regular training: Conduct 15-30 minutes of targeted practice every day to maintain muscle memory\n3. Hand warm-up: Perform simple hand stretching and relaxation exercises before testing\n4. Equipment optimization: Use a high polling rate mouse (1000Hz) and a suitable mouse pad\n5. Rhythm control: Establish a stable clicking rhythm, avoid speed decrease due to excessive tension\n6. Cross training: Combine tests of different durations (1 second, 5 seconds, 30 seconds) to comprehensively improve explosive power and endurance',
-    homeFaqQ3: 'How is the accuracy of CPS test results guaranteed?',
-    homeFaqA3:
-      'Our CPS test uses reliable timing and calculation methods to ensure accurate and trustworthy results:\n1. High-precision timing: Uses professional time measurement technology with accuracy up to 0.1 milliseconds, ensuring every click is accurately recorded\n2. Intelligent anti-cheat: Built-in algorithm detects abnormal click patterns, ensuring authentic and reliable test results\n3. Device adaptation: Automatically adjusts delay differences across different devices and browsers to ensure fairness\n4. Multiple tests recommendation: It is recommended to conduct 3-5 tests and take the average value as a reference for more accurate results\n5. Result influencing factors: Device performance, network conditions, test environment and personal state will all have a slight impact on the results. We recommend testing in a stable environment',
-    homeFaqQ4: 'What is the difference between CPS test on mobile devices and desktop devices?',
-    homeFaqA4:
-      'The CPS test on mobile devices has the following characteristics:\n1. Operation method: Use touch screen clicking instead of physical mouse buttons\n2. Speed difference: Due to touch delay and different operation methods, mobile CPS is usually 20-30% lower than desktop CPS\n3. Device influence: Different phone screen refresh rates and touch response speeds will affect test results\n4. Test experience: We have optimized the mobile interface to ensure a good test experience on various size devices\n5. Result reference: Mobile test results are suitable for horizontal comparison, not direct comparison with desktop results',
-    homeFaqQ5: 'How are test data stored and protected?',
-    homeFaqA5:
-      "We use local storage mechanisms to protect your test data:\n1. Storage location: All test results are saved in your browser's local storage and will not be uploaded to the server\n2. Data security: Data is only stored on your device and will not be accessed by third parties\n3. Data management: You can clear browser cache at any time to delete test records\n4. Cross-device synchronization: Currently does not support cross-device data synchronization, it is recommended to test on a fixed device\n5. Privacy protection: We will not collect or analyze your personal test data, fully respecting user privacy",
     homeFaqQ6: 'What are the principles and techniques of butterfly clicking?',
     homeFaqA6:
       "Butterfly clicking is an advanced clicking technique that uses the index finger and middle finger to quickly alternate clicking the left mouse button:\n1. Working principle: Utilize the physical characteristics of mouse micro switches, generating continuous clicks through the rapid alternating movement of both hands' fingers\n2. Speed range: Can reach 20-30 CPS or even higher after proficient mastery\n3. Practice method: Keep the wrist stable, fingers relaxed, and find the best alternating rhythm through repeated practice\n4. Applicable scenarios: Suitable for game scenarios that require short-term burst high CPS\n5. Device requirements: Need a mouse with crisp clicking feel and fast rebound, not suitable for heavy office mice",
@@ -1287,15 +1263,9 @@ const resources: TranslationResources = {
     homeFaqQ9: 'What abilities do CPS tests of different durations evaluate respectively?',
     homeFaqA9:
       'Tests of different durations evaluate different dimensions of abilities:\n1. 1-second test: Evaluate instantaneous explosive power and hand speed potential\n2. 5-second test: Balance explosive power and short-term stability, it is the most commonly used comprehensive evaluation indicator\n3. 10-second test: Evaluate continuous clicking endurance and rhythm maintenance ability\n4. 30-second test: Standard endurance test, suitable for evaluating long-term operation stability\n5. 60-second test: Extreme endurance test, testing the anti-fatigue ability of hand muscles\nIt is recommended to combine tests of multiple durations to comprehensively understand your hand speed characteristics',
-    homeFaqQ10: 'What is the relationship between CPS test results and actual game performance?',
-    homeFaqA10:
-      'CPS test results have a certain correlation with game performance, but it is not absolute:\n1. Correlation: High CPS has advantages in games that require fast clicking (such as Minecraft, CS:GO, etc.)\n2. Limitations: Game performance also depends on multiple factors such as reaction speed, hand-eye coordination, and strategic awareness\n3. Reference value: CPS test can be used as a reference indicator for hand speed training, but cannot completely represent game level\n4. Specialized training: Targeted training for specific game operation needs is more effective than simply pursuing high CPS\n5. Balanced development: It is recommended to combine CPS training with reaction speed and accuracy training',
     homeFaqQ11: 'How to avoid hand fatigue or injury caused by CPS training?',
     homeFaqA11:
       'Protecting hand health is crucial, it is recommended to follow these principles:\n1. Moderate training: Do not practice for more than 30 minutes each time, avoid long-term high-intensity operation\n2. Correct posture: Keep the wrist naturally straight, avoid excessive bending or twisting\n3. Regular rest: Rest for 1-2 minutes every 10 minutes of practice, move the wrist and fingers\n4. Hand relaxation: Perform hand stretching and massage before and after practice\n5. Equipment adaptation: Choose an ergonomic mouse and adjust suitable mouse sensitivity\n6. Pay attention to signals: If wrist pain or numbness occurs, stop practicing immediately and rest\n7. Cross-activity: Regularly perform other non-mouse operation activities to avoid repeated single actions',
-    homeFaqQ12: 'What is the history and development trend of CPS test?',
-    homeFaqA12:
-      "The development history and trends of CPS test:\n1. Origin: Originally originated from game communities such as Minecraft, used to evaluate players' PvP ability\n2. Development: Gradually expanded to the esports field, becoming a standard tool for hand speed evaluation\n3. Technological progress: From simple counting tools to professional platforms with data analysis and training suggestions\n4. Diversification: In addition to mouse clicking, it has expanded to multiple test types such as space bar clicking and keyboard keys\n5. Intelligence: In the future, AI analysis will be integrated to provide personalized training plans and progress predictions\n6. Communityization: Establish player leaderboards and training communities to promote mutual communication and progress",
     // Mouse drag test related
     mouseDragTest: 'Mouse Drag Test',
     totalDistance: 'Total Distance',
@@ -2131,18 +2101,9 @@ const resources: TranslationResources = {
     homeFaqQ1: 'CPS Testとは？',
     homeFaqA1:
       'CPS Test（クリック速度テスト）は、特定の時間内にマウスをクリックできる回数を測定するテストで、毎秒のクリック数（Clicks Per Second）を計算してクリック速度を評価します。手速レベルを把握し、長期的なトレーニングでの進歩を追跡することができ、ゲーマー、eスポーツ選手、迅速な操作が必要な職業の従事者にとって重要な参考価値があります。',
-    homeFaqQ2: '科学的にクリック速度を向上させる方法は？',
+    homeFaqQ2: 'クリック速度を上げる方法？',
     homeFaqA2:
       'クリック速度を向上させるには、システマティックな練習と正しい方法が必要です：\n1. テクニック選択：個人の習慣に合わせて適切なクリック方法（バタフライクリック、ジッタークリック、ドラッグクリックなど）を選択\n2. 定期的なトレーニング：毎日15-30分の集中的な練習を行い、筋肉記憶を保持\n3. 手のウォームアップ：テスト前に簡単な手のストレッチとリラックス運動を行う\n4. 機器最適化：高レスポンスマウス（1000Hz）と適切なマウスパッドを使用\n5. リズム制御：安定したクリックリズムを確立し、過度な緊張による速度低下を避ける\n6. クロストレーニング：異なる時間長のテスト（1秒、5秒、30秒）を組み合わせて、瞬発力と持久力を全面的に向上させる',
-    homeFaqQ3: 'CPSテスト結果の正確性はどのように保証されていますか？',
-    homeFaqA3:
-      '当社のCPSテストは信頼性の高い計時と計算方法を採用し、結果の正確性と信頼性を保証しています：\n1. 高精度計時：専門的な時間測定技術を使用し、精度は0.1ミリ秒に達し、すべてのクリックが正確に記録されます\n2. スマート不正防止：異常なクリックパターンを検出するアルゴリズムを内蔵し、テスト結果の真実性と信頼性を確保\n3. デバイス適応：異なるデバイスとブラウザの遅延差を自動調整し、公平性を保証\n4. 複数回テスト推奨：3-5回のテストを実施し、平均値を参考とすることを推奨、これにより結果が真の実力を反映します\n5. 結果影響要因：デバイスのパフォーマンス、ネットワーク状態、テスト環境、個人の状態などが結果に微妙な影響を与える可能性があります。安定した環境でテストを行うことを推奨します',
-    homeFaqQ4: 'モバイルデバイスでのCPSテストはデスクトップデバイスとどう違いますか？',
-    homeFaqA4:
-      'モバイルデバイスでのCPSテストには以下の特徴があります：\n1. 操作方法：マウスの物理ボタンではなく、タッチスクリーンでクリック\n2. 速度の違い：タッチ遅延と操作方法の違いにより、モバイル端末のCPSは通常デスクトップ端末より20-30%低い\n3. デバイスの影響：異なる携帯電話の画面リフレッシュレートとタッチ応答速度がテスト結果に影響\n4. テスト体験：さまざまなサイズのデバイスで良好なテスト体験が得られるように、モバイル端末用インターフェースを最適化\n5. 結果の参考価値：モバイル端末のテスト結果は横比較に適し、デスクトップ端末と直接比較することは推奨されない',
-    homeFaqQ5: 'テストデータはどのように保存・保護されていますか？',
-    homeFaqA5:
-      '当社はローカルストレージメカニズムを採用してテストデータを保護しています：\n1. 保存場所：すべてのテスト結果はブラウザのローカルストレージに保存され、サーバーにアップロードされない\n2. データセキュリティ：データはあなたのデバイスにのみ保存され、第三者からアクセスされることはない\n3. データ管理：ブラウザのキャッシュをクリアすることで、テスト記録をいつでも削除できる\n4. クロスデバイス同期：現在、クロスデバイスのデータ同期はサポートされていないため、固定デバイスでテストを行うことを推奨\n5. プライバシー保護：個人のテストデータを収集・分析することはなく、ユーザーのプライバシーを完全に尊重',
     homeFaqQ6: 'バタフライクリック（Butterfly Clicking）の原理とテクニックは？',
     homeFaqA6:
       'バタフライクリックは、人差し指と中指を素早く交互に使用してマウス左ボタンをクリックする高度なクリックテクニックです：\n1. 仕組み：マウスのマイクロスイッチの物理特性を利用し、両手の指の素早い交互動作によって連続クリックを生成\n2. 速度範囲：熟練者は20-30 CPS、さらにそれ以上を達成できる\n3. 練習方法：手首を安定させ、指をリラックスさせ、反復練習で最適な交互リズムを見つける\n4. 適用シナリオ：短時間で高CPSが必要なゲームシナリオに適している\n5. 機器要件：クリック感が清脆で反発が速いマウスが必要で、重いボタンのオフィスマウスには適していない',
@@ -2155,15 +2116,9 @@ const resources: TranslationResources = {
     homeFaqQ9: '異なる時間長のCPSテストはそれぞれどのような能力を評価しますか？',
     homeFaqA9:
       '異なる時間長のテストは異なる次元の能力を評価します：\n1. 1秒テスト：瞬発力と手速の潜在能力を評価\n2. 5秒テスト：瞬発力と短期安定性のバランスを図り、最も一般的な総合評価指標となる\n3. 10秒テスト：持続的なクリックの持久力とリズム維持能力を評価\n4. 30秒テスト：標準的な持久力テストで、長時間操作の安定性を評価するのに適している\n5. 60秒テスト：極限持久力テストで、手の筋肉の抗疲労能力を試験する\n多様な時間長のテストを組み合わせて、手速の特徴を全面的に把握することを推奨',
-    homeFaqQ10: 'CPSテスト結果と実際のゲームパフォーマンスの関連性は？',
-    homeFaqA10:
-      'CPSテスト結果とゲームパフォーマンスには一定の関連性がありますが、絶対的ではありません：\n1. 相関性：Minecraft、CS:GOなどの素早いクリックが必要なゲームでは、高CPSが優位性を持つ\n2. 限界：ゲームパフォーマンスは、反応速度、手眼協調、戦略意識など多くの要因によって決まる\n3. 参考価値：CPSテストは手速トレーニングの参考指標となるが、ゲームレベルを完全に代表するものではない\n4. 専門的なトレーニング：特定のゲームの操作要件に合わせた専門的なトレーニングは、単純な高CPS追求よりも効果的である\n5. バランスの発展：CPSトレーニングを反応速度、正確性トレーニングと組み合わせることを推奨',
     homeFaqQ11: 'CPSトレーニングによる手の疲労や損傷を回避する方法は？',
     homeFaqA11:
       '手の健康を保護することは非常に重要で、以下の原則に従うことを推奨します：\n1. 適度なトレーニング：1回の練習は30分を超えず、長時間の高強度な操作を避ける\n2. 正しい姿勢：手首を自然に伸ばし、過度な屈曲やねじれを避ける\n3. 定期的な休息：10分間練習するごとに1-2分間休息し、手首と指を動かす\n4. 手のリラックス：練習の前後に手のストレッチとマッサージを行う\n5. 機器の適応：人体工学に合ったマウスを選択し、適切なマウス感度に調整する\n6. 信号に注意：手首の痛みやしびれが発生した場合は、即座に練習を停止して休息する\n7. クロスアクティビティ：定期的にマウス以外の操作を行い、単一動作の繰り返しを避ける',
-    homeFaqQ12: 'CPSテストの歴史と発展動向は？',
-    homeFaqA12:
-      'CPSテストの発展歴史と動向：\n1. 起源：最初はMinecraftなどのゲームコミュニティに起源し、プレイヤーのPvP能力を評価するために使用\n2. 発展：徐々にeスポーツ分野に拡大し、手速評価の標準ツールとなった\n3. 技術進歩：単純なカウントツールから、データ分析とトレーニングアドバイスを備えた専門プラットフォームへと発展\n4. 多様化：マウスクリックだけでなく、スペースバークリック、キーボードキーなど多様なテストタイプに拡張\n5. インテリジェント化：将来はAI分析を導入し、個別化されたトレーニングプランと進歩予測を提供\n6. コミュニティ化：プレイヤーランキングとトレーニングコミュニティを構築し、相互交流と進歩を促進',
     // マウスドラッグテスト関連
     mouseDragTest: 'マウスドラッグテスト',
     totalDistance: '総距離',
@@ -2913,18 +2868,9 @@ const resources: TranslationResources = {
     homeFaqQ1: 'CPS Test란 무엇인가요?',
     homeFaqA1:
       'CPS Test(클릭 속도 테스트)는 특정 시간 내에 마우스를 얼마나 많이 클릭할 수 있는지를 측정하는 테스트로, 초당 클릭 수(Clicks Per Second)를 계산하여 클릭 속도를 평가합니다. 이는 자신의 손속 수준을 파악하고 장기 훈련을 통해 진행 상황을 추적하는 데 도움이 될 뿐만 아니라, 게임 플레이어, e스포츠 선수 및 빠른 조작이 필요한 직업 종사자에게 중요한 참고 가치가 있습니다.',
-    homeFaqQ2: '과학적으로 클릭 속도를 향상시키는 방법은 무엇인가요?',
+    homeFaqQ2: '클릭 속도를 높이는 방법?',
     homeFaqA2:
       '클릭 속도를 향상시키려면 체계적인 연습과 올바른 방법이 필요합니다. \n1. 기술 선택: 개인 습관에 따라 적합한 클릭 방식(버터플라이 클릭, 지터 클릭, 드래그 클릭 등)을 선택하세요. \n2. 정기 훈련: 매일 15-30분의 타겟 훈련을 통해 근육 기억을 유지하세요. \n3. 손 워밍업: 테스트 전에 간단한 손 스트레칭과 이완 운동을 하세요. \n4. 장비 최적화: 고반응률 마우스(1000Hz)와 적합한 마우스 패드를 사용하세요. \n5. 리듬 제어: 안정적인 클릭 리듬을 만들어 과도한 긴장으로 인한 속도 저하를 피하세요. \n6. 교차 훈련: 다양한 시간 길이의 테스트(1초, 5초, 30초)를 결합하여 폭발력과 내구력을 전반적으로 향상시키세요.',
-    homeFaqQ3: 'CPS 테스트 결과의 정확성은 어떻게 보장되나요?',
-    homeFaqA3:
-      '우리의 CPS 테스트는 신뢰할 수 있는 타이밍과 계산 방법을 사용하여 결과의 정확성과 신뢰성을 보장합니다. \n1. 고정밀 타이밍: 전문적인 시간 측정 기술을 사용하여 정확도가 0.1밀리초에 도달하며, 모든 클릭이 정확하게 기록됩니다. \n2. 스마트 부정행위 방지: 이상 클릭 패턴을 감지하는 알고리즘을 내장하여 테스트 결과의 진실성과 신뢰성을 보장합니다. \n3. 장치 적응: 다양한 장치와 브라우저의 지연 차이를 자동으로 조정하여 공정성을 보장합니다. \n4. 다중 테스트 권장: 3-5회 테스트를 진행하고 평균값을 참고로 삼는 것을 권장합니다. 이렇게 하면 결과가 실제 실력을 더 잘 반영합니다. \n5. 결과 영향 요인: 장치 성능, 네트워크 상태, 테스트 환경 및 개인 상태가 결과에 미세한 영향을 미칩니다. 안정적인 환경에서 테스트를 진행하는 것을 권장합니다.',
-    homeFaqQ4: '모바일 기기에서의 CPS 테스트는 데스크톱 기기와 어떻게 다른가요?',
-    homeFaqA4:
-      '모바일 기기에서의 CPS 테스트는 다음과 같은 특징이 있습니다. \n1. 조작 방식: 마우스 물리적 버튼이 아닌 터치 스크린 클릭을 사용합니다. \n2. 속도 차이: 터치 지연과 조작 방식의 차이로 인해 모바일 CPS는 일반적으로 데스크톱보다 20-30% 낮습니다. \n3. 장치 영향: 다른 휴대폰의 화면 새로고침율과 터치 응답 속도가 테스트 결과에 영향을 미칩니다. \n4. 테스트 경험: 다양한 크기의 기기에서 좋은 테스트 경험을 얻을 수 있도록 모바일 인터페이스를 최적화했습니다. \n5. 결과 참고: 모바일 테스트 결과는 데스크톱과 직접 비교하기보다는 가로 비교에 적합합니다.',
-    homeFaqQ5: '테스트 데이터는 어떻게 저장되고 보호되나요?',
-    homeFaqA5:
-      '우리는 로컬 저장 메커니즘을 사용하여 테스트 데이터를 보호합니다. \n1. 저장 위치: 모든 테스트 결과는 브라우저의 로컬 스토리지에 저장되며 서버에 업로드되지 않습니다. \n2. 데이터 보안: 데이터는 사용자의 기기에서만 저장되며 타인이 접근할 수 없습니다. \n3. 데이터 관리: 브라우저 캐시를 언제든지 지워 테스트 기록을 삭제할 수 있습니다. \n4. 기기 간 동기화: 현재 기기 간 데이터 동기화를 지원하지 않으므로 고정된 기기에서 테스트를 진행하는 것을 권장합니다. \n5. 프라이버시 보호: 사용자의 개인 테스트 데이터를 수집하거나 분석하지 않으며, 사용자의 프라이버시를 완전히 존중합니다.',
     homeFaqQ6: '버터플라이 클릭(Butterfly Clicking)의 원리와 기술은 무엇인가요?',
     homeFaqA6:
       '버터플라이 클릭은 검지와 중지를 빠르게 번갈아 사용하여 마우스 왼쪽 버튼을 클릭하는 고급 클릭 기술입니다. \n1. 작동 원리: 마우스 마이크로 스위치의 물리적 특성을 활용하여 손가락의 빠른 번갈아 동작으로 연속 클릭을 생성합니다. \n2. 속도 범위: 숙련된 후 20-30 CPS 이상에 도달할 수 있습니다. \n3. 연습 방법: 손목을 안정적으로 유지하고, 손가락을 편안하게 유지하며, 반복적인 연습을 통해 최적의 번갈아 리듬을 찾으세요. \n4. 적용 시나리오: 짧은 시간 동안 높은 CPS가 필요한 게임 시나리오에 적합합니다. \n5. 장치 요구 사항: 클릭 감각이 선명하고 리턴이 빠른 마우스가 필요하며, 버튼이 무거운 사무용 마우스에는 적합하지 않습니다.',
@@ -2937,15 +2883,9 @@ const resources: TranslationResources = {
     homeFaqQ9: '다양한 기간의 CPS 테스트는 각각 어떤 능력을 평가하나요?',
     homeFaqA9:
       '다양한 기간의 테스트는 다른 차원의 능력을 평가합니다. \n1. 1초 테스트: 순간 폭발력과 손속 잠재력을 평가합니다. \n2. 5초 테스트: 폭발력과 단기 안정성을 균형 잡는 가장 일반적인 종합 평가 지표입니다. \n3. 10초 테스트: 지속적인 클릭의 내구력과 리듬 유지 능력을 평가합니다. \n4. 30초 테스트: 장시간 조작의 안정성을 평가하기에 적합한 표준 내구력 테스트입니다. \n5. 60초 테스트: 손 근육의 피로 저항력을 시험하는 극한 내구력 테스트입니다. 다양한 기간의 테스트를 결합하여 자신의 손속 특징을 전반적으로 파악하는 것을 권장합니다.',
-    homeFaqQ10: 'CPS 테스트 결과와 실제 게임 성능은 어떤 관련이 있나요?',
-    homeFaqA10:
-      'CPS 테스트 결과와 게임 성능은 일정한 관련이 있지만 절대적이지는 않습니다. \n1. 상관성: 높은 CPS는 빠른 클릭이 필요한 게임(예: Minecraft, CS:GO 등)에서 유리합니다. \n2. 제한 사항: 게임 성능은 반응 속도, 손-눈 협응, 전략 의식 등 다양한 요인에 의존합니다. \n3. 참고 가치: CPS 테스트는 손속 훈련의 참고 지표로 사용할 수 있지만, 게임 수준을 완전히 대표할 수 없습니다. \n4. 전문 훈련: 특정 게임의 조작 요구에 맞춘 타겟 훈련이 단순히 높은 CPS를 추구하는 것보다 효과적입니다. \n5. 균형 발전: CPS 훈련을 반응 속도, 정확성 훈련과 결합하는 것을 권장합니다.',
     homeFaqQ11: 'CPS 훈련으로 인한 손 피로 또는 부상을 어떻게 피할 수 있나요?',
     homeFaqA11:
       '손 건강을 보호하는 것은 매우 중요하며, 다음 원칙을 따르는 것이 좋습니다. \n1. 적절한 훈련: 한 번 연습은 30분을 넘기지 마세요. 장시간 고강도 조작을 피하세요. \n2. 올바른 자세: 손목을 자연스럽게 똑바로 유지하고, 과도한 구부림이나 비틀림을 피하세요. \n3. 정기 휴식: 10분 연습마다 1-2분씩 휴식을 취하고, 손목과 손가락을 움직이세요. \n4. 손 이완: 연습 전후에 손 스트레칭과 마사지를 하세요. \n5. 장치 적응: 인체 공학에 맞는 마우스를 선택하고, 적합한 마우스 민감도를 조정하세요. \n6. 신호 유의: 손목 통증이나 마비가 발생하면 즉시 연습을 중지하고 휴식하세요. \n7. 교차 활동: 단일 동작 반복을 피하기 위해 정기적으로 다른 비마우스 조작 활동을 하세요.',
-    homeFaqQ12: 'CPS 테스트의 역사와 발전 추세는 무엇인가요?',
-    homeFaqA12:
-      'CPS 테스트의 발전 과정과 추세는 다음과 같습니다. \n1. 기원: 처음 Minecraft 등 게임 커뮤니티에서 유래하여 플레이어의 PvP 능력을 평가하는 데 사용되었습니다. \n2. 발전: 점차 e스포츠 분야로 확장되어 손속 평가의 표준 도구가 되었습니다. \n3. 기술 발전: 단순한 계수 도구에서 데이터 분석과 훈련 제안을 제공하는 전문 플랫폼으로 발전했습니다. \n4. 다양화: 마우스 클릭 외에도 스페이스바 클릭, 키보드 키 등 다양한 테스트 유형으로 확장되었습니다. \n5. 지능화: 향후 AI 분석을 통합하여 개인화된 훈련 계획과 진행 예측을 제공할 것입니다. \n6. 커뮤니티화: 플레이어 순위표와 훈련 커뮤니티를 구축하여 상호 교류와 발전을 촉진합니다.',
     // 鼠标拖动测试相关
     mouseDragTest: '마우스 드래그 테스트',
     totalDistance: '총 거리',

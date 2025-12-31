@@ -192,18 +192,6 @@
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA2'))"></p>
         </div>
         <div class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ3') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA3'))"></p>
-        </div>
-        <div class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ4') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA4'))"></p>
-        </div>
-        <div class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ5') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA5'))"></p>
-        </div>
-        <div class="faq-item">
           <h3 class="faq-question">{{ t('homeFaqQ6') }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA6'))"></p>
         </div>
@@ -220,16 +208,8 @@
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA9'))"></p>
         </div>
         <div class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ10') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA10'))"></p>
-        </div>
-        <div class="faq-item">
           <h3 class="faq-question">{{ t('homeFaqQ11') }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA11'))"></p>
-        </div>
-        <div class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ12') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA12'))"></p>
         </div>
       </div>
     </section>
