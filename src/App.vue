@@ -59,7 +59,11 @@
   // 语言选择相关
   const languages = [
     { code: 'en', name: 'ENGLISH', flag: new URL('@/assets/flags/um.png', import.meta.url).href },
-    { code: 'zh-CN', name: '简体中文', flag: new URL('@/assets/flags/cn.png', import.meta.url).href },
+    {
+      code: 'zh-CN',
+      name: '简体中文',
+      flag: new URL('@/assets/flags/cn.png', import.meta.url).href,
+    },
     { code: 'ja', name: '日本語', flag: new URL('@/assets/flags/jp.png', import.meta.url).href },
     { code: 'ko', name: '한국어', flag: new URL('@/assets/flags/kr.png', import.meta.url).href },
   ];
@@ -446,7 +450,7 @@
     let basePath = currentPath;
 
     // 检查当前路径是否包含语言前缀
-    const supportedLanguages = ['en', 'ja', 'ko'];
+    const supportedLanguages = ['zh-CN', 'ja', 'ko'];
     const pathSegments = currentPath.split('/').filter((segment) => segment !== '');
 
     if (
@@ -460,7 +464,7 @@
 
     // 生成新的URL路径
     let newPath = '';
-    if (languageCode === 'zh-CN') {
+    if (languageCode === 'en') {
       // 默认语言不需要前缀
       newPath = basePath;
     } else {
@@ -613,7 +617,21 @@
   const menuItems = ref<any[]>([]);
   initMenuItems();
 
-  // 组件挂载时添加点击外部关闭菜单的事件监听
+  // 解密分享参数的函数
+  const decodeShareParams = (encodedParams: string) => {
+    try {
+      // Base64解码
+      const paramsJson = atob(encodedParams);
+      // 解析为JSON对象
+      const params = JSON.parse(paramsJson);
+      // 返回解密后的参数
+      return params;
+    } catch (error) {
+      console.error('Failed to decode share params:', error);
+      return null;
+    }
+  };
+
   // 从路由路径获取页面标题
   const getPageTitleFromPath = (path: string): string => {
     // 先移除语言前缀，确保正确匹配路径
@@ -694,6 +712,29 @@
       isSidebarOpen.value = false;
     }
   };
+  
+  // 存储分享参数到sessionStorage
+  const saveShareParams = (params: any) => {
+    try {
+      sessionStorage.setItem('sharedParams', JSON.stringify(params));
+    } catch (error) {
+      console.error('Failed to save shared params to sessionStorage:', error);
+    }
+  };
+
+  // 检查并处理URL中的分享参数
+  const checkAndSaveShareParams = () => {
+    // 检查URL中是否有分享参数
+    const shareParams = new URLSearchParams(window.location.search).get('share');
+    if (shareParams) {
+      // 解密分享参数
+      const decodedParams = decodeShareParams(shareParams);
+      if (decodedParams) {
+        // 保存到sessionStorage
+        saveShareParams(decodedParams);
+      }
+    }
+  };
 
   onMounted(() => {
     document.addEventListener('click', closeAllMenus);
@@ -709,6 +750,9 @@
 
     // 初始加载时，根据当前语言设置更新meta标签
     updateMetaTags(route);
+
+    // 检查并保存URL中的分享参数
+    checkAndSaveShareParams();
   });
 
   // 组件卸载时移除事件监听

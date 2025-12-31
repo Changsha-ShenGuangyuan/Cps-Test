@@ -542,7 +542,7 @@
       flex-direction: row;
       flex-wrap: nowrap;
     }
-    
+
     .game-area-container {
       flex: 1;
       width: auto;
@@ -566,7 +566,6 @@
       display: flex;
     }
   }
-
 
   /* 历史记录项内容 */
   .history-item-content {

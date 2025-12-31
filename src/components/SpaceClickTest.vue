@@ -531,7 +531,7 @@
   <!-- 结果弹窗组件 -->
   <ResultModal
     :visible="showResultModal"
-    :type="'space'"
+    :type="'spaceClickTest'"
     :cps="cps"
     :time="testTime"
     @close="resetGame"
@@ -569,7 +569,7 @@
       flex-direction: row;
       flex-wrap: nowrap;
     }
-    
+
     .game-area {
       flex: 1;
       width: auto;
@@ -1047,8 +1047,6 @@
     z-index: 2;
   }
 
-
-
   /* FAQ 部分 */
   .faq-section {
     margin-top: 30px;
@@ -1089,11 +1087,11 @@
       flex-direction: column;
       align-items: center;
     }
-    
+
     .game-area {
       max-width: 100%;
     }
-    
+
     .history-sidebar {
       width: 100%;
       max-width: 100%;
@@ -1104,7 +1102,7 @@
     .faq-section {
       margin-top: 20px;
     }
-    
+
     /* 统计卡片横向排列，缩小样式 */
     .stats-cards {
       flex-direction: row;
@@ -1175,15 +1173,15 @@
     .click-area {
       height: clamp(180px, 35vh, 250px);
     }
-    
+
     .history-sidebar {
       height: clamp(220px, 35vh, 280px);
     }
-    
+
     .game-title {
       font-size: clamp(20px, 5vw, 24px);
     }
-    
+
     .spacebar-key {
       width: 200px;
       height: 45px;

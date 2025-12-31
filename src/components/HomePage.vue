@@ -1,58 +1,118 @@
 <template>
   <div class="home-container">
-    <!-- 描述区域 -->
-    <section class="hero-section">
-      <div class="hero-content">
-        <h1 class="hero-title">{{ t('websiteName') }}</h1>
-        <p class="hero-subtitle">{{ t('improveSkills') }}</p>
-        <div class="hero-features">
-          <div class="feature-card">
-            <img
-              src="@/assets/icons/keyboard02.png"
-              :alt="t('multipleTestTypesIconAlt')"
-              width="100"
-              height="100"
-              loading="lazy"
-            />
-            <h3>{{ t('multipleTestTypes') }}</h3>
-            <p>{{ t('multipleTestTypesDesc') }}</p>
+    <!-- 5秒空格速度测试 -->
+    <section class="space-test-section">
+      <div class="game-container">
+        <div class="main-content">
+          <!-- 左侧游戏区域 -->
+          <div class="game-area">
+            <h1 class="game-title">Spacebar clicker - {{ t('fiveSecondSpaceTest') }}</h1>
+
+            <!-- 统计卡片 -->
+            <div class="stats-cards">
+              <div class="stat-card timer-card">
+                <div class="stat-value">
+                  {{ !isPlaying && clicks === 0 ? 0 : elapsedTime.toFixed(3) }}
+                </div>
+                <div class="stat-label">{{ t('time') }}</div>
+              </div>
+              <div class="stat-card click-rate-card">
+                <div class="stat-value">
+                  {{ !isPlaying && clicks === 0 ? 0 : currentCps.toFixed(2) }}
+                </div>
+                <div class="stat-label">{{ t('clicksPerSecond') }}</div>
+              </div>
+              <div class="stat-card score-card">
+                <div class="stat-value">{{ clicks }}</div>
+                <div class="stat-label">{{ t('score') }}</div>
+              </div>
+            </div>
+
+            <!-- 点击区域 -->
+            <div
+              class="click-area"
+              :class="{
+                playing: isPlaying,
+                'space-pressed': isSpacePressed,
+              }"
+            >
+              <!-- 游戏结束显示 -->
+              <div v-if="isGameOver" class="game-over-content"></div>
+
+              <!-- 游戏进行中显示 -->
+              <div v-else-if="isPlaying" class="playing-content">
+                <!-- 空格键图标 -->
+                <div class="spacebar-icon">
+                  <div class="spacebar-key" :class="{ 'space-pressed': isSpacePressed }">
+                    {{ t('spaceBar') }}
+                  </div>
+                </div>
+
+                <!-- 提示文字 -->
+                <div v-if="showPressHint" class="hints">{{ t('holdSpaceBar') }}</div>
+              </div>
+
+              <!-- 游戏准备就绪显示 -->
+              <div v-else-if="isGameReady" class="ready-content">
+                <!-- 提示文字 -->
+                <div class="ready-text">{{ t('gettingReady') }}</div>
+
+                <!-- 空格键图标 -->
+                <div class="spacebar-icon">
+                  <div class="spacebar-key" :class="{ 'space-pressed': isSpacePressed }">
+                    {{ t('spaceBar') }}
+                  </div>
+                </div>
+
+                <!-- 提示文字 -->
+                <div class="hints">{{ t('pressSpaceToStart') }}</div>
+              </div>
+
+              <!-- 初始状态显示 -->
+              <div v-else class="start-content">
+                <!-- 空格键图标 -->
+                <div class="spacebar-icon">
+                  <div
+                    class="spacebar-key"
+                    :class="{ 'space-pressed': isSpacePressed }"
+                    style="cursor: pointer"
+                    @click="handleSpacebarClick"
+                  >
+                    {{ t('spaceBar') }}
+                  </div>
+                  <div class="spacebar-hint">{{ t('clickSpaceToStart') }}</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="feature-card">
-            <img
-              src="@/assets/icons/statistics.png"
-              :alt="t('realTimeStatsIconAlt')"
-              width="100"
-              height="100"
-              loading="lazy"
-            />
-            <h3>{{ t('realTimeStats') }}</h3>
-            <p>{{ t('realTimeStatsDesc') }}</p>
-          </div>
-          <div class="feature-card">
-            <img
-              src="@/assets/icons/reaction.png"
-              :alt="t('historyIconAlt')"
-              width="100"
-              height="100"
-              loading="lazy"
-            />
-            <h3>{{ t('historyRecords') }}</h3>
-            <p>{{ t('historyRecordsDesc') }}</p>
-          </div>
-          <div class="feature-card">
-            <img
-              src="@/assets/icons/game02.png"
-              :alt="t('gameifiedExperienceIconAlt')"
-              width="100"
-              height="100"
-              loading="lazy"
-            />
-            <h3>{{ t('gamifiedExperience') }}</h3>
-            <p>{{ t('gamifiedExperienceDesc') }}</p>
+
+          <!-- 右侧时间选择区域 -->
+          <div class="time-select-sidebar">
+            <h3 class="time-select-title">{{ t('selectTime') }}</h3>
+            <div class="time-select-list">
+              <button
+                v-for="time in supportedTimes"
+                :key="time"
+                class="time-select-item"
+                :class="{ active: time === 5 }"
+                @click="navigateTo('/space-click-test/' + time)"
+              >
+                {{ time }} {{ t('secondsTest') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- 结果弹窗组件 -->
+    <ResultModal
+      :visible="showResultModal"
+      :type="'space'"
+      :cps="cps"
+      :time="testDuration"
+      @close="resetGame"
+    />
 
     <!-- 快速开始区域 -->
     <section class="quick-start-section">
@@ -178,9 +238,11 @@
 
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted, computed } from 'vue';
 
   import { t } from '../i18n/index';
+  // 导入结果弹窗组件
+  import ResultModal from './ResultModal.vue';
 
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
@@ -252,14 +314,187 @@
     return htmlAnswer;
   };
 
-  // 组件挂载时添加结构化数据和窗口大小监听
+  // 支持的测试时间数组
+  const supportedTimes = [1, 2, 5, 10, 15, 30, 60];
+
+  // 5秒空格速度测试相关变量
+  const isPlaying = ref(false);
+  const isGameReady = ref(false);
+  const isGameOver = ref(false);
+  const showPressHint = ref(true);
+  const startTime = ref(0);
+  const endTime = ref(0);
+  const clicks = ref(0);
+  const cps = ref(0);
+  const timer = ref<number | null>(null);
+  const elapsedTime = ref(0);
+  const isSpacePressed = ref(false);
+  const showResultModal = ref(false);
+  const testDuration = 5; // 5秒测试
+
+  // 实时计算当前CPS
+  const currentCps = computed(() => {
+    // 游戏结束时，显示最终CPS值
+    if (isGameOver.value) {
+      return cps.value;
+    }
+
+    // 游戏未开始或无点击则返回0
+    if (!isPlaying.value || clicks.value === 0) return 0;
+
+    // 避免除以0或极小值导致的Infinity
+    if (elapsedTime.value < 0.1) return 0;
+
+    // 计算CPS并保留2位小数
+    return Math.round((clicks.value / elapsedTime.value) * 100) / 100;
+  });
+
+  // 点击空格键按钮处理函数
+  const handleSpacebarClick = () => {
+    // 标记游戏准备就绪
+    isGameReady.value = true;
+    // 重新显示提示
+    showPressHint.value = true;
+  };
+
+  // 游戏开始函数
+  const startGame = () => {
+    if (isPlaying.value) return; // 防止重复开始
+
+    // 重置游戏状态
+    clicks.value = 0;
+    startTime.value = Date.now(); // 记录开始时间
+    isPlaying.value = true;
+    isGameOver.value = false; // 确保游戏未结束
+    elapsedTime.value = 0; // 重置已用时间
+
+    // 设置定时器，每50ms更新一次状态
+    timer.value = window.setInterval(() => {
+      // 计算并更新已用时间（秒）
+      const elapsed = (Date.now() - startTime.value) / 1000;
+      elapsedTime.value = Math.min(elapsed, testDuration);
+
+      // 检查时间是否结束
+      if (elapsed >= testDuration) {
+        endGame();
+      }
+    }, 50); // 50ms更新一次，确保毫秒级显示流畅
+  };
+
+  // 游戏结束函数
+  const endGame = () => {
+    isPlaying.value = false; // 标记游戏结束
+    isGameOver.value = true; // 设置最终结束状态
+    endTime.value = Date.now(); // 记录结束时间
+
+    // 计算最终CPS，使用规定的测试时间
+    cps.value = testDuration > 0 ? Math.round((clicks.value / testDuration) * 100) / 100 : 0;
+
+    // 确保已用时间显示为规定的测试时间
+    elapsedTime.value = testDuration;
+
+    // 清除定时器
+    if (timer.value) {
+      clearInterval(timer.value);
+      timer.value = null;
+    }
+
+    // 显示结果弹窗
+    showResultModal.value = true;
+  };
+
+  // 重置游戏函数
+  const resetGame = () => {
+    // 重置所有游戏状态，回到初始状态
+    isPlaying.value = false;
+    isGameReady.value = false; // 重置准备状态，需要重新点击空格键
+    isGameOver.value = false;
+    isSpacePressed.value = false; // 重置空格键按下状态
+    clicks.value = 0;
+    cps.value = 0;
+    elapsedTime.value = 0;
+    showPressHint.value = true; // 重置提示显示
+    showResultModal.value = false; // 关闭结果弹窗
+
+    // 清除定时器
+    if (timer.value) {
+      clearInterval(timer.value);
+      timer.value = null;
+    }
+  };
+
+  // 空格键按下处理函数
+  const handleSpaceDown = (event: KeyboardEvent) => {
+    // 只处理空格键
+    if (event.code !== 'Space') return;
+
+    // 阻止空格的默认行为（防止页面滚动）
+    event.preventDefault();
+
+    // 游戏结束，不处理点击事件
+    if (isGameOver.value) {
+      return;
+    }
+
+    // 游戏未准备就绪，不处理点击事件
+    if (!isGameReady.value) {
+      return;
+    }
+
+    // 如果已经按下，不再处理
+    if (isSpacePressed.value) {
+      return;
+    }
+
+    // 标记空格键已按下
+    isSpacePressed.value = true;
+
+    // 隐藏提示
+    showPressHint.value = false;
+
+    // 游戏未开始，开始游戏
+    if (!isPlaying.value) {
+      startGame();
+    }
+  };
+
+  // 空格键释放处理函数
+  const handleSpaceUp = (event: KeyboardEvent) => {
+    // 只处理空格键
+    if (event.code !== 'Space') return;
+
+    // 阻止空格的默认行为（防止页面滚动）
+    event.preventDefault();
+
+    // 游戏结束，不处理点击事件
+    if (isGameOver.value) {
+      return;
+    }
+
+    // 游戏未准备就绪，不处理点击事件
+    if (!isGameReady.value) {
+      return;
+    }
+
+    // 标记空格键已释放
+    isSpacePressed.value = false;
+
+    // 更新点击次数（游戏进行中）
+    if (isPlaying.value) {
+      clicks.value++;
+    }
+  };
+
+  // 组件挂载时添加事件监听
   onMounted(() => {
     renderFeatureStructuredData();
     renderGuideStructuredData();
     window.addEventListener('resize', handleResize);
+    window.addEventListener('keydown', handleSpaceDown);
+    window.addEventListener('keyup', handleSpaceUp);
   });
 
-  // 组件卸载时移除结构化数据和窗口大小监听
+  // 组件卸载时移除事件监听
   onUnmounted(() => {
     const existingFeatureData = document.getElementById('feature-structured-data');
     if (existingFeatureData) {
@@ -272,6 +507,11 @@
     }
 
     window.removeEventListener('resize', handleResize);
+    window.removeEventListener('keydown', handleSpaceDown);
+    window.removeEventListener('keyup', handleSpaceUp);
+    if (timer.value) {
+      clearInterval(timer.value);
+    }
   });
 
   // 生成功能特性结构化数据
@@ -383,69 +623,522 @@
     padding: 20px; /* 内边距 */
   }
 
-  /* 英雄区域样式 - 页面顶部的主要宣传区域 */
-  .hero-section {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); /* 渐变色背景 */
-    border-radius: 15px; /* 圆角边框 */
-    padding: 20px 20px; /* 内边距 */
-    text-align: center; /* 文本居中 */
-    margin-bottom: 40px; /* 底部外边距 */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* 阴影效果，增加深度感 */
+  /* 5秒空格速度测试样式 */
+  .space-test-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
 
-  /* 英雄区域标题样式 */
-  .hero-title {
-    font-size: 48px; /* 大字号标题 */
-    color: #4caf50; /* 主题色 */
-    margin-top: 0px; /* 顶部外边距 */
-    margin-bottom: 15px; /* 底部外边距 */
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* 文本阴影，增强可读性 */
+  /* 游戏容器 */
+  .game-container {
+    margin: 0 auto;
+    text-align: center;
+    padding: clamp(10px, 2vw, 20px);
+    background-color: transparent;
+    box-shadow: none;
+    width: 100%;
+    border-radius: 10px;
+    box-sizing: border-box;
   }
 
-  /* 英雄区域副标题样式 */
-  .hero-subtitle {
-    font-size: 24px; /* 中号字号 */
-    color: #cccccc; /* 浅灰色文本 */
-    margin-bottom: 40px; /* 底部外边距 */
-    opacity: 0.9; /* 半透明效果 */
+  /* 主内容区域 - 左侧游戏 + 右侧时间选择 */
+  .main-content {
+    display: flex;
+    gap: clamp(10px, 2vw, 20px);
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
   }
 
-  /* 英雄区域功能特性样式 - 网格布局 */
-  .hero-features {
-    display: grid; /* 使用CSS Grid布局 */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 自适应列数，最小列宽250px */
-    gap: 20px; /* 列间距 */
-    margin-top: 40px; /* 顶部外边距 */
+  /* 时间选择侧边栏 */
+  .time-select-sidebar {
+    flex: 0 1 calc(25% - 10px);
+    background-color: rgba(30, 30, 30, 0.8);
+    border-radius: 12px;
+    padding: clamp(16px, 3vw, 20px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 1);
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
   }
 
-  /* 功能卡片样式 */
-  .feature-card {
-    background-color: rgba(42, 42, 42, 0.8); /* 半透明深色背景 */
-    padding: 30px 20px; /* 内边距 */
-    border-radius: 10px; /* 圆角边框 */
-    transition: all 0.3s ease; /* 过渡动画，悬停时平滑变化 */
-    border: 1px solid #333; /* 深色边框 */
+  /* 时间选择标题 */
+  .time-select-title {
+    color: #ffffff;
+    font-size: clamp(18px, 4vw, 20px);
+    font-weight: bold;
+    margin-bottom: clamp(16px, 3vw, 20px);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
-  /* 功能卡片悬停效果 */
-  .feature-card:hover {
-    transform: translateY(-5px); /* 向上移动5px */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* 增强阴影效果 */
-    border-color: #4caf50; /* 边框颜色变为主题色 */
+  /* 时间选择列表 */
+  .time-select-list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2vw, 10px);
+    flex: 1;
   }
 
-  /* 功能卡片标题样式 */
-  .feature-card h3 {
-    color: #ffffff; /* 白色文本 */
-    margin-bottom: 10px; /* 底部外边距 */
-    font-size: 20px; /* 中号字号 */
+  /* 时间选择项 */
+  .time-select-item {
+    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+    border: none;
+    border-radius: 8px;
+    padding: clamp(10px, 3vw, 15px) clamp(12px, 4vw, 20px);
+    color: #ffffff;
+    font-size: clamp(13px, 3vw, 16px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    outline: none;
   }
 
-  /* 功能卡片描述文本样式 */
-  .feature-card p {
-    color: #cccccc; /* 浅灰色文本 */
-    font-size: 14px; /* 小号字号 */
-    line-height: 1.5; /* 行高，增强可读性 */
+  /* 时间选择项悬停效果 */
+  .time-select-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(145deg, #444, #333);
+  }
+
+  /* 时间选择项激活状态 */
+  .time-select-item.active {
+    background: linear-gradient(145deg, #4caf50, #45a049);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+    color: #ffffff;
+  }
+
+  /* 时间选择项焦点状态 */
+  .time-select-item:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.5);
+  }
+
+  /* 时间选择项点击状态 */
+  .time-select-item:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* 桌面端布局 */
+  @media (min-width: 1200px) {
+    .main-content {
+      flex-wrap: nowrap;
+    }
+
+    .game-area {
+      flex: 1;
+    }
+
+    .time-select-sidebar {
+      flex: 0 1 calc(25% - 10px);
+    }
+  }
+
+  /* 中等屏幕布局 */
+  @media (max-width: 1199px) {
+    .time-select-sidebar {
+      width: 100%;
+      flex: 1 1 100%;
+    }
+
+    .time-select-item {
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+  }
+
+  /* 游戏区域 */
+  .game-area {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* 游戏标题样式 */
+  .game-title {
+    color: #4caf50;
+    margin: 0 0 clamp(10px, 2vw, 20px) 0;
+    font-size: clamp(20px, 4vw, 26px);
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  /* 统计卡片 */
+  .stats-cards {
+    display: flex;
+    gap: clamp(8px, 2vw, 16px);
+    justify-content: center;
+    margin-bottom: clamp(15px, 3vw, 20px);
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    flex: 1;
+    min-width: clamp(100px, 25vw, 150px);
+    padding: clamp(12px, 3vw, 16px) clamp(15px, 3vw, 20px);
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .timer-card {
+    background-color: #646cff; /* 蓝色 */
+  }
+
+  .click-rate-card {
+    background-color: #ff7b00; /* 橙色 */
+  }
+
+  .score-card {
+    background-color: #4caf50; /* 绿色 */
+  }
+
+  .stat-value {
+    font-size: clamp(24px, 5vw, 32px);
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: clamp(14px, 2.5vw, 16px);
+    opacity: 0.95;
+    line-height: 1;
+    font-weight: normal;
+  }
+
+  /* 点击区域 */
+  .click-area {
+    width: 100%;
+    height: clamp(300px, 50vh, 450px);
+    background-color: #000000;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: clamp(20px, 4vw, 24px);
+    font-weight: bold;
+    margin: 0 auto clamp(15px, 3vw, 20px);
+    border: 2px solid #333;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .click-area:hover {
+    transform: none;
+  }
+
+  .click-area.playing {
+    background-color: #000000;
+  }
+
+  /* 空格键图标 */
+  .spacebar-icon {
+    margin-bottom: 20px;
+    perspective: 1000px;
+  }
+
+  .spacebar-key {
+    width: 300px;
+    height: 60px;
+    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+    border: 1px solid #444;
+    border-radius: 8px;
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.1s ease;
+    position: relative;
+    transform-style: preserve-3d;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .spacebar-key:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 25px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .spacebar-key:active {
+    transform: translateY(0);
+    box-shadow:
+      0 6px 15px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    outline: none;
+  }
+
+  .spacebar-key:focus {
+    outline: none;
+  }
+
+  /* 空格键按下特效 */
+  .spacebar-key.space-pressed {
+    transform: translateY(2px) scale(0.98);
+    background: linear-gradient(145deg, #4caf50, #45a049);
+    box-shadow:
+      0 4px 10px rgba(76, 175, 80, 0.3),
+      inset 0 2px 0 rgba(0, 0, 0, 0.2);
+    border-color: #4caf50;
+    color: #ffffff;
+    animation: pulse 0.2s ease-in-out;
+  }
+
+  /* 点击区域按下特效 */
+  .click-area.space-pressed {
+    background-color: #000000;
+    border-color: #4caf50;
+    box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.2);
+    animation: clickGlow 0.3s ease-in-out;
+  }
+
+  /* 脉动动画 */
+  @keyframes pulse {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(3px) scale(0.97);
+    }
+    100% {
+      transform: translateY(2px) scale(0.98);
+    }
+  }
+
+  /* 点击发光动画 */
+  @keyframes clickGlow {
+    0% {
+      box-shadow: inset 0 0 0 rgba(76, 175, 80, 0);
+    }
+    50% {
+      box-shadow: inset 0 0 50px rgba(76, 175, 80, 0.3);
+    }
+    100% {
+      box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.2);
+    }
+  }
+
+  /* 空格键提示 */
+  .spacebar-hint {
+    margin-top: 10px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* 提示文字 */
+  .hints {
+    font-size: 16px;
+    opacity: 0.6;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* 开始状态内容 */
+  .start-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* 游戏准备就绪内容 */
+  .ready-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .ready-text {
+    font-size: 64px;
+    font-weight: bold;
+    color: #4caf50;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  /* 游戏进行中内容 */
+  .playing-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* 游戏结束内容 */
+  .game-over-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* 移动端适配 */
+  @media (max-width: 768px) {
+    .space-test-section {
+      padding: 10px;
+    }
+
+    /* 统计卡片横向排列，缩小样式 */
+    .stats-cards {
+      flex-direction: row;
+      align-items: center;
+      gap: clamp(5px, 1vw, 8px);
+      justify-content: center;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: clamp(70px, 20vw, 80px);
+      max-width: none;
+      padding: clamp(6px, 2vw, 8px) clamp(8px, 2vw, 12px);
+    }
+
+    .stat-value {
+      font-size: clamp(20px, 5vw, 24px);
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: clamp(10px, 2vw, 12px);
+    }
+
+    /* 点击区域优化 */
+    .click-area {
+      height: clamp(200px, 40vh, 300px);
+      font-size: clamp(18px, 4vw, 20px);
+      width: clamp(95%, 98vw, 98%);
+    }
+
+    /* 空格键优化 */
+    .spacebar-key {
+      width: 250px;
+      height: 50px;
+      font-size: 16px;
+    }
+
+    /* 准备就绪文字优化 */
+    .ready-text {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    /* 提示文字优化 - 往上移 */
+    .hints {
+      margin-top: 5px;
+      transform: translateY(-10px);
+    }
+
+    /* 时间选择区域优化 */
+    .time-select-sidebar {
+      padding: 18px;
+    }
+
+    .time-select-title {
+      font-size: 19px;
+      margin-bottom: 18px;
+    }
+
+    .time-select-item {
+      padding: 13px 18px;
+      font-size: 14px;
+    }
+
+    .time-select-list {
+      gap: 8px;
+    }
+  }
+
+  /* 超小屏幕适配 */
+  @media (max-width: 480px) {
+    .click-area {
+      height: clamp(180px, 35vh, 250px);
+    }
+
+    .game-title {
+      font-size: clamp(20px, 5vw, 24px);
+    }
+
+    .spacebar-key {
+      width: 200px;
+      height: 45px;
+      font-size: 14px;
+    }
+
+    /* 超小屏幕提示文字进一步优化 */
+    .hints {
+      margin-top: 0;
+      transform: translateY(-5px);
+      font-size: 14px;
+    }
+
+    /* 超小屏幕准备就绪文字进一步优化 */
+    .ready-text {
+      font-size: 36px;
+      margin-bottom: 15px;
+    }
+
+    /* 时间选择项超小屏幕适配 */
+    .time-select-item {
+      padding: 10px 12px;
+      font-size: 13px;
+      letter-spacing: 0.3px;
+    }
+
+    .time-select-title {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .time-select-sidebar {
+      padding: 16px;
+    }
   }
 
   /* 快速开始区域样式 */

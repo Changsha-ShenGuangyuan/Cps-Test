@@ -179,7 +179,8 @@ const publicRoutes = [
   {
     path: '/target-elimination-game',
     name: 'TargetEliminationGame',
-    component: () => import(/* rollupChunkName: "test" */ '../components/TargetEliminationGame.vue'), // 目标消除游戏组件
+    component: () =>
+      import(/* rollupChunkName: "test" */ '../components/TargetEliminationGame.vue'), // 目标消除游戏组件
     props: true,
     meta: {
       title: '目标消除游戏 - CPSTest',
@@ -281,12 +282,12 @@ const notFoundRoute = {
   },
 };
 
-// 定义支持的语言
-const supportedLanguages = ['en', 'ja', 'ko'];
+// 定义支持的语言（不包括默认语言英语）
+const supportedLanguages = ['zh-CN', 'ja', 'ko'];
 
 // 定义路由规则 - 支持多语言路径前缀
 const routes = [
-  // 默认语言路由（中文，无需前缀）
+  // 默认语言路由（英语，无需前缀）
   ...publicRoutes,
 
   // 其他语言路由（带前缀）
@@ -371,7 +372,7 @@ export const updateMetaTags = (to: any) => {
     pageTitle = to.meta.title || t('websiteName');
   }
   // 完整标题格式：页面标题 - 网站名称（用于SEO和品牌推广）
-  const fullPageTitle = to.name === 'Home' ? `${pageTitle}` : `${pageTitle} | CpsTestGo`;
+  const fullPageTitle = to.name === 'Home' ? `${pageTitle}` : `${pageTitle} - CPSTestGo`;
   document.title = fullPageTitle;
 
   // 设置meta描述 - 根据路由参数动态生成
@@ -466,6 +467,7 @@ export const updateMetaTags = (to: any) => {
           name: pageTitle,
           description: metaDesc,
           url: currentUrl,
+          keywords: metaKeywords,
           applicationCategory: 'GameApplication',
           operatingSystem: 'Any',
           offers: {
@@ -491,6 +493,7 @@ export const updateMetaTags = (to: any) => {
           name: t('schemaName'),
           description: metaDesc,
           url: currentUrl,
+          keywords: metaKeywords,
           publisher: {
             '@type': 'Organization',
             name: t('schemaPublisher'),
@@ -513,7 +516,7 @@ export const updateMetaTags = (to: any) => {
 
 // 获取不带语言前缀的路径
 const getPathWithoutLangPrefix = (path: string): string => {
-  const supportedLanguages = ['en', 'ja', 'ko'];
+  const supportedLanguages = ['zh-CN', 'ja', 'ko'];
   const pathSegments = path.split('/').filter((segment) => segment !== '');
 
   if (pathSegments.length > 0 && pathSegments[0] && supportedLanguages.includes(pathSegments[0])) {
@@ -528,8 +531,8 @@ const getPathWithoutLangPrefix = (path: string): string => {
 const generateLangPath = (path: string, lang: string): string => {
   const basePath = getPathWithoutLangPrefix(path);
 
-  // 默认语言（中文）不需要前缀
-  if (lang === 'zh-CN') {
+  // 默认语言（英语）不需要前缀
+  if (lang === 'en') {
     return basePath;
   }
 

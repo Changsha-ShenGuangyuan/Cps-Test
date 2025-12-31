@@ -504,13 +504,13 @@
         <div class="history-header">
           <h3>
             <img
-                src="../assets/icons/history.png"
-                width="30"
-                height="30"
-                :alt="t('historyIconAlt')"
-                class="history-icon"
-                loading="lazy"
-              />
+              src="../assets/icons/history.png"
+              width="30"
+              height="30"
+              :alt="t('historyIconAlt')"
+              class="history-icon"
+              loading="lazy"
+            />
             {{ t('history') }}
           </h3>
         </div>
@@ -541,7 +541,7 @@
   <!-- 结果弹窗组件 -->
   <ResultModal
     :visible="showResultModal"
-    :type="'click'"
+    :type="'clickTest'"
     :cps="cps"
     :time="testTime"
     @close="resetGame"
@@ -579,7 +579,7 @@
       flex-direction: row;
       flex-wrap: nowrap;
     }
-    
+
     .game-area {
       flex: 1;
       width: auto;
@@ -804,8 +804,6 @@
     background: #1a1a1a;
   }
 
-
-
   /* 时间选择器 */
   .time-selector {
     text-align: center;
@@ -971,8 +969,6 @@
     padding: 0 20px;
   }
 
-
-
   /* FAQ 部分 */
   .faq-section {
     margin-top: 30px;
@@ -1111,11 +1107,11 @@
       flex-direction: column;
       align-items: center;
     }
-    
+
     .game-area {
       max-width: 100%;
     }
-    
+
     .history-sidebar {
       width: 100%;
       max-width: 100%;
@@ -1126,7 +1122,7 @@
     .faq-section {
       margin-top: 20px;
     }
-    
+
     /* 统计卡片横向排列，缩小样式 */
     .stats-cards {
       flex-direction: row;
@@ -1210,11 +1206,11 @@
     .click-area {
       height: clamp(180px, 35vh, 250px);
     }
-    
+
     .history-sidebar {
       height: clamp(220px, 35vh, 280px);
     }
-    
+
     .game-title {
       font-size: clamp(20px, 5vw, 24px);
     }

@@ -15,17 +15,17 @@ interface TranslationResources {
 // 翻译资源
 const resources: TranslationResources = {
   'zh-CN': {
-    websiteName: 'CPS Test - 点击速度与反应能力训练平台',
+    websiteName: 'Spacebar Clicker - CPSTestGo',
     metaDescription:
-      'CPS Test - 免费、专业、快速的点击速度测试平台，提供实时反馈和全面的测试项目，包括反应时间测试、打字测试等多种测试，支持多语言，记录历史成绩',
+      'Spacebar Clicker - 专业的键盘空格键测试与点击速度挑战工具。一键测试您键盘的空格键寿命，测量您的极限CPS（每秒点击次数），适合游戏玩家和硬件爱好者。',
     metaKeywords:
-      'CPS Test,免费测试,专业测试,实时测试,快速测试,全面测试,点击速度测试,反应时间测试,打字测试,鼠标滚动测试,空格点击测试',
+      '空格键点击器，反应速度测试，键盘测试，CPS测试，CPS，CPS测试器，点击速度测试，每秒点击数',
     ogDescription:
-      'CPS Test平台，免费、专业的点击速度测试训练系统，提供快速、实时的测试反馈和全面的训练项目，支持多语言，记录历史成绩',
+      'Spacebar Clicker - 专业的键盘空格键测试与点击速度挑战工具。一键测试您键盘的空格键寿命，测量您的极限CPS（每秒点击次数），适合游戏玩家和硬件爱好者。',
     schemaDescription:
-      'CPS Test平台，免费、专业的点击速度测试训练系统，提供快速、实时的测试反馈和全面的训练项目，支持多语言，记录历史成绩',
-    schemaName: 'CPS Test - 点击速度与反应能力训练平台',
-    schemaPublisher: 'CPS Test平台',
+      'Spacebar Clicker - 专业的键盘空格键测试与点击速度挑战工具。一键测试您键盘的空格键寿命，测量您的极限CPS（每秒点击次数），适合游戏玩家和硬件爱好者。',
+    schemaName: 'Spacebar Clicker - CPSTestGo',
+    schemaPublisher: 'Spacebar Clicker - CPSTestGo',
     home: '首页',
     popularTests: '热门测试',
     quickLinks: '快速链接',
@@ -690,33 +690,54 @@ const resources: TranslationResources = {
     privacyDataRetention2: '法律要求：如果法律要求，我们会在规定的期限内保留您的数据。',
     privacyDataRetention3:
       '删除政策：当您要求删除数据或数据不再需要时，我们会安全地删除或匿名化您的数据。',
+    // 5秒空格速度测试相关
+    fiveSecondSpaceTest: '5秒空格速度测试',
+    selectTime: '选择时间',
+    secondsTest: '秒空格速度测试',
+    manualClickTest: '手动点击测试',
+    holdSpaceBar: '按住空格键',
+    clicksPerSecond: '点击/秒',
+
     copyright: '© 2025 CPSTestGo - 版权所有',
     // ResultModal组件翻译
     resultModal: {
       // 详细信息
       details: '{time}秒内单击{clicks}次点击次',
+      // 详细信息拆分文本
+      detailsText: '',
+      seconds: '秒',
+      clickText: '内单击',
+      timesText: '次点击次',
       // 按钮文本
       okButton: '好',
+      // 结果对比
+      comparisonTitle: '结果对比',
+      yourCps: '你的CPS',
+      friendCps: '朋友的CPS',
+      vs: '对比',
+      resultBetter: '你赢了！',
+      resultWorse: '你输了！',
+      resultEqual: '平局！',
       // 不同CPS范围的描述
       slow: {
         desc1: '你的点击速度较慢，还需要多加练习！',
-        desc2: '不要灰心，继续努力，你会变得更快！'
+        desc2: '不要灰心，继续努力，你会变得更快！',
       },
       average: {
         desc1: '你的点击速度一般，还有提升空间！',
-        desc2: '不错的表现，继续保持这个节奏！'
+        desc2: '不错的表现，继续保持这个节奏！',
       },
       fast: {
         desc1: '你的点击速度很快，已经超过了大多数人！',
-        desc2: '太棒了，你的手速真的很快！'
+        desc2: '太棒了，你的手速真的很快！',
       },
       superFast: {
         desc1: '你的点击速度超级快，简直像闪电一样！',
-        desc2: '太惊人了，你是天生的点击高手！'
+        desc2: '太惊人了，你是天生的点击高手！',
       },
       ultraFast: {
         desc1: '你的点击速度突破了极限，你是点击之神！',
-        desc2: '不可能！你的手速已经超越了人类的认知！'
+        desc2: '不可能！你的手速已经超越了人类的认知！',
       },
       // CPS反馈
       feedback: {
@@ -724,22 +745,31 @@ const resources: TranslationResources = {
         average: '结果不错，继续努力！',
         fast: '结果很好，你是点击高手！',
         superFast: '结果非常好，你是点击大师！',
-        ultraFast: '结果太棒了，你是点击之神！'
-      }
+        ultraFast: '结果太棒了，你是点击之神！',
+      },
+      // 分享相关翻译
+      shareTitle: '分享你的成绩',
+      shareX: '分享到X',
+      shareWhatsApp: '分享到WhatsApp',
+      shareWeChat: '分享到微信',
+      shareText: '我在 {testType} 测试中获得了 {cps} CPS（{time} 秒内点击了 {count} 次）！你能打败我的成绩吗？立即尝试！',
+      ShareClickTest: 'CPS',
+      ShareSpaceClickTest: '空格键点击器',
+      ShareKohiClickTest: 'Kohi',
     },
   },
   en: {
-    websiteName: 'CPS Test - Click Speed and Reaction Training Platform',
+    websiteName: 'Spacebar Clicker - CPSTestGo',
     metaDescription:
-      'CPS Test - Free, professional, fast click speed testing platform with real-time feedback and comprehensive test items, including reaction time test, typing test and more, supporting multiple languages and recording historical scores',
+      'Spacebar Clicker - A professional tool for testing keyboard spacebar durability and click speed challenges. Test your keyboards spacebar lifespan with one click and measure your maximum CPS (clicks per second), perfect for gamers and hardware enthusiasts.',
     metaKeywords:
-      'CPS Test,free test,professional test,real-time test,fast test,comprehensive test,click speed test,reaction time test,typing test,mouse scroll test,space click test',
+      'Spacebar Clicker, Reaction Speed Test, Keyboard Test, CPS Test, CPS, CPS Tester, Click Speed Test, Clicks Per Second',
     ogDescription:
-      'CPS Test platform, free, professional click speed training system, providing fast, real-time test feedback and comprehensive training items, supporting multiple languages and recording historical scores',
+      'Spacebar Clicker - A professional tool for testing keyboard spacebar durability and click speed challenges. Test your keyboards spacebar lifespan with one click and measure your maximum CPS (clicks per second), perfect for gamers and hardware enthusiasts.',
     schemaDescription:
-      'CPS Test platform, free, professional click speed training system, providing fast, real-time test feedback and comprehensive training items, supporting multiple languages and recording historical scores',
-    schemaName: 'CPS Test - Click Speed and Reaction Training Platform',
-    schemaPublisher: 'CPS Test Platform',
+      'Spacebar Clicker - A professional tool for testing keyboard spacebar durability and click speed challenges. Test your keyboards spacebar lifespan with one click and measure your maximum CPS (clicks per second), perfect for gamers and hardware enthusiasts.',
+    schemaName: 'Spacebar Clicker - CPSTestGo',
+    schemaPublisher: 'Spacebar Clicker - CPSTestGo',
     home: 'Home',
     popularTests: 'Popular Tests',
     quickLinks: 'Quick Links',
@@ -957,7 +987,7 @@ const resources: TranslationResources = {
       'Reference standards:\nBeginner: 6-8 CPS\nAverage: 8-10 CPS\nSkilled: 10-12 CPS\nExcellent: 12-15 CPS\nProfessional: 15+ CPS',
     faqClick1Q3: 'Why do the results of the 1-second mouse click test fluctuate greatly?',
     faqClick1A3:
-      'Reasons include: unstable starting rhythm, finger tension causing卡顿, inattention, device response delay',
+      'Reasons include: unstable starting rhythm, finger tension causing stuttering, inattention, device response delay',
     faqClick1Q4: 'How to improve the score of the 1-second mouse click test?',
     faqClick1A4:
       'Suggestions: Keep your fingers relaxed, do not use excessive force, find a clicking rhythm that suits you, do hand warm-up before testing, use a high polling rate mouse (1000Hz)',
@@ -970,7 +1000,7 @@ const resources: TranslationResources = {
       'Reference standards: Beginner: 5-7 CPS Average: 7-9 CPS Skilled: 9-11 CPS Excellent: 11-14 CPS Professional: 14+ CPS',
     spaceFaq1Q3: 'Why do the results of the 1-second space click test fluctuate greatly?',
     spaceFaq1A3:
-      'Reasons include: unstable starting rhythm, finger tension causing卡顿, inattention, keyboard response delay',
+      'Reasons include: unstable starting rhythm, finger tension causing stuttering, inattention, keyboard response delay',
     spaceFaq1Q4: 'How to improve the score of the 1-second space click test?',
     spaceFaq1A4:
       'Suggestions: Keep your fingers relaxed, do not use excessive force, find a clicking rhythm that suits you, do hand warm-up before testing, use a mechanical keyboard or high-response keyboard',
@@ -1451,33 +1481,54 @@ const resources: TranslationResources = {
       'Legal requirements: If required by law, we will retain your data for the specified period.',
     privacyDataRetention3:
       'Deletion policy: When you request data deletion or when data is no longer needed, we will securely delete or anonymize your data.',
+    // 5 Second Space Click Test related
+    fiveSecondSpaceTest: '5 Second Space Click Test',
+    selectTime: 'Select Time',
+    secondsTest: 'Second Space Click Test',
+    manualClickTest: 'Manual Click Test',
+    holdSpaceBar: 'Hold Space Bar',
+    clicksPerSecond: 'Clicks/Second',
+
     copyright: '© 2025 CPSTestGo - All Rights Reserved',
     // ResultModal component
     resultModal: {
       // Details
       details: '{time} seconds with {clicks} clicks',
+      // Details split text
+      detailsText: '',
+      seconds: 'seconds',
+      clickText: 'with',
+      timesText: 'clicks',
       // Button text
       okButton: 'Okay',
+      // Comparison
+      comparisonTitle: 'Result Comparison',
+      yourCps: 'Your CPS',
+      friendCps: 'Friend\'s CPS',
+      vs: 'vs',
+      resultBetter: 'You won!',
+      resultWorse: 'You lost!',
+      resultEqual: 'It\'s a tie!',
       // Different CPS range descriptions
       slow: {
         desc1: 'Your clicking speed is slow, you need more practice!',
-        desc2: 'Don\'t be discouraged, keep trying, you will get faster!'
+        desc2: "Don't be discouraged, keep trying, you will get faster!",
       },
       average: {
         desc1: 'Your clicking speed is average, there is still room for improvement!',
-        desc2: 'Good performance, keep this rhythm!'
+        desc2: 'Good performance, keep this rhythm!',
       },
       fast: {
         desc1: 'Your clicking speed is fast, you have surpassed most people!',
-        desc2: 'Great job, your hand speed is really fast!'
+        desc2: 'Great job, your hand speed is really fast!',
       },
       superFast: {
         desc1: 'Your clicking speed is super fast, like lightning!',
-        desc2: 'Amazing, you are a natural clicking master!'
+        desc2: 'Amazing, you are a natural clicking master!',
       },
       ultraFast: {
         desc1: 'Your clicking speed has broken the limit, you are the clicking god!',
-        desc2: 'Impossible! Your hand speed has exceeded human cognition!'
+        desc2: 'Impossible! Your hand speed has exceeded human cognition!',
       },
       // CPS feedback
       feedback: {
@@ -1485,14 +1536,23 @@ const resources: TranslationResources = {
         average: 'Good result, keep trying!',
         fast: 'Great result, you are a clicking master!',
         superFast: 'Excellent result, you are a clicking legend!',
-        ultraFast: 'Incredible result, you are the clicking god!'
-      }
+        ultraFast: 'Incredible result, you are the clicking god!',
+      },
+      // Share related translations
+      shareTitle: 'Share your score',
+      shareX: 'Share to X',
+      shareWhatsApp: 'Share to WhatsApp',
+      shareWeChat: 'Share to WeChat',
+      shareText: 'I got {cps} CPS in {testType} test ({count} clicks in {time} seconds)! Can you beat my score? Try now！',
+      ShareClickTest: 'CPS',
+      ShareSpaceClickTest: 'SpacebarClicker',
+      ShareKohiClickTest: 'Kohi',
     },
   },
   ja: {
-    websiteName: 'CPS Test - クリックスピードと反応トレーニングプラットフォーム',
+    websiteName: 'Spacebar Clicker - CPSTestGo',
     metaDescription:
-      'CPS Test - 無料、プロフェッショナル、高速なクリックスピードテストプラットフォームで、リアルタイムフィードバックと包括的なテスト項目を提供、反応時間テスト、タイピングテストなど、複数言語に対応、履歴スコアを記録',
+      'Spacebar Clicker - プロフェッショナルなキーボードのスペースキーのテストとクリック速度チャレンジツール。ワンクリックでキーボードのスペースキーの寿命をテストし、自分の限界CPS（1秒あたりのクリック数）を測定できます。ゲーマーやハードウェア愛好者に最適です。',
     privacyPolicy: 'プライバシーポリシー',
     privacyPolicyTitle: 'プライバシーポリシー - CPSTestGo.com',
     privacyPolicyDescription:
@@ -1579,13 +1639,13 @@ const resources: TranslationResources = {
     privacyDataRetention3:
       '削除ポリシー：データの削除を要求された場合、またはデータが不要になった場合、安全に削除または匿名化します。',
     metaKeywords:
-      'CPS Test,無料テスト,プロフェッショナルテスト,リアルタイムテスト,高速テスト,包括的テスト,クリックスピードテスト,反応時間テスト,タイピングテスト,マウススクロールテスト,スペースクリックテスト',
+      'スペースキークリック、反応速度テスト、キーボードテスト、CPSテスト、CPS、CPSテスター、クリック速度テスト、秒間クリック数',
     ogDescription:
-      'CPS Testプラットフォーム、無料、プロフェッショナルなクリックスピードトレーニングシステム、高速、リアルタイムのテストフィードバックと包括的なトレーニング項目を提供、複数言語に対応、履歴スコアを記録',
+      'Spacebar Clicker - プロフェッショナルなキーボードのスペースキーのテストとクリック速度チャレンジツール。ワンクリックでキーボードのスペースキーの寿命をテストし、自分の限界CPS（1秒あたりのクリック数）を測定できます。ゲーマーやハードウェア愛好者に最適です。',
     schemaDescription:
-      'CPS Testプラットフォーム、無料、プロフェッショナルなクリックスピードトレーニングシステム、高速、リアルタイムのテストフィードバックと包括的なトレーニング項目を提供、複数言語に対応、履歴スコアを記録',
-    schemaName: 'CPS Test - クリックスピードと反応トレーニングプラットフォーム',
-    schemaPublisher: 'CPS Testプラットフォーム',
+      'Spacebar Clicker - プロフェッショナルなキーボードのスペースキーのテストとクリック速度チャレンジツール。ワンクリックでキーボードのスペースキーの寿命をテストし、自分の限界CPS（1秒あたりのクリック数）を測定できます。ゲーマーやハードウェア愛好者に最適です。',
+    schemaName: 'Spacebar Clicker - CPSTestGo',
+    schemaPublisher: 'Spacebar Clicker - CPSTestGo',
     home: 'ホーム',
     popularTests: '人気テスト',
     quickLinks: 'クイックリンク',
@@ -2202,33 +2262,54 @@ const resources: TranslationResources = {
       'CPSTestトリプルクリックテスト、トリプルクリックの速度と正確性をテスト、トリプルクリック数と最高トリプルクリックスピードを記録、クリックスキルの限界に挑戦',
     tripleClickTestKeywords:
       'トリプルクリックテスト,トリプルクリック連続テスト,トリプルクリックスピードテスト,トリプルクリック数テスト,トリプルクリックテストツール,CPSTest',
+    // 5秒スペースクリックテスト関連
+    fiveSecondSpaceTest: '5秒スペースクリックテスト',
+    selectTime: '時間を選択',
+    secondsTest: '秒スペースクリックテスト',
+    manualClickTest: '手動クリックテスト',
+    holdSpaceBar: 'スペースバーを押し続ける',
+    clicksPerSecond: 'クリック/秒',
+
     copyright: '© 2025 CPSTestGo - 全著作権所有',
     // ResultModalコンポーネント
     resultModal: {
       // 詳細情報
       details: '{time}秒間に{clicks}回クリックしました',
+      // 詳細情報分割テキスト
+      detailsText: '',
+      seconds: '秒間',
+      clickText: 'に',
+      timesText: '回クリックしました',
       // ボタンテキスト
       okButton: 'OK',
+      // 比較結果
+      comparisonTitle: '結果比較',
+      yourCps: 'あなたのCPS',
+      friendCps: '友達のCPS',
+      vs: '対戦',
+      resultBetter: 'あなたの勝ち！',
+      resultWorse: 'あなたの負け！',
+      resultEqual: '引き分け！',
       // 異なるCPS範囲の説明
       slow: {
         desc1: 'クリック速度が遅いです、もっと練習が必要です！',
-        desc2: '落胆しないで、頑張ってください、より速くなります！'
+        desc2: '落胆しないで、頑張ってください、より速くなります！',
       },
       average: {
         desc1: 'クリック速度は普通です、まだ改善の余地があります！',
-        desc2: '良いパフォーマンスです、このリズムを維持してください！'
+        desc2: '良いパフォーマンスです、このリズムを維持してください！',
       },
       fast: {
         desc1: 'クリック速度が速いです、ほとんどの人を超えました！',
-        desc2: '素晴らしいです、あなたの手速は本当に速いです！'
+        desc2: '素晴らしいです、あなたの手速は本当に速いです！',
       },
       superFast: {
         desc1: 'クリック速度が超高速です、稲妻のようです！',
-        desc2: '驚きました、あなたは生まれつきのクリックマスターです！'
+        desc2: '驚きました、あなたは生まれつきのクリックマスターです！',
       },
       ultraFast: {
         desc1: 'クリック速度が限界を突破しました、あなたはクリックの神です！',
-        desc2: '不可能！あなたの手速は人間の認知を超えました！'
+        desc2: '不可能！あなたの手速は人間の認知を超えました！',
       },
       // CPSフィードバック
       feedback: {
@@ -2236,20 +2317,29 @@ const resources: TranslationResources = {
         average: '良い結果です、続けて頑張ってください！',
         fast: '素晴らしい結果です、あなたはクリックマスターです！',
         superFast: '優れた結果です、あなたはクリックの伝説です！',
-        ultraFast: '信じられない結果です、あなたはクリックの神です！'
-      }
+        ultraFast: '信じられない結果です、あなたはクリックの神です！',
+      },
+      // 共有関連翻訳
+      shareTitle: 'あなたのスコアを共有',
+      shareX: 'Xに共有',
+      shareWhatsApp: 'WhatsAppに共有',
+      shareWeChat: 'WeChatに共有',
+      shareText: '{testType}で{cps} CPSを獲得しました（{time}秒間で{count}回クリック）！私のスコアを打ち負かすことができますか？今すぐ挑戦してください！',
+      ShareClickTest: 'CPS',
+      ShareSpaceClickTest: 'スペースバークリック',
+      ShareKohiClickTest: 'Kohi',
     },
   },
   ko: {
-    websiteName: 'CPS Test - 클릭 속도 및 반응 능력 훈련 플랫폼',
+    websiteName: 'Spacebar Clicker - CPSTestGo',
     metaDescription:
-      'CPS Test - 무료, 전문, 빠른 클릭 속도 테스트 플랫폼으로 실시간 피드백과 반응 시간 테스트, 타자 테스트 등 다양한 테스트 항목을 제공하며 다국어 지원과 기록 관리 기능을 갖추고 있습니다',
+      'Spacebar Clicker - 전문적인 키보드 스페이스바 테스트 및 클릭 속도 도전 도구입니다. 한 번의 클릭으로 키보드 스페이스바 수명을 테스트하고, 최대 CPS(초당 클릭 수)를 측정할 수 있으며, 게이머와 하드웨어 애호가에게 적합합니다.',
     metaKeywords:
-      'CPS Test,무료 테스트,전문 테스트,실시간 테스트,빠른 테스트,종합 테스트,클릭 속도 테스트,반응 시간 테스트,타자 테스트,마우스 스크롤 테스트,스페이스바 클릭 테스트',
+      '스페이스바 클릭, 반응 속도 테스트, 키보드 테스트, CPS 테스트, CPS, CPS 테스터, 클릭 속도 테스트, 초당 클릭 수',
     ogDescription:
-      'CPS Test 플랫폼, 무료·전문적인 클릭 속도 테스트 훈련 시스템으로 빠르고 실시간적인 테스트 피드백과 다양한 훈련 항목을 제공하며 다국어 지원과 기록 관리 기능을 갖추고 있습니다',
+      'Spacebar Clicker - 전문적인 키보드 스페이스바 테스트 및 클릭 속도 도전 도구입니다. 한 번의 클릭으로 키보드 스페이스바 수명을 테스트하고, 최대 CPS(초당 클릭 수)를 측정할 수 있으며, 게이머와 하드웨어 애호가에게 적합합니다.',
     schemaDescription:
-      'CPS Test 플랫폼, 무료·전문적인 클릭 속도 테스트 훈련 시스템으로 빠르고 실시간적인 테스트 피드백과 다양한 훈련 항목을 제공하며 다국어 지원과 기록 관리 기능을 갖추고 있습니다',
+      'Spacebar Clicker - 전문적인 키보드 스페이스바 테스트 및 클릭 속도 도전 도구입니다. 한 번의 클릭으로 키보드 스페이스바 수명을 테스트하고, 최대 CPS(초당 클릭 수)를 측정할 수 있으며, 게이머와 하드웨어 애호가에게 적합합니다.',
     privacyPolicy: '개인정보 정책',
     privacyPolicyTitle: '개인정보 정책 - CPSTestGo.com',
     privacyPolicyDescription:
@@ -2337,8 +2427,8 @@ const resources: TranslationResources = {
       '법적 요구: 법률이 요구하는 경우, 규정된 기간 동안 귀하의 데이터를 보존합니다.',
     privacyDataRetention3:
       '삭제 정책: 데이터 삭제를 요청하거나 데이터가 더 이상 필요하지 않을 때, 안전하게 삭제하거나 익명화할 것입니다.',
-    schemaName: 'CPS Test - 클릭 속도 및 반응 능력 훈련 플랫폼',
-    schemaPublisher: 'CPS Test 플랫폼',
+    schemaName: 'Spacebar Clicker - CPSTestGo',
+    schemaPublisher: 'Spacebar Clicker - CPSTestGo',
     home: '홈',
     popularTests: '인기 테스트',
     quickLinks: '빠른 링크',
@@ -2954,33 +3044,54 @@ const resources: TranslationResources = {
       'CPSTest 트리플 클릭 테스트, 트리플 클릭 속도와 정확도를 테스트하고, 트리플 클릭 수와 최고 트리플 클릭 속도를 기록하며, 클릭 기술의 한계에 도전합니다',
     tripleClickTestKeywords:
       '트리플 클릭 테스트,트리플 클릭 연속 테스트,트리플 클릭 속도 테스트,트리플 클릭 수 테스트,트리플 클릭 테스트 도구,CPSTest',
+    // 5초 스페이스 클릭 테스트 관련
+    fiveSecondSpaceTest: '5초 스페이스 클릭 테스트',
+    selectTime: '시간 선택',
+    secondsTest: '초 스페이스 클릭 테스트',
+    manualClickTest: '수동 클릭 테스트',
+    holdSpaceBar: '스페이스바를 계속 누르세요',
+    clicksPerSecond: '클릭/초',
+
     copyright: '© 2025 CPSTestGo - 모든 권리 보유',
     // ResultModal 컴포넌트
     resultModal: {
       // 상세 정보
       details: '{time}초 동안 {clicks}번 클릭했습니다',
+      // 상세 정보 분할 텍스트
+      detailsText: '',
+      seconds: '초',
+      clickText: '동안',
+      timesText: '번 클릭했습니다',
       // 버튼 텍스트
       okButton: '확인',
+      // 결과 비교
+      comparisonTitle: '결과 비교',
+      yourCps: '당신의 CPS',
+      friendCps: '친구의 CPS',
+      vs: '대결',
+      resultBetter: '당신이 이겼어요!',
+      resultWorse: '당신이 졌어요!',
+      resultEqual: '무승부!',
       // 다른 CPS 범위 설명
       slow: {
         desc1: '클릭 속도가 느립니다, 더 많은 연습이 필요합니다!',
-        desc2: '실망하지 마세요, 계속 노력하세요, 더 빨라질 것입니다!'
+        desc2: '실망하지 마세요, 계속 노력하세요, 더 빨라질 것입니다!',
       },
       average: {
         desc1: '클릭 속도가 평균 수준입니다, 아직 개선의 여지가 있습니다!',
-        desc2: '좋은 성능입니다, 이 리듬을 유지하세요!'
+        desc2: '좋은 성능입니다, 이 리듬을 유지하세요!',
       },
       fast: {
         desc1: '클릭 속도가 빠릅니다, 대부분의 사람을 앞서갔습니다!',
-        desc2: '훌륭합니다, 당신의 손속도 정말 빠릅니다!'
+        desc2: '훌륭합니다, 당신의 손속도 정말 빠릅니다!',
       },
       superFast: {
         desc1: '클릭 속도가 초고속입니다, 번개처럼 빠릅니다!',
-        desc2: '놀랍습니다, 당신은 타고난 클릭 마스터입니다!'
+        desc2: '놀랍습니다, 당신은 타고난 클릭 마스터입니다!',
       },
       ultraFast: {
         desc1: '클릭 속도가 한계를 넘었습니다, 당신은 클릭의 신입니다!',
-        desc2: '불가능합니다! 당신의 손속도는 인간의 인지력을 초과했습니다!'
+        desc2: '불가능합니다! 당신의 손속도는 인간의 인지력을 초과했습니다!',
       },
       // CPS 피드백
       feedback: {
@@ -2988,15 +3099,24 @@ const resources: TranslationResources = {
         average: '좋은 결과입니다, 계속 노력하세요!',
         fast: '훌륭한 결과입니다, 당신은 클릭 마스터입니다!',
         superFast: '우수한 결과입니다, 당신은 클릭 레전드입니다!',
-        ultraFast: '놀라운 결과입니다, 당신은 클릭의 신입니다!'
-      }
+        ultraFast: '놀라운 결과입니다, 당신은 클릭의 신입니다!',
+      },
+      // 공유 관련 번역
+      shareTitle: '당신의 점수를 공유하세요',
+      shareX: 'X에 공유',
+      shareWhatsApp: 'WhatsApp에 공유',
+      shareWeChat: '위챗으로 공유',
+      shareText: '{testType}에서 {cps} CPS를 얻었습니다 ({time}초 동안 {count}번 클릭)! 내 점수를 이길 수 있나요? 지금 시도해보세요！',
+      ShareClickTest: 'CPS',
+      ShareSpaceClickTest: '스페이스바 클릭기',
+      ShareKohiClickTest: 'Kohi',
     },
   },
 };
 
 // 当前语言 - 使用reactive使其成为响应式
 export const langState = reactive({
-  current: 'zh-CN',
+  current: 'en',
 });
 
 // 为了保持向后兼容，导出一个只读的currentLang
@@ -3020,7 +3140,7 @@ export const getLanguage = (): string => {
   return savedLang || langState.current;
 };
 
-// 初始化语言 - 优先从URL路径提取，其次从URL参数获取，最后从localStorage获取，默认中文
+// 初始化语言 - 优先从URL路径提取，其次从URL参数获取，最后从localStorage获取，默认英语
 export const initLanguage = () => {
   // 支持的语言列表
   const supportedLanguages = ['zh-CN', 'en', 'ja', 'ko'];
@@ -3047,13 +3167,17 @@ export const initLanguage = () => {
   const savedLang = CookieManager.getCookie(COOKIE_NAMES.LANGUAGE);
 
   // 确定最终使用的语言
+  let finalLang = 'en'; // 默认使用英语
+
   if (detectedLang && supportedLanguages.includes(detectedLang)) {
-    langState.current = detectedLang;
-    // 使用Cookie存储语言偏好，过期时间设置为365天
-    CookieManager.setCookie(COOKIE_NAMES.LANGUAGE, detectedLang, 365);
+    finalLang = detectedLang;
   } else if (savedLang && supportedLanguages.includes(savedLang)) {
-    langState.current = savedLang;
+    finalLang = savedLang;
   }
+
+  // 设置最终语言并更新Cookie
+  langState.current = finalLang;
+  CookieManager.setCookie(COOKIE_NAMES.LANGUAGE, finalLang, 365);
 };
 
 // 翻译函数 - 支持参数替换和嵌套对象

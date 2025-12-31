@@ -416,7 +416,7 @@
     .test-area-drag {
       height: clamp(200px, 35vh, 250px);
     }
-    
+
     .hand-icon {
       font-size: clamp(36px, 12vw, 44px);
     }

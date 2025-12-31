@@ -604,7 +604,7 @@
       flex-direction: row;
       flex-wrap: nowrap;
     }
-    
+
     .game-main-area {
       flex: 1;
       width: auto;
@@ -636,7 +636,11 @@
     border: 2px solid rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
     box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
-    background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    background-image: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 70%
+    );
   }
 
   /* 准备状态 */

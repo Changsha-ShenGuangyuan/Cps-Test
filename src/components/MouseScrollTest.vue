@@ -52,7 +52,7 @@
     // 记录当前滚动数据，包含时间戳
     const scrollData: ScrollData = {
       delta: event.deltaY,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     // 记录滚动历史
@@ -87,11 +87,11 @@
 
     // 获取当前时间
     const now = Date.now();
-    
+
     // 只保留最近1秒内的滚动数据
     const oneSecondAgo = now - 1000;
-    const recentScroll = scrollHistory.value.filter(item => item.timestamp >= oneSecondAgo);
-    
+    const recentScroll = scrollHistory.value.filter((item) => item.timestamp >= oneSecondAgo);
+
     // 更新滚动历史，移除过期数据，优化性能
     scrollHistory.value = recentScroll;
 

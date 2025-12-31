@@ -555,7 +555,7 @@
       flex-direction: row;
       flex-wrap: nowrap;
     }
-    
+
     .game-area {
       flex: 1;
       width: auto;
@@ -1215,8 +1215,6 @@
       line-height: 1.6;
     }
   }
-
-
 
   /* 移动端适配 */
   @media (max-width: 768px) {
