@@ -632,7 +632,7 @@
     /* 统计卡片样式优化，确保内容显示完整 */
     .key-stats-panel {
       flex: 1;
-      min-width: 120px;
+      min-width: 140px;
       max-width: none;
       padding: 12px 10px;
       box-sizing: border-box;
@@ -719,7 +719,7 @@
 
     /* 进一步优化统计卡片 */
     .key-stats-panel {
-      min-width: 100px;
+      min-width: 130px;
       padding: 8px 6px;
     }
 

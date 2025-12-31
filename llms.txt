@@ -1,0 +1,31 @@
+# Spacebar Clicker - CPSTestGo - LLM Usage Information
+
+## Project Overview
+Spacebar Clicker - CPSTestGo is a professional click speed and reaction ability training platform. It provides various test items including spacebar click tests, reaction time tests, typing tests, and more. The platform supports multiple languages, records historical scores, and offers a user-friendly interface for training and improving click speed and reaction abilities.
+
+## LLM Usage Status
+This project does not currently use any Large Language Models (LLMs) or AI-powered services for its core functionality.
+
+## Technical Stack
+- Frontend Framework: Vue 3 + TypeScript
+- Build Tool: Vite
+- Routing: Vue Router 4
+- Internationalization: Custom i18n solution
+- UI Components: Custom components
+- Styling: CSS3
+
+## Project Structure
+- src/assets/ - Static assets (images, icons, etc.)
+- src/components/ - Vue components for different test types
+- src/i18n/ - Internationalization configuration for multi-language support
+- src/router/ - Router configuration for navigation between pages
+- src/utils/ - Utility functions and helpers
+
+## Development Commands
+- npm install - Install project dependencies
+- npm run dev - Start development server
+- npm run build - Build for production deployment
+- npm run preview - Preview production build locally
+
+## License
+MIT License

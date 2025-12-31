@@ -1258,22 +1258,26 @@
 
     /* 统计信息优化 */
     .game-stats {
-      gap: 12px;
+      gap: 8px;
       margin-bottom: 15px;
+      width: 100%;
+      flex-wrap: nowrap;
     }
 
     .stat-item {
-      min-width: 60px;
-      padding: 12px 20px;
-      gap: 4px;
+      flex: 1;
+      min-width: 0;
+      padding: 8px 15px;
+      gap: 3px;
+      max-width: 33.33%;
     }
 
     .stat-value {
-      font-size: 28px;
+      font-size: clamp(20px, 6vw, 28px);
     }
 
     .stat-label {
-      font-size: 16px;
+      font-size: clamp(12px, 3vw, 16px);
     }
 
     /* 外部设置面板优化 */

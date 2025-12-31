@@ -1,6 +1,6 @@
-# CPSTest平台
+# Spacebar Clicker - CPSTestGo
 
-CPSTest平台是一个专业的点击速度与反应能力训练平台，提供多种测试项目，支持多语言，记录历史成绩。
+Spacebar Clicker - CPSTestGo 是一个专业的点击速度与反应能力训练平台，提供多种测试项目，支持多语言，记录历史成绩，帮助用户训练和提高点击速度与反应能力。
 
 ## 主要功能
 
@@ -115,18 +115,35 @@ sudo systemctl restart nginx
 src/
 ├── assets/           # 静态资源
 │   ├── flags/        # 国旗图标
-│   ├── icons/        # 功能图标
-│   └── vue.svg       # Vue logo
+│   └── icons/        # 功能图标
 ├── components/       # Vue组件
-│   ├── ClickTest.vue         # 点击测试组件
-│   ├── DoubleClickTest.vue   # 双击测试组件
-│   └── ...
+│   ├── Breadcrumb.vue               # 面包屑组件
+│   ├── ClickTest.vue                # 单点击测试组件
+│   ├── ColorReactionTest.vue        # 颜色反应测试组件
+│   ├── CompareHistoryStyles.vue     # 历史记录比较样式组件
+│   ├── DoubleClickTest.vue          # 双击测试组件
+│   ├── FAQComponent.vue             # 通用FAQ组件
+│   ├── HomePage.vue                 # 首页组件
+│   ├── KeyboardTest.vue             # 键盘按键测试组件
+│   ├── KeyReactionTest.vue          # 按键反应测试组件
+│   ├── KohiClickTest.vue            # Kohi点击测试组件
+│   ├── MouseDragTest.vue            # 鼠标拖动测试组件
+│   ├── MouseScrollTest.vue          # 鼠标滚动测试组件
+│   ├── NotFound.vue                 # 404页面组件
+│   ├── PrivacyPolicy.vue            # 隐私政策组件
+│   ├── ReactionTimeTest.vue         # 简单反应时间测试组件
+│   ├── RelatedTests.vue             # 相关测试推荐组件
+│   ├── ResultModal.vue              # 结果弹窗组件
+│   ├── SpaceClickTest.vue           # 空格点击测试组件
+│   ├── TargetEliminationGame.vue    # 目标消除游戏组件
+│   ├── TripleClickTest.vue          # 三击测试组件
+│   └── TypingTest.vue               # 打字测试组件
+├── data/             # 数据文件
 ├── i18n/             # 国际化配置
 │   └── index.ts      # 多语言支持
 ├── router/           # 路由配置
 │   └── index.ts      # 路由定义
 ├── utils/            # 工具函数
-│   └── cookie.ts     # Cookie管理
 ├── App.vue           # 根组件
 ├── main.ts           # 入口文件
 └── style.css         # 全局样式
@@ -168,4 +185,3 @@ MIT License
 ## 贡献
 
 欢迎提交Issue和Pull Request！
-
