@@ -257,7 +257,7 @@
     color: white;
     padding: 8px 15px;
     border-radius: 15px;
-    font-size: 13px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
     border: 1px solid #444;

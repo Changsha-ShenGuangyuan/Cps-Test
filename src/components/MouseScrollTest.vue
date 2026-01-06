@@ -238,6 +238,9 @@
     height: 250px;
     border-radius: 15px;
     border: 2px solid #333;
+    /* 直接在元素上添加绿色虚线边框，使用多重边框技巧 */
+    outline: 3px dashed #4caf50;
+    outline-offset: 5px;
     position: relative;
     overflow: hidden; /* 防止真实滚动 */
     cursor: pointer;
@@ -281,7 +284,7 @@
   .scroll-prompt {
     font-size: 24px;
     font-weight: bold;
-    color: #ff6b6b;
+    color: #4caf50;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);

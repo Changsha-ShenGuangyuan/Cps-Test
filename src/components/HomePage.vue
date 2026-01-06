@@ -6,7 +6,7 @@
         <div class="main-content">
           <!-- 左侧游戏区域 -->
           <div class="game-area">
-            <h1 class="game-title">Spacebar clicker - {{ t('fiveSecondSpaceTest') }}</h1>
+            <h1 class="game-title" v-once>Spacebar clicker - {{ t('fiveSecondSpaceTest') }}</h1>
 
             <!-- 统计卡片 -->
             <div class="stats-cards">
@@ -14,17 +14,17 @@
                 <div class="stat-value">
                   {{ !isPlaying && clicks === 0 ? 0 : elapsedTime.toFixed(3) }}
                 </div>
-                <div class="stat-label">{{ t('time') }}</div>
+                <div class="stat-label" v-once>{{ t('time') }}</div>
               </div>
               <div class="stat-card click-rate-card">
                 <div class="stat-value">
                   {{ !isPlaying && clicks === 0 ? 0 : currentCps.toFixed(2) }}
                 </div>
-                <div class="stat-label">{{ t('clicksPerSecond') }}</div>
+                <div class="stat-label" v-once>{{ t('clicksPerSecond') }}</div>
               </div>
               <div class="stat-card score-card">
                 <div class="stat-value">{{ clicks }}</div>
-                <div class="stat-label">{{ t('score') }}</div>
+                <div class="stat-label" v-once>{{ t('score') }}</div>
               </div>
             </div>
 
@@ -85,22 +85,22 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- 右侧时间选择区域 -->
-          <div class="time-select-sidebar">
-            <h3 class="time-select-title">{{ t('selectTime') }}</h3>
-            <div class="time-select-list">
-              <button
-                v-for="time in supportedTimes"
-                :key="time"
-                class="time-select-item"
-                :class="{ active: time === 5 }"
-                @click="navigateTo('/space-click-test/' + time)"
-              >
-                {{ time }} {{ t('secondsTest') }}
-              </button>
-            </div>
-          </div>
+      <!-- 时间选择区域 -->
+      <div class="time-select-section">
+        <h3 class="time-select-title" v-once>{{ t('selectTime') }}</h3>
+        <div class="time-select-list">
+          <button
+            v-for="time in supportedTimes"
+            :key="time"
+            class="time-select-item"
+            :class="{ active: time === 5 }"
+            @click="navigateTo('/space-click-test/' + time)"
+          >
+            {{ time }} <span v-once>{{ t('secondsTest') }}</span>
+          </button>
         </div>
       </div>
     </section>
@@ -117,65 +117,59 @@
     <!-- 快速开始区域 -->
     <section class="quick-start-section">
       <div class="quick-start-buttons">
-        <button class="start-btn click-test" @click="navigateTo('/click-test/1')">
+        <button class="start-btn click-test" @click="navigateTo('/click-test/1')" v-once>
           <span class="btn-text">{{ t('clickTest') }}</span>
         </button>
-        <button class="start-btn reaction-test" @click="navigateTo('/reaction-time-test')">
+        <button class="start-btn reaction-test" @click="navigateTo('/reaction-time-test')" v-once>
           <span class="btn-text">{{ t('simpleReactionTest') }}</span>
         </button>
-        <button class="start-btn typing-test" @click="navigateTo('/typing-test/1')">
+        <button class="start-btn typing-test" @click="navigateTo('/typing-test/1')" v-once>
           <span class="btn-text">{{ t('typingTest') }}</span>
         </button>
-        <button class="start-btn space-test" @click="navigateTo('/space-click-test/1')">
+        <button class="start-btn space-test" @click="navigateTo('/space-click-test/1')" v-once>
           <span class="btn-text">{{ t('spaceClickTest') }}</span>
         </button>
-        <button class="start-btn kohi-test" @click="navigateTo('/kohi-click-test')">
+        <button class="start-btn kohi-test" @click="navigateTo('/kohi-click-test')" v-once>
           <span class="btn-text">{{ t('kohiClickTest') }}</span>
         </button>
-        <button class="start-btn color-test" @click="navigateTo('/color-reaction-test')">
+        <button class="start-btn color-test" @click="navigateTo('/color-reaction-test')" v-once>
           <span class="btn-text">{{ t('colorReactionTest') }}</span>
         </button>
-        <button class="start-btn key-test" @click="navigateTo('/key-reaction-test')">
+        <button class="start-btn key-test" @click="navigateTo('/key-reaction-test')" v-once>
           <span class="btn-text">{{ t('keyReactionTest') }}</span>
         </button>
-        <button class="start-btn target-test" @click="navigateTo('/target-elimination-game')">
+        <button class="start-btn target-test" @click="navigateTo('/target-elimination-game')" v-once>
           <span class="btn-text">{{ t('targetEliminationGame') }}</span>
         </button>
-        <button class="start-btn scroll-test" @click="navigateTo('/mouse-scroll-test')">
+        <button class="start-btn scroll-test" @click="navigateTo('/mouse-scroll-test')" v-once>
           <span class="btn-text">{{ t('mouseScrollTest') }}</span>
         </button>
-        <button class="start-btn drag-test" @click="navigateTo('/mouse-drag-test')">
+        <button class="start-btn drag-test" @click="navigateTo('/mouse-drag-test')" v-once>
           <span class="btn-text">{{ t('mouseDragTest') }}</span>
         </button>
-        <button class="start-btn keyboard-test" @click="navigateTo('/keyboard-test')">
+        <button class="start-btn keyboard-test" @click="navigateTo('/keyboard-test')" v-once>
           <span class="btn-text">{{ t('keyboardTest') }}</span>
         </button>
       </div>
     </section>
 
-    <!-- 测试指南区域 -->
-    <section class="guide-section">
-      <h2>{{ t('testGuide') }}</h2>
-      <div class="guide-steps">
-        <div class="guide-step">
-          <div class="step-number">1</div>
-          <h3>{{ t('selectTestType') }}</h3>
-          <p>{{ t('selectTestTypeDesc') }}</p>
-        </div>
-        <div class="guide-step">
-          <div class="step-number">2</div>
-          <h3>{{ t('startTest') }}</h3>
-          <p>{{ t('startTestDesc') }}</p>
-        </div>
-        <div class="guide-step">
-          <div class="step-number">3</div>
-          <h3>{{ t('viewResults') }}</h3>
-          <p>{{ t('viewResultsDesc') }}</p>
-        </div>
-        <div class="guide-step">
-          <div class="step-number">4</div>
-          <h3>{{ t('practiceContinuously') }}</h3>
-          <p>{{ t('practiceContinuouslyDesc') }}</p>
+    <!-- 点击技巧展示区域 -->
+    <section class="click-types-section">
+      <div class="container">
+        <h2 class="section-title">{{ t('clickTypes') }}</h2>
+        <div class="click-types-grid">
+          <div v-if="isClickTypesVisible" class="click-type-item butterfly">
+            <h3 class="click-type-title">{{ t('butterflyClick') }}</h3>
+            <p class="click-type-description">{{ t('butterflyClickDesc') }}</p>
+          </div>
+          <div v-if="isClickTypesVisible" class="click-type-item jitter">
+            <h3 class="click-type-title">{{ t('jitterClick') }}</h3>
+            <p class="click-type-description">{{ t('jitterClickDesc') }}</p>
+          </div>
+          <div v-if="isClickTypesVisible" class="click-type-item drag">
+            <h3 class="click-type-title">{{ t('dragClick') }}</h3>
+            <p class="click-type-description">{{ t('dragClickDesc') }}</p>
+          </div>
         </div>
       </div>
     </section>
@@ -183,33 +177,29 @@
     <!-- FAQ区域 -->
     <section id="faq" class="faq-section">
       <div class="faq-container">
-        <div class="faq-item">
+        <div v-if="isFaqVisible" class="faq-item">
           <h3 class="faq-question">{{ t('homeFaqQ1') }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA1'))"></p>
         </div>
-        <div class="faq-item">
+        <div v-if="isFaqVisible" class="faq-item">
           <h3 class="faq-question">{{ t('homeFaqQ2') }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA2'))"></p>
         </div>
-        <div class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ6') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA6'))"></p>
-        </div>
-        <div class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ7') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA7'))"></p>
-        </div>
-        <div class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ8') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA8'))"></p>
-        </div>
-        <div class="faq-item">
+        <div v-if="isFaqVisible" class="faq-item">
           <h3 class="faq-question">{{ t('homeFaqQ9') }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA9'))"></p>
         </div>
-        <div class="faq-item">
+        <div v-if="isFaqVisible" class="faq-item">
           <h3 class="faq-question">{{ t('homeFaqQ11') }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA11'))"></p>
+        </div>
+        <div v-if="isFaqVisible" class="faq-item">
+          <h3 class="faq-question">{{ t('homeFaqQ12') }}</h3>
+          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA12'))"></p>
+        </div>
+        <div v-if="isFaqVisible" class="faq-item">
+          <h3 class="faq-question">{{ t('kohiFaqQ1') }}</h3>
+          <p class="faq-answer" v-html="formatAnswer(t('kohiFaqA1'))"></p>
         </div>
       </div>
     </section>
@@ -218,7 +208,7 @@
 
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { ref, onMounted, onUnmounted, computed } from 'vue';
+  import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 
   import { t } from '../i18n/index';
   // 导入结果弹窗组件
@@ -303,23 +293,22 @@
     return htmlAnswer;
   };
 
-  // 支持的测试时间数组
-  const supportedTimes = [1, 2, 5, 10, 15, 30, 60];
+  // 支持的测试时间数组 - 静态数据，不需要响应式
+  const supportedTimes = [1, 5, 10, 15, 30, 60];
 
   // 5秒空格速度测试相关变量
   const isPlaying = ref(false);
   const isGameReady = ref(false);
   const isGameOver = ref(false);
   const showPressHint = ref(true);
-  const startTime = ref(0);
-  const endTime = ref(0);
+  let startTime = 0; // 不需要响应式，仅用于游戏逻辑
   const clicks = ref(0);
   const cps = ref(0);
-  const timer = ref<number | null>(null);
+  let timer: number | null = null; // 不需要响应式，仅用于游戏逻辑
   const elapsedTime = ref(0);
   const isSpacePressed = ref(false);
   const showResultModal = ref(false);
-  const testDuration = 5; // 5秒测试
+  const testDuration = 5; // 5秒测试 - 常量，不需要响应式
 
   // 实时计算当前CPS
   const currentCps = computed(() => {
@@ -352,15 +341,15 @@
 
     // 重置游戏状态
     clicks.value = 0;
-    startTime.value = Date.now(); // 记录开始时间
+    startTime = Date.now(); // 记录开始时间
     isPlaying.value = true;
     isGameOver.value = false; // 确保游戏未结束
     elapsedTime.value = 0; // 重置已用时间
 
     // 设置定时器，每50ms更新一次状态
-    timer.value = window.setInterval(() => {
+    timer = window.setInterval(() => {
       // 计算并更新已用时间（秒）
-      const elapsed = (Date.now() - startTime.value) / 1000;
+      const elapsed = (Date.now() - startTime) / 1000;
       elapsedTime.value = Math.min(elapsed, testDuration);
 
       // 检查时间是否结束
@@ -374,7 +363,6 @@
   const endGame = () => {
     isPlaying.value = false; // 标记游戏结束
     isGameOver.value = true; // 设置最终结束状态
-    endTime.value = Date.now(); // 记录结束时间
 
     // 计算最终CPS，使用规定的测试时间
     cps.value = testDuration > 0 ? Math.round((clicks.value / testDuration) * 100) / 100 : 0;
@@ -383,9 +371,9 @@
     elapsedTime.value = testDuration;
 
     // 清除定时器
-    if (timer.value) {
-      clearInterval(timer.value);
-      timer.value = null;
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
     }
 
     // 显示结果弹窗
@@ -406,9 +394,9 @@
     showResultModal.value = false; // 关闭结果弹窗
 
     // 清除定时器
-    if (timer.value) {
-      clearInterval(timer.value);
-      timer.value = null;
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
     }
   };
 
@@ -481,10 +469,60 @@
     window.addEventListener('resize', handleResize);
     window.addEventListener('keydown', handleSpaceDown);
     window.addEventListener('keyup', handleSpaceUp);
+    
+    // 设置交叉观察者
+    setupIntersectionObservers();
   });
 
+  // 按需渲染相关变量
+  const isFaqVisible = ref(false);
+  const isClickTypesVisible = ref(false);
+  let faqObserver: IntersectionObserver | null = null;
+  let clickTypesObserver: IntersectionObserver | null = null;
+
+  // 实现按需渲染功能
+  const setupIntersectionObservers = () => {
+    // FAQ区域观察者
+    faqObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            isFaqVisible.value = true;
+            faqObserver?.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    // 点击技巧区域观察者
+    clickTypesObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            isClickTypesVisible.value = true;
+            clickTypesObserver?.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    // 观察目标元素
+    const faqElement = document.getElementById('faq');
+    const clickTypesElement = document.querySelector('.click-types-section');
+    
+    if (faqElement) {
+      faqObserver.observe(faqElement);
+    }
+    
+    if (clickTypesElement) {
+      clickTypesObserver.observe(clickTypesElement);
+    }
+  };
+
   // 组件卸载时移除事件监听
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     const existingFeatureData = document.getElementById('feature-structured-data');
     if (existingFeatureData) {
       existingFeatureData.remove();
@@ -498,8 +536,17 @@
     window.removeEventListener('resize', handleResize);
     window.removeEventListener('keydown', handleSpaceDown);
     window.removeEventListener('keyup', handleSpaceUp);
-    if (timer.value) {
-      clearInterval(timer.value);
+    
+    // 清理观察者
+    if (faqObserver) {
+      faqObserver.disconnect();
+    }
+    if (clickTypesObserver) {
+      clickTypesObserver.disconnect();
+    }
+    
+    if (timer) {
+      clearInterval(timer);
     }
   });
 
@@ -643,17 +690,11 @@
     width: 100%;
   }
 
-  /* 时间选择侧边栏 */
-  .time-select-sidebar {
-    flex: 0 1 calc(25% - 10px);
-    background-color: rgba(30, 30, 30, 0.8);
-    border-radius: 12px;
-    padding: clamp(16px, 3vw, 20px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 1);
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    min-width: 150px;
+  /* 时间选择区域 */
+  .time-select-section {
+    padding: 15px 10px 0;
+    text-align: center;
+    margin-top: -55px;
   }
 
   /* 时间选择标题 */
@@ -667,12 +708,22 @@
     letter-spacing: 1px;
   }
 
-  /* 时间选择列表 */
+  /* 时间选择列表 - 横向排列 */
   .time-select-list {
     display: flex;
-    flex-direction: column;
-    gap: clamp(8px, 2vw, 10px);
-    flex: 1;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: clamp(8px, 1.5vw, 15px);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* 响应式调整：在小屏幕上允许换行 */
+  @media (max-width: 768px) {
+    .time-select-list {
+      flex-wrap: wrap;
+    }
   }
 
   /* 时间选择项 */
@@ -691,6 +742,7 @@
     letter-spacing: 0.5px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     outline: none;
+    min-width: 80px;
   }
 
   /* 时间选择项悬停效果 */
@@ -728,22 +780,33 @@
     .game-area {
       flex: 1;
     }
-
-    .time-select-sidebar {
-      flex: 0 1 calc(25% - 10px);
-    }
   }
 
-  /* 中等屏幕布局 */
-  @media (max-width: 1199px) {
-    .time-select-sidebar {
-      width: 100%;
-      flex: 1 1 100%;
+  /* 移动端适配 */
+  @media (max-width: 768px) {
+    .time-select-section {
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    /* 时间选择列表横向排列，缩小样式 */
+    .time-select-list {
+      gap: clamp(6px, 1.5vw, 10px);
     }
 
     .time-select-item {
-      padding: 12px 16px;
-      font-size: 14px;
+      padding: clamp(8px, 2vw, 12px) clamp(10px, 3vw, 16px);
+      font-size: clamp(12px, 2.5vw, 14px);
+      min-width: 70px;
+    }
+  }
+
+  /* 超小屏幕适配 */
+  @media (max-width: 480px) {
+    .time-select-item {
+      padding: 8px 10px;
+      font-size: 12px;
+      min-width: 60px;
     }
   }
 
@@ -770,17 +833,21 @@
   /* 统计卡片 */
   .stats-cards {
     display: flex;
-    gap: clamp(8px, 2vw, 16px);
     justify-content: center;
-    margin-bottom: clamp(15px, 3vw, 20px);
-    flex-wrap: wrap;
+    margin: clamp(15px, 3vw, 25px) auto;
+    max-width: 900px;
+    width: 95%;
+    background-color: #333;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    border: 2px solid #444;
   }
 
   .stat-card {
     flex: 1;
-    min-width: clamp(100px, 25vw, 150px);
-    padding: clamp(12px, 3vw, 16px) clamp(15px, 3vw, 20px);
-    border-radius: 12px;
+    min-width: clamp(80px, 22vw, 160px);
+    padding: clamp(12px, 2.5vw, 18px) clamp(8px, 1.5vw, 12px);
     color: white;
     font-weight: bold;
     text-align: center;
@@ -789,32 +856,67 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
   .timer-card {
-    background-color: #646cff; /* 蓝色 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* 紫色渐变 */
   }
 
   .click-rate-card {
-    background-color: #ff7b00; /* 橙色 */
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); /* 粉色渐变 */
   }
 
   .score-card {
-    background-color: #4caf50; /* 绿色 */
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); /* 青色渐变 */
   }
 
   .stat-value {
-    font-size: clamp(24px, 5vw, 32px);
+    font-size: clamp(20px, 3.5vw, 30px);
     margin-bottom: 4px;
     line-height: 1;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: visible;
+    text-align: center;
   }
 
   .stat-label {
-    font-size: clamp(14px, 2.5vw, 16px);
+    font-size: clamp(12px, 1.6vw, 14px);
     opacity: 0.95;
     line-height: 1;
-    font-weight: normal;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  /* 中等屏幕布局优化 */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    .stats-cards {
+      width: 98%;
+    }
+
+    .stat-card {
+      min-width: clamp(70px, 18vw, 140px);
+      padding: 10px 6px;
+    }
+
+    .stat-value {
+      font-size: clamp(18px, 3vw, 26px);
+    }
+
+    .stat-label {
+      font-size: clamp(11px, 1.3vw, 13px);
+    }
+  }
+
+  /* 小屏幕布局优化 */
+  @media (max-width: 768px) {
+    .stat-value {
+      font-size: clamp(16px, 3vw, 22px);
+    }
+
+    .stat-label {
+      font-size: clamp(11px, 1.3vw, 13px);
+    }
   }
 
   /* 点击区域 */
@@ -941,6 +1043,32 @@
     }
   }
 
+  /* 移动端动画优化 - 减少不必要的动画 */
+  @media (max-width: 768px) {
+    /* 简化空格键按下动画 */
+    .spacebar-key.space-pressed {
+      animation: none;
+      transform: translateY(2px);
+    }
+    
+    /* 简化点击区域发光动画 */
+    .click-area.space-pressed {
+      animation: none;
+    }
+    
+    /* 简化按钮脉动动画 */
+    .start-btn:hover::before {
+      animation: none;
+      opacity: 0.4;
+    }
+    
+    /* 简化按钮悬停效果 */
+    .start-btn:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  }
+
   /* 空格键提示 */
   .spacebar-hint {
     margin-top: 10px;
@@ -1018,7 +1146,6 @@
     .stats-cards {
       flex-direction: row;
       align-items: center;
-      gap: clamp(5px, 1vw, 8px);
       justify-content: center;
     }
 
@@ -1030,12 +1157,12 @@
     }
 
     .stat-value {
-      font-size: clamp(20px, 5vw, 24px);
+      font-size: clamp(22px, 5vw, 26px);
       margin-bottom: 2px;
     }
 
     .stat-label {
-      font-size: clamp(10px, 2vw, 12px);
+      font-size: clamp(12px, 2vw, 14px);
     }
 
     /* 点击区域优化 */
@@ -1382,98 +1509,13 @@
     line-height: 1.2; /* 行高 */
   }
 
-  /* 测试指南区域样式 */
-  .guide-section {
-    margin-bottom: 50px; /* 底部外边距 */
-    text-align: center; /* 文本居中 */
-  }
-
-  /* 测试指南标题样式 */
-  .guide-section h2 {
-    color: #4caf50; /* 主题色 */
-    margin-bottom: 30px; /* 底部外边距 */
-    font-size: 32px; /* 大字号 */
-  }
-
-  /* 测试指南步骤网格布局 */
-  .guide-steps {
-    display: grid; /* 使用CSS Grid布局 */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 自适应列数，最小列宽250px */
-    gap: 20px; /* 列间距 */
-  }
-
-  /* 指南步骤卡片样式 */
-  .guide-step {
-    background-color: #2a2a2a; /* 深色背景 */
-    padding: 30px 20px; /* 内边距 */
-    border-radius: 10px; /* 圆角边框 */
-    position: relative; /* 相对定位，用于步骤编号的绝对定位 */
-    transition: all 0.3s ease; /* 过渡动画 */
-    border: 1px solid #333; /* 深色边框 */
-  }
-
-  /* 指南步骤卡片悬停效果 */
-  .guide-step:hover {
-    transform: translateY(-5px); /* 向上移动5px */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* 增强阴影效果 */
-    border-color: #4caf50; /* 边框颜色变为主题色 */
-  }
-
-  /* 步骤编号样式 - 圆形数字 */
-  .step-number {
-    position: absolute; /* 绝对定位 */
-    top: -15px; /* 顶部定位，部分超出卡片 */
-    left: 50%; /* 水平居中 */
-    transform: translateX(-50%); /* 水平居中调整 */
-    background-color: #4caf50; /* 主题色背景 */
-    color: white; /* 白色文本 */
-    width: 30px; /* 固定宽度 */
-    height: 30px; /* 固定高度，与宽度相同形成圆形 */
-    border-radius: 50%; /* 圆形边框 */
-    display: flex; /* 弹性布局，用于数字居中 */
-    align-items: center; /* 垂直居中 */
-    justify-content: center; /* 水平居中 */
-    font-weight: bold; /* 粗体 */
-    font-size: 16px; /* 中号字号 */
-  }
-
-  /* 指南步骤标题样式 */
-  .guide-step h3 {
-    color: #ffffff; /* 白色文本 */
-    margin: 10px 0 15px; /* 上下外边距 */
-    font-size: 20px; /* 中号字号 */
-  }
-
-  /* 指南步骤描述文本样式 */
-  .guide-step p {
-    color: #cccccc; /* 浅灰色文本 */
-    font-size: 14px; /* 小号字号 */
-    line-height: 1.5; /* 行高，增强可读性 */
-  }
-
-  /* FAQ区域样式 */
-  .faq-section {
-    margin-bottom: 50px; /* 底部外边距 */
-    text-align: center; /* 文本居中 */
-    background-color: #2a2a2a; /* 深色背景 */
-    padding: 40px 20px; /* 内边距 */
-    border-radius: 15px; /* 圆角边框 */
-  }
-
-  /* FAQ区域标题样式 */
-  .faq-section h2 {
-    color: #4caf50; /* 主题色 */
-    margin-bottom: 30px; /* 底部外边距 */
-    font-size: 32px; /* 大字号 */
-  }
-
   /* FAQ容器样式 - 网格布局 */
   .faq-container {
-    max-width: 1200px; /* 最大宽度，与主容器匹配 */
+    max-width: 100%; /* 最大宽度，与主容器匹配 */
     margin: 0 auto; /* 水平居中 */
     text-align: left; /* 文本左对齐 */
     display: grid; /* 使用CSS Grid布局 */
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* 自适应列数，最小列宽320px */
+    grid-template-columns: 1fr; /* 单列布局，纵向排列 */
     gap: 20px; /* 列间距 */
     margin-bottom: 40px;
   }
@@ -1481,27 +1523,28 @@
   /* FAQ项目样式 */
   .faq-item {
     padding: 24px; /* 内边距，增加空间 */
-    background-color: #333; /* 深色背景 */
-    border-radius: 12px; /* 圆角边框，增大圆角 */
+    background-color: #2a2a2a; /* 深色背景，接近黑色 */
+    border-radius: 8px; /* 圆角边框 */
     transition: all 0.3s ease; /* 过渡动画 */
-    border: 1px solid #444; /* 深色边框 */
-    height: 100%; /* 100%高度，确保卡片对齐 */
+    border: 1px solid #333; /* 深色边框 */
+    height: auto; /* 自动高度 */
     display: flex; /* 弹性布局 */
     flex-direction: column; /* 垂直方向排列 */
     box-sizing: border-box; /* 确保内边距不影响总宽度 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
   }
 
   /* FAQ项目悬停效果 */
   .faq-item:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35); /* 增强阴影效果 */
-    border-color: #4caf50; /* 边框颜色变为主题色 */
-    transform: translateY(-5px); /* 向上移动5px */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* 增强阴影效果 */
+    border-color: #444; /* 边框颜色加深 */
+    transform: translateY(0); /* 取消悬停上移效果 */
   }
 
   /* FAQ项目触摸反馈效果 */
   .faq-item:active {
-    transform: translateY(-2px); /* 轻微向上移动，提供触摸反馈 */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* 减小阴影，提供点击反馈 */
+    transform: translateY(0); /* 取消触摸上移效果 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 减小阴影 */
   }
 
   /* FAQ问题样式 */
@@ -1509,11 +1552,14 @@
     color: #ffffff; /* 白色文本 */
     margin-bottom: 16px; /* 底部外边距，增加间距 */
     font-size: 18px; /* 中号字号 */
-    font-weight: 500; /* 中等粗细，突出问题 */
+    font-weight: 600; /* 加粗，突出问题 */
     display: flex; /* 弹性布局 */
     align-items: flex-start; /* 顶部对齐 */
     flex-shrink: 0; /* 不收缩，保持原尺寸 */
     line-height: 1.5; /* 行高，增强可读性 */
+    position: relative;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333; /* 添加底部分割线 */
   }
 
   /* FAQ问题前缀图标 - 使用伪元素 */
@@ -1533,12 +1579,30 @@
 
   /* FAQ答案样式 */
   .faq-answer {
-    color: #cccccc; /* 浅灰色文本 */
-    font-size: 14px; /* 小号字号 */
+    color: #e0e0e0; /* 浅灰色文本，增强可读性 */
+    font-size: 16px; /* 小号字号 */
     line-height: 1.65; /* 行高，增强可读性 */
+    margin-top: 16px; /* 顶部外边距 */
     margin-left: 36px; /* 左侧缩进，与问题图标对齐 */
     flex-grow: 1; /* 弹性增长，占据剩余空间 */
     word-break: break-word; /* 确保长单词换行 */
+  }
+
+  /* FAQ答案中的列表样式 */
+  .faq-answer ul {
+    padding-left: 20px;
+    margin: 10px 0;
+  }
+
+  /* FAQ答案中的列表项样式 */
+  .faq-answer li {
+    margin-bottom: 8px;
+  }
+
+  /* FAQ答案中的绿色关键词样式 */
+  .faq-answer span {
+    color: #4caf50; /* 绿色关键词 */
+    font-weight: 500;
   }
 
   /* FAQ链接样式 */
@@ -1558,159 +1622,95 @@
     text-decoration: none; /* 确保没有下划线 */
   }
 
-  /* 桌面端布局优化 */
+  /* 快速开始按钮布局优化 - 统一调整，减少重复媒体查询 */
+  .quick-start-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+  }
+
+  /* 桌面端快速开始按钮布局 */
   @media (min-width: 1201px) {
-    /* 增加内容最大宽度，优化桌面端显示 */
-    .home-container {
-      max-width: 1400px;
-    }
-
-    /* 功能卡片使用4列布局 */
-    .hero-features {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    /* 快速开始按钮使用6列布局 */
     .quick-start-buttons {
       grid-template-columns: repeat(6, 1fr);
     }
+  }
 
-    /* 测试指南使用4列布局 */
-    .guide-steps {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    /* FAQ使用3列布局 */
-    .faq-container {
+  /* 中等屏幕快速开始按钮布局 */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    .quick-start-buttons {
       grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* 移动端快速开始按钮布局 */
+  @media (max-width: 768px) {
+    .quick-start-buttons {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+
+  /* FAQ容器布局优化 */
+  .faq-container {
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  /* 桌面端FAQ容器 */
+  @media (min-width: 1201px) {
+    .faq-container {
       gap: 24px;
     }
   }
 
-  /* 中等屏幕布局优化 */
-  @media (min-width: 769px) and (max-width: 1200px) {
-    /* 功能卡片使用2列布局 */
-    .hero-features {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    /* 快速开始按钮使用3列布局 */
-    .quick-start-buttons {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    /* 测试指南使用2列布局 */
-    .guide-steps {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    /* FAQ容器调整为2列布局 */
-    .faq-container {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-  }
-
-  /* 移动端适配 */
+  /* 移动端容器内边距优化 */
   @media (max-width: 768px) {
-    /* 调整主容器内边距 */
     .home-container {
       padding: 10px;
     }
+  }
 
-    /* 调整英雄区域标题字号 */
-    .hero-title {
-      font-size: 36px; /* 减小字号 */
-      margin-bottom: 10px;
-    }
-
-    /* 调整英雄区域副标题字号 */
-    .hero-subtitle {
-      font-size: 18px; /* 减小字号 */
-      margin-bottom: 20px;
-    }
-
-    /* 功能特性改为单列布局 */
-    .hero-features {
-      grid-template-columns: 1fr;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    /* 功能卡片调整 */
-    .feature-card {
-      padding: 20px 15px;
-    }
-
-    /* 快速开始按钮改为单列布局 */
-    .quick-start-buttons {
-      grid-template-columns: 1fr;
-      gap: 12px; /* 减小间距 */
-    }
-
-    /* 调整按钮内边距 */
+  /* 移动端按钮样式优化 */
+  @media (max-width: 768px) {
     .start-btn {
-      padding: 15px 10px; /* 减小内边距 */
-      font-size: 15px; /* 调整字号 */
+      padding: 15px 10px;
+      font-size: 15px;
       min-height: 60px;
     }
+  }
 
-    /* 测试指南步骤改为单列布局 */
-    .guide-steps {
-      grid-template-columns: 1fr;
-      gap: 15px;
+  /* 超小屏幕按钮优化 */
+  @media (max-width: 480px) {
+    .start-btn {
+      padding: 12px 8px;
+      font-size: 14px;
+      min-height: 50px;
     }
+  }
 
-    /* 测试指南标题调整 */
-    .guide-section h2 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    /* 调整指南步骤卡片 */
-    .guide-step {
-      padding: 20px 15px;
-    }
-
-    /* FAQ响应式调整 */
-    .faq-section {
-      padding: 20px 10px; /* 减小内边距 */
-      margin-bottom: 20px;
-    }
-
-    /* 调整FAQ标题字号 */
-    .faq-section h2 {
-      font-size: 24px; /* 减小字号 */
-      margin-bottom: 20px;
-    }
-
-    /* FAQ容器改为单列布局 */
-    .faq-container {
-      grid-template-columns: 1fr;
-      gap: 15px;
-      padding: 0 5px;
-      margin-bottom: 0;
-    }
-
-    /* FAQ项目调整 */
+  /* FAQ项目移动端优化 */
+  @media (max-width: 768px) {
     .faq-item {
       padding: 20px 16px;
     }
 
-    /* 调整FAQ问题样式 */
     .faq-question {
       font-size: 17px;
       margin-bottom: 12px;
     }
 
-    /* FAQ问题前缀图标调整 */
     .faq-question:before {
       width: 20px;
       height: 20px;
       margin-right: 8px;
     }
 
-    /* FAQ答案左侧缩进调整 */
     .faq-answer {
       font-size: 14px;
       margin-left: 28px;
@@ -1718,46 +1718,176 @@
     }
   }
 
-  /* 超小屏幕适配 */
+  /* 超小屏幕FAQ优化 */
   @media (max-width: 480px) {
-    /* 调整英雄区域标题字号 */
-    .hero-title {
-      font-size: 30px;
-    }
-
-    /* 调整英雄区域副标题字号 */
-    .hero-subtitle {
-      font-size: 16px;
-    }
-
-    /* 按钮优化 */
-    .start-btn {
-      padding: 12px 8px;
-      font-size: 14px;
-      min-height: 50px;
-    }
-
-    /* FAQ项目进一步调整 */
     .faq-item {
       padding: 18px 14px;
     }
 
-    /* 调整FAQ问题样式 */
     .faq-question {
       font-size: 16px;
     }
 
-    /* FAQ答案样式调整 */
     .faq-answer {
       font-size: 13px;
       margin-left: 24px;
     }
 
-    /* FAQ问题前缀图标调整 */
     .faq-question:before {
       width: 18px;
       height: 18px;
       margin-right: 6px;
+    }
+  }
+
+  /* 点击类型展示区域样式 */
+  .click-types-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 60px 20px;
+    margin: 60px 0;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .click-types-section .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .click-types-section .section-title {
+    color: #4caf50;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* 点击类型网格布局 */
+  .click-types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    justify-items: center;
+  }
+
+  /* 点击类型项样式 */
+  .click-type-item {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* 不同点击类型的独特样式 */
+  .click-type-item.butterfly {
+    border-left: 5px solid #e91e63;
+  }
+
+  .click-type-item.jitter {
+    border-left: 5px solid #9c27b0;
+  }
+
+  .click-type-item.drag {
+    border-left: 5px solid #3f51b5;
+  }
+
+  /* 悬停效果 */
+  .click-type-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* 点击类型标题样式 */
+  .click-type-title {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  /* 不同点击类型标题的独特颜色 */
+  .click-type-item.butterfly .click-type-title {
+    color: #e91e63;
+  }
+
+  .click-type-item.jitter .click-type-title {
+    color: #9c27b0;
+  }
+
+  .click-type-item.drag .click-type-title {
+    color: #3f51b5;
+  }
+
+  /* 点击类型描述样式 */
+  .click-type-description {
+    color: #e0e0e0;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 1200px) {
+    .click-types-grid {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .click-types-section {
+      padding: 40px 15px;
+      margin: 40px 0;
+    }
+
+    .click-types-section .section-title {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .click-types-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .click-type-item {
+      padding: 25px;
+    }
+
+    .click-type-title {
+      font-size: 20px;
+    }
+
+    .click-type-description {
+      font-size: 15px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .click-types-section .section-title {
+      font-size: 24px;
+      margin-bottom: 25px;
+    }
+
+    .click-type-item {
+      padding: 20px;
+    }
+
+    .click-type-title {
+      font-size: 18px;
+    }
+
+    .click-type-description {
+      font-size: 14px;
     }
   }
 </style>

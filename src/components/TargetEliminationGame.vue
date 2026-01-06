@@ -614,9 +614,11 @@
   .game-and-settings {
     display: flex;
     flex-direction: row;
-    gap: 30px;
+    gap: clamp(15px, 3vw, 30px);
     width: 100%;
     align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   /* 游戏信息包装器 */
@@ -642,62 +644,74 @@
     margin-top: 15px;
   }
 
-  /* 游戏统计信息 */
+  /* 游戏统计信息 - 参考ClickTest.vue样式 */
   .game-stats {
     display: flex; /* 使用flex布局 */
-    gap: 16px; /* 卡片之间的间距 */
     justify-content: center; /* 卡片居中对齐 */
-    margin-bottom: 20px; /* 底部外边距 */
-    flex-wrap: wrap; /* 允许卡片换行 */
+    margin: clamp(15px, 3vw, 25px) auto; /* 响应式外边距 */
+    max-width: 900px; /* 最大宽度 */
+    width: 95%; /* 响应式宽度 */
+    background-color: #333; /* 背景色 */
+    border-radius: 15px; /* 圆角 */
+    overflow: hidden; /* 隐藏溢出内容 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* 阴影效果 */
+    border: 2px solid #444; /* 边框 */
   }
 
   /* 单个统计项 */
   .stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 15px 30px;
-    border-radius: 8px;
-    min-width: 120px;
-    gap: 5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    text-align: center;
+    flex: 1; /* 平均分配空间 */
+    min-width: clamp(80px, 22vw, 160px); /* 响应式最小宽度 */
+    padding: clamp(12px, 2.5vw, 18px) clamp(8px, 1.5vw, 12px); /* 响应式内边距 */
+    color: white; /* 文本颜色 */
+    font-weight: bold; /* 文本粗细 */
+    text-align: center; /* 文本居中 */
+    height: auto; /* 自动高度 */
+    display: flex; /* 使用flex布局 */
+    flex-direction: column; /* 垂直排列 */
+    justify-content: center; /* 垂直居中 */
+    align-items: center; /* 水平居中 */
+    gap: 5px; /* 内部元素间距 */
   }
 
   /* 统计标签 */
   .stat-label {
-    font-size: 20px;
-    opacity: 1;
-    text-transform: uppercase;
-    letter-spacing: 0;
-    font-weight: 600;
-    color: white;
-    margin: 0;
+    font-size: clamp(12px, 1.6vw, 14px); /* 响应式字体大小 */
+    opacity: 0.95; /* 透明度 */
+    line-height: 1; /* 行高 */
+    font-weight: 500; /* 文本粗细 */
+    color: white; /* 文本颜色 */
+    margin: 0; /* 清除外边距 */
+    text-transform: uppercase; /* 大写转换 */
+    letter-spacing: 0.5px; /* 字间距 */
   }
 
   /* 统计值 */
   .stat-value {
-    font-size: 36px;
-    font-weight: bold;
-    color: white;
-    line-height: 1;
-    margin: 0;
+    font-size: clamp(20px, 3.5vw, 30px); /* 响应式字体大小 */
+    margin-bottom: 4px; /* 底部外边距 */
+    line-height: 1; /* 行高 */
+    font-weight: 800; /* 文本粗细 */
+    white-space: nowrap; /* 不换行 */
+    overflow: visible; /* 可见溢出 */
+    text-align: center; /* 文本居中 */
+    color: white; /* 文本颜色 */
+    margin: 0; /* 清除外边距 */
   }
 
-  /* 时间统计项 */
+  /* 时间统计项 - 渐变背景 */
   .stat-item:nth-child(1) {
-    background-color: #646cff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* 紫色渐变 */
   }
 
-  /* 分数统计项 */
+  /* 分数统计项 - 渐变背景 */
   .stat-item:nth-child(2) {
-    background-color: #ff9800;
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); /* 粉色渐变 */
   }
 
-  /* 最佳分数统计项 */
+  /* 最佳分数统计项 - 渐变背景 */
   .stat-item:nth-child(3) {
-    background-color: #4caf50;
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); /* 青色渐变 */
   }
 
   /* 分数值特殊样式 */
@@ -763,43 +777,40 @@
 
   /* 外部设置面板 */
   .external-settings-panel {
-    width: 280px;
+    width: clamp(250px, 28%, 320px);
     background-color: rgba(40, 40, 40, 0.95);
     border-radius: 15px;
-    padding: 10px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(80, 80, 80, 0.5);
     height: auto;
-    max-height: 450px;
-    overflow-y: hidden;
+    max-height: 550px;
+    overflow-y: auto;
     box-sizing: border-box;
-    margin-top: 200px; /* 与游戏标题对齐 */
+    margin-top: 0;
     transition: all 0.3s ease;
-    transform: translateX(-10px);
+    transform: translateX(0);
+    flex-shrink: 0;
   }
 
   /* 动态模式下的设置面板样式 */
   .external-settings-panel.dynamic-mode {
-    max-height: 550px;
-    overflow-y: hidden;
-    height: auto;
+    max-height: 600px;
   }
 
   /* 静态模式下的设置面板样式 */
   .external-settings-panel.static-mode {
-    max-height: 450px;
-    overflow-y: hidden;
-    height: auto;
+    max-height: 500px;
   }
 
   /* 设置标题 */
   .settings-title {
     color: #4caf50;
     margin: 0;
-    font-size: 20px;
+    font-size: clamp(18px, 2vw, 22px);
     text-align: left;
     font-weight: bold;
     line-height: 1;
@@ -810,14 +821,14 @@
   .settings-section {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 10px;
   }
 
   /* 区块标题 */
   .settings-section h5 {
     color: #ffffff;
     margin: 0;
-    font-size: 15px;
+    font-size: clamp(14px, 1.5vw, 16px);
     font-weight: bold;
     opacity: 0.9;
     text-transform: uppercase;
@@ -829,8 +840,8 @@
   /* 选项网格 */
   .options-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
   }
 
   /* 单个设置选项 */
@@ -1256,28 +1267,29 @@
       margin-top: 10px;
     }
 
-    /* 统计信息优化 */
+    /* 统计信息优化 - 参考ClickTest.vue移动端样式 */
     .game-stats {
-      gap: 8px;
+      gap: 0;
       margin-bottom: 15px;
       width: 100%;
       flex-wrap: nowrap;
     }
 
+    /* 统计卡片横向排列，缩小样式 */
     .stat-item {
       flex: 1;
-      min-width: 0;
-      padding: 8px 15px;
-      gap: 3px;
-      max-width: 33.33%;
+      min-width: clamp(70px, 20vw, 80px);
+      max-width: none;
+      padding: clamp(6px, 2vw, 8px) clamp(8px, 2vw, 12px);
     }
 
     .stat-value {
-      font-size: clamp(20px, 6vw, 28px);
+      font-size: clamp(22px, 5vw, 26px);
+      margin-bottom: 2px;
     }
 
     .stat-label {
-      font-size: clamp(12px, 3vw, 16px);
+      font-size: clamp(12px, 2vw, 14px);
     }
 
     /* 外部设置面板优化 */

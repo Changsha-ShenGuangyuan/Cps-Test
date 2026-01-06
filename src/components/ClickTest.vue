@@ -127,7 +127,7 @@
       const loaded = JSON.parse(saved);
       // 移除可能存在的description字段，确保数据结构一致
       historyRecords.value = loaded.map((record: any) => {
-        const { description, ...rest } = record;
+        const { description: _, ...rest } = record;
         return rest;
       });
     }
@@ -853,18 +853,21 @@
   /* 统计卡片 */
   .stats-cards {
     display: flex;
-    gap: clamp(8px, 2vw, 16px);
     justify-content: center;
-    margin-bottom: clamp(15px, 3vw, 20px);
-    flex-wrap: wrap;
-    width: 100%;
+    margin: clamp(15px, 3vw, 25px) auto;
+    max-width: 900px;
+    width: 95%;
+    background-color: #333;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    border: 2px solid #444;
   }
 
   .stat-card {
     flex: 1;
-    min-width: clamp(100px, 25vw, 150px);
-    padding: clamp(12px, 3vw, 16px) clamp(15px, 3vw, 20px);
-    border-radius: 12px;
+    min-width: clamp(80px, 22vw, 160px);
+    padding: clamp(12px, 2.5vw, 18px) clamp(8px, 1.5vw, 12px);
     color: white;
     font-weight: bold;
     text-align: center;
@@ -873,32 +876,36 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
   .timer-card {
-    background-color: #646cff; /* 蓝色 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* 紫色渐变 */
   }
 
   .click-rate-card {
-    background-color: #ff7b00; /* 橙色 */
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); /* 粉色渐变 */
   }
 
   .score-card {
-    background-color: #4caf50; /* 绿色 */
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); /* 青色渐变 */
   }
 
   .stat-value {
-    font-size: clamp(24px, 5vw, 32px);
+    font-size: clamp(20px, 3.5vw, 30px);
     margin-bottom: 4px;
     line-height: 1;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: visible;
+    text-align: center;
   }
 
   .stat-label {
-    font-size: clamp(14px, 2.5vw, 16px);
+    font-size: clamp(12px, 1.6vw, 14px);
     opacity: 0.95;
     line-height: 1;
-    font-weight: normal;
+    font-weight: 500;
+    text-align: center;
   }
 
   /* 点击区域 */
@@ -950,7 +957,7 @@
     position: absolute;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background-color: rgba(76, 175, 80, 0.5); /* 更淡的绿色，降低透明度 */
+    background-color: rgba(56, 214, 201, 0.5); /* 更淡的绿色，降低透明度 */
     pointer-events: none;
     z-index: 1;
     box-shadow: 0 0 15px rgba(76, 175, 80, 0.5); /* 减弱发光效果 */
@@ -1127,7 +1134,6 @@
     .stats-cards {
       flex-direction: row;
       align-items: center;
-      gap: clamp(5px, 1vw, 8px);
       justify-content: center;
     }
 

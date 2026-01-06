@@ -231,7 +231,7 @@
     else if (basePath.startsWith('/space-click-test/')) {
       const time = basePath.split('/')[2];
       // 只允许有效的测试时长
-      const validTimes = ['1', '5', '10', '15', '30', '60'];
+      const validTimes = ['1', '2', '5', '10', '15', '30', '60'];
       if (!time || !validTimes.includes(time)) {
         isValidPath = false;
       }
@@ -527,13 +527,55 @@
         name: t('clickTest'),
         icon: icons.chick,
         children: [
-          { id: 11, name: t('1secClickTest'), path: '/click-test/1', children: [], isExpanded: false },
-          { id: 12, name: t('2secClickTest'), path: '/click-test/2', children: [], isExpanded: false },
-          { id: 13, name: t('5secClickTest'), path: '/click-test/5', children: [], isExpanded: false },
-          { id: 14, name: t('10secClickTest'), path: '/click-test/10', children: [], isExpanded: false },
-          { id: 15, name: t('15secClickTest'), path: '/click-test/15', children: [], isExpanded: false },
-          { id: 16, name: t('30secClickTest'), path: '/click-test/30', children: [], isExpanded: false },
-          { id: 17, name: t('60secClickTest'), path: '/click-test/60', children: [], isExpanded: false },
+          {
+            id: 11,
+            name: t('1secClickTest'),
+            path: '/click-test/1',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 12,
+            name: t('2secClickTest'),
+            path: '/click-test/2',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 13,
+            name: t('5secClickTest'),
+            path: '/click-test/5',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 14,
+            name: t('10secClickTest'),
+            path: '/click-test/10',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 15,
+            name: t('15secClickTest'),
+            path: '/click-test/15',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 16,
+            name: t('30secClickTest'),
+            path: '/click-test/30',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 17,
+            name: t('60secClickTest'),
+            path: '/click-test/60',
+            children: [],
+            isExpanded: false,
+          },
         ],
         isExpanded: false,
       },
@@ -542,8 +584,20 @@
         name: t('clickSeriesTest'),
         icon: icons.mouse02,
         children: [
-          { id: 81, name: t('doubleClickTest'), path: '/multi-click-test/double', children: [], isExpanded: false },
-          { id: 82, name: t('tripleClickTest'), path: '/multi-click-test/triple', children: [], isExpanded: false },
+          {
+            id: 81,
+            name: t('doubleClickTest'),
+            path: '/multi-click-test/double',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 82,
+            name: t('tripleClickTest'),
+            path: '/multi-click-test/triple',
+            children: [],
+            isExpanded: false,
+          },
         ],
         isExpanded: false,
       },
@@ -552,12 +606,55 @@
         name: t('spaceClickTest'),
         icon: icons.keyboard02,
         children: [
-          { id: 21, name: t('1secSpaceTest'), path: '/space-click-test/1', children: [], isExpanded: false },
-          { id: 22, name: t('5secSpaceTest'), path: '/space-click-test/5', children: [], isExpanded: false },
-          { id: 23, name: t('10secSpaceTest'), path: '/space-click-test/10', children: [], isExpanded: false },
-          { id: 24, name: t('15secSpaceTest'), path: '/space-click-test/15', children: [], isExpanded: false },
-          { id: 25, name: t('30secSpaceTest'), path: '/space-click-test/30', children: [], isExpanded: false },
-          { id: 26, name: t('60secSpaceTest'), path: '/space-click-test/60', children: [], isExpanded: false },
+          {
+            id: 21,
+            name: t('1secSpaceTest'),
+            path: '/space-click-test/1',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 22,
+            name: t('2secSpaceTest'),
+            path: '/space-click-test/2',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 23,
+            name: t('5secSpaceTest'),
+            path: '/space-click-test/5',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 24,
+            name: t('10secSpaceTest'),
+            path: '/space-click-test/10',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 25,
+            name: t('15secSpaceTest'),
+            path: '/space-click-test/15',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 26,
+            name: t('30secSpaceTest'),
+            path: '/space-click-test/30',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 27,
+            name: t('60secSpaceTest'),
+            path: '/space-click-test/60',
+            children: [],
+            isExpanded: false,
+          },
         ],
         isExpanded: false,
       },
@@ -590,11 +687,41 @@
         name: t('typingTest'),
         icon: icons.keyboard02,
         children: [
-          { id: 41, name: t('1minTypingTest'), path: '/typing-test/1', children: [], isExpanded: false },
-          { id: 42, name: t('3minTypingTest'), path: '/typing-test/3', children: [], isExpanded: false },
-          { id: 43, name: t('5minTypingTest'), path: '/typing-test/5', children: [], isExpanded: false },
-          { id: 44, name: t('10minTypingTest'), path: '/typing-test/10', children: [], isExpanded: false },
-          { id: 45, name: t('15minTypingTest'), path: '/typing-test/15', children: [], isExpanded: false },
+          {
+            id: 41,
+            name: t('1minTypingTest'),
+            path: '/typing-test/1',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 42,
+            name: t('3minTypingTest'),
+            path: '/typing-test/3',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 43,
+            name: t('5minTypingTest'),
+            path: '/typing-test/5',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 44,
+            name: t('10minTypingTest'),
+            path: '/typing-test/10',
+            children: [],
+            isExpanded: false,
+          },
+          {
+            id: 45,
+            name: t('15minTypingTest'),
+            path: '/typing-test/15',
+            children: [],
+            isExpanded: false,
+          },
         ],
         isExpanded: false,
       },
@@ -603,9 +730,30 @@
         name: t('reactionTest'),
         icon: icons.reaction,
         children: [
-          { id: 51, name: t('simpleReactionTest'), path: '/reaction-time-test', children: [], isExpanded: false, icon: '' },
-          { id: 52, name: t('colorReactionTest'), path: '/color-reaction-test', children: [], isExpanded: false, icon: '' },
-          { id: 53, name: t('keyReactionTest'), path: '/key-reaction-test', children: [], isExpanded: false, icon: '' },
+          {
+            id: 51,
+            name: t('simpleReactionTest'),
+            path: '/reaction-time-test',
+            children: [],
+            isExpanded: false,
+            icon: '',
+          },
+          {
+            id: 52,
+            name: t('colorReactionTest'),
+            path: '/color-reaction-test',
+            children: [],
+            isExpanded: false,
+            icon: '',
+          },
+          {
+            id: 53,
+            name: t('keyReactionTest'),
+            path: '/key-reaction-test',
+            children: [],
+            isExpanded: false,
+            icon: '',
+          },
         ],
         isExpanded: false,
       },
@@ -910,7 +1058,7 @@
       const basePath = path.startsWith('/') ? path : `/${path}`;
       fullPath = `/${langState.current}${basePath}`;
     }
-    
+
     router.push(fullPath);
     // 导航后将内容区域滚动到顶部
     scrollToTop();
@@ -991,7 +1139,14 @@
         </button>
         <!-- 桌面端logo -->
         <div class="logo" style="cursor: pointer" @click="navigateTo('/')">
-          <img src="/logo.png" :alt="t('logoAlt')" class="logo-image" width="32" height="32" />
+          <img
+            src="/logo.png"
+            :alt="t('logoAlt')"
+            class="logo-image"
+            width="32"
+            height="32"
+            loading="lazy"
+          />
           <span class="desktop-logo">{{ websiteName }}</span>
           <span class="mobile-logo">{{ mobileWebsiteName }}</span>
         </div>
@@ -1159,7 +1314,14 @@
         <!-- 侧边栏头部 - 网站icon和名字 -->
         <div class="sidebar-header">
           <div class="sidebar-logo" style="cursor: pointer" @click="navigateTo('/')">
-            <img src="/logo.png" :alt="t('logoAlt')" class="logo-image" width="32" height="32" />
+            <img
+              src="/logo.png"
+              :alt="t('logoAlt')"
+              class="logo-image"
+              width="32"
+              height="32"
+              loading="lazy"
+            />
             <span>{{ mobileWebsiteName }}</span>
           </div>
           <button class="close-sidebar-btn" aria-label="关闭侧边栏" @click="closeSidebar">
@@ -1198,7 +1360,11 @@
                   loading="lazy"
                 />
                 <span class="menu-item-name">{{ item.name }}</span>
-                <span v-if="item.children && item.children.length > 0" class="menu-toggle" aria-hidden="true">
+                <span
+                  v-if="item.children && item.children.length > 0"
+                  class="menu-toggle"
+                  aria-hidden="true"
+                >
                   {{ item.isExpanded ? '▼' : '▶' }}
                 </span>
               </div>
@@ -1253,7 +1419,7 @@
     <!-- 页脚区域 -->
     <footer class="footer" role="contentinfo">
       <div class="footer-content">
-        <p>{{ t('copyright') }}</p>
+        <p>{{ t('copyright', { year: new Date().getFullYear() }) }}</p>
         <div class="footer-links">
           <router-link to="/privacy-policy" class="footer-link">{{
             t('privacyPolicy')
@@ -1612,7 +1778,6 @@
     .sidebar .menu-item-header.active {
       background-color: #2a2a2a; /* 激活状态背景色 */
       color: #4caf50; /* 激活状态文字颜色 */
-      box-shadow: inset 3px 0 0 #4caf50; /* 左侧绿色指示条 */
     }
 
     /* 移动端子菜单项样式优化 */
@@ -2231,7 +2396,6 @@
   .menu-item-header.active {
     background-color: #2a2a2a;
     color: #4caf50; /* 选中后显示绿色高亮文字 */
-    box-shadow: inset 3px 0 0 #4caf50; /* 左侧绿色内部阴影 */
   }
 
   .menu-item-header.active:hover {
@@ -2343,9 +2507,7 @@
   }
 
   .submenu-item.active {
-    background-color: #2a2a2a;
     color: #4caf50; /* 选中后显示绿色高亮文字 */
-    box-shadow: inset 3px 0 0 #4caf50; /* 左侧绿色内部阴影 */
   }
 
   .submenu-item.active::before {

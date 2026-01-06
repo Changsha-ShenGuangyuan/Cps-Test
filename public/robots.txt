@@ -7,4 +7,4 @@ Allow: /
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://cpstestgo.com/sitemap.xml
+Sitemap: sitemap.xml

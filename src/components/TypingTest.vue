@@ -7,30 +7,59 @@
   // 导入相关测试推荐组件
   import RelatedTests from './RelatedTests.vue';
 
-  // 响应式变量：屏幕尺寸
-  const isDesktop = ref(window.innerWidth >= 1201);
-
-  // 监听窗口大小变化
-  const handleResize = () => {
-    isDesktop.value = window.innerWidth >= 1201;
-  };
-
-  // 组件挂载时添加事件监听
+  // 组件挂载时添加键盘事件监听
   onMounted(() => {
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('keydown', handleKeyDown);
   });
 
-  // 组件卸载时移除事件监听
+  // 组件卸载时移除键盘事件监听并恢复滚动条
   onBeforeUnmount(() => {
-    window.removeEventListener('resize', handleResize);
+    window.removeEventListener('keydown', handleKeyDown);
+    // 恢复滚动条
+    document.body.style.overflow = '';
   });
+
+  // 处理键盘按下事件
+  const handleKeyDown = (e: KeyboardEvent) => {
+    // 定义允许开始游戏的按键类型：数字、字母、符号
+    const isAllowedKey = e.key.length === 1;
+
+    // 如果游戏未开始，只有按下允许的键才开始游戏
+    if (!isPlaying.value && !isGameOver.value && isAllowedKey) {
+      startGame();
+    }
+
+    // 只有在游戏进行中才处理输入
+    if (isPlaying.value && !isGameOver.value) {
+      // 屏蔽空格键的默认滚动行为
+      if (e.key === ' ') {
+        e.preventDefault();
+      }
+
+      // 处理退格键
+      if (e.key === 'Backspace') {
+        inputText.value = inputText.value.slice(0, -1);
+      }
+      // 处理普通字符键（只允许输入文本中存在的字符类型）
+      else if (isAllowedKey) {
+        inputText.value += e.key;
+      }
+
+      // 更新输入处理
+      handleInput({ target: { value: inputText.value } } as unknown as Event);
+    }
+  };
 
   // 组件功能：打字速度测试，支持不同时长
 
   // 组件属性
-  const props = defineProps<{
-    time: string; // 测试时长（分钟）
-  }>();
+  const props = defineProps({
+    time: {
+      type: String,
+      required: true,
+      default: '1', // 默认1分钟
+    }, // 测试时长（分钟）
+  });
 
   // 路由实例，用于重定向
   const router = useRouter();
@@ -150,62 +179,135 @@
     }
   );
 
+  // 监听游戏结束状态，控制滚动条
+  watch(
+    () => isGameOver.value,
+    (newValue) => {
+      if (newValue) {
+        // 游戏结束，禁用滚动条
+        document.body.style.overflow = 'hidden';
+      } else {
+        // 游戏未结束，恢复滚动条
+        document.body.style.overflow = '';
+      }
+    }
+  );
+
   // 随机文本库
   const textLibrary = [
-    "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet. It's commonly used for testing typing speed and accuracy.",
-    'Programming is the art of telling a computer what to do. It requires logical thinking and problem-solving skills. Practice makes perfect when it comes to coding.',
-    'Reading books is a great way to expand your knowledge and improve your vocabulary. It can transport you to different worlds and introduce you to new ideas.',
-    'Exercise is important for maintaining good health. It strengthens your muscles, improves your cardiovascular system, and boosts your mood.',
-    'Traveling allows you to experience different cultures, try new foods, and meet interesting people. It broadens your perspective on life.',
-    "Music has the power to evoke emotions and create memories. It can calm you down when you're stressed or energize you when you're feeling tired.",
-    "Cooking is a useful skill that can save you money and help you eat healthier. It's also a fun activity to do with friends and family.",
-    'Science has made incredible advancements over the years, from space exploration to medical breakthroughs. It continues to push the boundaries of what we know.',
-    'Art comes in many forms, including painting, sculpture, music, and literature. It allows people to express themselves creatively.',
-    "Technology is constantly evolving, changing the way we live, work, and communicate. It's important to stay updated with the latest trends and developments.",
-    'Education is the key to unlocking your potential. It provides you with the knowledge and skills needed to succeed in life.',
-    'Nature is full of beauty and wonder. Spending time outdoors can reduce stress and improve your overall well-being.',
-    'Friendship is one of the most valuable things in life. Good friends support you, make you laugh, and share your joys and sorrows.',
-    'History teaches us valuable lessons about the past, helping us understand the present and prepare for the future.',
-    'Mathematics is the language of the universe. It helps us understand patterns, solve problems, and make sense of the world around us.',
-    "Philosophy encourages us to think deeply about life's big questions, such as the meaning of existence, morality, and truth.",
-    'Astronomy explores the vastness of space, studying stars, planets, galaxies, and the origins of the universe.',
-    'Biology is the study of life, from the smallest cells to the largest ecosystems. It helps us understand how living organisms function and evolve.',
-    'Chemistry is the science of matter and its transformations. It plays a crucial role in medicine, materials science, and environmental protection.',
-    'Physics seeks to explain the fundamental laws of nature, from the behavior of subatomic particles to the motion of galaxies.',
-    'Literature allows us to experience different perspectives and emotions. It can inspire, challenge, and entertain us.',
-    'The internet has revolutionized communication and access to information. It has transformed how we learn, work, and connect with others.',
-    'Climate change is one of the most pressing issues facing our planet today. It requires global cooperation and urgent action.',
-    'Renewable energy sources, such as solar and wind power, offer a sustainable alternative to fossil fuels.',
-    "Biodiversity is essential for maintaining healthy ecosystems. Protecting endangered species and habitats is crucial for our planet's future.",
-    'Mental health is just as important as physical health. Taking care of your mind is essential for overall well-being.',
-    "Creativity is the ability to generate new ideas and solutions. It's important in all fields, from art and design to science and business.",
-    'Teamwork is essential for achieving common goals. It allows individuals to combine their strengths and work together effectively.',
-    'Leadership involves inspiring and guiding others towards a shared vision. Good leaders are empathetic, decisive, and supportive.',
-    'Ethics is the study of moral principles that govern human behavior. It helps us make decisions that are fair, just, and responsible.',
-    'Communication is key to building strong relationships. It involves listening actively, speaking clearly, and expressing yourself effectively.',
-    'Time management is the ability to plan and organize your time effectively. It helps you be more productive and reduce stress.',
-    "Critical thinking involves analyzing information, evaluating arguments, and making reasoned judgments. It's an essential skill for navigating the modern world.",
-    "Adaptability is the ability to adjust to new situations and challenges. It's an important skill in a rapidly changing world.",
-    'Resilience is the ability to bounce back from setbacks and adversity. It helps you overcome challenges and keep moving forward.',
-    "Empathy is the ability to understand and share the feelings of others. It's essential for building meaningful connections and fostering kindness.",
-    'Gratitude involves recognizing and appreciating the good things in life. It can improve your mood and overall well-being.',
-    'Curiosity drives learning and discovery. It encourages you to ask questions, explore new ideas, and seek out new experiences.',
-    "Patience is the ability to wait calmly for something without getting frustrated. It's an important virtue in many aspects of life.",
-    'Honesty is the foundation of trust. Being truthful and transparent in your interactions with others builds strong, lasting relationships.',
-    'Courage is the ability to face fear, danger, or difficulty with bravery. It allows you to take risks and pursue your goals.',
-    'Generosity involves giving freely to others without expecting anything in return. It can bring joy to both the giver and the receiver.',
-    'Humility is the quality of being humble and modest. It involves recognizing your limitations and valuing the contributions of others.',
-    'Integrity means acting in accordance with your values and principles. It involves being honest, reliable, and consistent in your actions.',
-    'Optimism is the tendency to see the positive side of things. It can help you cope with challenges and maintain a positive outlook on life.',
-    "Persistence is the quality of continuing to try despite difficulties or setbacks. It's essential for achieving long-term goals.",
-    "Self-discipline is the ability to control your impulses and follow through on your commitments. It's key to achieving success in many areas of life.",
-    'Confidence is the belief in your own abilities. It allows you to take on challenges and pursue your dreams.',
-    "Kindness involves being friendly, generous, and considerate towards others. It can make a big difference in someone's day.",
-    'Respect is treating others with dignity and consideration. It involves valuing differences and recognizing the worth of every individual.',
+    "The digital revolution has transformed every aspect of modern life, from how we communicate and work to how we learn and entertain ourselves. This technological evolution has brought unprecedented convenience and connectivity, but it has also presented new challenges and complexities. As we navigate this rapidly changing landscape, it's important to understand both the benefits and the potential pitfalls of our increasingly digital world.\n\nOne of the most significant impacts of the digital age is on communication. Social media platforms, messaging apps, and video conferencing tools have made it easier than ever to stay connected with friends, family, and colleagues across the globe. These technologies have broken down geographical barriers and created new opportunities for collaboration and community building. However, they have also raised concerns about privacy, misinformation, and the erosion of face-to-face interaction.\n\nIn the workplace, digital technologies have revolutionized how we do business. Remote work has become more prevalent than ever, allowing employees to work from anywhere with an internet connection. Cloud computing has enabled businesses to store and access vast amounts of data efficiently, while artificial intelligence and machine learning are transforming industries from healthcare to finance. Despite these advances, the digital workplace also presents challenges such as cybersecurity threats, digital fatigue, and the need for constant upskilling.",
+    'Climate change is one of the most pressing issues facing our planet today, with far-reaching implications for ecosystems, economies, and human societies. The scientific consensus is clear: human activities, particularly the burning of fossil fuels, are driving global temperatures to rise at an unprecedented rate. This warming trend is causing a range of impacts, including more frequent and severe weather events, rising sea levels, melting ice caps, and disruptions to ecosystems and biodiversity.\n\nAddressing climate change requires urgent and coordinated action at all levels, from individuals to governments and international organizations. Transitioning to renewable energy sources such as solar, wind, and hydropower is critical to reducing greenhouse gas emissions. Additionally, improving energy efficiency, promoting sustainable agriculture, and protecting forests and other carbon sinks are essential strategies for mitigating climate change.\n\nAdapting to the impacts of climate change is also crucial. This includes investing in resilient infrastructure, developing early warning systems for extreme weather events, and supporting communities most vulnerable to climate impacts. By taking proactive steps to both mitigate and adapt to climate change, we can work towards a more sustainable and resilient future for all.',
+    "The human brain is one of the most complex and fascinating organs in the body, responsible for our thoughts, emotions, memories, and actions. Despite decades of research, scientists are still uncovering the mysteries of how the brain works. Recent advances in neuroscience, such as functional magnetic resonance imaging (fMRI) and optogenetics, have provided new insights into brain function and connectivity.\n\nOne of the most remarkable aspects of the brain is its plasticity, or ability to change and adapt throughout life. This neuroplasticity allows us to learn new skills, recover from injuries, and adapt to new environments. It's also the basis for how we form memories, with experiences shaping the connections between neurons in our brains.\n\nMental health is an integral part of brain health, and understanding the brain has important implications for treating mental illnesses such as depression, anxiety, and schizophrenia. Research into the brain's chemistry and circuitry is leading to more effective treatments, including new medications and therapies. As our understanding of the brain continues to grow, so too does our ability to promote brain health and well-being throughout the lifespan.",
+    "Literature has the power to transport us to different times and places, introduce us to diverse characters, and explore complex ideas and emotions. From ancient epics to modern novels, literature reflects the human experience and helps us make sense of the world around us. It can challenge our assumptions, expand our perspectives, and foster empathy by allowing us to see the world through others' eyes.\n\nReading literature has numerous benefits for cognitive development and mental well-being. It improves vocabulary, comprehension, and critical thinking skills, while also reducing stress and promoting relaxation. Studies have shown that reading literary fiction can enhance empathy and social cognition, helping us better understand and connect with others.\n\nThe evolution of literature mirrors the evolution of human society, with different genres and styles emerging to reflect the concerns and values of their time. From the oral traditions of ancient cultures to the digital literature of today, storytelling remains a fundamental human activity. As technology continues to change how we create and consume literature, its power to inform, entertain, and inspire remains as strong as ever.",
+    "Travel is one of life's greatest teachers, offering opportunities to learn about different cultures, cuisines, and ways of life. Stepping outside our comfort zones and immersing ourselves in new environments can broaden our horizons, challenge our assumptions, and foster personal growth. Whether exploring a bustling city, a remote village, or a breathtaking natural landscape, travel has the power to transform our perspectives and create lasting memories.\n\nCultural immersion is one of the most rewarding aspects of travel, allowing us to experience local customs, traditions, and ways of thinking firsthand. Trying new foods, participating in cultural festivals, and engaging with local communities can deepen our understanding and appreciation of different cultures. These experiences can also foster greater tolerance and respect for diversity, helping to bridge cultural divides.\n\nTravel also offers opportunities for adventure and exploration, whether hiking a mountain trail, snorkeling in a coral reef, or exploring ancient ruins. These experiences can build confidence, resilience, and a sense of adventure. They also remind us of the beauty and diversity of our planet, inspiring us to protect and preserve it for future generations.",
+    'The history of human civilization is a rich and complex tapestry, woven from the stories of countless individuals and societies. From the earliest human settlements to the globalized world of today, civilizations have risen and fallen, leaving behind legacies that continue to shape our world. Studying history allows us to understand the origins of our current institutions, beliefs, and values, and to learn from the successes and failures of the past.\n\nAncient civilizations such as Mesopotamia, Egypt, Greece, and Rome laid the foundations for many aspects of modern society, including writing, mathematics, philosophy, and governance. The Middle Ages saw the rise of great empires and the spread of major religions, while the Renaissance sparked a revolution in art, science, and thought. The Industrial Revolution transformed economies and societies, leading to unprecedented technological progress and social change.\n\nUnderstanding history is essential for making informed decisions about the future. By studying the patterns and trends of the past, we can better understand the challenges facing our world today and work towards creating a more just, peaceful, and prosperous future for all.',
+    'Science and technology have transformed our world in ways unimaginable just a few centuries ago. From the discovery of electricity to the development of the internet, scientific breakthroughs have revolutionized how we live, work, and interact with the world around us. Science is a systematic process of inquiry that seeks to understand the natural world through observation, experimentation, and analysis.\n\nThe scientific method is the foundation of modern science, providing a rigorous framework for testing hypotheses and advancing knowledge. This process involves making observations, formulating questions, developing hypotheses, conducting experiments, analyzing data, and drawing conclusions. Through this iterative process, scientists have made remarkable discoveries about everything from the smallest subatomic particles to the vast expanse of the universe.\n\nTechnology, the application of scientific knowledge for practical purposes, has had a profound impact on human society. From the wheel to the smartphone, technological innovations have improved our quality of life and expanded our capabilities. Today, emerging technologies such as artificial intelligence, biotechnology, and quantum computing are poised to transform our world once again, presenting both exciting opportunities and significant challenges.',
+    'Education is the cornerstone of personal and societal development, providing individuals with the knowledge, skills, and values needed to thrive in a complex world. It is a lifelong process that begins in early childhood and continues throughout our lives. Quality education not only equips individuals with the tools to succeed in the workforce but also fosters critical thinking, creativity, and citizenship.\n\nThe purpose of education extends beyond academic achievement to include the development of the whole person. It should promote intellectual curiosity, emotional intelligence, and social responsibility. Education should also prepare individuals to be active and engaged citizens, capable of contributing to their communities and participating in democratic processes.\n\nAccess to quality education is a fundamental human right, yet millions of children and adults around the world lack access to basic education. Addressing educational inequality requires concerted efforts to ensure that all individuals, regardless of their background or circumstances, have the opportunity to receive a quality education. This includes investing in teachers, improving school infrastructure, and leveraging technology to expand access to education in underserved communities.',
+    'Art is a universal language that transcends cultural and linguistic barriers, allowing us to express and communicate ideas, emotions, and experiences. From prehistoric cave paintings to contemporary digital art, art has been an integral part of human culture for thousands of years. It reflects the values, beliefs, and concerns of the societies that create it, while also inspiring and challenging viewers.\n\nArt takes many forms, including painting, sculpture, music, dance, literature, theater, and film. Each art form has its own unique language and techniques, yet all share the ability to evoke emotion, stimulate thought, and create connections between people. Art can be a powerful tool for social commentary, challenging injustice and inspiring change, or it can simply bring beauty and joy into our lives.\n\nThe creative process itself is a journey of exploration and self-discovery, requiring imagination, discipline, and courage. Artists draw inspiration from a variety of sources, including their personal experiences, the natural world, and the works of other artists. Through their creations, artists offer us new perspectives on the world and help us see things in ways we might not have considered before.',
+    "Health and well-being are essential for living a fulfilling and productive life. While physical health is often the first thing that comes to mind, true well-being encompasses physical, mental, and social dimensions. Achieving and maintaining good health requires a holistic approach that addresses all aspects of our lives.\n\nPhysical health involves taking care of our bodies through regular exercise, balanced nutrition, sufficient sleep, and preventive care. Regular physical activity strengthens our muscles and bones, improves cardiovascular health, and boosts our immune system. A balanced diet provides the nutrients our bodies need to function properly, while adequate sleep is essential for physical and mental recovery.\n\nMental health is equally important, involving our emotional, psychological, and social well-being. It affects how we think, feel, and act, and helps determine how we handle stress, relate to others, and make choices. Taking care of our mental health includes practicing self-care, seeking support when needed, and cultivating positive relationships.\n\nSocial well-being involves our connections with others and our sense of belonging to a community. Strong social ties can provide emotional support, reduce stress, and improve overall health outcomes. Building and maintaining healthy relationships, participating in community activities, and contributing to others' well-being are all important for social health.",
+    "The future of work is being shaped by rapid technological change, globalization, and shifting societal values. As we move further into the 21st century, the nature of work is evolving at an unprecedented pace, with new jobs emerging and traditional roles being transformed or replaced. Understanding these changes is essential for individuals, businesses, and policymakers alike.\n\nAutomation and artificial intelligence are among the most significant drivers of change in the workplace. While these technologies have the potential to increase productivity and create new opportunities, they also raise concerns about job displacement and the need for new skills. The jobs of the future will require a combination of technical skills, such as digital literacy and data analysis, and soft skills, such as creativity, critical thinking, and emotional intelligence.\n\nThe rise of the gig economy and remote work is also transforming how we work. More people are choosing flexible work arrangements that allow them to balance work and personal life, while advances in technology make it easier to work from anywhere. This shift offers both opportunities and challenges, including the need for new policies to protect workers' rights and ensure fair compensation.\n\nAs we navigate the future of work, it's important to prioritize lifelong learning and adaptability. Individuals will need to continuously update their skills to remain competitive in the job market, while businesses will need to invest in their employees' development and create inclusive work environments that foster innovation and collaboration.",
+    'Space exploration has captivated the human imagination for centuries, pushing the boundaries of what we know and what we can achieve. From the first moon landing to the exploration of Mars and beyond, space missions have expanded our understanding of the universe and our place in it. These missions have also led to numerous technological advancements that benefit life on Earth.\n\nThe exploration of space has yielded valuable scientific discoveries, from understanding the origins of the universe to studying the potential for life on other planets. Telescopes such as the Hubble Space Telescope have provided stunning images of distant galaxies and nebulae, while robotic missions to Mars and other planets have gathered data about their geology, atmosphere, and potential habitability.\n\nSpace exploration also has practical applications for life on Earth. Many technologies developed for space missions, such as GPS, weather satellites, and medical imaging devices, have become integral parts of our daily lives. Space research has also contributed to advances in materials science, energy production, and environmental monitoring.\n\nThe future of space exploration holds even more exciting possibilities, including crewed missions to Mars, the establishment of lunar bases, and the search for extraterrestrial life. These ambitious goals will require continued innovation, international cooperation, and a commitment to expanding our knowledge of the universe.',
   ];
 
   // 当前测试文本
   const currentText = ref(textLibrary[Math.floor(Math.random() * textLibrary.length)]);
+
+  // 分段显示处理
+  const paragraphs = ref<string[]>([]); // 所有段落
+  const currentParagraphIndex = ref(0); // 当前显示的段落索引
+  const textDisplayRef = ref<HTMLElement | null>(null); // 文本显示容器引用
+
+  // 测量文本高度并分割为段落
+  const splitTextIntoParagraphs = () => {
+    const text = currentText.value || '';
+    if (!textDisplayRef.value) {
+      paragraphs.value = [text];
+      return;
+    }
+
+    // 获取文本显示容器的高度（减去padding）
+    const computedStyle = window.getComputedStyle(textDisplayRef.value);
+    const containerHeight =
+      textDisplayRef.value.clientHeight -
+      parseInt(computedStyle.paddingTop) -
+      parseInt(computedStyle.paddingBottom);
+
+    // 创建临时元素用于测量文本高度
+    const tempDiv = document.createElement('div');
+    tempDiv.style.fontSize = computedStyle.fontSize;
+    tempDiv.style.fontFamily = computedStyle.fontFamily;
+    tempDiv.style.lineHeight = computedStyle.lineHeight;
+    tempDiv.style.whiteSpace = computedStyle.whiteSpace;
+    tempDiv.style.width = textDisplayRef.value.clientWidth + 'px';
+    tempDiv.style.padding = '0';
+    tempDiv.style.visibility = 'hidden';
+    tempDiv.style.position = 'absolute';
+    document.body.appendChild(tempDiv);
+
+    // 按字符逐个添加，测量高度，当接近容器高度时分割为段落
+    const result: string[] = [];
+    let currentParagraph = '';
+
+    for (let i = 0; i < text.length; i++) {
+      currentParagraph += text[i];
+      tempDiv.textContent = currentParagraph;
+
+      // 当文本高度接近容器高度（95%）时，分割段落，充分利用空间
+      if (tempDiv.offsetHeight >= containerHeight) {
+        // 找到最后一个空格或标点符号，避免在单词中间分割
+        const lastSpaceIndex = currentParagraph.lastIndexOf(' ');
+        const lastPunctIndex = currentParagraph.search(/[.!?,;:\n"]\s*$/);
+        const splitIndex = lastPunctIndex > lastSpaceIndex ? lastPunctIndex + 1 : lastSpaceIndex;
+
+        if (splitIndex > 0) {
+          // 分割段落
+          result.push(currentParagraph.slice(0, splitIndex).trim());
+          currentParagraph = currentParagraph.slice(splitIndex).trim();
+        } else {
+          // 如果没有找到合适的分割点，直接分割
+          result.push(currentParagraph.trim());
+          currentParagraph = '';
+        }
+      }
+    }
+
+    // 添加最后一个段落
+    if (currentParagraph.trim()) {
+      result.push(currentParagraph.trim());
+    }
+
+    // 清理临时元素
+    document.body.removeChild(tempDiv);
+
+    // 如果没有分割出段落，使用原文本
+    paragraphs.value = result.length > 0 ? result : [text];
+  };
+
+  // 获取当前显示的段落
+  const currentParagraph = computed(() => {
+    return paragraphs.value[currentParagraphIndex.value] || '';
+  });
+
+  // 初始化
+  onMounted(() => {
+    splitTextIntoParagraphs();
+  });
+
+  // 监听文本变化
+  watch(currentText, () => {
+    splitTextIntoParagraphs();
+    currentParagraphIndex.value = 0;
+  });
+
+  // 监听窗口大小变化，重新分割段落
+  onMounted(() => {
+    window.addEventListener('resize', splitTextIntoParagraphs);
+  });
+
+  // 清理事件监听
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', splitTextIntoParagraphs);
+  });
 
   // 计算属性：格式化剩余时间
   const formattedTime = computed(() => {
@@ -214,15 +316,9 @@
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   });
 
-  // 计算属性：当前输入位置
-  // const currentPosition = computed(() => {
-  //   // 当前输入位置，用于高亮下一个待输入字符
-  //   return inputText.value.length
-  // })
-
-  // 计算属性：是否所有文本都已输入
-  const isTextCompleted = computed(
-    () => inputText.value.length >= (currentText.value?.length ?? 0)
+  // 计算属性：是否当前段落已输入完成
+  const isParagraphCompleted = computed(
+    () => inputText.value.length >= currentParagraph.value.length
   );
 
   // 开始游戏
@@ -276,6 +372,8 @@
     // 更新游戏状态
     isPlaying.value = false;
     isGameOver.value = true;
+
+    // 保留当前文本，不立即重置，让用户可以看到最终输入结果
   };
 
   // 更新 WPM
@@ -318,9 +416,11 @@
     let currentCorrect = 0;
     let currentError = 0;
 
+    const fullText = currentText.value;
+
     for (let i = 0; i < newInput.length; i++) {
-      if (currentText.value && i < currentText.value.length) {
-        if (newInput[i] === currentText.value[i]) {
+      if (fullText && i < fullText.length) {
+        if (newInput[i] === fullText[i]) {
           currentCorrect++;
         } else {
           currentError++;
@@ -337,8 +437,8 @@
     // 更新 WPM
     updateWPM();
 
-    // 检查是否完成所有文本，如果完成则生成新内容
-    if (isTextCompleted.value) {
+    // 检查是否完成当前段落
+    if (isParagraphCompleted.value) {
       // 更新累积统计数据
       totalTypedChars.value += newInput.length;
       totalCorrectChars.value += currentCorrect;
@@ -347,8 +447,15 @@
       // 触发庆祝动画
       showCelebration.value = true;
 
-      // 生成新的随机文本
-      currentText.value = textLibrary[Math.floor(Math.random() * textLibrary.length)];
+      // 检查是否还有下一段
+      if (currentParagraphIndex.value < paragraphs.value.length - 1) {
+        // 切换到下一段
+        currentParagraphIndex.value++;
+      } else {
+        // 所有段落都已完成，生成新的随机文本
+        currentText.value = textLibrary[Math.floor(Math.random() * textLibrary.length)];
+      }
+
       // 清空输入框，继续输入
       inputText.value = '';
       // 重置当前统计数据，但保留累积数据
@@ -384,6 +491,12 @@
     totalErrorChars.value = 0;
     wpm.value = 0;
     accuracy.value = 100;
+
+    // 选择新的随机文本
+    currentText.value = textLibrary[Math.floor(Math.random() * textLibrary.length)];
+
+    // 重置段落索引
+    currentParagraphIndex.value = 0;
   };
 
   // 组件卸载
@@ -436,72 +549,51 @@
           </div>
 
           <!-- 文本显示 -->
-          <div class="text-display">
-            <span
-              v-for="(char, index) in currentText"
-              :key="index"
-              :class="{
-                correct: index < inputText.length && inputText[index] === char,
-                incorrect: index < inputText.length && inputText[index] !== char,
-                current: index === inputText.length,
-              }"
-            >
-              {{ char }}
-            </span>
-          </div>
-
-          <!-- 输入区域 -->
-          <div class="input-area">
-            <input
-              v-if="!isGameOver"
-              v-model="inputText"
-              type="text"
-              class="typing-input"
-              :disabled="!isPlaying"
-              :placeholder="t('clickToStartThenTypeHere')"
-              autofocus
-              @input="handleInput"
-              @paste.prevent
-              @drop.prevent
-            />
-            <div v-else class="game-over-message">
-              <h3>{{ t('testFinished') }}！</h3>
-              <h4>{{ t('finalScore') }}</h4>
-              <div class="final-score">
-                <div class="score-item primary">
-                  <div class="score-label">WPM</div>
-                  <div class="score-value">{{ wpm }}</div>
-                </div>
-                <div class="score-item">
-                  <div class="score-label">{{ t('accuracy') }}</div>
-                  <div class="score-value">{{ accuracy }}%</div>
-                </div>
-                <div class="score-item">
-                  <div class="score-label">{{ t('totalCharacters') }}</div>
-                  <div class="score-value">{{ totalTypedChars + typedChars }}</div>
-                </div>
-                <div class="score-item">
-                  <div class="score-label">{{ t('correctCharacters') }}</div>
-                  <div class="score-value">{{ totalCorrectChars + correctChars }}</div>
-                </div>
-                <div class="score-item">
-                  <div class="score-label">{{ t('wrongCharacters') }}</div>
-                  <div class="score-value">{{ totalErrorChars + errorChars }}</div>
-                </div>
-              </div>
-              <div class="button-container">
-                <button class="restart-btn" @click="resetGame">{{ t('restartGame') }}</button>
-              </div>
+          <div ref="textDisplayRef" class="text-display">
+            <div class="text-content">
+              <span
+                v-for="(char, index) in currentParagraph"
+                :key="index"
+                :class="{
+                  correct: index < inputText.length && inputText[index] === char,
+                  incorrect: index < inputText.length && inputText[index] !== char,
+                  current: index === inputText.length,
+                }"
+              >
+                {{ char }}
+              </span>
             </div>
           </div>
 
-          <!-- 开始按钮 -->
-          <div v-if="!isPlaying && !isGameOver" class="start-section">
-            <button class="start-btn" @click="startGame">{{ t('startTest') }}</button>
-            <p>
-              {{ t('clickToStartThenTypeHere') }}。{{ t('time') }}：{{ props.time }}
-              {{ t('minTypingTest').split(' ')[0] }}
-            </p>
+          <!-- 游戏结束弹窗 -->
+          <div v-if="isGameOver" class="game-over-message">
+            <h3>{{ t('testFinished') }}！</h3>
+            <h4>{{ t('finalScore') }}</h4>
+            <div class="final-score">
+              <div class="score-item primary">
+                <div class="score-label">WPM</div>
+                <div class="score-value">{{ wpm }}</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">{{ t('accuracy') }}</div>
+                <div class="score-value">{{ accuracy }}%</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">{{ t('totalCharacters') }}</div>
+                <div class="score-value">{{ totalTypedChars + typedChars }}</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">{{ t('correctCharacters') }}</div>
+                <div class="score-value">{{ totalCorrectChars + correctChars }}</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">{{ t('wrongCharacters') }}</div>
+                <div class="score-value">{{ totalErrorChars + errorChars }}</div>
+              </div>
+            </div>
+            <div class="button-container">
+              <button class="restart-btn" @click="resetGame">{{ t('restartGame') }}</button>
+            </div>
           </div>
         </div>
 
@@ -663,10 +755,20 @@
     background-color: #000000;
     border-radius: 10px;
     text-align: left;
-    min-height: clamp(120px, 20vh, 150px);
+    height: 300px;
     white-space: pre-wrap;
     word-wrap: break-word;
     font-family: monospace;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  /* 文本内容容器 */
+  .text-content {
+    transition: transform 0.3s ease;
+    will-change: transform;
   }
 
   /* 文本字符样式 */
@@ -901,37 +1003,12 @@
     animation-duration: 3s;
   }
 
-  /* 输入区域 */
-  .input-area {
-    margin-bottom: clamp(15px, 3vw, 20px);
-  }
-
-  /* 打字输入框 */
-  .typing-input {
-    width: 100%;
-    padding: clamp(12px, 3vw, 15px);
-    font-size: clamp(16px, 3vw, 24px);
-    border: 2px solid #333;
-    border-radius: 10px;
-    background-color: #000000;
-    color: white;
-    font-family: monospace;
-    outline: none;
-    transition: border-color 0.3s ease;
-    box-sizing: border-box;
-  }
-
-  .typing-input:focus {
-    border-color: #4caf50;
-  }
-
-  .typing-input:disabled {
-    background-color: #222;
-    cursor: not-allowed;
-  }
-
   /* 游戏结束消息 */
   .game-over-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
     padding: 40px 20px;
     background-color: #000000;
@@ -941,6 +1018,11 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
+    z-index: 1000;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+    border: 2px solid #4caf50;
   }
 
   .game-over-message h3 {
@@ -1022,48 +1104,69 @@
     color: #4caf50;
   }
 
+  /* 移动端结果弹窗优化 */
+  @media (max-width: 768px) {
+    /* 调整弹窗整体样式 */
+    .game-over-message {
+      padding: 20px 12px;
+      gap: 12px;
+      width: 85%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* 调整标题大小 */
+    .game-over-message h3 {
+      font-size: 24px;
+    }
+
+    .game-over-message h4 {
+      font-size: 18px;
+    }
+
+    /* 优化最终成绩网格布局 */
+    .final-score {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 10px 0;
+      padding: 12px;
+    }
+
+    /* 调整成绩项样式 */
+    .score-item {
+      padding: 15px 8px;
+    }
+
+    /* 主要成绩项在移动端也只占一列 */
+    .score-item.primary {
+      grid-column: span 1;
+    }
+
+    /* 调整成绩标签和数值大小 */
+    .score-label {
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+
+    .score-value {
+      font-size: 24px;
+    }
+
+    .score-item.primary .score-value {
+      font-size: 30px;
+    }
+
+    /* 调整按钮大小 */
+    .restart-btn {
+      padding: 12px 28px;
+      font-size: 16px;
+      min-width: 140px;
+    }
+  }
+
   /* 按钮容器 */
   .button-container {
     margin-top: 10px;
-  }
-
-  /* 开始区域 */
-  .start-section {
-    text-align: center;
-  }
-
-  /* 开始按钮 */
-  .start-btn {
-    padding: 15px 30px;
-    font-size: 20px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    margin-top: 20px;
-    outline: none; /* 移除默认轮廓 */
-    -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
-  }
-
-  .start-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-  }
-
-  .start-btn:focus {
-    outline: none; /* 移除聚焦轮廓 */
-  }
-
-  .start-btn:active {
-    background-color: #3d8b40;
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-    outline: none; /* 移除点击时的轮廓 */
   }
 
   /* 重新开始按钮 */
@@ -1262,11 +1365,6 @@
     }
 
     /* 成绩项优化 */
-    .score-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
     .score-item {
       padding: 15px;
     }
@@ -1283,27 +1381,10 @@
       font-size: 36px;
     }
 
-    /* 输入框优化 */
-    .typing-input {
-      padding: 12px;
-      font-size: 16px;
-    }
-
     /* 按钮优化 */
-    .start-btn,
     .restart-btn {
       padding: 12px 24px;
       font-size: 18px;
-    }
-
-    /* FAQ部分优化 */
-    .faq-grid {
-      grid-template-columns: 1fr;
-      gap: 15px;
-    }
-
-    .faq-item {
-      padding: 20px;
     }
 
     /* 游戏说明优化 */

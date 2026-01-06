@@ -238,6 +238,18 @@ export default defineConfig({
         // 配置chunk命名规则
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash][extname]',
+        // 优化代码分割策略
+        manualChunks: (id) => {
+          // 将第三方库单独打包
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('vue-router')) {
+              return 'vue';
+            } else if (id.includes('@vueuse/head')) {
+              return 'utils';
+            }
+            return 'vendor';
+          }
+        },
       },
     },
   },

@@ -22,107 +22,114 @@
 
   // 计算面包屑数据
   const breadcrumbs = computed(() => {
-    const path = route.path;
+    let path = route.path;
     const breadcrumbItems = [{ name: t('home'), path: '/' }];
+
+    // 过滤掉语言前缀（如 /zh-CN/click-test/5 -> /click-test/5）
+    const langPrefixRegex = /^\/([a-z]{2}-[A-Z]{2})\//;
+    if (langPrefixRegex.test(path)) {
+      path = path.replace(langPrefixRegex, '/');
+    }
 
     // 处理点击测试路由
     if (path.startsWith('/click-test/')) {
-      breadcrumbItems.push({
-        name: t('clickTest'),
-        path: '/click-test/5', // 默认显示5秒测试
-      });
+      // 提取时间参数
       const time = path.split('/')[2];
       breadcrumbItems.push({
+        name: t('clickTest'),
+        path: route.path.replace(/\/\d+$/, '/5'),
+      });
+      breadcrumbItems.push({
         name: `${time}${t('sec')} ${t('clickTest')}`,
-        path: path,
+        path: route.path,
       });
     }
     // 处理空格点击测试路由
     else if (path.startsWith('/space-click-test/')) {
-      breadcrumbItems.push({
-        name: t('spaceClickTest'),
-        path: '/space-click-test/5', // 默认显示5秒测试
-      });
+      // 提取时间参数
       const time = path.split('/')[2];
       breadcrumbItems.push({
+        name: t('spaceClickTest'),
+        path: route.path.replace(/\/\d+$/, '/5'),
+      });
+      breadcrumbItems.push({
         name: `${time}${t('sec')} ${t('spaceClickTest')}`,
-        path: path,
+        path: route.path,
       });
     }
     // 处理Kohi点击测试路由
     else if (path === '/kohi-click-test') {
       breadcrumbItems.push({
         name: t('kohiClickTest'),
-        path: path,
+        path: route.path,
       });
     }
     // 处理反应时间测试路由
     else if (path === '/reaction-time-test') {
       breadcrumbItems.push({
         name: t('reactionTest'),
-        path: path,
+        path: route.path,
       });
     }
     // 处理颜色反应测试路由
     else if (path === '/color-reaction-test') {
       breadcrumbItems.push({
         name: t('colorReactionTest'),
-        path: path,
+        path: route.path,
       });
     }
     // 处理按键反应测试路由
     else if (path === '/key-reaction-test') {
       breadcrumbItems.push({
         name: t('keyReactionTest'),
-        path: path,
+        path: route.path,
       });
     }
     // 处理目标消除游戏路由
     else if (path === '/target-elimination-game') {
       breadcrumbItems.push({
         name: t('targetEliminationGame'),
-        path: path,
+        path: route.path,
       });
     }
     // 处理鼠标滚动测试路由
     else if (path === '/mouse-scroll-test') {
       breadcrumbItems.push({
         name: t('mouseScrollTest'),
-        path: path,
+        path: route.path,
       });
     }
     // 处理打字测试路由
     else if (path.startsWith('/typing-test/')) {
-      breadcrumbItems.push({
-        name: t('typingTest'),
-        path: '/typing-test/1', // 默认显示1分钟测试
-      });
+      // 提取时间参数
       const time = path.split('/')[2];
       breadcrumbItems.push({
+        name: t('typingTest'),
+        path: route.path.replace(/\/\d+$/, '/1'),
+      });
+      breadcrumbItems.push({
         name: `${time}${t('minTypingTest')}`,
-        path: path,
+        path: route.path,
       });
     }
     // 处理连点测试路由
     else if (path.startsWith('/multi-click-test/')) {
+      // 提取类型参数
+      const type = path.split('/')[2] || '';
       breadcrumbItems.push({
         name: t('clickSeriesTest'),
-        path: '/multi-click-test/double', // 默认显示双击测试
+        path: route.path.replace(/\/[^/]+$/, '/double'),
       });
-      const segments = path.split('/');
-      if (segments.length >= 3) {
-        const type = segments[2];
-        if (type === 'double') {
-          breadcrumbItems.push({
-            name: t('doubleClickTest'),
-            path: path,
-          });
-        } else if (type === 'triple') {
-          breadcrumbItems.push({
-            name: t('tripleClickTest'),
-            path: path,
-          });
-        }
+      if (type === 'double') {
+        breadcrumbItems.push({
+          name: t('doubleClickTest'),
+          path: route.path,
+        });
+      } else if (type === 'triple') {
+        breadcrumbItems.push({
+          name: t('tripleClickTest'),
+          path: route.path,
+        });
       }
     }
 
@@ -130,14 +137,14 @@
     else if (path === '/mouse-drag-test') {
       breadcrumbItems.push({
         name: t('mouseDragTest'),
-        path: path,
+        path: route.path,
       });
     }
     // 处理键盘测试路由
     else if (path === '/keyboard-test') {
       breadcrumbItems.push({
         name: t('keyboardTest'),
-        path: path,
+        path: route.path,
       });
     }
 

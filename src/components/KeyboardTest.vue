@@ -189,7 +189,7 @@
         <div class="key" :class="{ active: activeKeys.has('KeyN') }" data-key="KeyN">N</div>
         <div class="key" :class="{ active: activeKeys.has('KeyM') }" data-key="KeyM">M</div>
         <div class="key" :class="{ active: activeKeys.has('Comma') }" data-key="Comma">
-          <span>,</span><span><</span>
+          <span>,</span><span>&lt;</span>
         </div>
         <div class="key" :class="{ active: activeKeys.has('Period') }" data-key="Period">
           <span>.</span><span>></span>

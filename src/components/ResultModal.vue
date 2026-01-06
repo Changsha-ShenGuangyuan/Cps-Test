@@ -102,7 +102,7 @@
 
   // 组件事件
   const emit = defineEmits<{
-    (e: 'close'): void;
+    (_e: 'close'): void;
   }>();
 
   // 关闭弹窗

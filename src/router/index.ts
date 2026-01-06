@@ -103,7 +103,7 @@ const publicRoutes = [
     props: true,
     meta: {
       title: '空格点击测试 - CPSTest',
-      description: '测试您的空格点击速度，支持1秒、5秒、10秒、15秒、30秒、60秒等多种时间测试',
+      description: '测试您的空格点击速度，支持1秒、2秒、5秒、10秒、15秒、30秒、60秒等多种时间测试',
       keywords: '空格点击测试,空格键测试,空格速度测试,空格点击速度,空格键点击测试工具',
       i18n: {
         titleKey: 'spaceClickTest',
@@ -295,7 +295,7 @@ const routes = [
     // 为每个语言创建扁平的路由配置，而不是嵌套路由
     return publicRoutes.map((route) => {
       // 移除原始路由的name属性，避免重复命名
-      const { name, ...routeWithoutName } = route;
+      const { name: _, ...routeWithoutName } = route;
       return {
         ...routeWithoutName,
         // 为路由添加语言前缀
@@ -330,42 +330,94 @@ export const updateMetaTags = (to: any) => {
   // 设置页面标题
   let pageTitle = '';
   if (to.meta.i18n && to.meta.i18n.titleKey) {
-    // 根据路由参数动态生成标题
-    if ((to.name === 'ClickTest' || to.name === 'SpaceClickTest') && to.params.time) {
-      const time = to.params.time;
-      if (time === '1') {
-        pageTitle = t('1secClickTest');
-      } else if (time === '2') {
-        pageTitle = t('2secClickTest');
-      } else if (time === '5') {
-        pageTitle = t('5secClickTest');
-      } else if (time === '10') {
-        pageTitle = t('10secClickTest');
-      } else if (time === '15') {
-        pageTitle = t('15secClickTest');
-      } else if (time === '30') {
-        pageTitle = t('30secClickTest');
-      } else if (time === '60') {
-        pageTitle = t('60secClickTest');
-      } else {
-        pageTitle = t(to.meta.i18n.titleKey);
-      }
-    } else if (to.name === 'TypingTest' && to.params.time) {
-      const time = to.params.time;
-      if (time === '1') {
-        pageTitle = t('1minTypingTest');
-      } else if (time === '3') {
-        pageTitle = t('3minTypingTest');
-      } else if (time === '5') {
-        pageTitle = t('5minTypingTest');
-      } else if (time === '10') {
-        pageTitle = t('10minTypingTest');
-      } else if (time === '15') {
-        pageTitle = t('15minTypingTest');
+    // 获取不带语言前缀的路径
+    const pathWithoutLang = getPathWithoutLangPrefix(to.path);
+    
+    // 定义正则表达式来匹配测试类型和时间参数
+    const testPathRegex = /^\/([^\/]+)\/(\d+)$/;
+    const match = pathWithoutLang.match(testPathRegex);
+    
+    if (match) {
+      const [_, testType, time] = match;
+      
+      // 根据测试类型和时间参数生成标题
+      if (testType === 'click-test') {
+        switch (time) {
+          case '1':
+            pageTitle = t('1secClickTest');
+            break;
+          case '2':
+            pageTitle = t('2secClickTest');
+            break;
+          case '5':
+            pageTitle = t('5secClickTest');
+            break;
+          case '10':
+            pageTitle = t('10secClickTest');
+            break;
+          case '15':
+            pageTitle = t('15secClickTest');
+            break;
+          case '30':
+            pageTitle = t('30secClickTest');
+            break;
+          case '60':
+            pageTitle = t('60secClickTest');
+            break;
+          default:
+            pageTitle = t(to.meta.i18n.titleKey);
+        }
+      } else if (testType === 'space-click-test') {
+        switch (time) {
+          case '1':
+            pageTitle = t('1secSpaceTest');
+            break;
+          case '2':
+            pageTitle = t('2secSpaceTest');
+            break;
+          case '5':
+            pageTitle = t('5secSpaceTest');
+            break;
+          case '10':
+            pageTitle = t('10secSpaceTest');
+            break;
+          case '15':
+            pageTitle = t('15secSpaceTest');
+            break;
+          case '30':
+            pageTitle = t('30secSpaceTest');
+            break;
+          case '60':
+            pageTitle = t('60secSpaceTest');
+            break;
+          default:
+            pageTitle = t(to.meta.i18n.titleKey);
+        }
+      } else if (testType === 'typing-test') {
+        switch (time) {
+          case '1':
+            pageTitle = t('1minTypingTest');
+            break;
+          case '3':
+            pageTitle = t('3minTypingTest');
+            break;
+          case '5':
+            pageTitle = t('5minTypingTest');
+            break;
+          case '10':
+            pageTitle = t('10minTypingTest');
+            break;
+          case '15':
+            pageTitle = t('15minTypingTest');
+            break;
+          default:
+            pageTitle = t(to.meta.i18n.titleKey);
+        }
       } else {
         pageTitle = t(to.meta.i18n.titleKey);
       }
     } else {
+      // 默认情况：直接使用titleKey
       pageTitle = t(to.meta.i18n.titleKey);
     }
   } else {
@@ -476,13 +528,33 @@ export const updateMetaTags = (to: any) => {
             priceCurrency: 'CNY',
           },
           inLanguage: ['zh-CN', 'en', 'ja', 'ko'],
+          image: {
+            '@type': 'ImageObject',
+            url: `${baseUrl}/logo.png`,
+            width: 512,
+            height: 512,
+          },
           publisher: {
             '@type': 'Organization',
             name: t('schemaPublisher'),
             logo: {
               '@type': 'ImageObject',
               url: `${baseUrl}/logo.png`,
+              width: 512,
+              height: 512,
             },
+            url: baseUrl,
+          },
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': currentUrl,
+          },
+          datePublished: new Date().toISOString().split('T')[0],
+          dateModified: new Date().toISOString().split('T')[0],
+          potentialAction: {
+            '@type': 'UseAction',
+            target: currentUrl,
+            description: `开始${pageTitle}`,
           },
         };
       } else {
@@ -500,9 +572,23 @@ export const updateMetaTags = (to: any) => {
             logo: {
               '@type': 'ImageObject',
               url: `${baseUrl}/logo.png`,
+              width: 512,
+              height: 512,
             },
+            url: baseUrl,
           },
           inLanguage: ['zh-CN', 'en', 'ja', 'ko'],
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': currentUrl,
+          },
+          datePublished: new Date().toISOString().split('T')[0],
+          dateModified: new Date().toISOString().split('T')[0],
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: `${baseUrl}/search?q={search_term_string}`,
+            'query-input': 'required name=search_term_string',
+          },
         };
       }
 
@@ -608,9 +694,6 @@ const validateHreflangTags = () => {
 
 // 全局路由守卫 - 设置页面标题和meta标签
 router.beforeEach((to, _from, next) => {
-  // 调用meta标签更新函数
-  updateMetaTags(to);
-
   // 设置canonical标签（使用默认语言版本作为规范URL）
   try {
     let canonicalTag = document.querySelector('link[rel="canonical"]');
@@ -686,6 +769,12 @@ router.beforeEach((to, _from, next) => {
   }
 
   next();
+});
+
+// 在路由导航完成后更新meta标签，此时路由参数已正确解析
+router.afterEach((to) => {
+  // 调用meta标签更新函数
+  updateMetaTags(to);
 });
 
 export default router;

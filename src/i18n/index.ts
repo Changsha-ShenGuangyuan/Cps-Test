@@ -19,7 +19,7 @@ const resources: TranslationResources = {
     metaDescription:
       'Spacebar Clicker - 专业的键盘空格键测试与点击速度挑战工具。一键测试您键盘的空格键寿命，测量您的极限CPS（每秒点击次数），适合游戏玩家和硬件爱好者。',
     metaKeywords:
-      '空格键点击器，反应速度测试，键盘测试，CPS测试，CPS，CPS测试器，点击速度测试，每秒点击数',
+      '空格键点击器，空格键点击器 2026，空格键点击器测试，反应速度测试，键盘测试，CPS测试，CPS，CPS测试器，点击速度测试，每秒点击数',
     ogDescription:
       'Spacebar Clicker - 专业的键盘空格键测试与点击速度挑战工具。一键测试您键盘的空格键寿命，测量您的极限CPS（每秒点击次数），适合游戏玩家和硬件爱好者。',
     schemaDescription:
@@ -44,6 +44,7 @@ const resources: TranslationResources = {
     spaceClickTest: '空格点击测试',
     secSpaceTest: '秒空格速度测试',
     '1secSpaceTest': '1秒空格速度测试',
+    '2secSpaceTest': '2秒空格速度测试',
     '5secSpaceTest': '5秒空格速度测试',
     '10secSpaceTest': '10秒空格速度测试',
     '15secSpaceTest': '15秒空格速度测试',
@@ -173,6 +174,7 @@ const resources: TranslationResources = {
     spaceBar: '空格键',
     pressSpaceToStart: '按空格键开始',
     clickSpaceToStart: '点击空格键开始',
+    results: '结果',
     // 首页相关
     welcomeToCps: '欢迎来到 CPS 测试平台',
     improveSkills: '提升你的反应速度和点击技能',
@@ -468,7 +470,7 @@ const resources: TranslationResources = {
     newRecord: '新纪录',
     gameOver: '游戏结束',
     pixelsPerSecond: '像素/秒',
-    scrollAsFastAsPossible: '尽可能快地滚动鼠标滚轮！',
+    scrollAsFastAsPossible: '快速滚动鼠标！',
     yourBestScore: '你的最佳成绩：',
     settings: '设置',
     blockSize: '方块大小',
@@ -500,19 +502,13 @@ const resources: TranslationResources = {
     homeFaqQ2: '如何提高点击速度？',
     homeFaqA2:
       '提高点击速度需要系统的练习和正确的方法：\n1. 技巧选择：根据个人习惯选择适合的点击方式（蝴蝶点击、抖动点击、拖动点击等）\n2. 定期训练：每天进行15-30分钟的针对性练习，保持肌肉记忆\n3. 手部热身：测试前进行简单的手部拉伸和放松运动\n4. 设备优化：使用高回报率鼠标（1000Hz）和适合的鼠标垫\n5. 节奏控制：建立稳定的点击节奏，避免过度紧张导致的速度下降\n6. 交叉训练：结合不同时长的测试（1秒、5秒、30秒）全面提升爆发力和耐力',
-    homeFaqQ6: '蝴蝶点击（Butterfly Clicking）的原理和技巧是什么？',
-    homeFaqA6:
-      '蝴蝶点击是一种高级点击技巧，通过快速交替使用食指和中指点击鼠标左键：\n1. 工作原理：利用鼠标微动开关的物理特性，通过双手手指的快速交替动作产生连续点击\n2. 速度范围：熟练掌握后可达到20-30 CPS，甚至更高\n3. 练习方法：保持手腕稳定，手指放松，通过反复练习找到最佳的交替节奏\n4. 适用场景：适合需要短时间爆发高CPS的游戏场景\n5. 设备要求：需要点击感清脆、回弹快的鼠标，不适合按键沉重的办公鼠标',
-    homeFaqQ7: '抖动点击（Jitter Clicking）的核心技术和注意事项是什么？',
-    homeFaqA7:
-      '抖动点击通过快速抖动手臂和手腕来产生连续点击：\n1. 核心原理：利用肌肉的微小抖动驱动手指快速点击鼠标按钮\n2. 速度范围：通常可以实现10-15 CPS，最高可达20 CPS\n3. 练习要点：保持手臂放松，利用手腕的自然抖动，避免过度用力导致肌肉疲劳\n4. 注意事项：长期高强度练习可能导致手腕不适，建议控制练习时间\n5. 适用人群：适合鼠标按键较硬，或不适合蝴蝶点击的用户',
-    homeFaqQ8: '拖动点击（Drag Clicking）的实现条件和技巧有哪些？',
-    homeFaqA8:
-      '拖动点击通过在鼠标按钮上拖动手指来产生连续点击：\n1. 实现原理：利用鼠标微动开关的物理特性，通过摩擦产生的震动触发多次点击\n2. 速度范围：根据鼠标和手法的不同，可实现10-25 CPS\n3. 设备要求：需要特殊的鼠标设计（如磨砂按键表面）和适合的鼠标垫\n4. 练习技巧：找到合适的手指角度和压力，保持稳定的拖动速度\n5. 常见问题：不同鼠标的拖动效果差异较大，需要尝试找到适合的设备\n6. 注意事项：频繁拖动可能会加速鼠标按键的磨损',
     homeFaqQ9: '不同时长的CPS测试分别评估什么能力？',
     homeFaqA9:
       '不同时长的测试评估不同维度的能力：\n1. 1秒测试：评估瞬时爆发力和手速潜力\n2. 5秒测试：平衡爆发力与短期稳定性，是最常用的综合评估指标\n3. 10秒测试：评估持续点击的耐力和节奏保持能力\n4. 30秒测试：标准耐力测试，适合评估长时间操作的稳定性\n5. 60秒测试：极限耐力测试，考验手部肌肉的抗疲劳能力\n建议结合多种时长的测试，全面了解自己的手速特点',
     homeFaqQ11: '如何避免CPS训练导致的手部疲劳或损伤？',
+    homeFaqQ12: '如何通过空格键点击测试提高空格键点击速度？',
+    homeFaqA12:
+      '通过空格键点击测试提高空格键点击速度需要系统的练习和正确的方法：\n1. 保持手指放松：避免过度用力，找到适合自己的按键力度\n2. 找到节奏：建立稳定的点击节奏，避免时快时慢\n3. 定期训练：每天进行15-20分钟的针对性练习\n4. 逐渐延长时间：从1秒测试开始，逐步过渡到5秒、10秒测试\n5. 注意姿势：保持手腕自然，避免长时间保持同一姿势\n6. 使用合适的键盘：选择按键轻松、回弹快的键盘\n7. 结合手部热身：测试前进行简单的手部拉伸',
     homeFaqA11:
       '保护手部健康至关重要，建议遵循以下原则：\n1. 适度训练：每次练习不超过30分钟，避免长时间高强度操作\n2. 正确姿势：保持手腕自然伸直，避免过度弯曲或扭曲\n3. 定期休息：每练习10分钟休息1-2分钟，活动手腕和手指\n4. 手部放松：练习前后进行手部拉伸和按摩\n5. 设备适配：选择符合人体工学的鼠标，调整适合的鼠标灵敏度\n6. 注意信号：如出现手腕疼痛或麻木，应立即停止练习并休息\n7. 交叉活动：定期进行其他非鼠标操作的活动，避免单一动作重复',
     // 鼠标拖动测试相关
@@ -683,7 +679,17 @@ const resources: TranslationResources = {
     holdSpaceBar: '按住空格键',
     clicksPerSecond: '点击/秒',
 
-    copyright: '© 2025 CPSTestGo - 版权所有',
+    copyright: '© {year} CPSTestGo - 版权所有',
+    clickTypes: '鼠标点击技巧',
+    butterflyClick: '蝴蝶点击',
+    butterflyClickDesc:
+      '蝴蝶点击是一种高级点击技巧，通过快速交替使用食指和中指点击鼠标左键，利用鼠标微动开关的物理反弹效应，能够实现20-30 CPS的极高点击速度，非常适合需要短时间爆发高点击速度的游戏场景。',
+    jitterClick: '抖动点击',
+    jitterClickDesc:
+      '抖动点击通过快速抖动手臂和手腕，使手指在鼠标按钮上产生高频震动，从而实现10-15 CPS的持续高点击速度，适合需要长时间保持较高点击频率的游戏和应用场景。',
+    dragClick: '拖动点击',
+    dragClickDesc:
+      '拖动点击是一种硬件辅助的点击方式，通过在鼠标按键上拖动手指，利用按键的物理摩擦特性产生连续点击，不同鼠标的效果差异较大，部分鼠标可实现15-25 CPS的点击速度。',
     // ResultModal组件翻译
     resultModal: {
       // 详细信息
@@ -749,7 +755,7 @@ const resources: TranslationResources = {
     metaDescription:
       'Spacebar Clicker - A professional tool for testing keyboard spacebar durability and click speed challenges. Test your keyboards spacebar lifespan with one click and measure your maximum CPS (clicks per second), perfect for gamers and hardware enthusiasts.',
     metaKeywords:
-      'Spacebar Clicker, Reaction Speed Test, Keyboard Test, CPS Test, CPS, CPS Tester, Click Speed Test, Clicks Per Second',
+      'Spacebar Clicker,Spacebar Clicker 2026, Spacebar Clicker Test, Reaction Speed Test, Keyboard Test, CPS Test, CPS, CPS Tester, Click Speed Test, Clicks Per Second',
     ogDescription:
       'Spacebar Clicker - A professional tool for testing keyboard spacebar durability and click speed challenges. Test your keyboards spacebar lifespan with one click and measure your maximum CPS (clicks per second), perfect for gamers and hardware enthusiasts.',
     schemaDescription:
@@ -774,6 +780,7 @@ const resources: TranslationResources = {
     spaceClickTest: 'Space Click Test',
     secSpaceTest: 'Second Space Test',
     '1secSpaceTest': '1 Second Space Test',
+    '2secSpaceTest': '2 Second Space Test',
     '5secSpaceTest': '5 Second Space Test',
     '10secSpaceTest': '10 Second Space Test',
     '15secSpaceTest': '15 Second Space Test',
@@ -1220,7 +1227,7 @@ const resources: TranslationResources = {
     newRecord: 'New Record',
     gameOver: 'Game Over',
     pixelsPerSecond: 'Pixels Per Second',
-    scrollAsFastAsPossible: 'Scroll the mouse wheel as fast as possible!',
+    scrollAsFastAsPossible: 'Scroll the mouse quickly!',
     yourBestScore: 'Your Best Score:',
     settings: 'Settings',
     blockSize: 'Block Size',
@@ -1252,19 +1259,13 @@ const resources: TranslationResources = {
     homeFaqQ2: 'How to increase clicking speed?',
     homeFaqA2:
       'Improving clicking speed requires systematic practice and correct methods:\n1. Technique selection: Choose a clicking method that suits your habits (butterfly clicking, jitter clicking, drag clicking, etc.)\n2. Regular training: Conduct 15-30 minutes of targeted practice every day to maintain muscle memory\n3. Hand warm-up: Perform simple hand stretching and relaxation exercises before testing\n4. Equipment optimization: Use a high polling rate mouse (1000Hz) and a suitable mouse pad\n5. Rhythm control: Establish a stable clicking rhythm, avoid speed decrease due to excessive tension\n6. Cross training: Combine tests of different durations (1 second, 5 seconds, 30 seconds) to comprehensively improve explosive power and endurance',
-    homeFaqQ6: 'What are the principles and techniques of butterfly clicking?',
-    homeFaqA6:
-      "Butterfly clicking is an advanced clicking technique that uses the index finger and middle finger to quickly alternate clicking the left mouse button:\n1. Working principle: Utilize the physical characteristics of mouse micro switches, generating continuous clicks through the rapid alternating movement of both hands' fingers\n2. Speed range: Can reach 20-30 CPS or even higher after proficient mastery\n3. Practice method: Keep the wrist stable, fingers relaxed, and find the best alternating rhythm through repeated practice\n4. Applicable scenarios: Suitable for game scenarios that require short-term burst high CPS\n5. Device requirements: Need a mouse with crisp clicking feel and fast rebound, not suitable for heavy office mice",
-    homeFaqQ7: 'What are the core techniques and precautions of jitter clicking?',
-    homeFaqA7:
-      'Jitter clicking generates continuous clicks by quickly shaking the arm and wrist:\n1. Core principle: Use small muscle vibrations to drive fingers to quickly click mouse buttons\n2. Speed range: Usually can achieve 10-15 CPS, up to 20 CPS\n3. Practice points: Keep the arm relaxed, use the natural shaking of the wrist, avoid excessive force leading to muscle fatigue\n4. Precautions: Long-term high-intensity practice may cause wrist discomfort, it is recommended to control practice time\n5. Applicable crowd: Suitable for users with hard mouse buttons or unsuitable for butterfly clicking',
-    homeFaqQ8: 'What are the implementation conditions and techniques of drag clicking?',
-    homeFaqA8:
-      'Drag clicking generates continuous clicks by dragging fingers on mouse buttons:\n1. Implementation principle: Utilize the physical characteristics of mouse micro switches, triggering multiple clicks through vibrations generated by friction\n2. Speed range: Depending on the mouse and technique, can achieve 10-25 CPS\n3. Device requirements: Need special mouse design (such as frosted button surface) and suitable mouse pad\n4. Practice techniques: Find the appropriate finger angle and pressure, maintain a stable drag speed\n5. Common problems: Different mice have large differences in drag effect, need to try to find suitable equipment\n6. Precautions: Frequent dragging may accelerate the wear of mouse buttons',
     homeFaqQ9: 'What abilities do CPS tests of different durations evaluate respectively?',
     homeFaqA9:
       'Tests of different durations evaluate different dimensions of abilities:\n1. 1-second test: Evaluate instantaneous explosive power and hand speed potential\n2. 5-second test: Balance explosive power and short-term stability, it is the most commonly used comprehensive evaluation indicator\n3. 10-second test: Evaluate continuous clicking endurance and rhythm maintenance ability\n4. 30-second test: Standard endurance test, suitable for evaluating long-term operation stability\n5. 60-second test: Extreme endurance test, testing the anti-fatigue ability of hand muscles\nIt is recommended to combine tests of multiple durations to comprehensively understand your hand speed characteristics',
     homeFaqQ11: 'How to avoid hand fatigue or injury caused by CPS training?',
+    homeFaqQ12: 'How to improve spacebar clicking speed with Spacebar Clicker?',
+    homeFaqA12:
+      'Improving spacebar clicking speed with Spacebar Clicker requires systematic practice and correct methods:\n1. Keep fingers relaxed: Avoid excessive force, find the right key pressure for you\n2. Find rhythm: Establish a stable clicking rhythm, avoid speeding up and slowing down\n3. Regular training: Conduct 15-20 minutes of targeted practice every day\n4. Gradually extend time: Start with 1-second tests, then gradually transition to 5-second, 10-second tests\n5. Pay attention to posture: Keep your wrist natural, avoid maintaining the same posture for a long time\n6. Use a suitable keyboard: Choose a keyboard with easy keys and quick rebound\n7. Combine hand warm-up: Perform simple hand stretches before testing',
     homeFaqA11:
       'Protecting hand health is crucial, it is recommended to follow these principles:\n1. Moderate training: Do not practice for more than 30 minutes each time, avoid long-term high-intensity operation\n2. Correct posture: Keep the wrist naturally straight, avoid excessive bending or twisting\n3. Regular rest: Rest for 1-2 minutes every 10 minutes of practice, move the wrist and fingers\n4. Hand relaxation: Perform hand stretching and massage before and after practice\n5. Equipment adaptation: Choose an ergonomic mouse and adjust suitable mouse sensitivity\n6. Pay attention to signals: If wrist pain or numbness occurs, stop practicing immediately and rest\n7. Cross-activity: Regularly perform other non-mouse operation activities to avoid repeated single actions',
     // Mouse drag test related
@@ -1459,8 +1460,19 @@ const resources: TranslationResources = {
     manualClickTest: 'Manual Click Test',
     holdSpaceBar: 'Hold Space Bar',
     clicksPerSecond: 'Clicks/Second',
+    results: 'Results',
 
-    copyright: '© 2025 CPSTestGo - All Rights Reserved',
+    copyright: '© {year} CPSTestGo - All Rights Reserved',
+    clickTypes: 'Mouse Clicking Techniques',
+    butterflyClick: 'Butterfly Clicking',
+    butterflyClickDesc:
+      'Butterfly clicking is an advanced clicking technique that involves quickly alternating between the left and right mouse buttons using the index and middle fingers, leveraging the physical rebound effect of mouse microswitches to achieve extremely high clicking speeds of 20-30 CPS, perfect for game scenarios requiring short bursts of high click speed.',
+    jitterClick: 'Jitter Clicking',
+    jitterClickDesc:
+      'Jitter clicking generates high-frequency clicks by rapidly shaking the arm and wrist, causing the fingers to vibrate on the mouse button, achieving sustained high clicking speeds of 10-15 CPS, suitable for games and applications requiring long-term high click frequency.',
+    dragClick: 'Drag Clicking',
+    dragClickDesc:
+      'Drag clicking is a hardware-assisted clicking method that produces continuous clicks by dragging the finger across the mouse button, utilizing the physical friction properties of the button. Results vary significantly between different mice, with some mice capable of achieving 15-25 CPS.',
     // ResultModal component
     resultModal: {
       // Details
@@ -1479,7 +1491,7 @@ const resources: TranslationResources = {
       vs: 'VS',
       resultBetter: '✅ You won! {difference} CPS faster than your friend',
       resultWorse: '❌ Your friend won! {difference} CPS faster than you',
-      resultEqual: '🤝 It\'s a tie! Your CPS is exactly the same',
+      resultEqual: "🤝 It's a tie! Your CPS is exactly the same",
       // Different CPS range descriptions
       slow: {
         desc1: 'Your clicking speed is slow, you need more practice!',
@@ -1611,7 +1623,7 @@ const resources: TranslationResources = {
     privacyDataRetention3:
       '削除ポリシー：データの削除を要求された場合、またはデータが不要になった場合、安全に削除または匿名化します。',
     metaKeywords:
-      'スペースキークリック、反応速度テスト、キーボードテスト、CPSテスト、CPS、CPSテスター、クリック速度テスト、秒間クリック数',
+      'スペースキークリック、スペースキークリック 2026、スペースキークリックテスト、反応速度テスト、キーボードテスト、CPSテスト、CPS、CPSテスター、クリック速度テスト、秒間クリック数',
     ogDescription:
       'Spacebar Clicker - プロフェッショナルなキーボードのスペースキーのテストとクリック速度チャレンジツール。ワンクリックでキーボードのスペースキーの寿命をテストし、自分の限界CPS（1秒あたりのクリック数）を測定できます。ゲーマーやハードウェア愛好者に最適です。',
     schemaDescription:
@@ -1636,6 +1648,7 @@ const resources: TranslationResources = {
     spaceClickTest: 'スペースクリックテスト',
     secSpaceTest: '秒スペーステスト',
     '1secSpaceTest': '1秒スペーステスト',
+    '2secSpaceTest': '2秒スペーステスト',
     '5secSpaceTest': '5秒スペーステスト',
     '10secSpaceTest': '10秒スペーステスト',
     '15secSpaceTest': '15秒スペーステスト',
@@ -2074,7 +2087,7 @@ const resources: TranslationResources = {
     newRecord: '新記録',
     gameOver: 'ゲームオーバー',
     pixelsPerSecond: 'ピクセル/秒',
-    scrollAsFastAsPossible: 'できるだけ速くマウスホイールをスクロールしてください！',
+    scrollAsFastAsPossible: 'マウスを素早くスクロール！',
     yourBestScore: 'あなたのベストスコア：',
     settings: '設定',
     blockSize: 'ブロックサイズ',
@@ -2106,19 +2119,13 @@ const resources: TranslationResources = {
     homeFaqQ2: 'クリック速度を上げる方法？',
     homeFaqA2:
       'クリック速度を向上させるには、システマティックな練習と正しい方法が必要です：\n1. テクニック選択：個人の習慣に合わせて適切なクリック方法（バタフライクリック、ジッタークリック、ドラッグクリックなど）を選択\n2. 定期的なトレーニング：毎日15-30分の集中的な練習を行い、筋肉記憶を保持\n3. 手のウォームアップ：テスト前に簡単な手のストレッチとリラックス運動を行う\n4. 機器最適化：高レスポンスマウス（1000Hz）と適切なマウスパッドを使用\n5. リズム制御：安定したクリックリズムを確立し、過度な緊張による速度低下を避ける\n6. クロストレーニング：異なる時間長のテスト（1秒、5秒、30秒）を組み合わせて、瞬発力と持久力を全面的に向上させる',
-    homeFaqQ6: 'バタフライクリック（Butterfly Clicking）の原理とテクニックは？',
-    homeFaqA6:
-      'バタフライクリックは、人差し指と中指を素早く交互に使用してマウス左ボタンをクリックする高度なクリックテクニックです：\n1. 仕組み：マウスのマイクロスイッチの物理特性を利用し、両手の指の素早い交互動作によって連続クリックを生成\n2. 速度範囲：熟練者は20-30 CPS、さらにそれ以上を達成できる\n3. 練習方法：手首を安定させ、指をリラックスさせ、反復練習で最適な交互リズムを見つける\n4. 適用シナリオ：短時間で高CPSが必要なゲームシナリオに適している\n5. 機器要件：クリック感が清脆で反発が速いマウスが必要で、重いボタンのオフィスマウスには適していない',
-    homeFaqQ7: 'ジッタークリック（Jitter Clicking）のコアテクノロジーと注意事項は？',
-    homeFaqA7:
-      'ジッタークリックは、腕と手首を素早く振動させて連続クリックを生成するテクニックです：\n1. コア原理：筋肉の微小な振動を利用して指を素早くマウスボタンに押し付ける\n2. 速度範囲：通常10-15 CPSを実現でき、最高で20 CPSに達することもある\n3. 練習ポイント：腕をリラックスさせ、手首の自然な振動を利用し、筋肉疲労を引き起こす過度な力を避ける\n4. 注意事項：長時間の高強度な練習は手首の不快感を引き起こす可能性があるため、練習時間を制限することを推奨\n5. 適用対象：マウスボタンが硬い、またはバタフライクリックに適さないユーザーに適している',
-    homeFaqQ8: 'ドラッグクリック（Drag Clicking）の実現条件とテクニックは？',
-    homeFaqA8:
-      'ドラッグクリックは、マウスボタン上で指をドラッグして連続クリックを生成するテクニックです：\n1. 実現原理：マウスのマイクロスイッチの物理特性を利用し、摩擦による振動で複数回のクリックをトリガー\n2. 速度範囲：マウスと手法によって10-25 CPSを実現できる\n3. 機器要件：特殊なマウス設計（つや消しボタン表面など）と適切なマウスパッドが必要\n4. 練習テクニック：適切な指の角度と圧力を見つけ、安定したドラッグ速度を保持\n5. 一般的な問題：異なるマウスのドラッグ効果には大きな差があるため、適切な機器を見つける必要がある\n6. 注意事項：頻繁なドラッグはマウスボタンの磨耗を加速させる可能性がある',
     homeFaqQ9: '異なる時間長のCPSテストはそれぞれどのような能力を評価しますか？',
     homeFaqA9:
       '異なる時間長のテストは異なる次元の能力を評価します：\n1. 1秒テスト：瞬発力と手速の潜在能力を評価\n2. 5秒テスト：瞬発力と短期安定性のバランスを図り、最も一般的な総合評価指標となる\n3. 10秒テスト：持続的なクリックの持久力とリズム維持能力を評価\n4. 30秒テスト：標準的な持久力テストで、長時間操作の安定性を評価するのに適している\n5. 60秒テスト：極限持久力テストで、手の筋肉の抗疲労能力を試験する\n多様な時間長のテストを組み合わせて、手速の特徴を全面的に把握することを推奨',
     homeFaqQ11: 'CPSトレーニングによる手の疲労や損傷を回避する方法は？',
+    homeFaqQ12: 'スペースバークリッカーでスペースバーのクリック速度を向上させるには？',
+    homeFaqA12:
+      'スペースバークリッカーでスペースバーのクリック速度を向上させるには、システマティックな練習と正しい方法が必要です：\n1. 指をリラックスさせる：過度な力を加えないで、自分に合ったキーの押し方を見つける\n2. リズムを見つける：安定したクリックリズムを確立し、速度を速めたり遅くしたりしないでください\n3. 定期的なトレーニング：毎日15-20分の集中的な練習を行う\n4. 時間を徐々に延長する：1秒のテストから始めて、5秒、10秒のテストに段階的に移行する\n5. 姿勢に注意する：手首を自然な状態に保ち、長時間同じ姿勢を維持しないでください\n6. 適切なキーボードを使用する：キーが軽く、反発が速いキーボードを選択する\n7. 手のウォームアップを組み合わせる：テスト前に簡単な手のストレッチを行う',
     homeFaqA11:
       '手の健康を保護することは非常に重要で、以下の原則に従うことを推奨します：\n1. 適度なトレーニング：1回の練習は30分を超えず、長時間の高強度な操作を避ける\n2. 正しい姿勢：手首を自然に伸ばし、過度な屈曲やねじれを避ける\n3. 定期的な休息：10分間練習するごとに1-2分間休息し、手首と指を動かす\n4. 手のリラックス：練習の前後に手のストレッチとマッサージを行う\n5. 機器の適応：人体工学に合ったマウスを選択し、適切なマウス感度に調整する\n6. 信号に注意：手首の痛みやしびれが発生した場合は、即座に練習を停止して休息する\n7. クロスアクティビティ：定期的にマウス以外の操作を行い、単一動作の繰り返しを避ける',
     // マウスドラッグテスト関連
@@ -2226,8 +2233,19 @@ const resources: TranslationResources = {
     manualClickTest: '手動クリックテスト',
     holdSpaceBar: 'スペースバーを押し続ける',
     clicksPerSecond: 'クリック/秒',
+    results: '結果',
+    clickTypes: 'マウスクリックのコツ',
+    butterflyClick: 'バタフライクリック',
+    butterflyClickDesc:
+      'バタフライクリックは高度なクリックテクニックで、人差し指と中指を使って左マウスボタンを素早く交互にクリックし、マウスマイクロスイッチの物理的な反発効果を利用して20-30 CPSの非常に高いクリック速度を実現します。短時間で高クリック速度が必要なゲームシナリオに最適です。',
+    jitterClick: 'ジッタークリック',
+    jitterClickDesc:
+      'ジッタークリックは腕と手首を素早く振ることで、マウスボタン上の指を高周波で振動させ、10-15 CPSの持続的な高クリック速度を実現します。長時間高いクリック周波数を維持する必要のあるゲームやアプリケーションシナリオに適しています。',
+    dragClick: 'ドラッグクリック',
+    dragClickDesc:
+      'ドラッグクリックはハードウェア支援によるクリック方法で、マウスボタン上で指をドラッグすることで、ボタンの物理的な摩擦特性を利用して連続クリックを生成します。マウスによって効果は大きく異なり、一部のマウスでは15-25 CPSのクリック速度を実現できます。',
 
-    copyright: '© 2025 CPSTestGo - 全著作権所有',
+    copyright: '© {year} CPSTestGo - 全著作権所有',
     // ResultModalコンポーネント
     resultModal: {
       // 詳細情報
@@ -2293,7 +2311,7 @@ const resources: TranslationResources = {
     metaDescription:
       'Spacebar Clicker - 전문적인 키보드 스페이스바 테스트 및 클릭 속도 도전 도구입니다. 한 번의 클릭으로 키보드 스페이스바 수명을 테스트하고, 최대 CPS(초당 클릭 수)를 측정할 수 있으며, 게이머와 하드웨어 애호가에게 적합합니다.',
     metaKeywords:
-      '스페이스바 클릭, 반응 속도 테스트, 키보드 테스트, CPS 테스트, CPS, CPS 테스터, 클릭 속도 테스트, 초당 클릭 수',
+      '스페이스바 클릭,스페이스바 클릭 2026 스페이스바 클릭 테스트, 반응 속도 테스트, 키보드 테스트, CPS 테스트, CPS, CPS 테스터, 클릭 속도 테스트, 초당 클릭 수',
     ogDescription:
       'Spacebar Clicker - 전문적인 키보드 스페이스바 테스트 및 클릭 속도 도전 도구입니다. 한 번의 클릭으로 키보드 스페이스바 수명을 테스트하고, 최대 CPS(초당 클릭 수)를 측정할 수 있으며, 게이머와 하드웨어 애호가에게 적합합니다.',
     schemaDescription:
@@ -2405,6 +2423,7 @@ const resources: TranslationResources = {
     spaceClickTest: '스페이스바 클릭 테스트',
     secSpaceTest: '초 스페이스 속도 테스트',
     '1secSpaceTest': '1초 스페이스 속도 테스트',
+    '2secSpaceTest': '2초 스페이스 속도 테스트',
     '5secSpaceTest': '5초 스페이스 속도 테스트',
     '10secSpaceTest': '10초 스페이스 속도 테스트',
     '15secSpaceTest': '15초 스페이스 속도 테스트',
@@ -2842,7 +2861,7 @@ const resources: TranslationResources = {
     newRecord: '새 기록',
     gameOver: '게임 오버',
     pixelsPerSecond: '픽셀/초',
-    scrollAsFastAsPossible: '마우스 휠을 가능한 한 빠르게 스크롤하세요!',
+    scrollAsFastAsPossible: '마우스를 빠르게 스크롤하세요!',
     yourBestScore: '당신의 최고 점수：',
     settings: '설정',
     blockSize: '블록 크기',
@@ -2874,19 +2893,13 @@ const resources: TranslationResources = {
     homeFaqQ2: '클릭 속도를 높이는 방법?',
     homeFaqA2:
       '클릭 속도를 향상시키려면 체계적인 연습과 올바른 방법이 필요합니다. \n1. 기술 선택: 개인 습관에 따라 적합한 클릭 방식(버터플라이 클릭, 지터 클릭, 드래그 클릭 등)을 선택하세요. \n2. 정기 훈련: 매일 15-30분의 타겟 훈련을 통해 근육 기억을 유지하세요. \n3. 손 워밍업: 테스트 전에 간단한 손 스트레칭과 이완 운동을 하세요. \n4. 장비 최적화: 고반응률 마우스(1000Hz)와 적합한 마우스 패드를 사용하세요. \n5. 리듬 제어: 안정적인 클릭 리듬을 만들어 과도한 긴장으로 인한 속도 저하를 피하세요. \n6. 교차 훈련: 다양한 시간 길이의 테스트(1초, 5초, 30초)를 결합하여 폭발력과 내구력을 전반적으로 향상시키세요.',
-    homeFaqQ6: '버터플라이 클릭(Butterfly Clicking)의 원리와 기술은 무엇인가요?',
-    homeFaqA6:
-      '버터플라이 클릭은 검지와 중지를 빠르게 번갈아 사용하여 마우스 왼쪽 버튼을 클릭하는 고급 클릭 기술입니다. \n1. 작동 원리: 마우스 마이크로 스위치의 물리적 특성을 활용하여 손가락의 빠른 번갈아 동작으로 연속 클릭을 생성합니다. \n2. 속도 범위: 숙련된 후 20-30 CPS 이상에 도달할 수 있습니다. \n3. 연습 방법: 손목을 안정적으로 유지하고, 손가락을 편안하게 유지하며, 반복적인 연습을 통해 최적의 번갈아 리듬을 찾으세요. \n4. 적용 시나리오: 짧은 시간 동안 높은 CPS가 필요한 게임 시나리오에 적합합니다. \n5. 장치 요구 사항: 클릭 감각이 선명하고 리턴이 빠른 마우스가 필요하며, 버튼이 무거운 사무용 마우스에는 적합하지 않습니다.',
-    homeFaqQ7: '지터 클릭(Jitter Clicking)의 핵심 기술과 주의 사항은 무엇인가요?',
-    homeFaqA7:
-      '지터 클릭은 팔과 손목을 빠르게 떨려 연속 클릭을 생성합니다. \n1. 핵심 원리: 근육의 미세한 떨림을 활용하여 손가락이 마우스 버튼을 빠르게 클릭하도록 합니다. \n2. 속도 범위: 일반적으로 10-15 CPS를 구현할 수 있으며, 최고 20 CPS에 도달할 수 있습니다. \n3. 연습 요점: 팔을 편안하게 유지하고, 손목의 자연스러운 떨림을 활용하며, 과도한 힘을 주어 근육 피로를 유발하지 마세요. \n4. 주의 사항: 장기간 고강도 연습은 손목 불편을 유발할 수 있으므로 연습 시간을 제어하는 것이 좋습니다. \n5. 적용 대상: 마우스 버튼이 단단하거나 버터플라이 클릭에 적합하지 않은 사용자에게 적합합니다.',
-    homeFaqQ8: '드래그 클릭(Drag Clicking)의 구현 조건과 기술은 무엇인가요?',
-    homeFaqA8:
-      '드래그 클릭은 마우스 버튼 위에서 손가락을 드래그하여 연속 클릭을 생성합니다. \n1. 구현 원리: 마우스 마이크로 스위치의 물리적 특성을 활용하여 마찰로 인한 진동으로 여러 번 클릭을 트리거합니다. \n2. 속도 범위: 마우스와 기술에 따라 10-25 CPS를 구현할 수 있습니다. \n3. 장치 요구 사항: 특수한 마우스 설계(예: 모래시계 버튼 표면)와 적합한 마우스 패드가 필요합니다. \n4. 연습 기술: 적합한 손가락 각도와 압력을 찾고, 안정적인 드래그 속도를 유지하세요. \n5. 일반적인 문제: 다른 마우스의 드래그 효과 차이가 크므로 적합한 장치를 찾기 위해 시도해야 합니다. \n6. 주의 사항: 빈번한 드래그는 마우스 버튼의 마모를 가속시킬 수 있습니다.',
     homeFaqQ9: '다양한 기간의 CPS 테스트는 각각 어떤 능력을 평가하나요?',
     homeFaqA9:
       '다양한 기간의 테스트는 다른 차원의 능력을 평가합니다. \n1. 1초 테스트: 순간 폭발력과 손속 잠재력을 평가합니다. \n2. 5초 테스트: 폭발력과 단기 안정성을 균형 잡는 가장 일반적인 종합 평가 지표입니다. \n3. 10초 테스트: 지속적인 클릭의 내구력과 리듬 유지 능력을 평가합니다. \n4. 30초 테스트: 장시간 조작의 안정성을 평가하기에 적합한 표준 내구력 테스트입니다. \n5. 60초 테스트: 손 근육의 피로 저항력을 시험하는 극한 내구력 테스트입니다. 다양한 기간의 테스트를 결합하여 자신의 손속 특징을 전반적으로 파악하는 것을 권장합니다.',
     homeFaqQ11: 'CPS 훈련으로 인한 손 피로 또는 부상을 어떻게 피할 수 있나요?',
+    homeFaqQ12: 'Spacebar Clicker로 스페이스바 클릭 속도를 어떻게 향상시킬 수 있나요?',
+    homeFaqA12:
+      'Spacebar Clicker로 스페이스바 클릭 속도를 향상시키기 위해서는 체계적인 연습과 올바른 방법이 필요합니다:\n1. 손가락을 편하게 유지하세요: 과도한 힘을 주지 마세요, 자신에게 맞는 키 압력을 찾으세요\n2. 리듬을 찾으세요: 안정적인 클릭 리듬을 확립하고, 속도를 빨리거나 느리게 하는 것을 피하세요\n3. 규칙적인 훈련: 매일 15-20분의 목표 중심 연습을 하세요\n4. 시간을 점진적으로 늘리세요: 1초 테스트부터 시작한 후, 5초, 10초 테스트로 점진적으로 전환하세요\n5. 자세에 주의하세요: 손목을 자연스럽게 유지하고, 장시간 같은 자세를 유지하지 마세요\n6. 적합한 키보드를 사용하세요: 키가 가벼우고 반발이 빠른 키보드를 선택하세요\n7. 손 따뜻히 하기: 테스트 전에 간단한 손 스트레칭을 하세요',
     homeFaqA11:
       '손 건강을 보호하는 것은 매우 중요하며, 다음 원칙을 따르는 것이 좋습니다. \n1. 적절한 훈련: 한 번 연습은 30분을 넘기지 마세요. 장시간 고강도 조작을 피하세요. \n2. 올바른 자세: 손목을 자연스럽게 똑바로 유지하고, 과도한 구부림이나 비틀림을 피하세요. \n3. 정기 휴식: 10분 연습마다 1-2분씩 휴식을 취하고, 손목과 손가락을 움직이세요. \n4. 손 이완: 연습 전후에 손 스트레칭과 마사지를 하세요. \n5. 장치 적응: 인체 공학에 맞는 마우스를 선택하고, 적합한 마우스 민감도를 조정하세요. \n6. 신호 유의: 손목 통증이나 마비가 발생하면 즉시 연습을 중지하고 휴식하세요. \n7. 교차 활동: 단일 동작 반복을 피하기 위해 정기적으로 다른 비마우스 조작 활동을 하세요.',
     // 鼠标拖动测试相关
@@ -2994,8 +3007,18 @@ const resources: TranslationResources = {
     manualClickTest: '수동 클릭 테스트',
     holdSpaceBar: '스페이스바를 계속 누르세요',
     clicksPerSecond: '클릭/초',
-
-    copyright: '© 2025 CPSTestGo - 모든 권리 보유',
+    results: '결과',
+    clickTypes: '마우스 클릭 팁',
+    butterflyClick: '버터플라이 클릭',
+    butterflyClickDesc:
+      '버터플라이 클릭은 인덱스 손가락과 중지 손가락을 사용하여 왼쪽 마우스 버튼을 빠르게 번갈아 클릭하는 고급 클릭 기술로, 마우스 마이크로스위치의 물리적 반발 효과를 활용해 20-30 CPS의 매우 높은 클릭 속도를 달성합니다. 짧은 시간 동안 높은 클릭 속도가 필요한 게임 시나리오에 적합합니다.',
+    jitterClick: '지터 클릭',
+    jitterClickDesc:
+      '지터 클릭은 팔과 손목을 빠르게 흔들어 마우스 버튼 위의 손가락을 고주파로 진동시켜 10-15 CPS의 지속적인 고 클릭 속도를 달성합니다. 장시간 동안 높은 클릭 주파수를 유지해야 하는 게임과 애플리케이션 시나리오에 적합합니다.',
+    dragClick: '드래그 클릭',
+    dragClickDesc:
+      '드래그 클릭은 하드웨어 지원 클릭 방법으로, 마우스 버튼 위에서 손가락을 드래그하여 버튼의 물리적 마찰 특성을 활용해 연속 클릭을 생성합니다. 마우스에 따라 효과가 크게 달라지며, 일부 마우스는 15-25 CPS의 클릭 속도를 달성할 수 있습니다.',
+    copyright: '© {year} CPSTestGo - 모든 권리 보유',
     // ResultModal 컴포넌트
     resultModal: {
       // 상세 정보
