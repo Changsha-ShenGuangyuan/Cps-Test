@@ -506,6 +506,9 @@ const resources: TranslationResources = {
     homeFaqA9:
       '不同时长的测试评估不同维度的能力：\n1. 1秒测试：评估瞬时爆发力和手速潜力\n2. 5秒测试：平衡爆发力与短期稳定性，是最常用的综合评估指标\n3. 10秒测试：评估持续点击的耐力和节奏保持能力\n4. 30秒测试：标准耐力测试，适合评估长时间操作的稳定性\n5. 60秒测试：极限耐力测试，考验手部肌肉的抗疲劳能力\n建议结合多种时长的测试，全面了解自己的手速特点',
     homeFaqQ11: '如何避免CPS训练导致的手部疲劳或损伤？',
+    homeFaqQ3: '多少点击速度算快？',
+    homeFaqA3:
+      '点击速度的快慢没有绝对标准，不同人有不同的水平参考：\n\n如果你想保持基础水平，避免成为较慢的玩家，每秒点击超过5次是基本要求。\n\n正常玩家一般能稳定在6-10 CPS（每秒点击次数），这个水平足以应对大多数游戏需求。\n\n如果你想提升到较高水平：\n- 1秒爆发测试：12-15 CPS\n- 5秒测试：10-12 CPS\n- 10秒测试：8-10 CPS\n- 30秒耐力测试：7-9 CPS\n- 60秒极限测试：6-8 CPS\n达到这个范围就算是优秀水平了。\n\n而专业玩家通常会使用蝴蝶点击、抖动点击等技巧，每秒点击轻松突破15次，属于顶尖水平。\n\n不过游戏最重要的是乐趣，不用过于纠结数值，通过练习自然会有所进步。',
     homeFaqQ12: '如何通过空格键点击测试提高空格键点击速度？',
     homeFaqA12:
       '通过空格键点击测试提高空格键点击速度需要系统的练习和正确的方法：\n1. 保持手指放松：避免过度用力，找到适合自己的按键力度\n2. 找到节奏：建立稳定的点击节奏，避免时快时慢\n3. 定期训练：每天进行15-20分钟的针对性练习\n4. 逐渐延长时间：从1秒测试开始，逐步过渡到5秒、10秒测试\n5. 注意姿势：保持手腕自然，避免长时间保持同一姿势\n6. 使用合适的键盘：选择按键轻松、回弹快的键盘\n7. 结合手部热身：测试前进行简单的手部拉伸',
@@ -1259,6 +1262,9 @@ const resources: TranslationResources = {
     homeFaqQ2: 'How to increase clicking speed?',
     homeFaqA2:
       'Improving clicking speed requires systematic practice and correct methods:\n1. Technique selection: Choose a clicking method that suits your habits (butterfly clicking, jitter clicking, drag clicking, etc.)\n2. Regular training: Conduct 15-30 minutes of targeted practice every day to maintain muscle memory\n3. Hand warm-up: Perform simple hand stretching and relaxation exercises before testing\n4. Equipment optimization: Use a high polling rate mouse (1000Hz) and a suitable mouse pad\n5. Rhythm control: Establish a stable clicking rhythm, avoid speed decrease due to excessive tension\n6. Cross training: Combine tests of different durations (1 second, 5 seconds, 30 seconds) to comprehensively improve explosive power and endurance',
+    homeFaqQ3: 'How fast is considered a good clicking speed?',
+    homeFaqA3:
+      "There is no absolute standard for clicking speed, and different people have different level references:\n\nIf you want to maintain a basic level and avoid being a slow player, clicking more than 5 times per second is a basic requirement.\n\nNormal players can generally stabilize at 6-10 CPS (clicks per second), which is sufficient for most game needs.\n\nIf you want to reach a higher level:\n- 1-second burst test: 12-15 CPS\n- 5-second test: 10-12 CPS\n- 10-second test: 8-10 CPS\n- 30-second endurance test: 7-9 CPS\n- 60-second extreme test: 6-8 CPS\nReaching this range is considered an excellent level.\n\nProfessional players usually use techniques like butterfly clicking and jitter clicking, easily exceeding 15 CPS per second, which is a top level.\n\nHowever, the most important thing about games is fun, so don't worry too much about the numbers. Progress will naturally come through practice.",
     homeFaqQ9: 'What abilities do CPS tests of different durations evaluate respectively?',
     homeFaqA9:
       'Tests of different durations evaluate different dimensions of abilities:\n1. 1-second test: Evaluate instantaneous explosive power and hand speed potential\n2. 5-second test: Balance explosive power and short-term stability, it is the most commonly used comprehensive evaluation indicator\n3. 10-second test: Evaluate continuous clicking endurance and rhythm maintenance ability\n4. 30-second test: Standard endurance test, suitable for evaluating long-term operation stability\n5. 60-second test: Extreme endurance test, testing the anti-fatigue ability of hand muscles\nIt is recommended to combine tests of multiple durations to comprehensively understand your hand speed characteristics',
@@ -2119,6 +2125,9 @@ const resources: TranslationResources = {
     homeFaqQ2: 'クリック速度を上げる方法？',
     homeFaqA2:
       'クリック速度を向上させるには、システマティックな練習と正しい方法が必要です：\n1. テクニック選択：個人の習慣に合わせて適切なクリック方法（バタフライクリック、ジッタークリック、ドラッグクリックなど）を選択\n2. 定期的なトレーニング：毎日15-30分の集中的な練習を行い、筋肉記憶を保持\n3. 手のウォームアップ：テスト前に簡単な手のストレッチとリラックス運動を行う\n4. 機器最適化：高レスポンスマウス（1000Hz）と適切なマウスパッドを使用\n5. リズム制御：安定したクリックリズムを確立し、過度な緊張による速度低下を避ける\n6. クロストレーニング：異なる時間長のテスト（1秒、5秒、30秒）を組み合わせて、瞬発力と持久力を全面的に向上させる',
+    homeFaqQ3: 'どのくらいのクリック速度が速いと言えますか？',
+    homeFaqA3:
+      'クリック速度の速さには絶対的な基準はありませんが、以下の目安が参考になります：\n\n基礎レベルを維持し、遅いプレイヤーにならないためには、毎秒5回以上クリックすることが基本的な要件です。\n\n通常のプレイヤーは一般的に6-10 CPS（毎秒クリック数）で安定しており、このレベルでほとんどのゲームニーズを満たすことができます。\n\nより高いレベルに到達したい場合：\n- 1秒バーストテスト：12-15 CPS\n- 5秒テスト：10-12 CPS\n- 10秒テスト：8-10 CPS\n- 30秒持久力テスト：7-9 CPS\n- 60秒極限テスト：6-8 CPS\nこの範囲に到達すると優れたレベルと考えられます。\n\nプロプレイヤーは通常、バタフライクリックやジッタークリックなどのテクニックを使用し、毎秒15回を超えるクリックを容易に実現し、トップレベルです。\n\nただし、ゲームで最も重要なのは楽しみであり、数値にこだわりすぎる必要はありません。練習を通じて自然に進歩します。',
     homeFaqQ9: '異なる時間長のCPSテストはそれぞれどのような能力を評価しますか？',
     homeFaqA9:
       '異なる時間長のテストは異なる次元の能力を評価します：\n1. 1秒テスト：瞬発力と手速の潜在能力を評価\n2. 5秒テスト：瞬発力と短期安定性のバランスを図り、最も一般的な総合評価指標となる\n3. 10秒テスト：持続的なクリックの持久力とリズム維持能力を評価\n4. 30秒テスト：標準的な持久力テストで、長時間操作の安定性を評価するのに適している\n5. 60秒テスト：極限持久力テストで、手の筋肉の抗疲労能力を試験する\n多様な時間長のテストを組み合わせて、手速の特徴を全面的に把握することを推奨',
@@ -2893,6 +2902,9 @@ const resources: TranslationResources = {
     homeFaqQ2: '클릭 속도를 높이는 방법?',
     homeFaqA2:
       '클릭 속도를 향상시키려면 체계적인 연습과 올바른 방법이 필요합니다. \n1. 기술 선택: 개인 습관에 따라 적합한 클릭 방식(버터플라이 클릭, 지터 클릭, 드래그 클릭 등)을 선택하세요. \n2. 정기 훈련: 매일 15-30분의 타겟 훈련을 통해 근육 기억을 유지하세요. \n3. 손 워밍업: 테스트 전에 간단한 손 스트레칭과 이완 운동을 하세요. \n4. 장비 최적화: 고반응률 마우스(1000Hz)와 적합한 마우스 패드를 사용하세요. \n5. 리듬 제어: 안정적인 클릭 리듬을 만들어 과도한 긴장으로 인한 속도 저하를 피하세요. \n6. 교차 훈련: 다양한 시간 길이의 테스트(1초, 5초, 30초)를 결합하여 폭발력과 내구력을 전반적으로 향상시키세요.',
+    homeFaqQ3: '어느 정도 클릭 속도가 빠른 것이라고 말할 수 있나요?',
+    homeFaqA3:
+      '클릭 속도의 빠름에는 절대적인 기준이 없지만, 다음과 같은 기준이 참고가 됩니다：\n\n기본 수준을 유지하고 느린 플레이어가 되지 않으려면 초당 5번 이상 클릭하는 것이 기본 요건입니다.\n\n일반 플레이어는 일반적으로 6-10 CPS（초당 클릭 수）로 안정적이며, 이 수준으로 대부분의 게임 요구사항을 충족할 수 있습니다.\n\n더 높은 수준에 도달하고 싶다면：\n- 1초 버스트 테스트：12-15 CPS\n- 5초 테스트：10-12 CPS\n- 10초 테스트：8-10 CPS\n- 30초 지구력 테스트：7-9 CPS\n- 60초 극한 테스트：6-8 CPS\n이 범위에 도달하면 우수한 수준으로 간주됩니다.\n\n프로 플레이어는 일반적으로 버터플라이 클릭, 지터 클릭 등의 기술을 사용하여 초당 15번을 초과하는 클릭을 쉽게 구현하며, 최고 수준입니다.\n\n그러나 게임에서 가장 중요한 것은 즐거움이므로 숫자에 너무 집착하지 않으세요. 연습을 통해 자연스럽게 발전할 것입니다.',
     homeFaqQ9: '다양한 기간의 CPS 테스트는 각각 어떤 능력을 평가하나요?',
     homeFaqA9:
       '다양한 기간의 테스트는 다른 차원의 능력을 평가합니다. \n1. 1초 테스트: 순간 폭발력과 손속 잠재력을 평가합니다. \n2. 5초 테스트: 폭발력과 단기 안정성을 균형 잡는 가장 일반적인 종합 평가 지표입니다. \n3. 10초 테스트: 지속적인 클릭의 내구력과 리듬 유지 능력을 평가합니다. \n4. 30초 테스트: 장시간 조작의 안정성을 평가하기에 적합한 표준 내구력 테스트입니다. \n5. 60초 테스트: 손 근육의 피로 저항력을 시험하는 극한 내구력 테스트입니다. 다양한 기간의 테스트를 결합하여 자신의 손속 특징을 전반적으로 파악하는 것을 권장합니다.',
@@ -3149,7 +3161,14 @@ export const initLanguage = () => {
       // 导航到带有语言前缀的URL，确保URL和语言一致
       const path = window.location.pathname;
       const basePath = path === '/' ? '' : path;
-      window.location.href = `/${finalLang}${basePath}`;
+      // 默认语言（英语）不需要前缀
+      if (finalLang === 'en') {
+        // 直接使用原始路径，不需要添加前缀
+        window.location.href = basePath;
+      } else {
+        // 其他语言添加前缀
+        window.location.href = `/${finalLang}${basePath}`;
+      }
       return; // 终止当前函数执行
     }
   }

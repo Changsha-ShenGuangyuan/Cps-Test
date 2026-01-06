@@ -297,6 +297,51 @@
     }
   };
 
+  // 更新容器尺寸并调整现有目标位置
+  const updateContainerSize = () => {
+    if (gameContainerRef.value) {
+      const oldWidth = containerSize.value.width;
+      const oldHeight = containerSize.value.height;
+
+      // 更新容器尺寸
+      containerSize.value = {
+        width: gameContainerRef.value.offsetWidth,
+        height: gameContainerRef.value.offsetHeight,
+      };
+
+      // 如果容器尺寸变化，调整现有目标位置，确保它们不会超出边界
+      if (oldWidth !== containerSize.value.width || oldHeight !== containerSize.value.height) {
+        targets.value = targets.value.map((target) => {
+          if (!target.active) return target;
+
+          // 确保目标X坐标在新容器内
+          let newX = target.x;
+          if (newX + target.size > containerSize.value.width) {
+            newX = containerSize.value.width - target.size;
+          }
+          if (newX < 0) {
+            newX = 0;
+          }
+
+          // 确保目标Y坐标在新容器内
+          let newY = target.y;
+          if (newY + target.size > containerSize.value.height) {
+            newY = containerSize.value.height - target.size;
+          }
+          if (newY < 0) {
+            newY = 0;
+          }
+
+          return {
+            ...target,
+            x: newX,
+            y: newY,
+          };
+        });
+      }
+    }
+  };
+
   // 组件挂载
   onMounted(() => {
     // 加载最佳分数
@@ -307,12 +352,30 @@
     // 开始游戏循环
     startGameLoop();
     // 设置容器尺寸
-    if (gameContainerRef.value) {
-      containerSize.value = {
-        width: gameContainerRef.value.offsetWidth,
-        height: gameContainerRef.value.offsetHeight,
-      };
+    updateContainerSize();
+    // 添加窗口大小变化监听
+    window.addEventListener('resize', updateContainerSize);
+  });
+
+  // 组件卸载
+  onUnmounted(() => {
+    // 停止游戏循环
+    stopGameLoop();
+    // 清除定时器
+    if (spawnTimer.value) {
+      clearInterval(spawnTimer.value);
+      spawnTimer.value = null;
     }
+    if (gameTimer.value) {
+      clearInterval(gameTimer.value);
+      gameTimer.value = null;
+    }
+    if (countdownTimer.value) {
+      clearInterval(countdownTimer.value);
+      countdownTimer.value = null;
+    }
+    // 移除窗口大小变化监听
+    window.removeEventListener('resize', updateContainerSize);
   });
 
   // 监听游戏模式变化，重置游戏
@@ -419,80 +482,77 @@
 
 <template>
   <div class="game-container">
+    <!-- 游戏标题 -->
+    <h2 class="game-title">{{ t('targetEliminationGame') }}</h2>
+
+    <!-- 游戏数据统计 -->
+    <div class="game-stats">
+      <div class="stat-item">
+        <span class="stat-label">{{ t('time') }}</span>
+        <span class="stat-value">{{ formattedTime }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">{{ t('score') }}</span>
+        <span class="stat-value score-value">{{ score }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">{{ t('bestScore') }}</span>
+        <span class="stat-value best-score-value">{{ bestScore }}</span>
+      </div>
+    </div>
+
     <!-- 游戏和设置区域 -->
     <div class="game-and-settings">
-      <!-- 游戏区域容器 -->
-      <div class="game-section">
-        <!-- 游戏标题 -->
-        <h2 class="game-title">{{ t('targetEliminationGame') }}</h2>
-
-        <!-- 游戏数据统计 -->
-        <div class="game-stats">
-          <div class="stat-item">
-            <span class="stat-label">{{ t('time') }}</span>
-            <span class="stat-value">{{ formattedTime }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">{{ t('score') }}</span>
-            <span class="stat-value score-value">{{ score }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">{{ t('bestScore') }}</span>
-            <span class="stat-value best-score-value">{{ bestScore }}</span>
-          </div>
+      <!-- 游戏区域 -->
+      <div
+        ref="gameContainerRef"
+        class="game-area"
+        :class="{
+          playing: gameState === GameState.PLAYING,
+          'counting-down': gameState === GameState.COUNTING_DOWN,
+          'game-over': gameState === GameState.GAME_OVER,
+        }"
+      >
+        <!-- 准备状态 -->
+        <div v-if="gameState === GameState.READY" class="ready-state">
+          <h3>{{ t('readyToStart') }}</h3>
+          <p>{{ t('targetEliminationGameDesc') }}</p>
+          <p>{{ t('gameDuration') }}：{{ gameTime }} {{ t('sec') }}</p>
+          <button class="start-btn" @click="startGame">{{ t('startGame') }}</button>
         </div>
 
-        <!-- 游戏区域 -->
-        <div
-          ref="gameContainerRef"
-          class="game-area"
-          :class="{
-            playing: gameState === GameState.PLAYING,
-            'counting-down': gameState === GameState.COUNTING_DOWN,
-            'game-over': gameState === GameState.GAME_OVER,
-          }"
-        >
-          <!-- 准备状态 -->
-          <div v-if="gameState === GameState.READY" class="ready-state">
-            <h3>{{ t('readyToStart') }}</h3>
-            <p>{{ t('targetEliminationGameDesc') }}</p>
-            <p>{{ t('gameDuration') }}：{{ gameTime }} {{ t('sec') }}</p>
-            <button class="start-btn" @click="startGame">{{ t('startGame') }}</button>
-          </div>
+        <!-- 倒计时状态 -->
+        <div v-else-if="gameState === GameState.COUNTING_DOWN" class="countdown-state">
+          <div class="countdown-number">{{ countdown }}</div>
+        </div>
 
-          <!-- 倒计时状态 -->
-          <div v-else-if="gameState === GameState.COUNTING_DOWN" class="countdown-state">
-            <div class="countdown-number">{{ countdown }}</div>
-          </div>
+        <!-- 游戏进行中 -->
+        <div v-else-if="gameState === GameState.PLAYING" class="playing-state">
+          <!-- 所有目标 -->
+          <div
+            v-for="target in targets"
+            :key="target.id"
+            class="target"
+            :class="{ eliminated: !target.active }"
+            :style="{
+              left: `${target.x}px`,
+              top: `${target.y}px`,
+              width: `${target.size}px`,
+              height: `${target.size}px`,
+              backgroundColor: target.color,
+            }"
+            @click.stop="eliminateTarget(target.id)"
+          ></div>
+        </div>
 
-          <!-- 游戏进行中 -->
-          <div v-else-if="gameState === GameState.PLAYING" class="playing-state">
-            <!-- 所有目标 -->
-            <div
-              v-for="target in targets"
-              :key="target.id"
-              class="target"
-              :class="{ eliminated: !target.active }"
-              :style="{
-                left: `${target.x}px`,
-                top: `${target.y}px`,
-                width: `${target.size}px`,
-                height: `${target.size}px`,
-                backgroundColor: target.color,
-              }"
-              @click.stop="eliminateTarget(target.id)"
-            ></div>
+        <!-- 游戏结束 -->
+        <div v-else-if="gameState === GameState.GAME_OVER" class="game-over-state">
+          <h3>{{ t('gameOver') }}</h3>
+          <div class="final-score">{{ t('finalScore') }}: {{ score }}</div>
+          <div v-if="score === bestScore && score > 0" class="new-record">
+            {{ t('newRecord') }}！
           </div>
-
-          <!-- 游戏结束 -->
-          <div v-else-if="gameState === GameState.GAME_OVER" class="game-over-state">
-            <h3>{{ t('gameOver') }}</h3>
-            <div class="final-score">{{ t('finalScore') }}: {{ score }}</div>
-            <div v-if="score === bestScore && score > 0" class="new-record">
-              {{ t('newRecord') }}！
-            </div>
-            <button class="restart-btn" @click="resetGame">{{ t('restartGame') }}</button>
-          </div>
+          <button class="restart-btn" @click="resetGame">{{ t('restartGame') }}</button>
         </div>
       </div>
 
@@ -608,17 +668,20 @@
     flex-direction: column;
     gap: 25px;
     align-items: center;
+    overflow: hidden;
+    width: 100%;
   }
 
   /* 游戏和设置区域 */
   .game-and-settings {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr minmax(250px, 28%);
+    grid-template-rows: auto;
     gap: clamp(15px, 3vw, 30px);
     width: 100%;
-    align-items: flex-start;
-    flex-wrap: wrap;
     justify-content: center;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   /* 游戏信息包装器 */
@@ -626,12 +689,27 @@
     display: none;
   }
 
-  /* 游戏区域容器 */
-  .game-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  /* 游戏区域 */
+  .game-area {
+    grid-column: 1;
+    grid-row: 1;
+    height: 430px;
+    width: 100%;
+    background-color: #000000;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    cursor: crosshair;
+    border: 2px solid #333;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  /* 外部设置面板 */
+  .external-settings-panel {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
   }
 
   /* 游戏标题样式 */
@@ -641,7 +719,7 @@
     font-size: 28px;
     font-weight: bold;
     text-align: center;
-    margin-top: 15px;
+    margin-top: 10px;
   }
 
   /* 游戏统计信息 - 参考ClickTest.vue样式 */
@@ -780,20 +858,20 @@
     width: clamp(250px, 28%, 320px);
     background-color: rgba(40, 40, 40, 0.95);
     border-radius: 15px;
-    padding: 15px;
+    padding: clamp(12px, 2vw, 15px);
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: clamp(10px, 2vw, 15px);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(80, 80, 80, 0.5);
     height: auto;
     max-height: 550px;
     overflow-y: auto;
     box-sizing: border-box;
-    margin-top: 0;
     transition: all 0.3s ease;
     transform: translateX(0);
     flex-shrink: 0;
+    margin-top: 0;
   }
 
   /* 动态模式下的设置面板样式 */
@@ -1229,27 +1307,57 @@
     background-color: #000000;
   }
 
-  /* 移动端适配 */
-  @media (max-width: 768px) {
+  /* 中等屏幕适配 */
+  @media (max-width: 1024px) {
+    /* 外部设置面板优化 */
+    .external-settings-panel {
+      width: clamp(240px, 35%, 300px);
+      max-height: 500px;
+    }
+  }
+
+  /* 汉堡菜单显示时的适配 */
+  @media (max-width: 1200px) {
+    /* 游戏和设置区域 - 垂直排列 */
+    .game-and-settings {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* 游戏区域容器 - 宽度100% */
+    .game-section {
+      grid-column: 1;
+      grid-row: 1;
+      width: 100%;
+      min-width: auto;
+      gap: 12px;
+    }
+
+    /* 外部设置面板 - 显示在游戏点击区域下方 */
+    .external-settings-panel {
+      grid-column: 1;
+      grid-row: 2;
+      width: 100%;
+      max-width: 100%;
+      margin-top: 0;
+      margin-right: 0;
+      padding: clamp(10px, 3vw, 15px);
+      border-radius: 10px;
+      max-height: none;
+      height: auto;
+      transform: translateX(0px);
+      align-self: center;
+    }
+
     /* 游戏容器优化 */
     .game-container {
       padding: 10px 5px;
       gap: 15px;
       border-radius: 0;
-    }
-
-    /* 游戏和设置区域布局优化 */
-    .game-and-settings {
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-      width: 100%;
-    }
-
-    /* 游戏区域容器优化 */
-    .game-section {
-      width: 100%;
-      gap: 12px;
     }
 
     /* 游戏区域优化 */
@@ -1267,7 +1375,7 @@
       margin-top: 10px;
     }
 
-    /* 统计信息优化 - 参考ClickTest.vue移动端样式 */
+    /* 统计信息优化 */
     .game-stats {
       gap: 0;
       margin-bottom: 15px;
@@ -1292,17 +1400,10 @@
       font-size: clamp(12px, 2vw, 14px);
     }
 
-    /* 外部设置面板优化 */
-    .external-settings-panel {
-      width: 100%;
-      max-width: 500px;
-      margin-top: 0;
-      margin-right: 0;
-      padding: 15px;
-      border-radius: 10px;
-      max-height: none;
-      height: auto;
-      transform: translateX(0px);
+    /* 选项网格优化 */
+    .options-grid {
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: clamp(6px, 2vw, 10px);
     }
 
     /* 设置标题优化 */

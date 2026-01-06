@@ -6,7 +6,7 @@
         <div class="main-content">
           <!-- 左侧游戏区域 -->
           <div class="game-area">
-            <h1 class="game-title" v-once>Spacebar clicker - {{ t('fiveSecondSpaceTest') }}</h1>
+            <h1 v-once class="game-title">Spacebar clicker - {{ t('fiveSecondSpaceTest') }}</h1>
 
             <!-- 统计卡片 -->
             <div class="stats-cards">
@@ -14,17 +14,17 @@
                 <div class="stat-value">
                   {{ !isPlaying && clicks === 0 ? 0 : elapsedTime.toFixed(3) }}
                 </div>
-                <div class="stat-label" v-once>{{ t('time') }}</div>
+                <div v-once class="stat-label">{{ t('time') }}</div>
               </div>
               <div class="stat-card click-rate-card">
                 <div class="stat-value">
                   {{ !isPlaying && clicks === 0 ? 0 : currentCps.toFixed(2) }}
                 </div>
-                <div class="stat-label" v-once>{{ t('clicksPerSecond') }}</div>
+                <div v-once class="stat-label">{{ t('clicksPerSecond') }}</div>
               </div>
               <div class="stat-card score-card">
                 <div class="stat-value">{{ clicks }}</div>
-                <div class="stat-label" v-once>{{ t('score') }}</div>
+                <div v-once class="stat-label">{{ t('score') }}</div>
               </div>
             </div>
 
@@ -90,7 +90,7 @@
 
       <!-- 时间选择区域 -->
       <div class="time-select-section">
-        <h3 class="time-select-title" v-once>{{ t('selectTime') }}</h3>
+        <h3 class="time-select-title">{{ t('selectTime') }}</h3>
         <div class="time-select-list">
           <button
             v-for="time in supportedTimes"
@@ -99,7 +99,7 @@
             :class="{ active: time === 5 }"
             @click="navigateTo('/space-click-test/' + time)"
           >
-            {{ time }} <span v-once>{{ t('secondsTest') }}</span>
+            {{ time }} <span>{{ t('secondsTest') }}</span>
           </button>
         </div>
       </div>
@@ -117,37 +117,37 @@
     <!-- 快速开始区域 -->
     <section class="quick-start-section">
       <div class="quick-start-buttons">
-        <button class="start-btn click-test" @click="navigateTo('/click-test/1')" v-once>
+        <button class="start-btn click-test" @click="navigateTo('/click-test/1')">
           <span class="btn-text">{{ t('clickTest') }}</span>
         </button>
-        <button class="start-btn reaction-test" @click="navigateTo('/reaction-time-test')" v-once>
+        <button class="start-btn reaction-test" @click="navigateTo('/reaction-time-test')">
           <span class="btn-text">{{ t('simpleReactionTest') }}</span>
         </button>
-        <button class="start-btn typing-test" @click="navigateTo('/typing-test/1')" v-once>
+        <button class="start-btn typing-test" @click="navigateTo('/typing-test/1')">
           <span class="btn-text">{{ t('typingTest') }}</span>
         </button>
-        <button class="start-btn space-test" @click="navigateTo('/space-click-test/1')" v-once>
+        <button class="start-btn space-test" @click="navigateTo('/space-click-test/1')">
           <span class="btn-text">{{ t('spaceClickTest') }}</span>
         </button>
-        <button class="start-btn kohi-test" @click="navigateTo('/kohi-click-test')" v-once>
+        <button class="start-btn kohi-test" @click="navigateTo('/kohi-click-test')">
           <span class="btn-text">{{ t('kohiClickTest') }}</span>
         </button>
-        <button class="start-btn color-test" @click="navigateTo('/color-reaction-test')" v-once>
+        <button class="start-btn color-test" @click="navigateTo('/color-reaction-test')">
           <span class="btn-text">{{ t('colorReactionTest') }}</span>
         </button>
-        <button class="start-btn key-test" @click="navigateTo('/key-reaction-test')" v-once>
+        <button class="start-btn key-test" @click="navigateTo('/key-reaction-test')">
           <span class="btn-text">{{ t('keyReactionTest') }}</span>
         </button>
-        <button class="start-btn target-test" @click="navigateTo('/target-elimination-game')" v-once>
+        <button class="start-btn target-test" @click="navigateTo('/target-elimination-game')">
           <span class="btn-text">{{ t('targetEliminationGame') }}</span>
         </button>
-        <button class="start-btn scroll-test" @click="navigateTo('/mouse-scroll-test')" v-once>
+        <button class="start-btn scroll-test" @click="navigateTo('/mouse-scroll-test')">
           <span class="btn-text">{{ t('mouseScrollTest') }}</span>
         </button>
-        <button class="start-btn drag-test" @click="navigateTo('/mouse-drag-test')" v-once>
+        <button class="start-btn drag-test" @click="navigateTo('/mouse-drag-test')">
           <span class="btn-text">{{ t('mouseDragTest') }}</span>
         </button>
-        <button class="start-btn keyboard-test" @click="navigateTo('/keyboard-test')" v-once>
+        <button class="start-btn keyboard-test" @click="navigateTo('/keyboard-test')">
           <span class="btn-text">{{ t('keyboardTest') }}</span>
         </button>
       </div>
@@ -184,6 +184,10 @@
         <div v-if="isFaqVisible" class="faq-item">
           <h3 class="faq-question">{{ t('homeFaqQ2') }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t('homeFaqA2'))"></p>
+        </div>
+        <div v-if="isFaqVisible" class="faq-item">
+          <h3 class="faq-question">{{ t('homeFaqQ3') }}</h3>
+          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA3'))"></p>
         </div>
         <div v-if="isFaqVisible" class="faq-item">
           <h3 class="faq-question">{{ t('homeFaqQ9') }}</h3>
@@ -469,7 +473,7 @@
     window.addEventListener('resize', handleResize);
     window.addEventListener('keydown', handleSpaceDown);
     window.addEventListener('keyup', handleSpaceUp);
-    
+
     // 设置交叉观察者
     setupIntersectionObservers();
   });
@@ -511,11 +515,11 @@
     // 观察目标元素
     const faqElement = document.getElementById('faq');
     const clickTypesElement = document.querySelector('.click-types-section');
-    
+
     if (faqElement) {
       faqObserver.observe(faqElement);
     }
-    
+
     if (clickTypesElement) {
       clickTypesObserver.observe(clickTypesElement);
     }
@@ -536,7 +540,7 @@
     window.removeEventListener('resize', handleResize);
     window.removeEventListener('keydown', handleSpaceDown);
     window.removeEventListener('keyup', handleSpaceUp);
-    
+
     // 清理观察者
     if (faqObserver) {
       faqObserver.disconnect();
@@ -544,7 +548,7 @@
     if (clickTypesObserver) {
       clickTypesObserver.disconnect();
     }
-    
+
     if (timer) {
       clearInterval(timer);
     }
@@ -699,7 +703,7 @@
 
   /* 时间选择标题 */
   .time-select-title {
-    color: #ffffff;
+    color: #4caf50;
     font-size: clamp(18px, 4vw, 20px);
     font-weight: bold;
     margin-bottom: clamp(16px, 3vw, 20px);
@@ -748,8 +752,9 @@
   /* 时间选择项悬停效果 */
   .time-select-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    background: linear-gradient(145deg, #444, #333);
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.3);
+    background: linear-gradient(145deg, #4caf50, #45a049);
+    color: #ffffff;
   }
 
   /* 时间选择项激活状态 */
@@ -1050,18 +1055,18 @@
       animation: none;
       transform: translateY(2px);
     }
-    
+
     /* 简化点击区域发光动画 */
     .click-area.space-pressed {
       animation: none;
     }
-    
+
     /* 简化按钮脉动动画 */
     .start-btn:hover::before {
       animation: none;
       opacity: 0.4;
     }
-    
+
     /* 简化按钮悬停效果 */
     .start-btn:hover {
       transform: none;

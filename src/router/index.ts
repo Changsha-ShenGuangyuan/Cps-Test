@@ -332,14 +332,14 @@ export const updateMetaTags = (to: any) => {
   if (to.meta.i18n && to.meta.i18n.titleKey) {
     // 获取不带语言前缀的路径
     const pathWithoutLang = getPathWithoutLangPrefix(to.path);
-    
+
     // 定义正则表达式来匹配测试类型和时间参数
     const testPathRegex = /^\/([^\/]+)\/(\d+)$/;
     const match = pathWithoutLang.match(testPathRegex);
-    
+
     if (match) {
       const [_, testType, time] = match;
-      
+
       // 根据测试类型和时间参数生成标题
       if (testType === 'click-test') {
         switch (time) {

@@ -1856,7 +1856,6 @@
   .language-selector:hover {
     background-color: rgba(100, 100, 100, 0.3);
     border-color: #666;
-    transform: scale(1.05);
   }
 
   .language-image {
@@ -1955,7 +1954,6 @@
   .history-selector:hover {
     background-color: rgba(100, 100, 100, 0.3);
     border-color: #666;
-    transform: scale(1.05);
   }
 
   /* 历史记录面板样式 */

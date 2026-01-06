@@ -856,7 +856,7 @@
     position: absolute;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background-color: rgba(76, 175, 80, 0.5); /* 更淡的绿色，降低透明度 */
+    background-color: rgba(56, 214, 201, 0.5);
     pointer-events: none;
     z-index: 1;
     box-shadow: 0 0 15px rgba(76, 175, 80, 0.5); /* 减弱发光效果 */

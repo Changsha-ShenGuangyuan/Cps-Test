@@ -480,6 +480,22 @@
     opacity: 0;
     transform: translateY(10px);
     animation: textFadeIn 0.6s ease-out 1s forwards;
+    pointer-events: none;
+    animation-fill-mode: forwards;
+  }
+
+  /* 动画结束后启用点击 */
+  @keyframes textFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
   }
 
   /* CPS结果动画 */
@@ -495,18 +511,6 @@
     to {
       opacity: 1;
       transform: scale(1) translateY(0);
-    }
-  }
-
-  /* 文本淡入动画 */
-  @keyframes textFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
     }
   }
 
@@ -667,6 +671,8 @@
     animation: textFadeIn 0.6s ease-out 1.4s forwards;
     font-family: inherit;
     letter-spacing: 0.3px;
+    pointer-events: none;
+    animation-fill-mode: forwards;
   }
 
   /* 分享按钮动画延迟 */
