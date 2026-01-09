@@ -758,7 +758,10 @@
     height: 300px;
     white-space: pre-wrap;
     word-wrap: break-word;
-    font-family: monospace;
+    font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     overflow: hidden;
     position: relative;
     display: flex;

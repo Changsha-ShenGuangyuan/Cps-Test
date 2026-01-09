@@ -708,6 +708,10 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   /* 移除移动端滚动，保持键盘左对齐等比缩放 */

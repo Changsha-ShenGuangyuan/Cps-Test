@@ -1,5 +1,3 @@
-import { glob } from 'glob';
-
 export default {
   content: ['./src/**/*.html', './src/**/*.vue', './src/**/*.ts', './src/**/*.js'],
   css: ['./src/style.css'],

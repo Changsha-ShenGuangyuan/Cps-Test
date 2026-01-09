@@ -225,12 +225,6 @@
     // 创建涟漪特效
     const rippleId = Date.now();
 
-    // 涟漪动画配置
-    const animationDuration = 600; // 动画持续时间（毫秒）
-    const maxSize = 500; // 涟漪最大大小（像素）
-    const steps = 20; // 动画步数
-    const stepDuration = animationDuration / steps; // 每步持续时间
-
     // 创建新的涟漪对象
     const newRipple: Ripple = {
       id: rippleId,
@@ -243,46 +237,10 @@
     // 添加涟漪到数组（触发响应式更新）
     ripples.value = [...ripples.value, newRipple];
 
-    // 动画计数器
-    let step = 0;
-
-    // 涟漪动画函数
-    const animate = () => {
-      step++;
-      if (step <= steps) {
-        // 计算当前动画进度（0-1）
-        const progress = step / steps;
-
-        // 查找当前涟漪并更新
-        const index = ripples.value.findIndex((r) => r.id === rippleId);
-        if (index > -1) {
-          const updatedRipple = ripples.value[index];
-          if (updatedRipple) {
-            // 更新涟漪大小
-            updatedRipple.size = maxSize * progress;
-
-            // 更新涟漪透明度（先保持不透明，后逐渐消失）
-            if (progress < 0.5) {
-              updatedRipple.opacity = 0.9;
-            } else {
-              updatedRipple.opacity = 0.9 - (progress - 0.5) * 1.8;
-            }
-
-            // 创建新数组触发Vue响应式更新
-            ripples.value = [...ripples.value];
-          }
-        }
-
-        // 继续下一帧动画
-        setTimeout(animate, stepDuration);
-      } else {
-        // 动画结束，移除涟漪
-        ripples.value = ripples.value.filter((r) => r.id !== rippleId);
-      }
-    };
-
-    // 立即开始动画
-    animate();
+    // 动画结束后自动移除涟漪（使用setTimeout一次性移除，避免频繁操作）
+    setTimeout(() => {
+      ripples.value = ripples.value.filter((r) => r.id !== rippleId);
+    }, 600);
 
     // 开始游戏（如果是第一次点击）
     if (!isPlaying.value && clicks.value === 0) {
@@ -377,9 +335,6 @@
               :style="{
                 left: ripple.x + 'px',
                 top: ripple.y + 'px',
-                width: ripple.size + 'px',
-                height: ripple.size + 'px',
-                opacity: ripple.opacity,
               }"
             ></div>
           </div>
@@ -851,7 +806,7 @@
     z-index: 1;
   }
 
-  /* 涟漪样式 - 调整为更淡的颜色 */
+  /* 涟漪样式 - 使用CSS动画实现更流畅的效果 */
   .ripple {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -861,6 +816,27 @@
     z-index: 1;
     box-shadow: 0 0 15px rgba(76, 175, 80, 0.5); /* 减弱发光效果 */
     border: 1px solid rgba(255, 255, 255, 0.2); /* 更淡的白色边框 */
+    width: 0px;
+    height: 0px;
+    opacity: 0.9;
+    animation: ripple-animation 600ms ease-out forwards;
+  }
+
+  /* 涟漪动画 */
+  @keyframes ripple-animation {
+    0% {
+      width: 0px;
+      height: 0px;
+      opacity: 0.9;
+    }
+    50% {
+      opacity: 0.9;
+    }
+    100% {
+      width: 500px;
+      height: 500px;
+      opacity: 0;
+    }
   }
 
   /* 开始文字 */

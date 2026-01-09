@@ -295,13 +295,14 @@ const routes = [
     // 为每个语言创建扁平的路由配置，而不是嵌套路由
     return publicRoutes.map((route) => {
       // 移除原始路由的name属性，避免重复命名
-      const { name: _, ...routeWithoutName } = route;
       return {
-        ...routeWithoutName,
+        ...route,
         // 为路由添加语言前缀
         path: `/${lang}${route.path === '/' ? '' : route.path}`,
         // 保留原始路由的meta属性
         meta: route.meta,
+        // 删除name属性
+        name: undefined,
       };
     });
   }),
@@ -334,11 +335,11 @@ export const updateMetaTags = (to: any) => {
     const pathWithoutLang = getPathWithoutLangPrefix(to.path);
 
     // 定义正则表达式来匹配测试类型和时间参数
-    const testPathRegex = /^\/([^\/]+)\/(\d+)$/;
+    const testPathRegex = /^\/([^/]+)\/(\d+)$/;
     const match = pathWithoutLang.match(testPathRegex);
 
     if (match) {
-      const [_, testType, time] = match;
+      const [, testType, time] = match;
 
       // 根据测试类型和时间参数生成标题
       if (testType === 'click-test') {

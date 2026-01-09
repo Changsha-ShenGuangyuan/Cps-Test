@@ -6,7 +6,7 @@
         <div class="main-content">
           <!-- 左侧游戏区域 -->
           <div class="game-area">
-            <h1 v-once class="game-title">Spacebar clicker - {{ t('fiveSecondSpaceTest') }}</h1>
+            <h1 class="game-title">Spacebar clicker - {{ t('fiveSecondSpaceTest') }}</h1>
 
             <!-- 统计卡片 -->
             <div class="stats-cards">
@@ -14,17 +14,17 @@
                 <div class="stat-value">
                   {{ !isPlaying && clicks === 0 ? 0 : elapsedTime.toFixed(3) }}
                 </div>
-                <div v-once class="stat-label">{{ t('time') }}</div>
+                <div class="stat-label">{{ t('time') }}</div>
               </div>
               <div class="stat-card click-rate-card">
                 <div class="stat-value">
                   {{ !isPlaying && clicks === 0 ? 0 : currentCps.toFixed(2) }}
                 </div>
-                <div v-once class="stat-label">{{ t('clicksPerSecond') }}</div>
+                <div class="stat-label">{{ t('clicksPerSecond') }}</div>
               </div>
               <div class="stat-card score-card">
                 <div class="stat-value">{{ clicks }}</div>
-                <div v-once class="stat-label">{{ t('score') }}</div>
+                <div class="stat-label">{{ t('score') }}</div>
               </div>
             </div>
 
@@ -661,6 +661,10 @@
     max-width: 1200px; /* 最大宽度，确保内容居中 */
     margin: 0 auto; /* 水平居中 */
     padding: 20px; /* 内边距 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   /* 5秒空格速度测试样式 */
@@ -1556,7 +1560,7 @@
   .faq-question {
     color: #ffffff; /* 白色文本 */
     margin-bottom: 16px; /* 底部外边距，增加间距 */
-    font-size: 18px; /* 中号字号 */
+    font-size: 20px; /* 中号字号 */
     font-weight: 600; /* 加粗，突出问题 */
     display: flex; /* 弹性布局 */
     align-items: flex-start; /* 顶部对齐 */
@@ -1585,7 +1589,7 @@
   /* FAQ答案样式 */
   .faq-answer {
     color: #e0e0e0; /* 浅灰色文本，增强可读性 */
-    font-size: 16px; /* 小号字号 */
+    font-size: 18px; /* 小号字号 */
     line-height: 1.65; /* 行高，增强可读性 */
     margin-top: 16px; /* 顶部外边距 */
     margin-left: 36px; /* 左侧缩进，与问题图标对齐 */
@@ -1706,7 +1710,7 @@
     }
 
     .faq-question {
-      font-size: 17px;
+      font-size: 19px;
       margin-bottom: 12px;
     }
 
@@ -1717,7 +1721,7 @@
     }
 
     .faq-answer {
-      font-size: 14px;
+      font-size: 16px;
       margin-left: 28px;
       line-height: 1.6;
     }
@@ -1730,11 +1734,11 @@
     }
 
     .faq-question {
-      font-size: 16px;
+      font-size: 18px;
     }
 
     .faq-answer {
-      font-size: 13px;
+      font-size: 15px;
       margin-left: 24px;
     }
 

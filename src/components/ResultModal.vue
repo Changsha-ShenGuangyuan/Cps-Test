@@ -10,8 +10,15 @@
     time: number;
   }>();
 
+  // 定义分享参数类型
+  interface ShareParams {
+    cps: number;
+    time: number;
+    type: string;
+  }
+
   // 对比数据响应式变量
-  const friendData = ref<any>(null);
+  const friendData = ref<ShareParams | null>(null);
 
   // 从sessionStorage获取分享参数
   const getShareParams = () => {
@@ -101,9 +108,7 @@
   );
 
   // 组件事件
-  const emit = defineEmits<{
-    (_e: 'close'): void;
-  }>();
+  const emit = defineEmits(['close']);
 
   // 关闭弹窗
   const handleClose = () => {
@@ -118,6 +123,28 @@
     }
   };
 
+  // 阻止滚动的事件处理函数
+  const preventScroll = (e: Event) => {
+    if (e instanceof WheelEvent || e instanceof TouchEvent) {
+      e.preventDefault();
+    } else if (e instanceof KeyboardEvent) {
+      const scrollKeys = [
+        'ArrowUp',
+        'ArrowDown',
+        'ArrowLeft',
+        'ArrowRight',
+        ' ',
+        'PageUp',
+        'PageDown',
+        'Home',
+        'End',
+      ];
+      if (scrollKeys.includes(e.key)) {
+        e.preventDefault();
+      }
+    }
+  };
+
   // 禁用滚动函数
   const disableScroll = () => {
     // 获取当前滚动位置
@@ -125,26 +152,69 @@
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
     // 保存当前滚动位置
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollTop}px`;
-    document.body.style.left = `-${scrollLeft}px`;
-    document.body.style.width = '100%';
+    document.body.dataset.scrollTop = scrollTop.toString();
+    document.body.dataset.scrollLeft = scrollLeft.toString();
+
+    // 保存原始样式
+    document.body.dataset.originalScrollbarWidth = document.body.style.scrollbarWidth;
+
+    // 隐藏滚动条视觉样式 - 不改变overflow属性，保持滚动条存在
+    document.body.style.scrollbarWidth = 'none'; // Firefox
+
+    // 添加WebKit滚动条隐藏样式
+    const style = document.createElement('style');
+    style.id = 'hide-scrollbar-style';
+    style.textContent = `
+      /* WebKit浏览器：隐藏滚动条但保持其功能 */
+      body::-webkit-scrollbar {
+        display: none !important;
+      }
+      
+      /* IE/Edge：隐藏滚动条但保持其功能 */
+      body {
+        -ms-overflow-style: none !important;
+      }
+      
+      /* 确保overflow保持auto，不改变页面布局 */
+      body {
+        overflow: auto !important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 阻止滚动事件，锁定背景滚动
+    document.addEventListener('wheel', preventScroll, { passive: false });
+    document.addEventListener('touchmove', preventScroll, { passive: false });
+    document.addEventListener('keydown', preventScroll, { passive: false });
   };
 
   // 启用滚动函数
   const enableScroll = () => {
     // 恢复滚动位置
-    const top = document.body.style.top;
-    const left = document.body.style.left;
+    const scrollTop = parseInt(document.body.dataset.scrollTop || '0');
+    const scrollLeft = parseInt(document.body.dataset.scrollLeft || '0');
 
-    // 移除固定定位
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.width = '';
+    // 恢复原始滚动条样式
+    document.body.style.scrollbarWidth = document.body.dataset.originalScrollbarWidth || '';
+
+    // 移除滚动条隐藏样式
+    const style = document.getElementById('hide-scrollbar-style');
+    if (style) {
+      document.head.removeChild(style);
+    }
+
+    // 移除滚动阻止事件
+    document.removeEventListener('wheel', preventScroll);
+    document.removeEventListener('touchmove', preventScroll);
+    document.removeEventListener('keydown', preventScroll);
 
     // 恢复滚动位置
-    window.scrollTo(parseInt(left || '0') * -1, parseInt(top || '0') * -1);
+    window.scrollTo(scrollLeft, scrollTop);
+
+    // 清除保存的属性
+    delete document.body.dataset.scrollTop;
+    delete document.body.dataset.scrollLeft;
+    delete document.body.dataset.originalScrollbarWidth;
   };
 
   // 监听 visible 属性变化，只在弹窗可见时添加事件监听
@@ -432,6 +502,9 @@
     font-family:
       -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
       'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     font-size: 16px;
   }
 

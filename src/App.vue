@@ -816,7 +816,7 @@
       // 验证时间参数是否为有效数字
       const time = basePath.split('/')[2];
       if (time && /^[1-9]\d*$/.test(time)) {
-        return `${time}秒 ${t('clickTest')}`;
+        return `${time}${t('sec')} ${t('clickTest')}`;
       } else {
         // 无效时间参数，返回通用点击测试标题
         return t('clickTest');
@@ -825,7 +825,7 @@
       // 验证时间参数是否为有效数字
       const time = basePath.split('/')[2];
       if (time && /^[1-9]\d*$/.test(time)) {
-        return `${time}秒 ${t('spaceClickTest')}`;
+        return `${time}${t('sec')} ${t('spaceClickTest')}`;
       } else {
         // 无效时间参数，返回通用空格点击测试标题
         return t('spaceClickTest');
@@ -834,7 +834,7 @@
       // 验证时间参数是否为有效数字
       const time = basePath.split('/')[2];
       if (time && /^[1-9]\d*$/.test(time)) {
-        return `${time}分钟 ${t('typingTest')}`;
+        return `${time}${t('minTypingTest')} ${t('typingTest')}`;
       } else {
         // 无效时间参数，返回通用打字测试标题
         return t('typingTest');
@@ -1438,7 +1438,10 @@
     min-height: 100vh;
     background-color: #1a1a1a;
     color: #ffffff;
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     /* 移除overflow: hidden，允许页面滚动 */
   }
 
@@ -1502,6 +1505,13 @@
     min-height: 40px;
     display: flex;
     align-items: center;
+    /* 字体优化 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.2px;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
   }
 
   /* 主导航项悬停样式 - 缩小范围 */
@@ -1802,13 +1812,20 @@
   }
 
   .logo {
-    font-size: 20px;
-    font-weight: bold;
-    color: #4caf50;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  font-size: 20px;
+  font-weight: bold;
+  color: #4caf50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* 字体优化 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.3px;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+}
 
   /* 侧边栏logo样式 */
   .sidebar-logo {
@@ -1819,6 +1836,13 @@
     font-weight: bold;
     color: #4caf50;
     cursor: pointer;
+    /* 字体优化 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
   }
 
   .logo-image {
@@ -2235,6 +2259,12 @@
     z-index: 900;
     transform: translateX(0);
     transition: transform 0.3s ease;
+    /* 字体优化 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-smooth: always;
   }
 
   /* 侧边栏打开状态（仅移动端使用） */
@@ -2356,6 +2386,11 @@
     min-height: 48px;
     display: flex;
     align-items: center;
+    /* 字体优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.2px;
   }
 
   /* 辅助导航项悬停样式 */
@@ -2384,6 +2419,11 @@
     will-change: background-color, color;
     /* 确保最小尺寸符合触控标准 */
     min-height: 48px;
+    /* 字体优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.2px;
   }
 
   .menu-item-header:hover {
@@ -2484,6 +2524,11 @@
     animation: none; /* 移除级联动画 */
     /* 确保最小尺寸符合触控标准 */
     min-height: 48px;
+    /* 字体优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.2px;
   }
 
   /* 为子菜单项添加简单的hover效果 */

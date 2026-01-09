@@ -224,14 +224,22 @@
 </script>
 
 <style scoped>
+  /* 主容器样式 */
   .faq-container {
     background-color: #1a1a1a;
     border-radius: 8px;
     padding: 20px;
     margin: 20px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    /* 字体优化 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-smooth: always;
+    text-rendering: optimizeLegibility;
   }
 
+  /* 热门问题区块 */
   .popular-faq-section {
     background-color: #252525;
     border-radius: 6px;
@@ -243,15 +251,21 @@
     color: #4caf50;
     margin-top: 0;
     margin-bottom: 10px;
-    font-size: 18px;
+    font-size: 20px;
+    /* 字体渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
+  /* 热门问题列表 */
   .popular-faq-list {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
   }
 
+  /* 热门问题项 */
   .popular-faq-item {
     background-color: #333;
     color: white;
@@ -261,6 +275,10 @@
     cursor: pointer;
     transition: all 0.2s ease;
     border: 1px solid #444;
+    /* 字体渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   .popular-faq-item:hover {
@@ -269,12 +287,14 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
 
+  /* FAQ列表 */
   .faq-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
+  /* FAQ项 */
   .faq-item {
     background-color: #252525;
     border-radius: 6px;
@@ -288,6 +308,7 @@
     border-color: #4caf50;
   }
 
+  /* FAQ问题 */
   .faq-question {
     display: flex;
     justify-content: space-between;
@@ -307,118 +328,121 @@
     border-bottom: 1px solid #444;
   }
 
+  /* FAQ问题标题 */
   .faq-question h4 {
     margin: 0;
     color: white;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     flex: 1;
-    line-height: 1.4;
+    line-height: 1.5;
+    /* 字体渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.3px;
   }
 
+  /* 切换图标 */
   .faq-toggle-icon {
     color: #4caf50;
-    font-size: 14px;
+    font-size: 16px;
     margin-left: 10px;
-    transition:
-      transform 0.2s ease,
-      color 0.2s ease;
+    transition: transform 0.2s ease;
     transform-origin: center;
   }
 
-  /* 优化切换图标的动画 */
-  .faq-item .faq-question:active .faq-toggle-icon {
-    transform: scale(0.9);
-  }
-
-  /* 展开状态的图标旋转动画 */
+  /* 展开状态的图标旋转 */
   .faq-question.active .faq-toggle-icon {
     transform: rotate(90deg);
     color: #81c784;
   }
 
+  /* FAQ答案 */
   .faq-answer {
     overflow: hidden;
     opacity: 0;
-    transform: translateY(-10px) scaleY(0);
-    transform-origin: top;
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
     padding: 0 15px;
     height: 0;
   }
 
+  /* 展开状态的答案 */
   .faq-answer.open {
     opacity: 1;
-    transform: translateY(0) scaleY(1);
+    transform: translateY(0);
     height: auto;
     padding: 15px;
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-      padding 0.3s ease;
   }
 
-  /* 移除可能导致冲突的分步动画，改为使用统一的过渡效果 */
-  .faq-answer-content {
-    opacity: 1;
-    transform: translateY(0);
-    animation: none;
-  }
-
-  .related-questions {
-    opacity: 1;
-    transform: translateY(0);
-    animation: none;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #333;
-  }
-
+  /* 答案内容 */
   .faq-answer-content p {
     margin: 0;
     color: #ccc;
-    line-height: 1.6;
-    font-size: 14px;
+    line-height: 1.7;
+    font-size: 16px;
+    font-weight: 400;
+    /* 字体渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.2px;
   }
 
+  /* 相关问题 */
   .related-questions {
     margin-top: 15px;
     padding-top: 15px;
     border-top: 1px solid #333;
   }
 
+  /* 相关问题标题 */
   .related-questions h5 {
     margin: 0 0 10px 0;
     color: #4caf50;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
+    /* 字体渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
+  /* 相关问题列表 */
   .related-questions ul {
     margin: 0;
     padding-left: 20px;
   }
 
+  /* 相关问题项 */
   .related-questions li {
     color: #999;
-    font-size: 13px;
+    font-size: 15px;
     margin-bottom: 5px;
     cursor: pointer;
     transition: color 0.2s ease;
+    /* 字体渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   .related-questions li:hover {
     color: #4caf50;
   }
 
+  /* 无结果状态 */
   .no-faq-results {
     text-align: center;
     color: #888;
     padding: 30px;
     font-style: italic;
-    font-size: 14px;
+    font-size: 16px;
+    /* 字体渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   /* 移动端适配 */
@@ -428,15 +452,7 @@
       margin: 15px 0;
     }
 
-    .faq-question {
-      padding: 12px;
-    }
-
-    .faq-question h4 {
-      font-size: 15px;
-    }
-
-    .faq-answer.open {
+    .popular-faq-section {
       padding: 12px;
     }
 
@@ -446,7 +462,19 @@
 
     .popular-faq-item {
       padding: 6px 12px;
-      font-size: 12px;
+      font-size: 14px;
+    }
+
+    .faq-question {
+      padding: 12px;
+    }
+
+    .faq-question h4 {
+      font-size: 17px;
+    }
+
+    .faq-answer.open {
+      padding: 12px;
     }
   }
 </style>
