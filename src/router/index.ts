@@ -550,8 +550,9 @@ export const updateMetaTags = (to: any) => {
             '@type': 'WebPage',
             '@id': currentUrl,
           },
-          datePublished: new Date().toISOString().split('T')[0],
-          dateModified: new Date().toISOString().split('T')[0],
+          // 使用固定发布日期，避免每次访问都更新
+            datePublished: '2025-01-01',
+            dateModified: '2025-06-01',
           potentialAction: {
             '@type': 'UseAction',
             target: currentUrl,
@@ -583,8 +584,9 @@ export const updateMetaTags = (to: any) => {
             '@type': 'WebPage',
             '@id': currentUrl,
           },
-          datePublished: new Date().toISOString().split('T')[0],
-          dateModified: new Date().toISOString().split('T')[0],
+          // 使用固定发布日期，避免每次访问都更新
+          datePublished: '2025-01-01',
+          dateModified: '2025-06-01',
           potentialAction: {
             '@type': 'SearchAction',
             target: `${baseUrl}/search?q={search_term_string}`,
@@ -695,7 +697,7 @@ const validateHreflangTags = () => {
 
 // 全局路由守卫 - 设置页面标题和meta标签
 router.beforeEach((to, _from, next) => {
-  // 设置canonical标签（使用默认语言版本作为规范URL）
+  // 设置canonical标签（每个语言版本使用自己的URL作为规范URL）
   try {
     let canonicalTag = document.querySelector('link[rel="canonical"]');
     if (!canonicalTag) {
@@ -704,8 +706,8 @@ router.beforeEach((to, _from, next) => {
       document.head.appendChild(canonicalTag);
     }
 
-    // 规范URL使用默认语言版本
-    const canonicalUrl = `${window.location.origin}${getPathWithoutLangPrefix(to.path)}`;
+    // 规范URL使用当前页面的完整URL，包括语言前缀
+    const canonicalUrl = `${window.location.origin}${to.path}`;
     canonicalTag.setAttribute('href', canonicalUrl);
   } catch (error) {
     console.error('Failed to set canonical tag:', error);
