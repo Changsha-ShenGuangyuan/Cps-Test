@@ -700,8 +700,8 @@ const resources: TranslationResources = {
       // 详细信息拆分文本
       detailsText: '',
       seconds: '秒',
-      clickText: '内单击',
-      timesText: '次点击次',
+      clickText: '点击',
+      timesText: '次',
       // 按钮文本
       okButton: '不服,再来一次',
       // 结果对比
@@ -1486,8 +1486,8 @@ const resources: TranslationResources = {
       // Details split text
       detailsText: '',
       seconds: 'seconds',
-      clickText: 'with',
-      timesText: 'clicks',
+      clickText: 'clicks',
+      timesText: 'times',
       // Button text
       okButton: 'Not convinced, try again',
       // Comparison
@@ -2262,8 +2262,8 @@ const resources: TranslationResources = {
       // 詳細情報分割テキスト
       detailsText: '',
       seconds: '秒間',
-      clickText: 'に',
-      timesText: '回クリックしました',
+      clickText: 'クリック',
+      timesText: '回',
       // ボタンテキスト
       okButton: '不服なら、もう一度やろう',
       // 比較結果
@@ -3038,8 +3038,8 @@ const resources: TranslationResources = {
       // 상세 정보 분할 텍스트
       detailsText: '',
       seconds: '초',
-      clickText: '동안',
-      timesText: '번 클릭했습니다',
+      clickText: '클릭',
+      timesText: '회',
       // 버튼 텍스트
       okButton: '불복, 다시 한 번',
       // 결과 비교
