@@ -369,10 +369,10 @@
           <span class="detail-value">{{ Math.round(cps * time) }}</span>
           <span class="detail-text">{{ t('resultModal.timesText') }}</span>
         </p>
-        <p v-if="cps < 3">{{ t('resultModal.feedback.slow') }}</p>
-        <p v-else-if="cps < 6">{{ t('resultModal.feedback.average') }}</p>
-        <p v-else-if="cps < 9">{{ t('resultModal.feedback.fast') }}</p>
-        <p v-else-if="cps < 12">{{ t('resultModal.feedback.superFast') }}</p>
+        <p v-if="cps >= 0 && cps < 3">{{ t('resultModal.feedback.slow') }}</p>
+        <p v-else-if="cps >= 3 && cps < 6">{{ t('resultModal.feedback.average') }}</p>
+        <p v-else-if="cps >= 6 && cps < 9">{{ t('resultModal.feedback.fast') }}</p>
+        <p v-else-if="cps >= 9 && cps <= 10">{{ t('resultModal.feedback.superFast') }}</p>
         <p v-else>{{ t('resultModal.feedback.ultraFast') }}</p>
       </div>
 

@@ -19,7 +19,7 @@ const resources: TranslationResources = {
     metaDescription:
       'Spacebar Clicker - 专业的键盘空格键测试与点击速度挑战工具。一键测试您键盘的空格键寿命，测量您的极限CPS（每秒点击次数），适合游戏玩家和硬件爱好者。',
     metaKeywords:
-      '空格键点击器，空格键点击器 2026，测试 cps 空格键，空格键点击器测试，反应速度测试，键盘测试，CPS测试，CPS，CPS测试器，点击速度测试，每秒点击数',
+      '空格键点击器，空格键点击器 2026，测试 cps 空格键，空格键点击器测试，反应速度测试，键盘测试，CPS测试，CPS，CPS测试器，点击速度测试，每秒点击数，点击器测试, 点击测试',
     ogDescription:
       'Spacebar Clicker - 专业的键盘空格键测试与点击速度挑战工具。一键测试您键盘的空格键寿命，测量您的极限CPS（每秒点击次数），适合游戏玩家和硬件爱好者。',
     schemaDescription:
@@ -696,7 +696,7 @@ const resources: TranslationResources = {
     // ResultModal组件翻译
     resultModal: {
       // 详细信息
-      details: '{time}秒内单击{clicks}次点击次',
+      details: '{time}秒点击{clicks}次',
       // 详细信息拆分文本
       detailsText: '',
       seconds: '秒',
@@ -735,11 +735,11 @@ const resources: TranslationResources = {
       },
       // CPS反馈
       feedback: {
-        slow: '结果不好，很慢。',
-        average: '结果不错，继续努力！',
-        fast: '结果很好，你是点击高手！',
-        superFast: '结果非常好，你是点击大师！',
-        ultraFast: '结果太棒了，你是点击之神！',
+        slow: '你的排名是乌龟！',
+        average: '你的排名是熊猫！',
+        fast: '你的排名是兔子！',
+        superFast: '你的排名是袋鼠！',
+        ultraFast: '你的排名是黑豹！',
       },
       // 分享相关翻译
       shareTitle: '分享你的成绩',
@@ -758,7 +758,7 @@ const resources: TranslationResources = {
     metaDescription:
       'Spacebar Clicker - A professional tool for testing keyboard spacebar durability and click speed challenges. Test your keyboards spacebar lifespan with one click and measure your maximum CPS (clicks per second), perfect for gamers and hardware enthusiasts.',
     metaKeywords:
-      'Spacebar Clicker,Spacebar Clicker 2026, test cps barre espace, Spacebar Clicker Test, Reaction Speed Test, Keyboard Test, CPS Test, CPS, CPS Tester, Click Speed Test, Clicks Per Second',
+      'Spacebar Clicker,Spacebar Clicker 2026, test cps barre espace, Spacebar Clicker Test, Reaction Speed Test, Keyboard Test, CPS Test, CPS, CPS Tester, Click Speed Test, Clicks Per Second, clicker test, click test',
     ogDescription:
       'Spacebar Clicker - A professional tool for testing keyboard spacebar durability and click speed challenges. Test your keyboards spacebar lifespan with one click and measure your maximum CPS (clicks per second), perfect for gamers and hardware enthusiasts.',
     schemaDescription:
@@ -1521,11 +1521,11 @@ const resources: TranslationResources = {
       },
       // CPS feedback
       feedback: {
-        slow: 'The result is not good, very slow.',
-        average: 'Good result, keep trying!',
-        fast: 'Great result, you are a clicking master!',
-        superFast: 'Excellent result, you are a clicking legend!',
-        ultraFast: 'Incredible result, you are the clicking god!',
+        slow: 'Your rank is Tortoise!',
+        average: 'Your rank is Panda!',
+        fast: 'Your rank is Rabbit!',
+        superFast: 'Your rank is Kangaroo!',
+        ultraFast: 'Your rank is Black Panther!',
       },
       // Share related translations
       shareTitle: 'Share your score',
@@ -1629,7 +1629,7 @@ const resources: TranslationResources = {
     privacyDataRetention3:
       '削除ポリシー：データの削除を要求された場合、またはデータが不要になった場合、安全に削除または匿名化します。',
     metaKeywords:
-      'スペースキークリック、スペースキークリック 2026、テスト cps スペースバー、スペースキークリックテスト、反応速度テスト、キーボードテスト、CPSテスト、CPS、CPSテスター、クリック速度テスト、秒間クリック数',
+      'スペースキークリック、スペースキークリック 2026、テスト cps スペースバー、スペースキークリックテスト、反応速度テスト、キーボードテスト、CPSテスト、CPS、CPSテスター、クリック速度テスト、秒間クリック数、クリッカーテスト、クリックテスト',
     ogDescription:
       'Spacebar Clicker - プロフェッショナルなキーボードのスペースキーのテストとクリック速度チャレンジツール。ワンクリックでキーボードのスペースキーの寿命をテストし、自分の限界CPS（1秒あたりのクリック数）を測定できます。ゲーマーやハードウェア愛好者に最適です。',
     schemaDescription:
@@ -2297,11 +2297,11 @@ const resources: TranslationResources = {
       },
       // CPSフィードバック
       feedback: {
-        slow: '結果は良くない、非常に遅いです。',
-        average: '良い結果です、続けて頑張ってください！',
-        fast: '素晴らしい結果です、あなたはクリックマスターです！',
-        superFast: '優れた結果です、あなたはクリックの伝説です！',
-        ultraFast: '信じられない結果です、あなたはクリックの神です！',
+        slow: 'あなたのランクはカメです！',
+        average: 'あなたのランクはパンダです！',
+        fast: 'あなたのランクはウサギです！',
+        superFast: 'あなたのランクはカンガルーです！',
+        ultraFast: 'あなたのランクはクロヒョウです！',
       },
       // 共有関連翻訳
       shareTitle: 'あなたのスコアを共有',
@@ -2320,7 +2320,7 @@ const resources: TranslationResources = {
     metaDescription:
       'Spacebar Clicker - 전문적인 키보드 스페이스바 테스트 및 클릭 속도 도전 도구입니다. 한 번의 클릭으로 키보드 스페이스바 수명을 테스트하고, 최대 CPS(초당 클릭 수)를 측정할 수 있으며, 게이머와 하드웨어 애호가에게 적합합니다.',
     metaKeywords:
-      '스페이스바 클릭,스페이스바 클릭 2026 스페이스바 클릭 테스트,cps 스페이스바 테스트, 반응 속도 테스트, 키보드 테스트, CPS 테스트, CPS, CPS 테스터, 클릭 속도 테스트, 초당 클릭 수',
+      '스페이스바 클릭,스페이스바 클릭 2026 스페이스바 클릭 테스트,cps 스페이스바 테스트, 반응 속도 테스트, 키보드 테스트, CPS 테스트, CPS, CPS 테스터, 클릭 속도 테스트, 초당 클릭 수, 클리커 테스트, 클릭 테스트',
     ogDescription:
       'Spacebar Clicker - 전문적인 키보드 스페이스바 테스트 및 클릭 속도 도전 도구입니다. 한 번의 클릭으로 키보드 스페이스바 수명을 테스트하고, 최대 CPS(초당 클릭 수)를 측정할 수 있으며, 게이머와 하드웨어 애호가에게 적합합니다.',
     schemaDescription:
@@ -3073,11 +3073,11 @@ const resources: TranslationResources = {
       },
       // CPS 피드백
       feedback: {
-        slow: '결과가 좋지 않습니다, 매우 느립니다.',
-        average: '좋은 결과입니다, 계속 노력하세요!',
-        fast: '훌륭한 결과입니다, 당신은 클릭 마스터입니다!',
-        superFast: '우수한 결과입니다, 당신은 클릭 레전드입니다!',
-        ultraFast: '놀라운 결과입니다, 당신은 클릭의 신입니다!',
+        slow: '당신의 순위는 거북이입니다!',
+        average: '당신의 순위는 팬더입니다!',
+        fast: '당신의 순위는 토끼입니다!',
+        superFast: '당신의 순위는 캥거루입니다!',
+        ultraFast: '당신의 순위는 흑표범입니다!',
       },
       // 공유 관련 번역
       shareTitle: '당신의 점수를 공유하세요',
