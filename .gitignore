@@ -38,3 +38,15 @@ dist-ssr
 # Vim交换文件
 *.sw?
 docker-compose_back.yml
+
+# Article files - 忽略文章文件
+wpm_article.md
+wpm_article_ja.md
+sps_test_article.md
+cps_test_article.md
+
+# Rule files - 忽略规则文件
+Rules.md
+
+# Cookie files - 忽略Cookie文件
+cookies.txt
