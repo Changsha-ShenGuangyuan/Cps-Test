@@ -142,6 +142,8 @@ const resources: TranslationResources = {
     down: '下',
     left: '左',
     right: '右',
+    // 按键名称
+    spacebar: '空格键',
     // 关键按键测试相关
     keyReactionTestDesc: '箭头亮起时按W/A/S/D。',
     clickToStart: '点击开始',
@@ -606,6 +608,94 @@ const resources: TranslationResources = {
       'CPSTest三连击测试，测试你的三连击速度和准确性，记录三连击次数和最佳三连击速度，挑战你的点击技巧极限',
     tripleClickTestKeywords:
       '三连击测试,三连点击测试,三连击速度测试,三连击次数测试,三连击测试工具,CPSTest',
+    // 空格键点击器相关
+    spacebarClicker: '空格键点击器',
+    spacebarClickerDescription:
+      '空格键点击游戏，通过点击空格键或使用自动点击BUFF来积累点击数，解锁更多功能',
+    spacebarClickerKeywords: '空格键点击器,点击游戏,自动点击,BUFF系统,点击积累',
+    perSecond: '每秒',
+    // 空格键点击器FAQ
+    faqSpacebarQ1: '什么是空格键点击游戏？',
+    faqSpacebarA1:
+      '空格键点击游戏是一种基于浏览器的休闲点击游戏，玩家通过快速按下空格键或点击屏幕按钮来积累点击次数。这款游戏免费游玩，无需下载，只需在任何现代网页浏览器中打开即可。',
+    faqSpacebarQ2: '如何玩空格键点击游戏？',
+    faqSpacebarA2:
+      '在空格键点击游戏中，玩家需要通过点击来获取积分，然后使用积分购买各种升级来提升自己的点击效率。游戏的简单性使其易于上手，而丰富的升级系统则让玩家不断回归以提升高分。',
+    faqSpacebarStep1Title: '开始点击以赚取积分',
+    faqSpacebarStep1Content:
+      '目标很简单：尽可能快地按下空格键或点击鼠标。每次点击都会为你的分数加分，点击得越快，分数就会越高。这一核心机制使游戏既引人入胜又充满竞争性。',
+    faqSpacebarStep2Title: '解锁强力BUFF',
+    faqSpacebarStep2Content:
+      '随着积分的积累，你可以在游戏内购买各种BUFF。这些BUFF要么提供自动点击，要么提高每次点击获得的积分。策略性地使用BUFF能帮助你更快进度，并将高分提升到新的层次。',
+    // BUFF系统相关翻译
+    buff: {
+      // 实习生
+      internZhang: {
+        name: '实习生',
+        description:
+          '某个实习生正在工位上焦虑地刷新着社交媒体和购物网站，每一次无意义的滑动与点击都被他的鼠标忠实地记录下来。这种停不下来的手指运动，平均每 <span class="highlight-value">2</span> 秒就能带来 <span class="highlight-value">2</span> 次有效点击。',
+      },
+      // 扫地机器人
+      roomba: {
+        name: '扫地机器人',
+        description:
+          '在客厅里随机巡逻，每次撞到桌脚，碰撞传感器都会被意外触发一次。这些无规律的碰撞，每 <span class="highlight-value">3</span> 秒会恰好等效为 <span class="highlight-value">3</span> 次有效点击。',
+      },
+      // 古董打字机
+      typewriter: {
+        name: '古董打字机',
+        description:
+          '机械打字机的“J”键弹簧老化，会在自重下间歇性落下。每一次意外的敲击都向电脑发送一个字符。这个故障使它成为了一个忠实的、每秒自动按下 <span class="highlight-value">5</span> 次“J”的工人。',
+      },
+      // 服务器风扇
+      serverFan: {
+        name: '服务器风扇',
+        description:
+          '老旧服务器的散热风扇正在全速运转，每一次旋转产生的微小振动都被记录为一个事件脉冲。持续不断的振动脉冲，每秒能被系统解读为 <span class="highlight-value">8</span> 次点击。',
+      },
+      // AI脚本
+      aiScript: {
+        name: 'AI 脚本',
+        description:
+          '初级脚本正在学习模仿人类的点击模式，其大部分尝试都显得笨拙而随机。凭借庞大的尝试基数，它每秒能成功完成 <span class="highlight-value">12</span> 次有效点击。',
+      },
+      // 章鱼研究员
+      octopus: {
+        name: '章鱼研究员',
+        description:
+          '实验室的章鱼对触屏上变换的色彩感到好奇，用触腕试探性地触碰。它的触碰虽无规律却覆盖全面。这种探索，平均每秒能在屏幕上留下 <span class="highlight-value">20</span> 次接触记录。',
+      },
+      // 量子纠缠触发器
+      quantumTwin: {
+        name: '量子纠缠触发器',
+        description:
+          '一对处于纠缠态的量子粒子，其中一个的态被设定为“始终复制”您鼠标传感器的态变化。当您点击时，两个粒子会同时坍缩，在系统中生成两个完全一致的触发信号。结果是，您的每次点击都拥有双倍效力。',
+      },
+      // 永动滚轮
+      hamsterWheel: {
+        name: '永动滚轮',
+        description:
+          '健身仓鼠在跑轮里永不停歇地奔跑。跑轮连接着一个微型发电机，每一次完整的转动都会产生一个清晰的电脉冲信号。这个单调的机械循环，稳定地每 <span class="highlight-value">1</span> 秒就触发 <span class="highlight-value">60</span> 次点击。',
+      },
+      // 复读鹦鹉
+      parrot: {
+        name: '复读鹦鹉',
+        description:
+          '鹦鹉经过训练，会用喙啄食一个特定的触摸感应区来换取零食。尽管它不理解屏幕，但啄食的动作被传感器完美捕捉。在条件反射的驱使下，它能以大约每秒 <span class="highlight-value">100</span> 次的频率稳定工作。',
+      },
+      // 故障机械臂
+      brokenArm: {
+        name: '故障机械臂',
+        description:
+          '一台本应执行精密焊接的旧机械臂，因程序错误而陷入循环，其末端执行器在固定两点间反复摆动。摆动的终点恰好能触碰到一个物理按钮。这个无休止的故障循环，使它能以每秒 <span class="highlight-value">200</span> 次的精准间隔触发点击。',
+      },
+      // 星链终端
+      starlink: {
+        name: '星链终端',
+        description:
+          '屋顶的卫星天线在自动跟踪近地轨道卫星。每一次为保持信号而对准方位产生的微小伺服电机调整，都会被记录为一个“事件”。在信号稳定的情况下，这些持续的微调大约每秒可贡献 <span class="highlight-value">500</span> 次点击。',
+      },
+    },
     privacyPolicy: '隐私政策',
     privacyPolicyTitle: '隐私政策 - CPSTestGo.com',
     privacyPolicyDescription: 'CPSTest隐私政策，详细说明我们如何收集、使用和保护您的数据',
@@ -877,11 +967,13 @@ const resources: TranslationResources = {
     reactionTestPrinciple: 'What is the principle of the reaction time test?',
     reactionTestPrincipleText:
       'The reaction time test is based on human visual perception and motor response mechanisms. The test evaluates your reaction speed by measuring the time interval from visual stimulus (target appearance) to motor response (mouse click).',
-    // Direction keys
+    // Arrow keys
     up: 'Up',
     down: 'Down',
     left: 'Left',
     right: 'Right',
+    // Key names
+    spacebar: 'Spacebar',
     // Key reaction test related
     keyReactionTestDesc: 'Press W/A/S/D when the arrow lights up.',
     clickToStart: 'Click to Start',
@@ -1373,6 +1465,82 @@ const resources: TranslationResources = {
       'CPSTest Triple Click Test, test your triple click speed and accuracy, record triple click count and best triple click speed, challenge your click skill limits',
     tripleClickTestKeywords:
       'triple click test,triple clicking test,triple click speed test,triple click count test,triple click test tool,CPSTest',
+    // Spacebar Clicker related
+    spacebarClicker: 'Spacebar Clicker',
+    spacebarClickerDescription:
+      'Spacebar clicking game, accumulate clicks by clicking the spacebar or using auto-click BUFFs to unlock more features',
+    spacebarClickerKeywords:
+      'spacebar clicker,click game,auto click,BUFF system,click accumulation',
+    perSecond: 'Per Second',
+    // BUFF system translations
+    buff: {
+      // Intern
+      internZhang: {
+        name: 'Intern',
+        description:
+          'An intern is anxiously refreshing social media and shopping websites at their desk, and every meaningless swipe and click is faithfully recorded by their mouse. This unstoppable finger movement brings about <span class="highlight-value">2</span> effective clicks every <span class="highlight-value">2</span> seconds on average.',
+      },
+      // Roomba
+      roomba: {
+        name: 'Roomba',
+        description:
+          'Randomly patrolling the living room, every time it hits a table leg, the collision sensor is accidentally triggered once. These irregular collisions are exactly equivalent to <span class="highlight-value">3</span> effective clicks every <span class="highlight-value">3</span> seconds.',
+      },
+      // Vintage Typewriter
+      typewriter: {
+        name: 'Vintage Typewriter',
+        description:
+          'The "J" key spring of the mechanical typewriter is aged and will intermittently drop under its own weight. Every accidental keystroke sends a character to the computer. This failure makes it a loyal worker that automatically presses "J" <span class="highlight-value">5</span> times per second.',
+      },
+      // Server Fan
+      serverFan: {
+        name: 'Server Fan',
+        description:
+          'The cooling fan of an old server is running at full speed, and every tiny vibration from each rotation is recorded as an event pulse. The continuous vibration pulses can be interpreted by the system as <span class="highlight-value">8</span> clicks per second.',
+      },
+      // AI Script
+      aiScript: {
+        name: 'AI Script',
+        description:
+          'The junior script is learning to mimic human clicking patterns, and most of its attempts seem clumsy and random. With a huge base of attempts, it can successfully complete <span class="highlight-value">12</span> effective clicks per second.',
+      },
+      // Octopus Researcher
+      octopus: {
+        name: 'Octopus Researcher',
+        description:
+          'The lab octopus is curious about the changing colors on the touchscreen and tentatively touches it with its arms. Its touches are irregular but comprehensive. This exploration leaves <span class="highlight-value">20</span> contact records on the screen per second on average.',
+      },
+      // Quantum Entanglement Trigger
+      quantumTwin: {
+        name: 'Quantum Entanglement Trigger',
+        description:
+          'A pair of entangled quantum particles, where one is set to "always copy" the state changes of your mouse sensor. When you click, both particles collapse simultaneously, generating two identical trigger signals in the system. As a result, each of your clicks has double effectiveness.',
+      },
+      // Perpetual Wheel
+      hamsterWheel: {
+        name: 'Perpetual Wheel',
+        description:
+          'A fitness hamster runs endlessly in a wheel. The wheel is connected to a micro-generator, and each complete rotation generates a clear electrical pulse signal. This monotonous mechanical cycle stably triggers <span class="highlight-value">60</span> clicks every <span class="highlight-value">1</span> second.',
+      },
+      // Mimicking Parrot
+      parrot: {
+        name: 'Mimicking Parrot',
+        description:
+          'The parrot has been trained to peck a specific touch-sensitive area for snacks. Although it doesn\'t understand the screen, the pecking action is perfectly captured by the sensor. Driven by conditioning, it can work stably at a frequency of approximately <span class="highlight-value">100</span> times per second.',
+      },
+      // Malfunctioning Mechanical Arm
+      brokenArm: {
+        name: 'Malfunctioning Mechanical Arm',
+        description:
+          'An old mechanical arm that should perform precision welding has fallen into a loop due to a program error, with its end effector repeatedly swinging between two fixed points. The end of the swing happens to touch a physical button. This endless fault loop allows it to trigger clicks at a precise interval of <span class="highlight-value">200</span> times per second.',
+      },
+      // Starlink Terminal
+      starlink: {
+        name: 'Starlink Terminal',
+        description:
+          'The satellite antenna on the roof is automatically tracking low-Earth orbit satellites. Every tiny servo motor adjustment made to maintain signal alignment is recorded as an "event". Under stable signal conditions, these continuous fine-tunings can contribute approximately <span class="highlight-value">500</span> clicks per second.',
+      },
+    },
     privacyPolicy: 'Privacy Policy',
     privacyPolicyTitle: 'Privacy Policy - CPSTestGo.com',
     privacyPolicyDescription:
@@ -1538,6 +1706,19 @@ const resources: TranslationResources = {
       ShareSpaceClickTest: 'SpacebarClicker',
       ShareKohiClickTest: 'Kohi',
     },
+    // Spacebar Clicker FAQ
+    faqSpacebarQ1: 'What is the spacebar clicker game?',
+    faqSpacebarA1:
+      'Spacebar Clicker is a browser-based casual click game where players accumulate clicks by quickly pressing the spacebar or clicking screen buttons. This game is free to play, no download required, just open it in any modern web browser.',
+    faqSpacebarQ2: 'How to play spacebar clicker game?',
+    faqSpacebarA2:
+      'In the spacebar clicker game, players need to earn points by clicking, then use the points to buy various upgrades to improve their clicking efficiency. The simplicity of the game makes it easy to get started, while the rich upgrade system keeps players coming back to improve their high scores.',
+    faqSpacebarStep1Title: 'Start clicking to earn points',
+    faqSpacebarStep1Content:
+      'The goal is simple: press the spacebar or click the mouse as quickly as possible. Each click adds to your score, and the faster you click, the higher your score will be. This core mechanism makes the game both engaging and competitive.',
+    faqSpacebarStep2Title: 'Unlock powerful BUFFs',
+    faqSpacebarStep2Content:
+      'As you accumulate points, you can purchase various BUFFs in the game. These BUFFs either provide automatic clicks or increase the points earned per click. Strategically using BUFFs can help you progress faster and take your high scores to new levels.',
   },
   ja: {
     websiteName: 'Spacebar Clicker - CPSTestGo',
@@ -1753,6 +1934,8 @@ const resources: TranslationResources = {
     down: '下',
     left: '左',
     right: '右',
+    // キー名
+    spacebar: 'スペースキー',
     // 关键按键测试相关
     keyReactionTestDesc: '矢印が点灯したらW/A/S/Dを押してください。',
     clickToStart: 'クリックして開始',
@@ -1940,6 +2123,19 @@ const resources: TranslationResources = {
     spaceFaq60A1:
       '60秒スペースクリックテストは極限持久力テストで、手の筋肉の限界持久力を試験します。抗疲労能力と意志力を総合的に評価でき、プロ選手の究極のテストです。',
     spaceFaq60Q2: '60秒スペースクリックテストのCPS参考基準は？',
+    // 空格键点击器FAQ
+    faqSpacebarQ1: 'スペースバークリッカーゲームとは何ですか？',
+    faqSpacebarA1:
+      'スペースバークリッカーは、プレイヤーがスペースバーを素早く押すか画面ボタンをクリックしてクリック数を蓄積するブラウザベースのカジュアルクリックゲームです。このゲームは無料でプレイ可能で、ダウンロードは不要です。任意の最新のウェブブラウザで開くだけです。',
+    faqSpacebarQ2: 'スペースバークリッカーゲームの遊び方は？',
+    faqSpacebarA2:
+      'スペースバークリッカーゲームでは、クリックしてポイントを獲得し、そのポイントを使って様々なアップグレードを購入してクリック効率を向上させます。ゲームのシンプルさが手軽に始められる魅力で、豊富なアップグレードシステムがプレイヤーを引き返して高得点を目指させます。',
+    faqSpacebarStep1Title: 'クリックしてポイントを獲得し始める',
+    faqSpacebarStep1Content:
+      '目標は単純です：できるだけ早くスペースバーを押すかマウスをクリックしてください。毎回のクリックでスコアが増加し、クリックが速いほどスコアは高くなります。このコアメカニズムがゲームを魅力的で競争的なものにしています。',
+    faqSpacebarStep2Title: '強力なBUFFを解錠する',
+    faqSpacebarStep2Content:
+      'ポイントを蓄積すると、ゲーム内で様々なBUFFを購入できます。これらのBUFFは自動クリックを提供するか、毎回のクリックで獲得するポイントを増加させます。戦略的にBUFFを使用することで、より速く進捗し、高得点を新たなレベルに引き上げることができます。',
     spaceFaq60A2:
       '参考：初心者：3-4 CPS（180-240回）普通：4-6 CPS（240-360回）熟練者：6-8 CPS（360-480回）優秀：8+ CPS（480+回）',
     spaceFaq60Q3: '60秒スペースクリックテストで体力をどのように分配しますか？',
@@ -2235,6 +2431,82 @@ const resources: TranslationResources = {
       'CPSTestトリプルクリックテスト、トリプルクリックの速度と正確性をテスト、トリプルクリック数と最高トリプルクリックスピードを記録、クリックスキルの限界に挑戦',
     tripleClickTestKeywords:
       'トリプルクリックテスト,トリプルクリック連続テスト,トリプルクリックスピードテスト,トリプルクリック数テスト,トリプルクリックテストツール,CPSTest',
+    // スペースバークリッカー関連
+    spacebarClicker: 'スペースバークリッカー',
+    spacebarClickerDescription:
+      'スペースバークリックゲームで、スペースバーをクリックするか自動クリックBUFFを使用してクリック数を蓄積し、機能を解錠',
+    spacebarClickerKeywords:
+      'スペースバークリッカー,クリックゲーム,自動クリック,BUFFシステム,クリック蓄積',
+    perSecond: '毎秒',
+    // BUFFシステム関連翻訳
+    buff: {
+      // インターン
+      internZhang: {
+        name: 'インターン',
+        description:
+          'あるインターンが職場で不安げにソーシャルメディアやショッピングサイトを更新しています。意味のないスワイプとクリックのたびに、彼のマウスは忠実にそれを記録しています。この止まらない指の運動は、平均で<span class="highlight-value">2</span>秒ごとに<span class="highlight-value">2</span>回の有効なクリックをもたらします。',
+      },
+      // ルンバ
+      roomba: {
+        name: 'ルンバ',
+        description:
+          'リビングルームをランダムに巡回し、机の脚に衝突するたびに衝突センサーが誤ってトリガーされます。これらの不規則な衝突は、<span class="highlight-value">3</span>秒ごとにちょうど<span class="highlight-value">3</span>回の有効なクリックと等価です。',
+      },
+      // アンティークタイプライター
+      typewriter: {
+        name: 'アンティークタイプライター',
+        description:
+          '機械式タイプライターの「J」キーのバネが老化し、自重で断続的に落下します。それぞれの偶然の打鍵はコンピューターに文字を送信します。この故障により、それは忠実に毎秒<span class="highlight-value">5</span>回「J」を自動的に押す労働者となりました。',
+      },
+      // サーバーファン
+      serverFan: {
+        name: 'サーバーファン',
+        description:
+          '古いサーバーの冷却ファンが全速で回転しています。毎回の回転による微小な振動はイベントパルスとして記録されます。持続的な振動パルスは、システムによって毎秒<span class="highlight-value">8</span>回のクリックとして解釈されます。',
+      },
+      // AIスクリプト
+      aiScript: {
+        name: 'AIスクリプト',
+        description:
+          'ジュニアスクリプトは人間のクリックパターンを模倣することを学んでいますが、ほとんどの試みは不器用でランダムに見えます。膨大な試行回数を土台に、毎秒<span class="highlight-value">12</span>回の有効なクリックを成功させることができます。',
+      },
+      // タコの研究者
+      octopus: {
+        name: 'タコの研究者',
+        description:
+          '研究室のタコはタッチスクリーンの変わる色に興味を持ち、触手で試しに触れています。その触れ方は不規則ですが、全面的に覆われています。この探索により、平均して毎秒<span class="highlight-value">20</span>回の接触記録が画面に残ります。',
+      },
+      // 量子もつれトリガー
+      quantumTwin: {
+        name: '量子もつれトリガー',
+        description:
+          '量子もつれ状態にある一対の粒子で、一方の状態は「常にコピー」するように設定されています。クリックすると、2つの粒子が同時に崩壊し、システム内に2つの完全に一致したトリガー信号を生成します。その結果、クリックごとに倍の効果が得られます。',
+      },
+      // 永久回転するホイール
+      hamsterWheel: {
+        name: '永久回転するホイール',
+        description:
+          'フィットネスハムスターがホイールの中で止まらないように走っています。ホイールは小型発電機に接続されており、完全な一回転ごとに明確な電気パルス信号が生成されます。この単調な機械的循環によって、<span class="highlight-value">1</span>秒ごとに安定して<span class="highlight-value">60</span>回のクリックがトリガーされます。',
+      },
+      // 模倣するオウム
+      parrot: {
+        name: '模倣するオウム',
+        description:
+          'オウムは訓練を受けて、特定のタッチセンサーエリアをくちばしでつついておやつと交換します。画面を理解していませんが、つつく動作はセンサーによって完全に捕捉されます。条件反射に駆られて、約毎秒<span class="highlight-value">100</span>回の頻度で安定して作業できます。',
+      },
+      // 故障した機械腕
+      brokenArm: {
+        name: '故障した機械腕',
+        description:
+          '精密な溶接を実行するはずの古い機械腕が、プログラムエラーによりループに陥り、エンドエフェクターが固定された2点間を繰り返し揺れています。揺れの終点は丁度物理的なボタンに触れます。この無限の故障ループにより、毎秒<span class="highlight-value">200</span>回の正確な間隔でクリックをトリガーできます。',
+      },
+      // スターリンクターミナル
+      starlink: {
+        name: 'スターリンクターミナル',
+        description:
+          '屋上の衛星アンテナが自動的に低軌道衛星を追跡しています。信号を維持するために方位を合わせるための微小なサーボモーターの調整は、すべて「イベント」として記録されます。信号が安定している場合、これらの継続的な微調整によって毎秒約<span class="highlight-value">500</span>回のクリックが得られます。',
+      },
+    },
     // 5秒スペースクリックテスト関連
     fiveSecondSpaceTest: '5秒スペースクリックテスト',
     selectTime: '時間を選択',
@@ -2438,7 +2710,20 @@ const resources: TranslationResources = {
     '15secSpaceTest': '15초 스페이스 속도 테스트',
     '30secSpaceTest': '30초 스페이스 속도 테스트',
     '60secSpaceTest': '60초 스페이스 속도 테스트',
-    kohiClickTest: '코히 클릭 테스트',
+    kohiClickTest: 'Kohi 클릭 테스트',
+    // 스페이스바 클리커 FAQ
+    faqSpacebarQ1: '스페이스바 클리커 게임이란 무엇인가요?',
+    faqSpacebarA1:
+      '스페이스바 클리커는 브라우저 기반의 캐주얼 클릭 게임으로, 플레이어가 스페이스바를 빠르게 누르거나 화면 버튼을 클릭하여 클릭 수를 축적하는 게임입니다. 이 게임은 무료로 플레이할 수 있으며, 다운로드가 필요 없습니다. 모든 현대 웹 브라우저에서 열기만 하면 됩니다.',
+    faqSpacebarQ2: '스페이스바 클리커 게임을 어떻게 플레이하나요?',
+    faqSpacebarA2:
+      '스페이스바 클리커 게임에서 플레이어는 클릭을 통해 포인트를 얻은 다음, 이 포인트를 사용하여 다양한 업그레이드를 구매하여 클릭 효율을 향상시킵니다. 게임의 단순성은 쉽게 시작할 수 있게 만들고, 풍부한 업그레이드 시스템은 플레이어가 높은 점수를 향해 계속 돌아오게 만듭니다.',
+    faqSpacebarStep1Title: '클릭을 시작하여 포인트를 얻으세요',
+    faqSpacebarStep1Content:
+      '목표는 간단합니다: 가능한 한 빨리 스페이스바를 누르거나 마우스를 클릭하세요. 매 클릭마다 점수가 증가하고, 클릭이 빠를수록 점수가 더 높아집니다. 이 핵심 메커니즘은 게임을 매력적이고 경쟁적으로 만듭니다.',
+    faqSpacebarStep2Title: '강력한 BUFF를 잠금 해제하세요',
+    faqSpacebarStep2Content:
+      '포인트를 축적하면 게임 내에서 다양한 BUFF를 구매할 수 있습니다. 이 BUFF들은 자동 클릭을 제공하거나 매 클릭으로 얻는 포인트를 증가시킵니다. 전략적으로 BUFF를 사용하면 더 빠르게 진행할 수 있고, 높은 점수를 새로운 레벨로 끌어올릴 수 있습니다.',
     typingTest: '타자 테스트',
     '1minTypingTest': '1분 타자 속도 테스트',
     '3minTypingTest': '3분 타자 속도 테스트',
@@ -2531,6 +2816,8 @@ const resources: TranslationResources = {
     down: '아래',
     left: '왼쪽',
     right: '오른쪽',
+    // 키 이름
+    spacebar: '스페이스바',
     // 关键按键测试相关
     keyReactionTestDesc: '화살표가 켜질 때 W/A/S/D를 누르세요.',
     clickToStart: '클릭하여 시작',
@@ -3012,6 +3299,81 @@ const resources: TranslationResources = {
       'CPSTest 트리플 클릭 테스트, 트리플 클릭 속도와 정확도를 테스트하고, 트리플 클릭 수와 최고 트리플 클릭 속도를 기록하며, 클릭 기술의 한계에 도전합니다',
     tripleClickTestKeywords:
       '트리플 클릭 테스트,트리플 클릭 연속 테스트,트리플 클릭 속도 테스트,트리플 클릭 수 테스트,트리플 클릭 테스트 도구,CPSTest',
+    // 스페이스바 클릭커 관련
+    spacebarClicker: '스페이스바 클릭커',
+    spacebarClickerDescription:
+      '스페이스바 클릭 게임으로, 스페이스바를 클릭하거나 자동 클릭 BUFF를 사용하여 클릭 수를 누적하고 더 많은 기능을 잠금 해제',
+    spacebarClickerKeywords: '스페이스바 클릭커,클릭 게임,자동 클릭,BUFF 시스템,클릭 누적',
+    perSecond: '초당',
+    // BUFF 시스템 관련 번역
+    buff: {
+      // 인턴
+      internZhang: {
+        name: '인턴',
+        description:
+          '어떤 인턴이 사무실에서 불안하게 소셜 미디어와 쇼핑 사이트를 새로 고치고 있습니다. 의미없는 스와이프와 클릭마다 마우스는 충실히 그것을 기록합니다. 이 멈추지 않는 손가락 운동은 평균적으로 <span class="highlight-value">2</span>초마다 <span class="highlight-value">2</span>번의 유효 클릭을 가져옵니다.',
+      },
+      // 룸바
+      roomba: {
+        name: '룸바',
+        description:
+          '거실을 무작위로 순찰하며, 테이블 다리에 부딪힐 때마다 충돌 센서가 우연히 트리거됩니다. 이 불규칙한 충돌은 <span class="highlight-value">3</span>초마다 정확히 <span class="highlight-value">3</span>번의 유효 클릭과 동등합니다.',
+      },
+      // 고대 타자기
+      typewriter: {
+        name: '고대 타자기',
+        description:
+          '기계식 타자기의 "J" 키 스프링이 노화되어 자중으로 간헐적으로 내려갑니다. 매번 우연한 키 입력은 컴퓨터에 문자를 보냅니다. 이 고장으로 인해 그것은 매초 <span class="highlight-value">5</span>번 "J"를 자동으로 누르는 충실한 작업자가 되었습니다.',
+      },
+      // 서버 팬
+      serverFan: {
+        name: '서버 팬',
+        description:
+          '오래된 서버의 냉각 팬이 최대 속도로 회전하고 있습니다. 매 회전마다 발생하는 미세한 진동은 이벤트 펄스로 기록됩니다. 지속적인 진동 펄스는 시스템에 의해 초당 <span class="highlight-value">8</span>번의 클릭으로 해석됩니다.',
+      },
+      // AI 스크립트
+      aiScript: {
+        name: 'AI 스크립트',
+        description:
+          '초급 스크립트가 인간의 클릭 패턴을 모방하는 것을 배우고 있으며, 대부분의 시도는 서툴고 무작위로 보입니다. 거대한 시도 기반으로 초당 <span class="highlight-value">12</span>번의 유효한 클릭을 성공적으로 완료할 수 있습니다.',
+      },
+      // 문어 연구원
+      octopus: {
+        name: '문어 연구원',
+        description:
+          '연구실의 문어는 터치스크린의 변하는 색에 호기심을 느끼고 촉수를 사용하여 시험삼아 만져봅니다. 그의 만짐은 불규칙하지만 포괄적입니다. 이 탐험은 평균적으로 초당 <span class="highlight-value">20</span>번의 접촉 기록을 화면에 남깁니다.',
+      },
+      // 양자 얽힘 트리거
+      quantumTwin: {
+        name: '양자 얽힘 트리거',
+        description:
+          '얽힘 상태에 있는 한 쌍의 양자 입자로, 하나의 상태는 "항상 복사"하도록 설정되어 있습니다. 클릭하면 두 입자가 동시에 붕괴되어 시스템에 완전히 동일한 두 개의 트리거 신호를 생성합니다. 결과적으로, 당신의 각 클릭은 두 배의 효력을 갖습니다.',
+      },
+      // 영구 회전하는 휠
+      hamsterWheel: {
+        name: '영구 회전하는 휠',
+        description:
+          '피트니스 햄스터가 휠 안에서 끝없이 달립니다. 휠은 마이크로 발전기와 연결되어 있으며, 완전한 회전마다 명확한 전기 펄스 신호를 생성합니다. 이 단조로운 기계적 순환은 안정적으로 <span class="highlight-value">1</span>초마다 <span class="highlight-value">60</span>번의 클릭을 트리거합니다.',
+      },
+      // 따라하는 앵무새
+      parrot: {
+        name: '따라하는 앵무새',
+        description:
+          '앵무새는 간식을 받기 위해 특정한 터치 감지 영역을 부리로 쪼개는 훈련을 받았습니다. 화면을 이해하지는 않지만, 쪼개는 동작은 센서에 완벽히 포착됩니다. 조건 반사에 의해 약 초당 <span class="highlight-value">100</span>번의 빈도로 안정적으로 작업할 수 있습니다.',
+      },
+      // 고장난 기계 팔
+      brokenArm: {
+        name: '고장난 기계 팔',
+        description:
+          '정밀 용접을 수행해야 할 오래된 기계 팔이 프로그램 오류로 인해 루프에 빠졌으며, 끝 effector가 고정된 두 점 사이를 반복적으로 흔들고 있습니다. 흔들림의 끝점은 정확히 물리적 버튼에 닿습니다. 이 끝없는 고장 루프로 인해 초당 <span class="highlight-value">200</span>번의 정확한 간격으로 클릭을 트리거할 수 있습니다.',
+      },
+      // 스타링크 터미널
+      starlink: {
+        name: '스타링크 터미널',
+        description:
+          '지붕의 위성 안테나가 저궤도 위성을 자동으로 추적하고 있습니다. 신호를 유지하기 위해 방위를 맞추기 위해 이루어지는 미세한 서보 모터 조정은 모두 "이벤트"로 기록됩니다. 신호가 안정적인 경우, 이러한 지속적인 미세 조정으로 초당 약 <span class="highlight-value">500</span>번의 클릭을 얻을 수 있습니다.',
+      },
+    },
     // 5초 스페이스 클릭 테스트 관련
     fiveSecondSpaceTest: '5초 스페이스 클릭 테스트',
     selectTime: '시간 선택',

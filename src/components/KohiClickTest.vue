@@ -324,7 +324,6 @@
           class="click-area"
           :class="{ playing: isPlaying, 'time-up': isTimeUp }"
           @click="(e) => handleClick(e)"
-          @dblclick.prevent="(e) => handleClick(e)"
         >
           <!-- 涟漪特效容器 -->
           <div class="ripple-container">

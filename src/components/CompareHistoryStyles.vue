@@ -90,9 +90,3 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
 </style>
-.compare-container { max-width: 1400px; margin: 0 auto; text-align: center; padding: 20px;
-background-color: #242424; color: white; position: relative; box-sizing: border-box; border-radius:
-10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); } .compare-wrapper { display: flex; gap: 40px;
-justify-content: center; margin-top: 20px; } .compare-item { flex: 1; max-width: 500px;
-background-color: #333333; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0,
-0.5); }

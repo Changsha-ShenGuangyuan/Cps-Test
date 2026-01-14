@@ -659,6 +659,14 @@
         isExpanded: false,
       },
       {
+        id: 101,
+        name: t('spacebarClicker'),
+        path: '/spacebar-clicker',
+        children: [],
+        isExpanded: false,
+        icon: icons.keyboard02,
+      },
+      {
         id: 3,
         name: t('kohiClickTest'),
         path: '/kohi-click-test',
@@ -841,6 +849,8 @@
       }
     } else if (basePath === '/kohi-click-test') {
       return t('kohiClickTest');
+    } else if (basePath === '/spacebar-clicker') {
+      return t('spacebarClicker');
     } else if (basePath === '/reaction-time-test') {
       return t('simpleReactionTest');
     } else if (basePath === '/color-reaction-test') {
@@ -1051,12 +1061,15 @@
 
   // 导航到指定路由
   const navigateTo = (path: string) => {
+    // 先移除可能存在的语言前缀，避免重复添加
+    const basePath = removeLanguagePrefix(path);
+
     // 根据当前语言添加语言前缀
-    let fullPath = path;
+    let fullPath = basePath;
     if (langState.current !== 'en') {
       // 确保路径以斜杠开头
-      const basePath = path.startsWith('/') ? path : `/${path}`;
-      fullPath = `/${langState.current}${basePath}`;
+      const normalizedPath = basePath.startsWith('/') ? basePath : `/${basePath}`;
+      fullPath = `/${langState.current}${normalizedPath}`;
     }
 
     router.push(fullPath);
@@ -1438,7 +1451,8 @@
     min-height: 100vh;
     background-color: #1a1a1a;
     color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -1506,7 +1520,8 @@
     display: flex;
     align-items: center;
     /* 字体优化 */
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -1812,20 +1827,21 @@
   }
 
   .logo {
-  font-size: 20px;
-  font-weight: bold;
-  color: #4caf50;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  /* 字体优化 */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  letter-spacing: 0.3px;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
-}
+    font-size: 20px;
+    font-weight: bold;
+    color: #4caf50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* 字体优化 */
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+  }
 
   /* 侧边栏logo样式 */
   .sidebar-logo {
@@ -1837,7 +1853,8 @@
     color: #4caf50;
     cursor: pointer;
     /* 字体优化 */
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -2260,7 +2277,8 @@
     transform: translateX(0);
     transition: transform 0.3s ease;
     /* 字体优化 */
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;

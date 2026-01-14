@@ -165,8 +165,34 @@
       const updateContainerSize = () => {
         const gameArea = document.querySelector('.game-area-inner');
         if (gameArea) {
+          // 保存当前位置和容器大小（用于计算相对位置）
+          const oldContainerWidth = containerSize.value.width;
+          const oldContainerHeight = containerSize.value.height;
+          const oldPositionX = targetPosition.value.x;
+          const oldPositionY = targetPosition.value.y;
+
+          // 更新容器大小
           const rect = gameArea.getBoundingClientRect();
           containerSize.value = { width: rect.width, height: rect.height };
+
+          // 如果目标当前可见，保持相对位置并确保在容器内
+          if (targetVisible.value && oldContainerWidth > 0 && oldContainerHeight > 0) {
+            const targetSize = 100; // 目标元素实际大小为100px
+
+            // 计算相对位置比例
+            const relativeX = oldPositionX / (oldContainerWidth - targetSize);
+            const relativeY = oldPositionY / (oldContainerHeight - targetSize);
+
+            // 根据新容器大小计算新位置
+            const newX = relativeX * (containerSize.value.width - targetSize);
+            const newY = relativeY * (containerSize.value.height - targetSize);
+
+            // 更新位置，确保不超出边界
+            targetPosition.value = {
+              x: Math.max(0, Math.min(newX, containerSize.value.width - targetSize)),
+              y: Math.max(0, Math.min(newY, containerSize.value.height - targetSize)),
+            };
+          }
         }
       };
 
@@ -192,7 +218,7 @@
   // 生成随机位置
   const generateRandomPosition = () => {
     // 确保目标完全在容器内，根据目标大小动态计算
-    const targetSize = 80; // 移动端目标大小为80px
+    const targetSize = 100; // 目标元素实际大小为100px
     const x = Math.random() * (containerSize.value.width - targetSize);
     const y = Math.random() * (containerSize.value.height - targetSize);
     return { x, y };

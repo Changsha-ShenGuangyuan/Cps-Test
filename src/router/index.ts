@@ -262,6 +262,22 @@ const publicRoutes = [
       },
     },
   },
+  {
+    path: '/spacebar-clicker',
+    name: 'SpacebarClicker',
+    component: () => import(/* rollupChunkName: "test" */ '../components/SpacebarClicker.vue'), // 空格键点击器组件
+    props: true,
+    meta: {
+      title: '空格键点击器 - CPSTest',
+      description: '空格键点击游戏，通过点击空格键或使用自动点击BUFF来积累点击数，解锁更多功能',
+      keywords: '空格键点击器,点击游戏,自动点击,BUFF系统,点击积累',
+      i18n: {
+        titleKey: 'spacebarClicker',
+        descriptionKey: 'spacebarClickerDescription',
+        keywordsKey: 'spacebarClickerKeywords',
+      },
+    },
+  },
 ];
 
 // 定义404路由
@@ -306,8 +322,6 @@ const routes = [
       };
     });
   }),
-
-  // 404路由（放在最后，匹配所有未匹配的路径）
   notFoundRoute,
 ];
 
@@ -551,8 +565,8 @@ export const updateMetaTags = (to: any) => {
             '@id': currentUrl,
           },
           // 使用固定发布日期，避免每次访问都更新
-            datePublished: '2025-01-01',
-            dateModified: '2025-06-01',
+          datePublished: '2025-01-01',
+          dateModified: '2025-06-01',
           potentialAction: {
             '@type': 'UseAction',
             target: currentUrl,
@@ -763,8 +777,27 @@ router.beforeEach((to, _from, next) => {
         const parsedTime = parseInt(timeParam.toString());
         // 验证时间参数是否为纯数字且在支持的时间列表中
         if (!/^\d+$/.test(timeParam.toString()) || !times.includes(parsedTime)) {
-          // 如果参数无效，重定向到404页面
-          return next({ name: 'NotFound' });
+          // 如果参数无效，重定向到404页面，保留原始语言前缀
+          // 从路径中提取语言前缀
+          const pathSegments = to.path.split('/').filter((segment) => segment !== '');
+          const supportedLanguages = ['zh-CN', 'ja', 'ko'];
+          let langPrefix = '';
+
+          if (
+            pathSegments.length > 0 &&
+            pathSegments[0] &&
+            supportedLanguages.includes(pathSegments[0])
+          ) {
+            langPrefix = pathSegments[0];
+          }
+
+          // 如果有语言前缀，重定向到带有语言前缀的404路径
+          if (langPrefix) {
+            return next(`/${langPrefix}/*`);
+          } else {
+            // 否则重定向到默认的404路径
+            return next({ name: 'NotFound' });
+          }
         }
       }
       break;

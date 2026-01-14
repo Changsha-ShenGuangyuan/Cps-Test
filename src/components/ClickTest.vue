@@ -132,7 +132,7 @@
           // 只保留需要的字段
           cps: record.cps,
           clicks: record.clicks,
-          time: record.time,
+          testTime: record.testTime,
           date: record.date,
         };
       });
@@ -381,7 +381,6 @@
           :class="{ playing: isPlaying, 'time-up': isTimeUp }"
           @click="(e) => handleClick(e)"
           @contextmenu.prevent="(e) => handleClick(e)"
-          @dblclick.prevent="(e) => handleClick(e)"
         >
           <!-- 涟漪特效容器 -->
           <div class="ripple-container">
@@ -656,12 +655,6 @@
     border-color: #4caf50;
     transform: translateY(-1px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  /* CPS值特殊样式 */
-  .cps-value {
-    color: #ffa500;
-    font-size: 16px;
   }
 
   /* 历史记录图标 */

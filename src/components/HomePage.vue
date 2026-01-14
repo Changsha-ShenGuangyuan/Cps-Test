@@ -661,7 +661,8 @@
     max-width: 1200px; /* 最大宽度，确保内容居中 */
     margin: 0 auto; /* 水平居中 */
     padding: 20px; /* 内边距 */
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;

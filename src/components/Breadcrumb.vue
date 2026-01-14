@@ -25,8 +25,8 @@
     let path = route.path;
     const breadcrumbItems = [{ name: t('home'), path: '/' }];
 
-    // 过滤掉语言前缀（如 /zh-CN/click-test/5 -> /click-test/5）
-    const langPrefixRegex = /^\/([a-z]{2}-[A-Z]{2})\//;
+    // 过滤掉语言前缀（如 /zh-CN/click-test/5 -> /click-test/5，/ja/spacebar-clicker -> /spacebar-clicker）
+    const langPrefixRegex = /^\/([a-z]{2}-[A-Z]{2}|[a-z]{2})\//;
     if (langPrefixRegex.test(path)) {
       path = path.replace(langPrefixRegex, '/');
     }
@@ -147,6 +147,13 @@
         path: route.path,
       });
     }
+    // 处理空格键点击器路由
+    else if (path === '/spacebar-clicker') {
+      breadcrumbItems.push({
+        name: t('spacebarClicker'),
+        path: route.path,
+      });
+    }
 
     return breadcrumbItems;
   });
@@ -165,7 +172,8 @@
     background-color: rgba(30, 30, 30, 0.5);
     border-radius: 6px;
     border-left: 3px solid #4caf50;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -178,7 +186,8 @@
     transition: all 0.2s ease;
     padding: 3px 5px;
     border-radius: 3px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -194,7 +203,8 @@
   .breadcrumb-text {
     color: #ffffff;
     font-weight: 500;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -205,7 +215,8 @@
     color: #666;
     margin: 0 4px;
     font-size: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;

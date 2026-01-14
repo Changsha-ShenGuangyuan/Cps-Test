@@ -411,25 +411,6 @@
     }
   );
 
-  // 组件卸载
-  onUnmounted(() => {
-    // 停止游戏循环
-    stopGameLoop();
-    // 清除定时器
-    if (spawnTimer.value) {
-      clearInterval(spawnTimer.value);
-      spawnTimer.value = null;
-    }
-    if (gameTimer.value) {
-      clearInterval(gameTimer.value);
-      gameTimer.value = null;
-    }
-    if (countdownTimer.value) {
-      clearInterval(countdownTimer.value);
-      countdownTimer.value = null;
-    }
-  });
-
   // 获取当前FAQ内容
   const currentFaq = computed(() => {
     return [
@@ -684,11 +665,6 @@
     box-sizing: border-box;
   }
 
-  /* 游戏信息包装器 */
-  .game-info-wrapper {
-    display: none;
-  }
-
   /* 游戏区域 */
   .game-area {
     grid-column: 1;
@@ -801,43 +777,6 @@
   /* 最佳分数特殊样式 */
   .best-score-value {
     color: white;
-  }
-
-  /* 标题栏 */
-  .header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 10px 20px;
-    background-color: #1a1a1a;
-    border-radius: 8px;
-  }
-
-  .header h2 {
-    color: #ffffff;
-    margin: 0;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  /* 主内容包装器 */
-  .main-content-wrapper {
-    display: none;
-  }
-
-  /* 游戏区域 */
-  .game-area {
-    width: 100%;
-    height: 430px;
-    background-color: #000000;
-    border-radius: 15px;
-    position: relative;
-    overflow: hidden;
-    cursor: crosshair;
-    border: 2px solid #333;
-    box-sizing: border-box;
-    margin: 0;
   }
 
   /* 准备状态 */

@@ -135,6 +135,7 @@ src/
 │   ├── RelatedTests.vue             # 相关测试推荐组件
 │   ├── ResultModal.vue              # 结果弹窗组件
 │   ├── SpaceClickTest.vue           # 空格点击测试组件
+│   ├── SpacebarClicker.vue          # 空格键点击器游戏组件
 │   ├── TargetEliminationGame.vue    # 目标消除游戏组件
 │   ├── TripleClickTest.vue          # 三击测试组件
 │   └── TypingTest.vue               # 打字测试组件

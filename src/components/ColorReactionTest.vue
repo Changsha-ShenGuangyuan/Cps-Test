@@ -289,8 +289,6 @@
   const popularQuestions = computed(() => {
     return [t('whatIsColorReactionTest'), t('howToGetBetterScore')];
   });
-
-  // 计算平均反应时间（已有的getAverageReactionTime函数保留）
 </script>
 
 <template>
