@@ -68,6 +68,7 @@
         <div
           ref="testButtonRef"
           class="test-button"
+          :class="{ playing: isTesting }"
           @click.left="handleClick('left', $event)"
           @click.middle="handleClick('middle', $event)"
           @click.right="handleClick('right', $event)"
@@ -76,9 +77,20 @@
           @dblclick.right="handleDoubleClick"
           @contextmenu.prevent
         >
+          <!-- 涟漪特效容器 -->
+          <div class="ripple-container">
+            <div
+              v-for="ripple in ripples"
+              :key="ripple.id"
+              class="ripple"
+              :style="{
+                left: ripple.x + 'px',
+                top: ripple.y + 'px',
+              }"
+            ></div>
+          </div>
+
           <div class="ready-text">{{ t('clickHereToTest') }}</div>
-          <!-- 点击特效容器 -->
-          <div ref="clickEffectsContainerRef" class="click-effects-container"></div>
         </div>
 
         <!-- 控制按钮 -->
@@ -153,12 +165,19 @@
   // 测试按钮引用
   const testButtonRef = ref<HTMLElement | null>(null);
 
-  // 点击特效容器引用
-  const clickEffectsContainerRef = ref<HTMLElement | null>(null);
+  // 涟漪特效类型定义
+  interface Ripple {
+    id: number; // 涟漪唯一标识
+    x: number; // 涟漪中心X坐标
+    y: number; // 涟漪中心Y坐标
+  }
+
+  // 涟漪特效数组
+  const ripples = ref<Ripple[]>([]);
 
   // 添加点击特效
   const addClickEffect = (event: MouseEvent) => {
-    if (!testButtonRef.value || !clickEffectsContainerRef.value) return;
+    if (!testButtonRef.value) return;
 
     // 获取测试按钮的位置信息
     const rect = testButtonRef.value.getBoundingClientRect();
@@ -167,18 +186,22 @@
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    // 创建点击特效元素
-    const clickEffect = document.createElement('div');
-    clickEffect.className = 'click-effect';
-    clickEffect.style.left = `${x - 10}px`; // 减去一半的宽度，使特效居中
-    clickEffect.style.top = `${y - 10}px`; // 减去一半的高度，使特效居中
+    // 创建涟漪特效
+    const rippleId = Date.now();
 
-    // 添加到特效容器
-    clickEffectsContainerRef.value.appendChild(clickEffect);
+    // 创建新的涟漪对象
+    const newRipple: Ripple = {
+      id: rippleId,
+      x: x,
+      y: y,
+    };
 
-    // 动画结束后移除元素
+    // 添加涟漪到数组（触发响应式更新）
+    ripples.value = [...ripples.value, newRipple];
+
+    // 动画结束后自动移除涟漪
     setTimeout(() => {
-      clickEffect.remove();
+      ripples.value = ripples.value.filter((r) => r.id !== rippleId);
     }, 600); // 与动画时长一致
   };
 
@@ -324,81 +347,90 @@
   }
 
   .test-button {
-    width: 100%;
-    max-width: 1000px;
-    height: 150px;
-    margin: 0 auto 25px;
-    background-color: #333;
-    border: 4px solid #4caf50;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 24px;
+    width: clamp(70%, 80vw, 800px);
+    height: clamp(180px, 35vh, 280px);
+    background-color: #000000;
     color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: clamp(20px, 4vw, 24px);
+    font-weight: bold;
+    margin: 0 auto clamp(15px, 3vw, 20px);
+    border: 2px solid #333;
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
-    outline: none; /* 移除默认轮廓 */
-    -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .test-button:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.6);
-    background-color: #45a049;
-    outline: none; /* 移除点击时的轮廓 */
+  .test-button:hover {
+    transform: none;
   }
 
-  .test-button:focus {
-    outline: none; /* 移除聚焦轮廓 */
+  .test-button.playing {
+    background-color: #000000;
   }
 
-  .ready-text {
-    font-size: 18px;
-    color: #4caf50;
-  }
-
-  /* 点击特效容器 */
-  .click-effects-container {
+  /* 涟漪特效容器 */
+  .ripple-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    overflow: hidden;
+    z-index: 1;
   }
 
-  /* 点击特效样式 */
-  .click-effect {
+  /* 涟漪样式 - 使用CSS动画实现更流畅的效果 */
+  .ripple {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: #4caf50;
+    transform: translate(-50%, -50%);
     border-radius: 50%;
-    transform: scale(0);
-    animation: clickEffect 0.6s ease-out forwards;
+    background-color: rgba(56, 214, 201, 0.5);
     pointer-events: none;
-    z-index: 10;
+    z-index: 1;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 0px;
+    height: 0px;
+    opacity: 0.9;
+    animation: ripple-animation 600ms ease-out forwards;
   }
 
-  /* 点击特效动画 */
-  @keyframes clickEffect {
+  /* 涟漪动画 */
+  @keyframes ripple-animation {
     0% {
-      transform: scale(0);
-      opacity: 1;
+      width: 0px;
+      height: 0px;
+      opacity: 0.9;
     }
     50% {
-      transform: scale(2);
-      opacity: 0.8;
+      opacity: 0.9;
     }
     100% {
-      transform: scale(4);
+      width: 500px;
+      height: 500px;
       opacity: 0;
     }
+  }
+
+  /* 准备文字 */
+  .ready-text {
+    position: relative;
+    z-index: 2;
+    font-size: clamp(20px, 3vw, 24px);
+    font-weight: bold;
+    color: #4caf50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    text-align: center;
+    padding: 0 20px;
   }
 
   .keys-stats {
