@@ -19,26 +19,34 @@ export default defineConfig({
       algorithm: 'gzip',
       ext: '.gz',
       threshold: 10240, // 10KB以上的文件才会被压缩
-      deleteOriginFile: false, // 不删除原始文件
-      verbose: true, // 输出压缩结果
+      deleteOriginFile: false,
+      verbose: false,
+    }),
+    // 添加Brotil压缩，提供更高的压缩率
+    viteCompression({
+      algorithm: 'brotliCompress',
+      ext: '.br',
+      threshold: 10240, // 10KB以上的文件才会被压缩
+      deleteOriginFile: false,
+      verbose: false,
     }),
     ViteImageOptimizer({
       png: {
-        quality: 80,
+        quality: 75,
         compressionLevel: 9,
       },
       jpeg: {
-        quality: 80,
+        quality: 75,
         mozjpeg: true,
       },
       webp: {
-        quality: 80,
+        quality: 75,
       },
       avif: {
-        quality: 80,
+        quality: 75,
       },
       tiff: {
-        quality: 80,
+        quality: 75,
       },
       svg: {
         multipass: true,
@@ -56,11 +64,13 @@ export default defineConfig({
       gif: {
         // gif不支持quality属性，使用默认配置
       },
+      // 确保在构建时处理所有图片
+      includePublic: true,
     }),
     sitemapPlugin({
-      hostname: 'https://www.cpstestgo.com', // 替换为实际的网站URL
-      exclude: ['/404'], // 排除404页面
-      generateRobotsTxt: true, // 自动生成robots.txt文件
+      hostname: 'https://www.cpstestgo.com',
+      exclude: ['/404'],
+      generateRobotsTxt: true,
       robots: [
         { userAgent: '*', allow: '/' },
         { userAgent: '*', disallow: '/admin/' },
@@ -195,16 +205,34 @@ export default defineConfig({
         '/ko/typing-test/15',
       ],
     }),
-    // HTML插件，用于添加安全相关的meta标签
+    // HTML插件，用于优化HTML输出
     createHtmlPlugin({
       minify: true,
       inject: {
         data: {
           // 可以在此注入数据到HTML模板
         },
-        // 注入额外的meta标签
         tags: [
-          // Content-Security-Policy标签
+          // 预连接到关键资源
+          {
+            tag: 'link',
+            attrs: {
+              rel: 'preconnect',
+              href: 'https://www.google-analytics.com',
+              crossorigin: 'anonymous',
+            },
+            injectTo: 'head',
+          },
+          {
+            tag: 'link',
+            attrs: {
+              rel: 'preconnect',
+              href: 'https://www.googletagmanager.com',
+              crossorigin: 'anonymous',
+            },
+            injectTo: 'head',
+          },
+          // 安全相关的meta标签
           {
             tag: 'meta',
             attrs: {
@@ -213,44 +241,76 @@ export default defineConfig({
                 "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com",
             },
           },
+          {
+            tag: 'meta',
+            attrs: {
+              'http-equiv': 'X-Content-Type-Options',
+              content: 'nosniff',
+            },
+          },
+          {
+            tag: 'meta',
+            attrs: {
+              'http-equiv': 'X-XSS-Protection',
+              content: '1; mode=block',
+            },
+          },
+          {
+            tag: 'meta',
+            attrs: {
+              name: 'referrer-policy',
+              content: 'strict-origin-when-cross-origin',
+            },
+          },
         ],
       },
     }),
   ],
   server: {
-    host: '0.0.0.0', // 设置本地IP地址为0.0.0.0
+    host: '0.0.0.0',
     headers: {
-      // 安全头配置
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
       'X-XSS-Protection': '1; mode=block',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
-      'Content-Security-Policy':
-        "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com",
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
     },
   },
   build: {
     minify: 'terser',
-    chunkSizeWarningLimit: 600, // 调整chunk大小警告阈值
+    chunkSizeWarningLimit: 500, // 降低chunk大小警告阈值
+    cssCodeSplit: true, // 启用CSS代码分割
     rollupOptions: {
       output: {
         // 配置chunk命名规则
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash][extname]',
+        entryFileNames: 'assets/[name]-[hash].js',
         // 优化代码分割策略
         manualChunks: (id) => {
           // 将第三方库单独打包
           if (id.includes('node_modules')) {
-            if (id.includes('vue') || id.includes('vue-router')) {
-              return 'vue';
-            } else if (id.includes('@vueuse/head')) {
-              return 'utils';
+            if (id.includes('vue') || id.includes('vue-router') || id.includes('@vueuse/head')) {
+              return 'vue-vendor';
             }
             return 'vendor';
           }
         },
       },
+      // 优化初始加载性能
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+      },
     },
+    // 禁用生产环境的sourcemap
+    sourcemap: false,
+  },
+  // 优化CSS处理
+  css: {
+    preprocessorOptions: {
+      // 可以在此添加CSS预处理器配置
+    },
+    // 启用CSS压缩
+    devSourcemap: false,
   },
 });

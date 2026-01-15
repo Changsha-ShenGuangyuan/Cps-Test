@@ -47,7 +47,7 @@ const publicRoutes = [
   {
     path: '/click-test/:time(\\d+)',
     name: 'ClickTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/ClickTest.vue'), // 点击测试组件
+    component: () => import(/* rollupChunkName: "click" */ '../components/ClickTest.vue'), // 点击测试组件
     props: true,
     meta: {
       title: '点击速度测试 - CPSTest',
@@ -63,7 +63,7 @@ const publicRoutes = [
   {
     path: '/multi-click-test/double',
     name: 'DoubleClickTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/DoubleClickTest.vue'), // 双击连点测试组件
+    component: () => import(/* rollupChunkName: "click" */ '../components/DoubleClickTest.vue'), // 双击连点测试组件
     props: true,
     meta: {
       title: '双击连点测试 - CPSTest',
@@ -79,7 +79,7 @@ const publicRoutes = [
   {
     path: '/multi-click-test/triple',
     name: 'TripleClickTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/TripleClickTest.vue'), // 三连击测试组件
+    component: () => import(/* rollupChunkName: "click" */ '../components/TripleClickTest.vue'), // 三连击测试组件
     props: true,
     meta: {
       title: '三连击测试 - CPSTest',
@@ -99,7 +99,7 @@ const publicRoutes = [
   {
     path: '/space-click-test/:time(\\d+)',
     name: 'SpaceClickTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/SpaceClickTest.vue'), // 空格点击测试组件
+    component: () => import(/* rollupChunkName: "keyboard" */ '../components/SpaceClickTest.vue'), // 空格点击测试组件
     props: true,
     meta: {
       title: '空格点击测试 - CPSTest',
@@ -115,7 +115,7 @@ const publicRoutes = [
   {
     path: '/kohi-click-test',
     name: 'KohiClickTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/KohiClickTest.vue'), // 科霍点击测试组件
+    component: () => import(/* rollupChunkName: "click" */ '../components/KohiClickTest.vue'), // 科霍点击测试组件
     props: true,
     meta: {
       title: 'Kohi点击测试 - CPSTest',
@@ -131,7 +131,7 @@ const publicRoutes = [
   {
     path: '/reaction-time-test',
     name: 'ReactionTimeTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/ReactionTimeTest.vue'), // 反应时间测试组件
+    component: () => import(/* rollupChunkName: "reaction" */ '../components/ReactionTimeTest.vue'), // 反应时间测试组件
     props: true,
     meta: {
       title: '反应时间测试 - CPSTest',
@@ -147,7 +147,8 @@ const publicRoutes = [
   {
     path: '/color-reaction-test',
     name: 'ColorReactionTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/ColorReactionTest.vue'), // 颜色反应测试组件
+    component: () =>
+      import(/* rollupChunkName: "reaction" */ '../components/ColorReactionTest.vue'), // 颜色反应测试组件
     props: true,
     meta: {
       title: '颜色反应测试 - CPSTest',
@@ -163,7 +164,7 @@ const publicRoutes = [
   {
     path: '/key-reaction-test',
     name: 'KeyReactionTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/KeyReactionTest.vue'), // 按键反应测试组件
+    component: () => import(/* rollupChunkName: "reaction" */ '../components/KeyReactionTest.vue'), // 按键反应测试组件
     props: true,
     meta: {
       title: '按键反应测试 - CPSTest',
@@ -180,7 +181,7 @@ const publicRoutes = [
     path: '/target-elimination-game',
     name: 'TargetEliminationGame',
     component: () =>
-      import(/* rollupChunkName: "test" */ '../components/TargetEliminationGame.vue'), // 目标消除游戏组件
+      import(/* rollupChunkName: "game" */ '../components/TargetEliminationGame.vue'), // 目标消除游戏组件
     props: true,
     meta: {
       title: '目标消除游戏 - CPSTest',
@@ -196,7 +197,7 @@ const publicRoutes = [
   {
     path: '/mouse-scroll-test',
     name: 'MouseScrollTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/MouseScrollTest.vue'), // 鼠标滚动测试组件
+    component: () => import(/* rollupChunkName: "mouse" */ '../components/MouseScrollTest.vue'), // 鼠标滚动测试组件
     props: true,
     meta: {
       title: '鼠标滚动测试 - CPSTest',
@@ -212,7 +213,7 @@ const publicRoutes = [
   {
     path: '/mouse-drag-test',
     name: 'MouseDragTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/MouseDragTest.vue'), // 鼠标拖动测试组件
+    component: () => import(/* rollupChunkName: "mouse" */ '../components/MouseDragTest.vue'), // 鼠标拖动测试组件
     props: true,
     meta: {
       title: '鼠标拖动测试 - CPSTest',
@@ -228,7 +229,7 @@ const publicRoutes = [
   {
     path: '/keyboard-test',
     name: 'KeyboardTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/KeyboardTest.vue'), // 键盘测试组件
+    component: () => import(/* rollupChunkName: "keyboard" */ '../components/KeyboardTest.vue'), // 键盘测试组件
     props: true,
     meta: {
       title: '键盘测试 - CPSTest',
@@ -248,7 +249,7 @@ const publicRoutes = [
   {
     path: '/typing-test/:time(\\d+)',
     name: 'TypingTest',
-    component: () => import(/* rollupChunkName: "test" */ '../components/TypingTest.vue'), //打字测试组件
+    component: () => import(/* rollupChunkName: "typing" */ '../components/TypingTest.vue'), //打字测试组件
     props: true,
     meta: {
       title: '打字测试 - CPSTest',
@@ -265,7 +266,7 @@ const publicRoutes = [
   {
     path: '/spacebar-clicker',
     name: 'SpacebarClicker',
-    component: () => import(/* rollupChunkName: "test" */ '../components/SpacebarClicker.vue'), // 空格键点击器组件
+    component: () => import(/* rollupChunkName: "game" */ '../components/SpacebarClicker.vue'), // 空格键点击器组件
     props: true,
     meta: {
       title: '空格键点击器 - CPSTest',
@@ -329,6 +330,16 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  // 优化滚动行为
+  scrollBehavior(_to, _from, savedPosition) {
+    if (savedPosition) {
+      // 如果有保存的位置，恢复到该位置
+      return savedPosition;
+    } else {
+      // 否则滚动到顶部
+      return { top: 0 };
+    }
+  },
 });
 
 // 导入i18n翻译函数

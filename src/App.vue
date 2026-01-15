@@ -1335,7 +1335,7 @@
               height="32"
               loading="lazy"
             />
-            <span>{{ mobileWebsiteName }}</span>
+            <span class="sidebar-logo-text">{{ mobileWebsiteName }}</span>
           </div>
           <button class="close-sidebar-btn" aria-label="关闭侧边栏" @click="closeSidebar">
             <svg
@@ -1509,12 +1509,14 @@
   /* 主导航项样式 */
   .main-nav-item {
     /* 优化内边距，减小悬停样式范围 */
-    padding: 6px 16px;
+    padding: 6px 10px;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
     color: #cccccc;
+    /* 设置字体大小 */
+    font-size: 14px;
     /* 减小最小高度，使悬停样式更紧凑 */
     min-height: 40px;
     display: flex;
@@ -1531,12 +1533,8 @@
 
   /* 主导航项悬停样式 - 缩小范围 */
   .main-nav-item:hover {
-    /* 半透明深色背景，增强视觉层次感同时保持内敛 */
-    background-color: rgba(42, 42, 42, 0.8);
     color: #4caf50;
-    /* 移除向上移动效果，避免样式扩散 */
-    /* transform: translateY(-2px); */
-    box-shadow: inset 0 0 0 1px rgba(76, 175, 80, 0.5);
+    /* 移除背景色和阴影，仅保留颜色变化 */
   }
 
   /* 主导航项激活样式 */
@@ -1614,10 +1612,26 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 16px;
       font-weight: bold;
       color: #4caf50;
       cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 移动端侧边栏网站名称样式 */
+    .sidebar-logo-text {
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 保持侧边栏logo图片原始大小 */
+    .sidebar-logo .logo-image {
+      width: 32px;
+      height: 32px;
     }
 
     /* 移动端关闭侧边栏按钮 - 参考图片样式 */
@@ -1634,6 +1648,7 @@
       width: 30px;
       height: 30px;
       border-radius: 4px;
+      outline: none;
     }
 
     .close-sidebar-btn:hover {
@@ -1646,6 +1661,12 @@
     .close-sidebar-btn:active {
       background-color: rgba(255, 255, 255, 0.2);
       transform: scale(0.9);
+    }
+
+    /* 侧边栏缩回按钮焦点样式 */
+    .close-sidebar-btn:focus {
+      outline: none;
+      box-shadow: none;
     }
 
     /* 移动端关闭图标样式 */
@@ -1694,12 +1715,19 @@
     color: #ffffff;
     transition: all 0.2s ease;
     border-radius: 4px;
+    outline: none;
   }
 
   /* 汉堡菜单点击样式 */
   .hamburger-menu:active {
     background-color: rgba(255, 255, 255, 0.1);
     transform: scale(0.95);
+  }
+
+  /* 汉堡菜单焦点样式 */
+  .hamburger-menu:focus {
+    outline: none;
+    box-shadow: none;
   }
 
   /* 汉堡菜单图标 */
@@ -1892,11 +1920,17 @@
     justify-content: center;
     background-color: transparent;
     border: 2px solid transparent;
+    outline: none;
   }
 
   .language-selector:hover {
     background-color: rgba(100, 100, 100, 0.3);
     border-color: #666;
+  }
+
+  .language-selector:focus {
+    outline: none;
+    box-shadow: none;
   }
 
   .language-image {
@@ -1922,11 +1956,6 @@
     margin-left: 8px;
   }
 
-  .language-btn:hover {
-    background-color: #333;
-    border-color: #4caf50;
-  }
-
   .language-dropdown {
     position: absolute;
     top: 100%;
@@ -1935,11 +1964,11 @@
     border: 1px solid #444;
     border-radius: 4px;
     margin-top: 0; /* 移除间隙，让菜单紧挨着图标容器 */
-    min-width: 350px;
+    min-width: 200px;
     z-index: 1001;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 0;
     overflow: hidden;
     padding: 8px 0; /* 增加内边距，让点击区域更大 */
@@ -1960,11 +1989,17 @@
     transition: all 0.2s ease;
     box-sizing: border-box;
     white-space: nowrap;
+    outline: none;
   }
 
   .language-option:hover {
     background-color: #333;
     color: #ffffff;
+  }
+
+  .language-option:focus {
+    outline: none;
+    box-shadow: none;
   }
 
   .language-option.active {
@@ -1990,11 +2025,17 @@
     justify-content: center;
     background-color: transparent;
     border: 2px solid transparent;
+    outline: none;
   }
 
   .history-selector:hover {
     background-color: rgba(100, 100, 100, 0.3);
     border-color: #666;
+  }
+
+  .history-selector:focus {
+    outline: none;
+    box-shadow: none;
   }
 
   /* 历史记录面板样式 */
@@ -2040,11 +2081,17 @@
     padding: 5px 10px;
     border-radius: 4px;
     transition: all 0.2s ease;
+    outline: none;
   }
 
   .remove-all-btn:hover {
     color: #fff;
     background-color: #444;
+  }
+
+  .remove-all-btn:focus {
+    outline: none;
+    box-shadow: none;
   }
 
   /* 历史记录列表样式 */
@@ -2124,10 +2171,16 @@
     padding: 5px;
     border-radius: 4px;
     transition: all 0.2s ease;
+    outline: none;
   }
 
   .delete-btn:hover {
     background-color: #444;
+  }
+
+  .delete-btn:focus {
+    outline: none;
+    box-shadow: none;
   }
 
   /* 暂无历史记录样式 */
@@ -2394,7 +2447,7 @@
 
   /* 辅助导航项样式 */
   .auxiliary-nav-item {
-    padding: 12px 15px;
+    padding: 15px 15px;
     cursor: pointer;
     transition: all 0.2s ease;
     color: #cccccc;
@@ -2426,7 +2479,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 20px 20px;
     background-color: transparent;
     cursor: pointer;
     font-weight: bold;
@@ -2530,7 +2583,7 @@
 
   /* 移除级联动画，使用简单的淡入效果 */
   .submenu-item {
-    padding: 12px 20px 12px 50px;
+    padding: 15px 20px 15px 50px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     color: #cccccc; /* 侧边栏小类字体颜色改为灰白色 */

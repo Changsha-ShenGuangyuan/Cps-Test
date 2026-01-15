@@ -9,6 +9,10 @@
   // 导入结果弹窗组件
   import ResultModal from './ResultModal.vue';
 
+  // 导入图标资源
+  const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
+  const historyIconUrlRelative = new URL('../assets/icons/history.png', import.meta.url).href;
+
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
 
@@ -280,6 +284,61 @@
     }
   };
 
+  // 触摸开始处理函数 - 模拟空格键按下
+  const handleTouchStart = (event: TouchEvent) => {
+    event.preventDefault();
+
+    // 游戏结束或时间到了，不处理点击事件
+    if (isGameOver.value || isTimeUp.value) {
+      return;
+    }
+
+    // 如果已经按下，不再处理
+    if (isSpacePressed.value) {
+      return;
+    }
+
+    // 标记空格键已按下
+    isSpacePressed.value = true;
+
+    // 隐藏提示
+    showPressHint.value = false;
+
+    // 游戏未准备就绪，先设置为准备就绪状态
+    if (!isGameReady.value) {
+      isGameReady.value = true;
+      return;
+    }
+
+    // 游戏未开始，开始游戏
+    if (!isPlaying.value) {
+      startGame();
+    }
+  };
+
+  // 触摸结束处理函数 - 模拟空格键释放
+  const handleTouchEnd = (event: TouchEvent) => {
+    event.preventDefault();
+
+    // 游戏结束或时间到了，不处理点击事件
+    if (isGameOver.value || isTimeUp.value) {
+      return;
+    }
+
+    // 游戏未准备就绪，不处理点击事件
+    if (!isGameReady.value) {
+      return;
+    }
+
+    // 标记空格键已释放
+    isSpacePressed.value = false;
+
+    // 更新点击次数（游戏进行中且时间未到）
+    if (isPlaying.value && !isTimeUp.value) {
+      clicks.value++;
+    }
+  };
+
   // 添加空格键事件监听
   const addSpaceEventListener = () => {
     window.addEventListener('keydown', handleSpaceDown);
@@ -387,7 +446,13 @@
           <div v-else-if="isPlaying" class="playing-content">
             <!-- 空格键图标 -->
             <div class="spacebar-icon">
-              <div class="spacebar-key" :class="{ 'space-pressed': isSpacePressed }">
+              <div
+                class="spacebar-key"
+                :class="{ 'space-pressed': isSpacePressed }"
+                @touchstart="handleTouchStart"
+                @touchend="handleTouchEnd"
+                @touchcancel="handleTouchEnd"
+              >
                 {{ t('spaceBar') }}
               </div>
             </div>
@@ -403,7 +468,13 @@
 
             <!-- 空格键图标 -->
             <div class="spacebar-icon">
-              <div class="spacebar-key" :class="{ 'space-pressed': isSpacePressed }">
+              <div
+                class="spacebar-key"
+                :class="{ 'space-pressed': isSpacePressed }"
+                @touchstart="handleTouchStart"
+                @touchend="handleTouchEnd"
+                @touchcancel="handleTouchEnd"
+              >
                 {{ t('spaceBar') }}
               </div>
             </div>
@@ -421,6 +492,9 @@
                 :class="{ 'space-pressed': isSpacePressed }"
                 style="cursor: pointer"
                 @click="handleSpacebarClick"
+                @touchstart="handleTouchStart"
+                @touchend="handleTouchEnd"
+                @touchcancel="handleTouchEnd"
               >
                 {{ t('spaceBar') }}
               </div>
@@ -438,12 +512,11 @@
           <div class="history-header">
             <h3>
               <img
-                src="@/assets/icons/history.png"
+                v-lazy="historyIconUrl"
                 width="30"
                 height="30"
                 :alt="t('historyIconAlt')"
                 class="history-icon"
-                loading="lazy"
               />
               {{ t('history') }}
             </h3>
@@ -494,12 +567,11 @@
         <div class="history-header">
           <h3>
             <img
-              src="@/assets/icons/history.png"
+              v-lazy="historyIconUrlRelative"
               width="30"
               height="30"
               :alt="t('historyIconAlt')"
               class="history-icon"
-              loading="lazy"
             />
             {{ t('history') }}
           </h3>

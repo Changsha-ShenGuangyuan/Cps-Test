@@ -3,6 +3,10 @@
   import { onBeforeRouteUpdate } from 'vue-router';
   import { t } from '../i18n'; // 导入翻译函数
 
+  // 导入图标资源
+  const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
+  const historyIconUrlRelative = new URL('../assets/icons/history.png', import.meta.url).href;
+
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
 
@@ -357,12 +361,11 @@
           <div class="history-header">
             <h3>
               <img
-                src="@/assets/icons/history.png"
+                v-lazy="historyIconUrl"
                 width="30"
                 height="30"
                 :alt="t('historyIconAlt')"
                 class="history-icon"
-                loading="lazy"
               />
               {{ t('history') }}
             </h3>
@@ -407,12 +410,11 @@
         <div class="history-header">
           <h3>
             <img
-              src="@/assets/icons/history.png"
+              v-lazy="historyIconUrlRelative"
               width="30"
               height="30"
               :alt="t('historyIconAlt')"
               class="history-icon"
-              loading="lazy"
             />
             {{ t('history') }}
           </h3>

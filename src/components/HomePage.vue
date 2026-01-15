@@ -43,7 +43,13 @@
               <div v-else-if="isPlaying" class="playing-content">
                 <!-- 空格键图标 -->
                 <div class="spacebar-icon">
-                  <div class="spacebar-key" :class="{ 'space-pressed': isSpacePressed }">
+                  <div
+                    class="spacebar-key"
+                    :class="{ 'space-pressed': isSpacePressed }"
+                    @touchstart="handleTouchStart"
+                    @touchend="handleTouchEnd"
+                    @touchcancel="handleTouchEnd"
+                  >
                     {{ t('spaceBar') }}
                   </div>
                 </div>
@@ -59,7 +65,13 @@
 
                 <!-- 空格键图标 -->
                 <div class="spacebar-icon">
-                  <div class="spacebar-key" :class="{ 'space-pressed': isSpacePressed }">
+                  <div
+                    class="spacebar-key"
+                    :class="{ 'space-pressed': isSpacePressed }"
+                    @touchstart="handleTouchStart"
+                    @touchend="handleTouchEnd"
+                    @touchcancel="handleTouchEnd"
+                  >
                     {{ t('spaceBar') }}
                   </div>
                 </div>
@@ -77,6 +89,9 @@
                     :class="{ 'space-pressed': isSpacePressed }"
                     style="cursor: pointer"
                     @click="handleSpacebarClick"
+                    @touchstart="handleTouchStart"
+                    @touchend="handleTouchEnd"
+                    @touchcancel="handleTouchEnd"
                   >
                     {{ t('spaceBar') }}
                   </div>
@@ -466,6 +481,61 @@
     }
   };
 
+  // 触摸开始处理函数 - 模拟空格键按下
+  const handleTouchStart = (event: TouchEvent) => {
+    event.preventDefault();
+
+    // 游戏结束，不处理点击事件
+    if (isGameOver.value) {
+      return;
+    }
+
+    // 如果已经按下，不再处理
+    if (isSpacePressed.value) {
+      return;
+    }
+
+    // 标记空格键已按下
+    isSpacePressed.value = true;
+
+    // 隐藏提示
+    showPressHint.value = false;
+
+    // 游戏未准备就绪，先设置为准备就绪状态
+    if (!isGameReady.value) {
+      isGameReady.value = true;
+      return;
+    }
+
+    // 游戏未开始，开始游戏
+    if (!isPlaying.value) {
+      startGame();
+    }
+  };
+
+  // 触摸结束处理函数 - 模拟空格键释放
+  const handleTouchEnd = (event: TouchEvent) => {
+    event.preventDefault();
+
+    // 游戏结束，不处理点击事件
+    if (isGameOver.value) {
+      return;
+    }
+
+    // 游戏未准备就绪，不处理点击事件
+    if (!isGameReady.value) {
+      return;
+    }
+
+    // 标记空格键已释放
+    isSpacePressed.value = false;
+
+    // 更新点击次数（游戏进行中）
+    if (isPlaying.value) {
+      clicks.value++;
+    }
+  };
+
   // 组件挂载时添加事件监听
   onMounted(() => {
     renderFeatureStructuredData();
@@ -703,7 +773,7 @@
   .time-select-section {
     padding: 15px 10px 0;
     text-align: center;
-    margin-top: -55px;
+    margin-top: 0;
   }
 
   /* 时间选择标题 */
