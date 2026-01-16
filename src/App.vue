@@ -5,21 +5,12 @@
   import Breadcrumb from './components/Breadcrumb.vue';
   import { updateMetaTags } from './router/index';
 
-  // 网站名称使用i18n翻译，确保多语言支持和SEO优化
   const websiteName = computed(() => t('websiteName'));
-
-  // 移动端简化网站名称
-  const mobileWebsiteName = computed(() => {
-    // 移动端显示简化的网站名称，保持SEO完整
-    return t('websiteName').split(' - ')[0];
-  });
+  const mobileWebsiteName = computed(() => t('websiteName').split(' - ')[0]);
 
   // 路由实例
   const router = useRouter();
   const route = useRoute();
-
-  // 内容区域引用
-  const contentRef = ref<HTMLElement | null>(null);
 
   // 初始化语言
   initLanguage();
@@ -28,20 +19,10 @@
   watch(
     () => langState.current,
     (newLang, oldLang) => {
-      if (newLang !== oldLang) {
-        nextTick(() => {
-          updateMetaTags(router.currentRoute.value);
-        });
-      }
+      if (newLang !== oldLang) nextTick(() => updateMetaTags(router.currentRoute.value));
     },
     { immediate: false }
   );
-
-  // 当前活跃的路由路径
-  const currentPath = ref(route.path);
-
-  // 登录功能控制变量 - 后续开放时改为true
-  const showLoginBtn = ref(false);
 
   // 移动端侧边栏控制
   const isSidebarOpen = ref(false);
@@ -72,23 +53,21 @@
   const isMobile = ref(window.innerWidth <= 1000);
   const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
-  // 移动端菜单状态管理
-  const mobileMenuStates = ref({
-    language: false,
-    history: false,
-  });
-
   // 移动端语言菜单触摸处理
   const onLanguageTouch = (e: TouchEvent) => {
     e.stopPropagation();
-    e.preventDefault(); // 阻止后续的click事件触发，避免状态切换两次
+    if (e.cancelable) {
+      e.preventDefault(); // 阻止后续的click事件触发，避免状态切换两次
+    }
     toggleLanguageMenu(e);
   };
 
   // 移动端历史菜单触摸处理
   const onHistoryTouch = (e: TouchEvent) => {
     e.stopPropagation();
-    e.preventDefault(); // 阻止后续的click事件触发，避免状态切换两次
+    if (e.cancelable) {
+      e.preventDefault(); // 阻止后续的click事件触发，避免状态切换两次
+    }
     toggleHistory(e);
   };
 
@@ -126,17 +105,7 @@
   }
 
   // 历史记录相关
-  const isHistoryOpen = computed({
-    get: () => (isTouchDevice.value ? mobileMenuStates.value.history : isHistoryOpenLocal.value),
-    set: (value) => {
-      if (isTouchDevice.value) {
-        mobileMenuStates.value.history = value;
-      } else {
-        isHistoryOpenLocal.value = value;
-      }
-    },
-  });
-  const isHistoryOpenLocal = ref(false);
+  const isHistoryOpen = ref(false);
   let historyTimeout: number | null = null;
 
   // localStorage键名
@@ -194,13 +163,6 @@
 
   // 历史记录数据
   const historyItems = ref<HistoryItem[]>(loadHistoryFromStorage());
-
-  // 触摸事件状态跟踪
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchEndX = 0;
-  let touchEndY = 0;
-  const MIN_SWIPE_DISTANCE = 10;
 
   // 添加新的历史记录项
   const addHistoryItem = (path: string) => {
@@ -297,30 +259,6 @@
     saveHistoryToStorage(historyItems.value);
   };
 
-  // 处理历史记录项的触摸开始事件
-  const handleHistoryItemTouchStart = (e: TouchEvent) => {
-    // 记录触摸开始位置
-    touchStartX = e.touches?.[0]?.clientX ?? 0;
-    touchStartY = e.touches?.[0]?.clientY ?? 0;
-  };
-
-  // 处理历史记录项的触摸结束事件
-  const handleHistoryItemTouchEnd = (item: HistoryItem, e: TouchEvent) => {
-    // 记录触摸结束位置
-    touchEndX = e.changedTouches?.[0]?.clientX ?? 0;
-    touchEndY = e.changedTouches?.[0]?.clientY ?? 0;
-
-    // 计算触摸水平和垂直距离
-    const deltaX = Math.abs(touchEndX - touchStartX);
-    const deltaY = Math.abs(touchEndY - touchStartY);
-
-    // 如果触摸距离小于最小滑动距离，则认为是点击事件
-    if (deltaX < MIN_SWIPE_DISTANCE && deltaY < MIN_SWIPE_DISTANCE) {
-      navigateToHistoryItem(item);
-    }
-    // 否则认为是滚动事件，不执行导航
-  };
-
   // 点击历史记录项导航到对应页面
   const navigateToHistoryItem = (item: HistoryItem) => {
     // 使用navigateTo函数导航，确保统一的导航逻辑和状态管理
@@ -390,27 +328,21 @@
       historyTimeout = null;
     }
 
-    // 使用计算属性切换状态，确保状态一致
+    // 切换状态
     isHistoryOpen.value = !isHistoryOpen.value;
 
     // 关闭其他菜单
     if (isHistoryOpen.value) {
       isLanguageMenuOpen.value = false;
-      if (isTouchDevice.value) {
-        mobileMenuStates.value.language = false;
-      }
     }
   };
 
   // 点击外部关闭菜单
   const closeAllMenus = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-    if (!target.closest('.language-selector')) {
-      isLanguageMenuOpen.value = false;
-    }
-    if (!target.closest('.history-selector')) {
-      isHistoryOpen.value = false;
-    }
+    // 简化关闭菜单的逻辑
+    if (!target.closest('.language-selector')) isLanguageMenuOpen.value = false;
+    if (!target.closest('.history-selector')) isHistoryOpen.value = false;
   };
 
   // 菜单展开状态接口
@@ -920,11 +852,14 @@
     }
   };
 
+  // 存储路由导航监听器的移除函数
+  let removeRouterListener: (() => void) | null = null;
+
   onMounted(() => {
     document.addEventListener('click', closeAllMenus);
 
     // 添加路由导航监听，自动记录访问历史
-    router.afterEach((to) => {
+    removeRouterListener = router.afterEach((to) => {
       // 添加到历史记录
       addHistoryItem(to.path);
     });
@@ -943,6 +878,11 @@
   onUnmounted(() => {
     document.removeEventListener('click', closeAllMenus);
     window.removeEventListener('resize', handleResize);
+    // 移除路由导航监听器
+    if (removeRouterListener) {
+      removeRouterListener();
+      removeRouterListener = null;
+    }
   });
 
   // 侧边栏相关方法 - 点击一个大类时折叠其他所有大类或直接导航
@@ -971,20 +911,8 @@
 
   // 滚动到顶部函数
   const scrollToTop = () => {
-    // 确保滚动到顶部，处理多种滚动场景
-    // 1. 处理当前内容区域滚动
-    if (contentRef.value) {
-      contentRef.value.scrollTop = 0;
-    }
-
-    // 2. 处理body滚动
+    // 简化滚动到顶部的实现
     window.scrollTo(0, 0);
-
-    // 3. 处理documentElement滚动
-    document.documentElement.scrollTop = 0;
-
-    // 4. 处理document滚动
-    document.body.scrollTop = 0;
   };
 
   // 监听路由变化，更新当前路径并滚动到顶部
@@ -992,7 +920,6 @@
     () => route,
     (newRoute) => {
       const newPath = newRoute.path;
-      currentPath.value = newPath;
       // 路由变化时将内容区域滚动到顶部
       scrollToTop();
       // 路由变化时关闭历史记录面板
@@ -1047,18 +974,6 @@
     { deep: true }
   );
 
-  // 监听语言变化，响应式更新meta标签
-  watch(
-    () => langState.current,
-    () => {
-      // 当语言变化时，调用updateMetaTags函数更新meta标签
-      // 使用nextTick确保langState.current已更新
-      nextTick(() => {
-        updateMetaTags(route);
-      });
-    }
-  );
-
   // 导航到指定路由
   const navigateTo = (path: string) => {
     // 先移除可能存在的语言前缀，避免重复添加
@@ -1106,7 +1021,16 @@
   // 判断菜单项是否活跃
   const isItemActive = (item: any) => {
     // 移除当前路径的语言前缀
-    const currentPathWithoutLang = removeLanguagePrefix(currentPath.value);
+    const supportedLanguages = ['zh-CN', 'ja', 'ko'];
+    let currentPathWithoutLang = route.path;
+    const pathSegments = currentPathWithoutLang.split('/').filter((segment) => segment !== '');
+    if (
+      pathSegments.length > 0 &&
+      pathSegments[0] &&
+      supportedLanguages.includes(pathSegments[0])
+    ) {
+      currentPathWithoutLang = `/${pathSegments.slice(1).join('/')}`;
+    }
 
     // 如果菜单项有path属性，检查路径部分是否匹配
     if (item.path) {
@@ -1121,7 +1045,16 @@
   // 判断子菜单项是否活跃
   const isSubItemActive = (path: string) => {
     // 移除当前路径的语言前缀
-    const currentPathWithoutLang = removeLanguagePrefix(currentPath.value);
+    const supportedLanguages = ['zh-CN', 'ja', 'ko'];
+    let currentPathWithoutLang = route.path;
+    const pathSegments = currentPathWithoutLang.split('/').filter((segment) => segment !== '');
+    if (
+      pathSegments.length > 0 &&
+      pathSegments[0] &&
+      supportedLanguages.includes(pathSegments[0])
+    ) {
+      currentPathWithoutLang = `/${pathSegments.slice(1).join('/')}`;
+    }
     return getPathWithoutQuery(path) === currentPathWithoutLang;
   };
 </script>
@@ -1188,7 +1121,7 @@
       <div class="header-actions header-right">
         <!-- 语言选择下拉菜单 -->
         <div
-          class="language-selector"
+          class="selector-base language-selector"
           :class="{
             'mobile-open': isMobile && isLanguageMenuOpen,
             'mobile-active': isTouchDevice && isLanguageMenuOpen,
@@ -1232,7 +1165,7 @@
         </div>
         <!-- 历史查看按钮 -->
         <div
-          class="history-selector"
+          class="selector-base history-selector"
           :class="{
             'mobile-open': isMobile && isHistoryOpen,
             'mobile-active': isTouchDevice && isHistoryOpen,
@@ -1284,8 +1217,6 @@
                 :key="item.id"
                 class="history-item"
                 @click.stop="navigateToHistoryItem(item)"
-                @touchstart.stop="handleHistoryItemTouchStart($event)"
-                @touchend.stop="handleHistoryItemTouchEnd(item, $event)"
               >
                 <div class="history-title">{{ getPageTitleFromPath(item.path) }}</div>
                 <div class="history-time">{{ formatTime(item.timestamp) }}</div>
@@ -1302,8 +1233,6 @@
             </div>
           </div>
         </div>
-        <!-- 登录按钮 -->
-        <button v-if="showLoginBtn" class="login-btn" aria-label="登录">{{ t('login') }}</button>
       </div>
     </header>
 
@@ -1453,10 +1382,14 @@
     color: #ffffff;
     font-family:
       -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    /* 移除overflow: hidden，允许页面滚动 */
+  }
+
+  /* 字体优化 */
+  .font-optimized {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    /* 移除overflow: hidden，允许页面滚动 */
   }
 
   /* 顶部导航栏 */
@@ -1521,12 +1454,6 @@
     min-height: 40px;
     display: flex;
     align-items: center;
-    /* 字体优化 */
-    font-family:
-      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
     letter-spacing: 0.2px;
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
   }
@@ -1768,56 +1695,58 @@
 
     /* 移动端侧边栏样式调整 - 直接覆盖汉堡菜单和顶部导航栏 */
     .sidebar {
-      top: 0 !important; /* 强制从屏幕最顶部开始，覆盖导航栏 */
-      bottom: 0 !important; /* 到底部，覆盖整个屏幕 */
-      padding-top: 0 !important; /* 移除顶部内边距，让内容从顶部开始显示 */
-      height: 100vh !important; /* 明确设置高度为100vh，确保覆盖全屏 */
-      overflow: visible !important; /* 允许内容溢出滚动 */
-      display: flex !important;
-      flex-direction: column !important;
-      background-color: #1a1a1a !important; /* 深色背景，与参考图一致 */
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5) !important; /* 添加阴影效果，增强层次感 */
-      border-right: none !important; /* 移除右侧边框 */
-      z-index: 1003 !important; /* 确保侧边栏在导航栏上面（导航栏z-index为1000） */
-      position: fixed !important; /* 确保固定定位 */
-      left: 0 !important; /* 从屏幕左侧开始 */
-      transform: translateX(-100%) !important; /* 默认隐藏 */
+      top: 0 !important;
+      bottom: 0;
+      padding-top: 0;
+      height: 100vh;
+      overflow: visible;
+      display: flex;
+      flex-direction: column;
+      background-color: #1a1a1a;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+      border-right: none;
+      z-index: 9999 !important;
+      position: fixed;
+      left: 0;
+      transform: translateX(-100%);
+      width: 280px;
+      transition: transform 0.3s ease;
     }
 
     /* 侧边栏打开状态 - 完全覆盖导航栏 */
     .sidebar.open {
-      transform: translateX(0) !important; /* 打开时显示 */
+      transform: translateX(0);
     }
 
     /* 确保侧边栏头部固定在侧边栏顶部，直接覆盖导航栏 */
-    .sidebar-header {
-      position: relative !important; /* 相对定位，作为侧边栏的一部分 */
-      top: 0 !important; /* 从侧边栏顶部开始 */
-      left: 0 !important; /* 从侧边栏左侧开始 */
-      right: 0 !important; /* 延伸到侧边栏右侧 */
-      z-index: 1004 !important; /* 确保在菜单之上 */
-      background-color: #1a1a1a !important; /* 与侧边栏背景一致 */
-      padding: 10px 15px !important; /* 适当内边距 */
-      border-bottom: 1px solid #333 !important; /* 底部边框 */
-      height: 50px !important; /* 固定高度 */
-      box-sizing: border-box !important; /* 盒模型设置 */
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
+    .sidebar .sidebar-header {
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10000;
+      background-color: #1a1a1a;
+      padding: 10px 15px;
+      border-bottom: 1px solid #333;
+      height: 50px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     /* 移动端侧边栏菜单样式 - 从侧边栏头部下方开始，占据剩余空间 */
     .sidebar .menu {
-      flex: 1 !important; /* 使用flex: 1让菜单自动填充剩余空间 */
-      overflow-y: auto !important;
-      padding: 0 !important;
-      height: calc(100vh - 50px) !important; /* 菜单高度为整个视口高度减去侧边栏头部高度 */
-      background-color: #1a1a1a !important; /* 与侧边栏背景一致 */
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+      height: calc(100vh - 50px);
+      background-color: #1a1a1a;
     }
 
     /* 确保顶部导航栏显示在侧边栏下方 */
     .header {
-      z-index: 1000 !important; /* 导航栏z-index低于侧边栏 */
+      z-index: 1000;
     }
 
     /* 移动端菜单项样式优化 */
@@ -1827,23 +1756,11 @@
       border-left: none; /* 移动端移除左侧边框 */
     }
 
-    /* 移动端激活菜单项样式 */
-    .sidebar .menu-item-header.active {
-      background-color: #2a2a2a; /* 激活状态背景色 */
-      color: #4caf50; /* 激活状态文字颜色 */
-    }
-
     /* 移动端子菜单项样式优化 */
     .sidebar .submenu-item {
       padding: 12px 20px 12px 45px; /* 调整子菜单项内边距 */
       background-color: transparent;
       transition: all 0.2s ease;
-    }
-
-    /* 移动端子菜单项激活样式 */
-    .sidebar .submenu-item.active {
-      color: #4caf50; /* 激活状态文字颜色 */
-      background-color: rgba(76, 175, 80, 0.1); /* 轻微的绿色背景 */
     }
 
     /* 移动端菜单项图标样式优化 */
@@ -1861,12 +1778,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    /* 字体优化 */
-    font-family:
-      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
     letter-spacing: 0.3px;
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
   }
@@ -1880,12 +1791,6 @@
     font-weight: bold;
     color: #4caf50;
     cursor: pointer;
-    /* 字体优化 */
-    font-family:
-      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
     letter-spacing: 0.3px;
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
   }
@@ -1903,8 +1808,8 @@
     align-items: center;
   }
 
-  /* 语言选择器样式 */
-  .language-selector {
+  /* 选择器基础样式 */
+  .selector-base {
     position: relative;
     margin-right: 10px;
     cursor: pointer;
@@ -1923,12 +1828,12 @@
     outline: none;
   }
 
-  .language-selector:hover {
+  .selector-base:hover {
     background-color: rgba(100, 100, 100, 0.3);
     border-color: #666;
   }
 
-  .language-selector:focus {
+  .selector-base:focus {
     outline: none;
     box-shadow: none;
   }
@@ -2008,36 +1913,6 @@
     color: #4caf50;
   }
 
-  /* 历史记录选择器样式 */
-  .history-selector {
-    position: relative;
-    margin-right: 10px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    display: inline-block;
-    /* 增加点击区域大小 */
-    min-width: 36px;
-    min-height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    border: 2px solid transparent;
-    outline: none;
-  }
-
-  .history-selector:hover {
-    background-color: rgba(100, 100, 100, 0.3);
-    border-color: #666;
-  }
-
-  .history-selector:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
   /* 历史记录面板样式 */
   .history-panel {
     position: absolute;
@@ -2048,7 +1923,7 @@
     border-radius: 8px;
     width: 300px;
     max-width: 100vw;
-    max-height: calc(100vh - 80px);
+    max-height: 70vh;
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     border: 1px solid #333;
@@ -2557,7 +2432,6 @@
       height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
       opacity 0.3s ease-in-out;
     overflow: hidden;
-    height: auto;
   }
 
   .submenu-enter-from,
@@ -2615,11 +2489,6 @@
     color: #666;
   }
 
-  .submenu-item:hover {
-    background-color: #2a2a2a;
-    color: #ffffff; /* 悬停时显示白色 */
-  }
-
   .submenu-item.active {
     color: #4caf50; /* 选中后显示绿色高亮文字 */
   }
@@ -2656,114 +2525,10 @@
     }
   }
 
-  /* 全局游戏容器样式 - 确保所有组件都靠近左侧 */
-  .content > .game-container {
-    margin: 0 auto;
-    text-align: center;
-    width: 100%;
-  }
-
   /* 通用样式 - 确保所有直接子元素都靠近左侧 */
   .content > div {
     margin-left: 0;
     margin-right: auto;
-  }
-
-  .game-container h2 {
-    color: #4caf50;
-    margin-bottom: 30px;
-  }
-
-  /* 点击区域 */
-  .click-area {
-    width: 300px;
-    height: 300px;
-    background-color: #4caf50;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0 auto 20px;
-  }
-
-  .click-area:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-  }
-
-  .click-area.playing {
-    background-color: #2196f3;
-    animation: pulse 0.1s ease;
-  }
-
-  .click-area.time-up {
-    background-color: #f44336;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(0.95);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  /* 子菜单项淡入动画 */
-  @keyframes submenuItemFadeIn {
-    from {
-      opacity: 0;
-      transform: translateX(-10px);
-    }
-  }
-
-  /* 登录按钮样式 */
-  .login-btn {
-    padding: 8px 16px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    outline: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transform: translateZ(0); /* 启用硬件加速 */
-  }
-
-  .login-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .login-btn:active {
-    background-color: #3d8b40;
-    transform: translateY(0) scale(0.98);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    transition: all 0.1s ease;
-  }
-
-  .login-btn:focus-visible {
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
-  }
-
-  /* 移动端适配 */
-  @media (max-width: 768px) {
-    .login-btn {
-      padding: 6px 12px;
-      font-size: 14px;
-    }
   }
 
   /* 触摸交互优化 - 增大可点击区域 */
@@ -2852,11 +2617,6 @@
 
   /* 移动端适配 */
   @media (max-width: 768px) {
-    /* 全局布局 */
-    .app-container {
-      overflow-x: hidden;
-    }
-
     /* 顶部导航栏 - 固定在最顶部 */
     .header {
       padding: 10px 15px;
@@ -3021,23 +2781,6 @@
       pointer-events: auto !important;
     }
 
-    /* 登录按钮 */
-    .login-btn {
-      padding: 6px 10px;
-      font-size: 13px;
-      min-width: 36px;
-      min-height: 36px;
-      border-radius: 4px;
-      background-color: #4caf50;
-      transition: all 0.2s ease;
-    }
-
-    .login-btn:active {
-      background-color: #3d8b40;
-      transform: scale(0.95);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    }
-
     /* 点击区域 */
     .click-area {
       width: 250px;
@@ -3103,14 +2846,6 @@
 
     .history-panel {
       width: calc(100vw - 20px);
-    }
-
-    /* 登录按钮 */
-    .login-btn {
-      padding: 5px 8px;
-      font-size: 12px;
-      min-width: 32px;
-      min-height: 32px;
     }
   }
 

@@ -403,9 +403,7 @@
       <!-- 左侧游戏区域 -->
       <div class="game-area">
         <!-- 标题栏 -->
-        <h2 class="game-title">
-          {{ t('spaceClickTest') }}
-        </h2>
+        <h2 class="game-title">{{ testTime }} {{ t('sec') }}{{ t('spaceClickTest') }}</h2>
 
         <!-- 统计卡片 -->
         <div class="stats-cards">
