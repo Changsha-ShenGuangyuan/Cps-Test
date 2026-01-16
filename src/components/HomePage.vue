@@ -36,11 +36,8 @@
                 'space-pressed': isSpacePressed,
               }"
             >
-              <!-- 游戏结束显示 -->
-              <div v-if="isGameOver" class="game-over-content"></div>
-
               <!-- 游戏进行中显示 -->
-              <div v-else-if="isPlaying" class="playing-content">
+              <div v-if="isPlaying" class="playing-content">
                 <!-- 空格键图标 -->
                 <div class="spacebar-icon">
                   <div
@@ -111,8 +108,8 @@
             v-for="time in supportedTimes"
             :key="time"
             class="time-select-item"
-            :class="{ active: time === 5 }"
-            @click="navigateTo('/space-click-test/' + time)"
+            :class="{ active: time === selectedTime }"
+            @click="selectedTime = time; navigateTo('/space-click-test/' + time)"
           >
             {{ time }} <span>{{ t('secondsTest') }}</span>
           </button>
@@ -233,14 +230,6 @@
   // 导入结果弹窗组件
   import ResultModal from './ResultModal.vue';
 
-  // 响应式变量：屏幕尺寸
-  const isDesktop = ref(window.innerWidth >= 1201);
-
-  // 监听窗口大小变化
-  const handleResize = () => {
-    isDesktop.value = window.innerWidth >= 1201;
-  };
-
   const router = useRouter();
 
   // 导航到指定路由
@@ -314,6 +303,8 @@
 
   // 支持的测试时间数组 - 静态数据，不需要响应式
   const supportedTimes = [1, 5, 10, 15, 30, 60];
+  // 当前选中的时间
+  const selectedTime = ref(5);
 
   // 5秒空格速度测试相关变量
   const isPlaying = ref(false);
@@ -540,7 +531,6 @@
   onMounted(() => {
     renderFeatureStructuredData();
     renderGuideStructuredData();
-    window.addEventListener('resize', handleResize);
     window.addEventListener('keydown', handleSpaceDown);
     window.addEventListener('keyup', handleSpaceUp);
 
@@ -607,7 +597,6 @@
       existingGuideData.remove();
     }
 
-    window.removeEventListener('resize', handleResize);
     window.removeEventListener('keydown', handleSpaceDown);
     window.removeEventListener('keyup', handleSpaceUp);
 
@@ -623,6 +612,23 @@
       clearInterval(timer);
     }
   });
+
+  // 通用结构化数据生成函数
+  const renderStructuredData = (id: string, data: any) => {
+    // 检查是否已存在结构化数据元素
+    let structuredDataElement: HTMLScriptElement | null = document.getElementById(
+      id
+    ) as HTMLScriptElement | null;
+    if (!structuredDataElement) {
+      structuredDataElement = document.createElement('script');
+      structuredDataElement.id = id;
+      structuredDataElement.type = 'application/ld+json';
+      document.head.appendChild(structuredDataElement);
+    }
+
+    // 更新结构化数据内容
+    structuredDataElement.textContent = JSON.stringify(data);
+  };
 
   // 生成功能特性结构化数据
   const renderFeatureStructuredData = () => {
@@ -658,19 +664,7 @@
       ],
     };
 
-    // 检查是否已存在结构化数据元素
-    let structuredDataElement: HTMLScriptElement | null = document.getElementById(
-      'feature-structured-data'
-    ) as HTMLScriptElement | null;
-    if (!structuredDataElement) {
-      structuredDataElement = document.createElement('script');
-      structuredDataElement.id = 'feature-structured-data';
-      structuredDataElement.type = 'application/ld+json';
-      document.head.appendChild(structuredDataElement);
-    }
-
-    // 更新结构化数据内容
-    structuredDataElement.textContent = JSON.stringify(featureStructuredData);
+    renderStructuredData('feature-structured-data', featureStructuredData);
   };
 
   // 生成测试指南结构化数据
@@ -709,19 +703,7 @@
       ],
     };
 
-    // 检查是否已存在结构化数据元素
-    let structuredDataElement: HTMLScriptElement | null = document.getElementById(
-      'guide-structured-data'
-    ) as HTMLScriptElement | null;
-    if (!structuredDataElement) {
-      structuredDataElement = document.createElement('script');
-      structuredDataElement.id = 'guide-structured-data';
-      structuredDataElement.type = 'application/ld+json';
-      document.head.appendChild(structuredDataElement);
-    }
-
-    // 更新结构化数据内容
-    structuredDataElement.textContent = JSON.stringify(guideStructuredData);
+    renderStructuredData('guide-structured-data', guideStructuredData);
   };
 </script>
 
@@ -742,7 +724,7 @@
   .space-test-section {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     border-radius: 15px;
-    padding: 20px;
+    padding: 10px;
     margin-bottom: 40px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
@@ -751,7 +733,7 @@
   .game-container {
     margin: 0 auto;
     text-align: center;
-    padding: clamp(10px, 2vw, 20px);
+    padding: clamp(5px, 1vw, 10px);
     background-color: transparent;
     box-shadow: none;
     width: 100%;
@@ -904,7 +886,7 @@
     font-size: clamp(20px, 4vw, 26px);
     font-weight: bold;
     text-align: center;
-    margin-top: 10px;
+    margin-top: 0;
     word-wrap: break-word;
     white-space: normal;
     line-height: 1.2;
@@ -1020,9 +1002,7 @@
     box-sizing: border-box;
   }
 
-  .click-area:hover {
-    transform: none;
-  }
+  
 
   .click-area.playing {
     background-color: #000000;
@@ -1198,16 +1178,6 @@
 
   /* 游戏进行中内容 */
   .playing-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* 游戏结束内容 */
-  .game-over-content {
     display: flex;
     flex-direction: column;
     justify-content: center;

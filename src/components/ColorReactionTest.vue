@@ -1125,7 +1125,7 @@
     gap: 6px;
     flex: 1;
     overflow-y: auto;
-    padding-right: 5px;
+    padding: 5px;
   }
 
   /* 无历史记录提示 */
@@ -1145,6 +1145,8 @@
     transition: all 0.2s ease;
     border: 1px solid #333;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
   }
 
   .history-item:hover {
@@ -1152,6 +1154,7 @@
     border-color: #4caf50;
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    z-index: 2;
   }
 
   /* 历史记录项内容 */

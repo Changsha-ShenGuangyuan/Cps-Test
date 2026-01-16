@@ -434,7 +434,7 @@
                   <span class="unit">CPS</span>
                 </div>
                 <div class="tags">
-                  <span class="tag clicks-tag">{{ record.clicks }}次</span>
+                  <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
                 </div>
                 <div class="record-time">
                   {{ record.date }}
@@ -488,7 +488,7 @@
                 <span class="unit">CPS</span>
               </div>
               <div class="tags">
-                <span class="tag clicks-tag">{{ record.clicks }}次</span>
+                <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
               </div>
               <div class="record-time">
                 {{ record.date }}
@@ -614,13 +614,13 @@
   }
 
   .history-header h3 {
-    color: #ffffff;
-    font-size: 18px;
-    margin: 0 0 12px 0;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    color: #ffffff; /* 设置文字颜色为白色，确保在深色背景上清晰可见 */
+    font-size: 18px; /* 设置字体大小为18像素，作为标题层级的标准大小 */
+    margin: 0 0 12px 0; /* 清除上下外边距，只保留底部12像素外边距，与下方内容保持适当距离 */
+    text-align: left; /* 设置文字左对齐，符合标题的常规排版 */
+    display: flex; /* 使用flex布局，便于图标和文字的水平排列 */
+    align-items: center; /* 垂直居中对齐，确保图标和文字在同一水平线上 */
+    gap: 8px; /* 设置图标与文字之间的间距为8像素，保证视觉层次感 */
   }
 
   /* 历史记录列表 */
@@ -630,7 +630,7 @@
     gap: 6px;
     flex: 1;
     overflow-y: auto;
-    padding-right: 5px;
+    padding: 5px;
   }
 
   /* 无历史记录提示 */
@@ -650,6 +650,8 @@
     transition: all 0.2s ease;
     border: 1px solid #333;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
   }
 
   .history-item:hover {
@@ -657,6 +659,7 @@
     border-color: #4caf50;
     transform: translateY(-1px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 2;
   }
 
   /* 历史记录图标 */

@@ -382,7 +382,7 @@
                   <span class="unit">CPS</span>
                 </div>
                 <div class="tags">
-                  <span class="tag clicks-tag">{{ record.clicks }}次</span>
+                  <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
                 </div>
                 <div class="record-time">
                   {{ record.date }}
@@ -431,7 +431,7 @@
                 <span class="unit">CPS</span>
               </div>
               <div class="tags">
-                <span class="tag clicks-tag">{{ record.clicks }}次</span>
+                <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
               </div>
               <div class="record-time">
                 {{ record.date }}
@@ -579,7 +579,7 @@
     gap: 4px;
     flex: 1;
     overflow-y: auto;
-    padding-right: 5px;
+    padding: 5px;
   }
 
   /* 无历史记录提示 */
@@ -599,6 +599,8 @@
     transition: all 0.2s ease;
     border: 1px solid #333;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
   }
 
   /* 历史记录项悬停效果 */
@@ -607,6 +609,7 @@
     border-color: #4caf50;
     transform: translateY(-1px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 2;
   }
 
   /* 历史记录项内容 */
