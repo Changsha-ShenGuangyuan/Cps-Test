@@ -48,8 +48,8 @@ window.addEventListener('error', (event) => {
 // 优化VueLazyload配置
 app.use(VueLazyload, {
   preLoad: 1.2, // 降低预加载比例
-  error: '/assets/error.png',
-  loading: '/assets/loading.png',
+  error: '/logo.png',
+  loading: '/logo.png',
   attempt: 1,
   lazyComponent: true,
   silent: true, // 静默模式，减少控制台输出
