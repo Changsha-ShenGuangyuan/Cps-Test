@@ -153,12 +153,6 @@
 
 <template>
   <div class="game-container">
-    <!-- 标题栏 -->
-    <div class="header">
-      <h2 class="game-title">{{ t('mouseScrollTest') }}</h2>
-      <p class="subtitle">{{ t('testYourMouseScrollSpeed') }}</p>
-    </div>
-
     <!-- 游戏区域 -->
     <div
       class="test-area"
@@ -170,9 +164,9 @@
       <div class="speed-display">
         <div class="speed-value">{{ currentSpeed }} {{ t('pixelsPerSecond') }}</div>
         <div class="scroll-prompt">
-          {{
-            currentSpeed > 0 || maxSpeed <= 0
-              ? t('scrollAsFastAsPossible')
+          {{ 
+            currentSpeed > 0 || maxSpeed <= 0 
+              ? t('scrollAsFastAsPossible') 
               : `${t('yourBestScore')} ${maxSpeed} ${t('pixelsPerSecond')}`
           }}
         </div>
@@ -212,28 +206,7 @@
     border-radius: 10px;
   }
 
-  /* 标题栏 */
-  .header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 0;
-  }
 
-  /* 游戏标题样式 */
-  .game-title {
-    color: #4caf50;
-    margin: 0 0 10px 0;
-    font-size: 28px;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .header .subtitle {
-    font-size: 18px;
-    color: #cccccc;
-    margin: 0;
-    opacity: 0.8;
-  }
 
   /* 测试区域 */
   .test-area {
@@ -252,7 +225,7 @@
     transition:
       background 0.3s ease,
       transform 0.2s ease;
-    margin: 0 auto 30px;
+    margin: 30px auto 30px;
     display: flex;
     justify-content: center;
     align-items: center;
