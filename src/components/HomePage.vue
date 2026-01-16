@@ -1732,6 +1732,21 @@
       padding: 15px 10px;
       font-size: 15px;
       min-height: 60px;
+      transition: none;
+    }
+    
+    .start-btn:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-color: transparent;
+    }
+    
+    .start-btn:hover::before {
+      display: none;
+    }
+    
+    .start-btn::before {
+      display: none;
     }
   }
 

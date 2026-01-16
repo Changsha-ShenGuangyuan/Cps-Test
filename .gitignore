@@ -38,3 +38,7 @@ dist-ssr
 # Vim交换文件
 *.sw?
 docker-compose_back.yml
+
+# Additional files - 额外忽略文件
+# 备用国旗文件夹
+/src/assets/spareFlag/

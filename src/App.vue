@@ -42,11 +42,7 @@
   // 语言选择相关
   const languages = [
     { code: 'en', name: 'ENGLISH', flag: new URL('@/assets/flags/um.png', import.meta.url).href },
-    {
-      code: 'zh-CN',
-      name: '简体中文',
-      flag: new URL('@/assets/flags/cn.png', import.meta.url).href,
-    },
+    { code: 'zh-CN',name: '简体中文',flag: new URL('@/assets/flags/cn.png', import.meta.url).href,},
     { code: 'ja', name: '日本語', flag: new URL('@/assets/flags/jp.png', import.meta.url).href },
     { code: 'ko', name: '한국어', flag: new URL('@/assets/flags/kr.png', import.meta.url).href },
   ];
