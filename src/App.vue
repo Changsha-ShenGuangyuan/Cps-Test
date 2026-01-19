@@ -2442,14 +2442,7 @@
     opacity: 1;
   }
 
-  /* 子菜单列表样式 */
-  .submenu-list {
-    /* 重置所有变换效果，使用简单的列表样式 */
-    background-color: #1a1a1a;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+  
 
   /* 移除级联动画，使用简单的淡入效果 */
   .submenu-item {
@@ -2498,9 +2491,7 @@
     color: #4caf50;
   }
 
-  .submenu-item:hover {
-    background-color: #2a2a2a;
-  }
+  
 
   /* 右侧主内容 */
   .content {
@@ -2845,31 +2836,8 @@
     }
   }
 
-  /* 为每个子菜单项添加不同的动画延迟 */
-  .submenu-item:nth-child(1) {
-    animation-delay: 0.05s;
-  }
-  .submenu-item:nth-child(2) {
-    animation-delay: 0.07s;
-  }
-  .submenu-item:nth-child(3) {
-    animation-delay: 0.09s;
-  }
-  .submenu-item:nth-child(4) {
-    animation-delay: 0.11s;
-  }
-  .submenu-item:nth-child(5) {
-    animation-delay: 0.13s;
-  }
-  .submenu-item:nth-child(6) {
-    animation-delay: 0.15s;
-  }
-  .submenu-item:nth-child(7) {
-    animation-delay: 0.17s;
-  }
-  .submenu-item:nth-child(8) {
-    animation-delay: 0.19s;
-  }
+
+  
 
   .clicks {
     font-size: 48px;

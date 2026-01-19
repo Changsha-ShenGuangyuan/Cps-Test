@@ -413,7 +413,7 @@
           <div class="history-header">
             <h3>
               <img
-                v-lazy="historyIconUrl"
+                :src="historyIconUrl"
                 width="30"
                 height="30"
                 :alt="t('historyIconAlt')"
@@ -467,12 +467,12 @@
         <div class="history-header">
           <h3>
             <img
-              v-lazy="historyIconUrlRelative"
-              width="30"
-              height="30"
-              :alt="t('historyIconAlt')"
-              class="history-icon"
-            />
+                :src="historyIconUrlRelative"
+                width="30"
+                height="30"
+                :alt="t('historyIconAlt')"
+                class="history-icon"
+              />
             {{ t('history') }}
           </h3>
         </div>

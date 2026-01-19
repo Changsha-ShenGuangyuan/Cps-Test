@@ -351,7 +351,7 @@
   }
 
   .test-button {
-    width: clamp(70%, 80vw, 800px);
+    width: clamp(70%, 100%, 800px);
     height: clamp(180px, 35vh, 280px);
     background-color: #000000;
     color: white;
@@ -463,7 +463,7 @@
   .key-title {
     color: #4caf50;
     font-size: 18px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-weight: bold;
     text-align: center;
   }
@@ -471,7 +471,7 @@
   .stat-item {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     justify-content: space-between;
     gap: 10px;
   }
@@ -643,8 +643,8 @@
     /* 统计卡片样式优化，确保内容显示完整 */
     .key-stats-panel {
       flex: 1;
-      min-width: 140px;
-      max-width: none;
+      min-width: 120px;
+      max-width: 150px;
       padding: 12px 10px;
       box-sizing: border-box;
       background-color: #333;
@@ -660,24 +660,28 @@
     }
 
     .stat-item {
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       padding: 0;
-      gap: 0px;
       white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: 11px;
       white-space: nowrap;
-      flex: 1;
-      text-align: left;
+      text-align: center;
+      margin-right: 0;
+      margin-bottom: 2px;
     }
 
     .stat-value {
-      font-size: 14px;
+      font-size: 16px;
+      font-weight: bold;
       min-width: 30px;
       white-space: nowrap;
-      text-align: right;
+      text-align: center;
     }
 
     /* 控制按钮优化 */
@@ -739,13 +743,20 @@
       margin-bottom: 8px;
     }
 
+    .stat-item {
+      margin-bottom: 10px;
+    }
+
     .stat-label {
-      font-size: 11px;
+      font-size: 10px;
+      text-align: center;
+      margin-bottom: 2px;
     }
 
     .stat-value {
-      font-size: 13px;
+      font-size: 14px;
       min-width: 25px;
+      text-align: center;
     }
 
     /* 调整测试按钮尺寸 */
