@@ -2338,7 +2338,7 @@
   /* 辅助导航项悬停样式 */
   .auxiliary-nav-item:hover {
     background-color: #2a2a2a;
-    color: #ffffff;
+    color: #4caf50;
     transform: translateX(5px);
   }
 
@@ -2370,7 +2370,7 @@
 
   .menu-item-header:hover {
     background-color: #2a2a2a;
-    color: #ffffff; /* 悬停时显示白色 */
+    color: #4caf50; /* 悬停时显示绿色 */
   }
 
   .menu-item-header.active {
@@ -2475,7 +2475,7 @@
   /* 为子菜单项添加简单的hover效果 */
   .submenu-item:hover {
     background-color: #2a2a2a;
-    color: #ffffff;
+    color: #4caf50;
     transform: translateX(5px);
   }
 
