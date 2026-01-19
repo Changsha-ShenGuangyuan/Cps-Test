@@ -232,13 +232,33 @@ export default defineConfig({
             },
             injectTo: 'head',
           },
+          {
+            tag: 'link',
+            attrs: {
+              rel: 'preconnect',
+              href: 'https://cdn.jsdelivr.net',
+              crossorigin: 'anonymous',
+            },
+            injectTo: 'head',
+          },
+          // 预加载字体
+          {
+            tag: 'link',
+            attrs: {
+              rel: 'preload',
+              href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
+              as: 'style',
+              onload: "this.onload=null;this.rel='stylesheet'",
+            },
+            injectTo: 'head',
+          },
           // 安全相关的meta标签
           {
             tag: 'meta',
             attrs: {
               'http-equiv': 'Content-Security-Policy',
               content:
-                "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com",
+                "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.google-analytics.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://fonts.googleapis.com https://fonts.gstatic.com",
             },
           },
           {
@@ -276,10 +296,14 @@ export default defineConfig({
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
     },
   },
+  // 启用持久化缓存，提升构建性能
+  cacheDir: '.vite/cache',
   build: {
     minify: 'terser',
-    chunkSizeWarningLimit: 500, // 降低chunk大小警告阈值
+    chunkSizeWarningLimit: 300, // 降低chunk大小警告阈值，更严格控制chunk大小
     cssCodeSplit: true, // 启用CSS代码分割
+    cssMinify: 'lightningcss', // 使用更高效的CSS压缩
+    target: ['es2015', 'edge88', 'firefox78', 'chrome87', 'safari14'], // 优化目标浏览器
     rollupOptions: {
       output: {
         // 配置chunk命名规则
@@ -295,7 +319,23 @@ export default defineConfig({
             }
             return 'vendor';
           }
+          
+          // 将测试组件按功能模块分组
+          if (id.includes('src/components/')) {
+            if (id.includes('ClickTest') || id.includes('DoubleClickTest') || id.includes('TripleClickTest') || id.includes('KohiClickTest')) {
+              return 'click-tests';
+            } else if (id.includes('SpaceClickTest') || id.includes('SpacebarClicker') || id.includes('KeyboardTest')) {
+              return 'keyboard-tests';
+            } else if (id.includes('ReactionTimeTest') || id.includes('ColorReactionTest') || id.includes('KeyReactionTest')) {
+              return 'reaction-tests';
+            } else if (id.includes('TypingTest')) {
+              return 'typing-tests';
+            } else if (id.includes('ResultModal') || id.includes('RelatedTests') || id.includes('FAQComponent')) {
+              return 'common-components';
+            }
+          }
         },
+        
       },
       // 优化初始加载性能
       input: {
@@ -312,5 +352,17 @@ export default defineConfig({
     },
     // 启用CSS压缩
     devSourcemap: false,
+    // 优化CSS输出
+    postcss: {
+      plugins: [
+        // 可以添加PostCSS插件来进一步优化CSS
+        {
+          postcssPlugin: 'custom-plugin',
+          AtRule: {
+            // 可以添加自定义的PostCSS规则
+          }
+        }
+      ]
+    }
   },
 });

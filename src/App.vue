@@ -3,7 +3,220 @@
   import { useRouter, useRoute } from 'vue-router';
   import { t, setLanguage, initLanguage, langState } from './i18n/index';
   import Breadcrumb from './components/Breadcrumb.vue';
+  import ResponsiveImage from './components/ResponsiveImage.vue';
   import { updateMetaTags } from './router/index';
+  import { iconManager } from './utils/iconManager';
+  import { cacheManager } from './utils/cacheManager';
+
+  // 预加载服务
+  class PreloadService {
+    private preloadedComponents: Set<string> = new Set();
+    private networkSpeed: 'slow' | 'medium' | 'fast' = 'medium';
+    private userBehavior: Map<string, { clicks: number; views: number; lastAccessed: number }> = new Map();
+
+    // 检测网络速度
+    detectNetworkSpeed() {
+      if ('connection' in navigator) {
+        const connection = navigator.connection as any;
+        const effectiveType = connection.effectiveType || '4g';
+        
+        if (effectiveType === '2g') {
+          this.networkSpeed = 'slow';
+        } else if (effectiveType === '3g') {
+          this.networkSpeed = 'medium';
+        } else {
+          this.networkSpeed = 'fast';
+        }
+      }
+    }
+
+    // 预加载组件
+    async preloadComponent(componentPath: string, priority: 'high' | 'medium' | 'low' = 'medium') {
+    // 检查缓存
+    const cachedComponent = cacheManager.getCachedComponent(componentPath);
+    if (cachedComponent) {
+      this.preloadedComponents.add(componentPath);
+      return;
+    }
+
+    // 跳过已经预加载的组件
+    if (this.preloadedComponents.has(componentPath)) {
+      return;
+    }
+
+    // 根据网络速度和优先级决定是否预加载
+    if (this.networkSpeed === 'slow' && priority === 'low') {
+      return;
+    }
+
+    try {
+      // 动态导入组件
+      const component = await import(`./components/${componentPath}.vue`);
+      this.preloadedComponents.add(componentPath);
+      // 缓存组件
+      cacheManager.cacheComponent(componentPath, component);
+    } catch (error) {
+      console.warn(`Failed to preload component ${componentPath}:`, error);
+    }
+  }
+
+    // 批量预加载组件
+    async preloadComponents(components: Array<{ path: string; priority: 'high' | 'medium' | 'low' }>) {
+      // 按照优先级排序
+      const sortedComponents = [...components].sort((a, b) => {
+        const priorityOrder = { high: 0, medium: 1, low: 2 };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      });
+
+      // 批量预加载
+      for (const component of sortedComponents) {
+        await this.preloadComponent(component.path, component.priority);
+      }
+    }
+
+    // 预加载常用测试组件
+    async preloadCommonTestComponents() {
+      const commonComponents: Array<{ path: string; priority: 'high' | 'medium' | 'low' }> = [
+        { path: 'ClickTest', priority: 'high' },
+        { path: 'SpaceClickTest', priority: 'high' },
+        { path: 'KeyboardTest', priority: 'medium' },
+        { path: 'ReactionTimeTest', priority: 'medium' },
+        { path: 'TypingTest', priority: 'medium' },
+        { path: 'ResultModal', priority: 'high' },
+        { path: 'RelatedTests', priority: 'low' }
+      ];
+
+      await this.preloadComponents(commonComponents);
+    }
+
+    // 预加载基于用户历史的组件
+    async preloadBasedOnHistory(historyItems: Array<{ path: string }>) {
+      const pathToComponentMap: Record<string, string> = {
+        '/click-test/': 'ClickTest',
+        '/space-click-test/': 'SpaceClickTest',
+        '/keyboard-test': 'KeyboardTest',
+        '/reaction-time-test': 'ReactionTimeTest',
+        '/typing-test/': 'TypingTest',
+        '/kohi-click-test': 'KohiClickTest',
+        '/spacebar-clicker': 'SpacebarClicker',
+        '/target-elimination-game': 'TargetEliminationGame'
+      };
+
+      const componentsToPreload = new Set<string>();
+
+      // 分析历史记录，找出用户常用的组件
+      for (const item of historyItems.slice(0, 5)) { // 只考虑最近5条历史记录
+        for (const [pathPrefix, componentName] of Object.entries(pathToComponentMap)) {
+          if (item.path.includes(pathPrefix)) {
+            componentsToPreload.add(componentName);
+            break;
+          }
+        }
+      }
+
+      // 预加载用户常用的组件
+      for (const componentName of componentsToPreload) {
+        await this.preloadComponent(componentName, 'high');
+      }
+    }
+
+    // 预加载下一个可能的组件
+    async preloadNextPossibleComponents(currentPath: string) {
+      const pathToRelatedComponents: Record<string, string[]> = {
+        '/click-test/': ['KohiClickTest', 'DoubleClickTest', 'TripleClickTest'],
+        '/space-click-test/': ['SpacebarClicker', 'KeyboardTest'],
+        '/reaction-time-test/': ['ColorReactionTest', 'KeyReactionTest'],
+        '/typing-test/': ['KeyboardTest'],
+        '/keyboard-test': ['TypingTest', 'KeyReactionTest']
+      };
+
+      for (const [pathPrefix, relatedComponents] of Object.entries(pathToRelatedComponents)) {
+        if (currentPath.includes(pathPrefix)) {
+          for (const componentName of relatedComponents) {
+            await this.preloadComponent(componentName, 'medium');
+          }
+          break;
+        }
+      }
+    }
+
+    // 检查组件是否已预加载
+    isComponentPreloaded(componentPath: string): boolean {
+      return this.preloadedComponents.has(componentPath);
+    }
+
+    // 清除预加载缓存
+    clearCache() {
+      this.preloadedComponents.clear();
+    }
+
+    // 记录用户行为
+    recordUserBehavior(componentName: string, action: 'click' | 'view') {
+      const behavior = this.userBehavior.get(componentName) || {
+        clicks: 0,
+        views: 0,
+        lastAccessed: Date.now()
+      };
+
+      if (action === 'click') {
+        behavior.clicks++;
+      } else if (action === 'view') {
+        behavior.views++;
+      }
+
+      behavior.lastAccessed = Date.now();
+      this.userBehavior.set(componentName, behavior);
+
+      // 最多保存20个组件的行为数据
+      if (this.userBehavior.size > 20) {
+        const oldestComponent = Array.from(this.userBehavior.entries())
+          .sort((a, b) => a[1].lastAccessed - b[1].lastAccessed)[0];
+        if (oldestComponent) {
+          this.userBehavior.delete(oldestComponent[0]);
+        }
+      }
+    }
+
+    // 基于时间的预加载
+    async preloadBasedOnTime() {
+      const currentHour = new Date().getHours();
+      let componentsToPreload: Array<{ path: string; priority: 'high' | 'medium' | 'low' }> = [];
+
+      // 根据时间段预加载不同的组件
+      if (currentHour >= 6 && currentHour < 12) {
+        // 早晨时段，预加载常用测试
+        componentsToPreload = [
+          { path: 'ClickTest', priority: 'high' },
+          { path: 'SpaceClickTest', priority: 'high' },
+          { path: 'ResultModal', priority: 'high' }
+        ];
+      } else if (currentHour >= 12 && currentHour < 18) {
+        // 下午时段，预加载更多测试类型
+        componentsToPreload = [
+          { path: 'ClickTest', priority: 'high' },
+          { path: 'SpaceClickTest', priority: 'high' },
+          { path: 'KeyboardTest', priority: 'medium' },
+          { path: 'ReactionTimeTest', priority: 'medium' },
+          { path: 'ResultModal', priority: 'high' }
+        ];
+      } else {
+        // 晚上时段，预加载所有常用组件
+        componentsToPreload = [
+          { path: 'ClickTest', priority: 'high' },
+          { path: 'SpaceClickTest', priority: 'high' },
+          { path: 'KeyboardTest', priority: 'medium' },
+          { path: 'ReactionTimeTest', priority: 'medium' },
+          { path: 'TypingTest', priority: 'medium' },
+          { path: 'ResultModal', priority: 'high' }
+        ];
+      }
+
+      await this.preloadComponents(componentsToPreload);
+    }
+  }
+
+  // 创建预加载服务实例
+  const preloadService = new PreloadService();
 
   const websiteName = computed(() => t('websiteName'));
   const mobileWebsiteName = computed(() => t('websiteName').split(' - ')[0]);
@@ -426,19 +639,19 @@
     });
   };
 
-  // 导入图标资源
-  const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
+  // 使用图标管理服务获取图标URL
+  const historyIconUrl = iconManager.getIconUrl('history');
 
   // 初始化菜单数据
   const initMenuItems = () => {
-    // 导入所有图标资源
+    // 使用图标管理服务获取图标URL
     const icons = {
-      home: new URL('@/assets/icons/home.png', import.meta.url).href,
-      chick: new URL('@/assets/icons/chick.png', import.meta.url).href,
-      mouse02: new URL('@/assets/icons/mouse02.png', import.meta.url).href,
-      keyboard02: new URL('@/assets/icons/keyboard02.png', import.meta.url).href,
-      reaction: new URL('@/assets/icons/reaction.png', import.meta.url).href,
-      game02: new URL('@/assets/icons/game02.png', import.meta.url).href,
+      home: iconManager.getIconUrl('home'),
+      chick: iconManager.getIconUrl('chick'),
+      mouse02: iconManager.getIconUrl('mouse02'),
+      keyboard02: iconManager.getIconUrl('keyboard02'),
+      reaction: iconManager.getIconUrl('reaction'),
+      game02: iconManager.getIconUrl('game02'),
     };
 
     const items: MenuItem[] = [
@@ -851,6 +1064,33 @@
   // 存储路由导航监听器的移除函数
   let removeRouterListener: (() => void) | null = null;
 
+  // 点击事件处理函数
+  const handleClickEvent = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    
+    // 检测是否点击了测试相关的元素
+    if (target.closest('.main-nav-item') || target.closest('.submenu-item') || target.closest('.auxiliary-nav-item')) {
+      // 分析点击的目标，记录相应的组件行为
+      const pathToComponentMap: Record<string, string> = {
+        'click-test': 'ClickTest',
+        'space-click-test': 'SpaceClickTest',
+        'keyboard-test': 'KeyboardTest',
+        'reaction-time-test': 'ReactionTimeTest',
+        'typing-test': 'TypingTest',
+        'kohi-click-test': 'KohiClickTest',
+        'spacebar-clicker': 'SpacebarClicker',
+        'target-elimination-game': 'TargetEliminationGame'
+      };
+      
+      for (const [pathPrefix, componentName] of Object.entries(pathToComponentMap)) {
+        if (window.location.pathname.includes(pathPrefix)) {
+          preloadService.recordUserBehavior(componentName, 'click');
+          break;
+        }
+      }
+    }
+  };
+
   onMounted(() => {
     document.addEventListener('click', closeAllMenus);
 
@@ -858,22 +1098,65 @@
     removeRouterListener = router.afterEach((to) => {
       // 添加到历史记录
       addHistoryItem(to.path);
+      
+      // 路由切换后预加载相关组件
+      preloadService.preloadNextPossibleComponents(to.path);
+      
+      // 记录用户行为
+      const pathToComponentMap: Record<string, string> = {
+        '/click-test/': 'ClickTest',
+        '/space-click-test/': 'SpaceClickTest',
+        '/keyboard-test': 'KeyboardTest',
+        '/reaction-time-test': 'ReactionTimeTest',
+        '/typing-test/': 'TypingTest',
+        '/kohi-click-test': 'KohiClickTest',
+        '/spacebar-clicker': 'SpacebarClicker',
+        '/target-elimination-game': 'TargetEliminationGame'
+      };
+      
+      for (const [pathPrefix, componentName] of Object.entries(pathToComponentMap)) {
+        if (to.path.includes(pathPrefix)) {
+          preloadService.recordUserBehavior(componentName, 'view');
+          break;
+        }
+      }
     });
 
     // 添加窗口大小改变监听，自动调整侧边栏状态和设备类型
     window.addEventListener('resize', handleResize);
+
+    // 添加点击事件监听，记录用户点击行为
+    document.addEventListener('click', handleClickEvent);
 
     // 初始加载时，根据当前语言设置更新meta标签
     updateMetaTags(route);
 
     // 检查并保存URL中的分享参数
     checkAndSaveShareParams();
+
+    // 初始化预加载服务
+    preloadService.detectNetworkSpeed();
+    
+    // 预加载常用图标
+    iconManager.preloadCommonIcons();
+    
+    // 基于时间的智能预加载
+    preloadService.preloadBasedOnTime();
+    
+    // 预加载常用测试组件
+    preloadService.preloadCommonTestComponents();
+    
+    // 基于用户历史预加载组件
+    if (historyItems.value.length > 0) {
+      preloadService.preloadBasedOnHistory(historyItems.value);
+    }
   });
 
   // 组件卸载时移除事件监听
   onUnmounted(() => {
     document.removeEventListener('click', closeAllMenus);
     window.removeEventListener('resize', handleResize);
+    document.removeEventListener('click', handleClickEvent);
     // 移除路由导航监听器
     if (removeRouterListener) {
       removeRouterListener();
@@ -1081,13 +1364,14 @@
         </button>
         <!-- 桌面端logo -->
         <div class="logo" style="cursor: pointer" @click="navigateTo('/')">
-          <img
+          <ResponsiveImage
             src="/logo.png"
             :alt="t('logoAlt')"
-            class="logo-image"
-            width="32"
-            height="32"
-            loading="lazy"
+            class-name="logo-image"
+            :width="32"
+            :height="32"
+            :lazy="true"
+            :priority="true"
           />
           <span class="desktop-logo">{{ websiteName }}</span>
           <span class="mobile-logo">{{ mobileWebsiteName }}</span>
@@ -1129,12 +1413,14 @@
           @mouseleave="hideLanguageMenu"
           @click.stop.prevent="toggleLanguageMenu"
         >
-          <img
-            class="language-image"
+          <ResponsiveImage
             :src="currentLanguageFlag"
             :alt="currentLanguageName"
-            width="24"
-            height="18"
+            class-name="language-image"
+            :width="24"
+            :height="18"
+            :lazy="true"
+            :priority="false"
           />
           <div
             v-if="isLanguageMenuOpen"
@@ -1154,7 +1440,15 @@
               @click.stop="switchLanguage(lang.code)"
               @touchstart.stop="switchLanguage(lang.code)"
             >
-              <img class="flag-icon" :src="lang.flag" :alt="lang.name" width="20" height="15" />
+              <ResponsiveImage
+                :src="lang.flag"
+                :alt="lang.name"
+                class-name="flag-icon"
+                :width="20"
+                :height="15"
+                :lazy="true"
+                :priority="false"
+              />
               <span class="language-name">{{ lang.name }}</span>
             </button>
           </div>
@@ -1173,13 +1467,14 @@
           @mouseleave="hideHistory"
           @click.stop="toggleHistory"
         >
-          <img
+          <ResponsiveImage
             :src="historyIconUrl"
-            class="language-image"
-            width="30"
-            height="30"
             :alt="t('historyIconAlt')"
-            loading="lazy"
+            class-name="language-image"
+            :width="30"
+            :height="30"
+            :lazy="true"
+            :priority="false"
           />
           <!-- 历史记录面板 -->
           <div
@@ -1252,13 +1547,14 @@
         <!-- 侧边栏头部 - 网站icon和名字 -->
         <div class="sidebar-header">
           <div class="sidebar-logo" style="cursor: pointer" @click="navigateTo('/')">
-            <img
+            <ResponsiveImage
               src="/logo.png"
               :alt="t('logoAlt')"
-              class="logo-image"
-              width="32"
-              height="32"
-              loading="lazy"
+              class-name="logo-image"
+              :width="32"
+              :height="32"
+              :lazy="true"
+              :priority="true"
             />
             <span class="sidebar-logo-text">{{ mobileWebsiteName }}</span>
           </div>
@@ -1289,13 +1585,14 @@
                 :aria-expanded="item.isExpanded"
                 @click="toggleMenu(item)"
               >
-                <img
-                  class="menu-item-icon"
-                  :src="item.icon"
+                <ResponsiveImage
+                  :src="item.icon || ''"
                   :alt="item.name"
-                  width="20"
-                  height="20"
-                  loading="lazy"
+                  class-name="menu-item-icon"
+                  :width="20"
+                  :height="20"
+                  :lazy="true"
+                  :priority="false"
                 />
                 <span class="menu-item-name">{{ item.name }}</span>
                 <span
@@ -2081,20 +2378,26 @@
     text-align: center;
     font-size: 14px;
     color: #888;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
   }
 
   .footer-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    width: 100%;
   }
 
   .footer p {
     margin: 5px 0;
+    min-height: 20px;
   }
 
   .footer-links {
     margin-top: 10px;
+    min-height: 20px;
   }
 
   .footer-link {

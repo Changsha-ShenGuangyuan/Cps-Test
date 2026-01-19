@@ -345,13 +345,19 @@ const router = createRouter({
 // 导入i18n翻译函数
 import { t } from '../i18n/index';
 
+// 缓存上一次的路由信息，避免重复更新
+let lastRoute: any = null;
+
 // 提取meta标签更新逻辑为独立函数，支持响应式更新
 export const updateMetaTags = (to: any) => {
+  // 避免重复更新相同路由的meta标签
+  if (lastRoute && lastRoute.path === to.path && lastRoute.meta === to.meta) {
+    return;
+  }
+
   // 动态获取当前域名，避免硬编码
   const baseUrl = window.location.origin;
   const currentUrl = `${baseUrl}${to.path}`;
-
-  // 调试日志已移除
 
   // 设置页面标题
   let pageTitle = '';
@@ -626,6 +632,9 @@ export const updateMetaTags = (to: any) => {
       console.error('Failed to parse schema.org data:', error);
     }
   }
+
+  // 缓存当前路由信息
+  lastRoute = to;
 };
 
 // 获取不带语言前缀的路径
@@ -720,53 +729,68 @@ const validateHreflangTags = () => {
   return allValid;
 };
 
+// 缓存上一次的hreflang标签，避免重复生成
+let lastHreflangTags: any = null;
+let lastCanonicalTag: string = '';
+
 // 全局路由守卫 - 设置页面标题和meta标签
 router.beforeEach((to, _from, next) => {
   // 设置canonical标签（每个语言版本使用自己的URL作为规范URL）
   try {
-    let canonicalTag = document.querySelector('link[rel="canonical"]');
-    if (!canonicalTag) {
-      canonicalTag = document.createElement('link') as HTMLLinkElement;
-      (canonicalTag as HTMLLinkElement).rel = 'canonical';
-      document.head.appendChild(canonicalTag);
-    }
-
-    // 规范URL使用当前页面的完整URL，包括语言前缀
     const canonicalUrl = `${window.location.origin}${to.path}`;
-    canonicalTag.setAttribute('href', canonicalUrl);
+    
+    // 避免重复更新相同的canonical标签
+    if (lastCanonicalTag !== canonicalUrl) {
+      let canonicalTag = document.querySelector('link[rel="canonical"]');
+      if (!canonicalTag) {
+        canonicalTag = document.createElement('link') as HTMLLinkElement;
+        (canonicalTag as HTMLLinkElement).rel = 'canonical';
+        document.head.appendChild(canonicalTag);
+      }
+
+      canonicalTag.setAttribute('href', canonicalUrl);
+      lastCanonicalTag = canonicalUrl;
+    }
   } catch (error) {
     console.error('Failed to set canonical tag:', error);
   }
 
   // 设置hreflang标签
   const languages = ['zh-CN', 'en', 'ja', 'ko'];
+  const currentHreflangKey = `${to.path}_${languages.join('_')}`;
+  
+  // 避免重复生成相同的hreflang标签
+  if (lastHreflangTags !== currentHreflangKey) {
+    // 先移除所有现有hreflang标签
+    const existingHreflangTags = document.querySelectorAll('link[rel="alternate"][hreflang]');
+    existingHreflangTags.forEach((tag) => tag.remove());
 
-  // 先移除所有现有hreflang标签
-  const existingHreflangTags = document.querySelectorAll('link[rel="alternate"][hreflang]');
-  existingHreflangTags.forEach((tag) => tag.remove());
+    // 添加默认语言标签
+    const defaultTag = document.createElement('link');
+    defaultTag.rel = 'alternate';
+    defaultTag.hreflang = 'x-default';
+    defaultTag.href = `${window.location.origin}${getPathWithoutLangPrefix(to.path)}`;
+    document.head.appendChild(defaultTag);
 
-  // 添加默认语言标签
-  const defaultTag = document.createElement('link');
-  defaultTag.rel = 'alternate';
-  defaultTag.hreflang = 'x-default';
-  defaultTag.href = `${window.location.origin}${getPathWithoutLangPrefix(to.path)}`;
-  document.head.appendChild(defaultTag);
+    // 添加各语言标签
+    languages.forEach((lang) => {
+      const tag = document.createElement('link');
+      tag.rel = 'alternate';
+      tag.hreflang = lang;
+      tag.href = `${window.location.origin}${generateLangPath(to.path, lang)}`;
+      document.head.appendChild(tag);
+    });
 
-  // 添加各语言标签
-  languages.forEach((lang) => {
-    const tag = document.createElement('link');
-    tag.rel = 'alternate';
-    tag.hreflang = lang;
-    tag.href = `${window.location.origin}${generateLangPath(to.path, lang)}`;
-    document.head.appendChild(tag);
-  });
+    // 验证hreflang标签 - 使用环境变量检查，兼容浏览器环境
+    if (import.meta.env.DEV) {
+      setTimeout(() => {
+        // 使用setTimeout确保DOM已更新
+        validateHreflangTags();
+      }, 0);
+    }
 
-  // 验证hreflang标签 - 使用环境变量检查，兼容浏览器环境
-  if (import.meta.env.DEV) {
-    setTimeout(() => {
-      // 使用setTimeout确保DOM已更新
-      validateHreflangTags();
-    }, 0);
+    // 缓存当前hreflang标签状态
+    lastHreflangTags = currentHreflangKey;
   }
 
   // 验证路由参数 - 确保只有有效的数字参数才能访问测试页面
