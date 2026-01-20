@@ -6,15 +6,15 @@ class IconManager {
 
   // 图标映射表
   private iconMap: Record<string, string> = {
-    history: '../assets/icons/history.png',
-    home: '../assets/icons/home.png',
-    chick: '../assets/icons/chick.png',
-    mouse02: '../assets/icons/mouse02.png',
-    keyboard02: '../assets/icons/keyboard02.png',
-    reaction: '../assets/icons/reaction.png',
-    game02: '../assets/icons/game02.png',
-    statistics: '../assets/icons/statistics.png',
-    question: '../assets/icons/question.png'
+    history: 'history.png',
+    home: 'home.png',
+    chick: 'chick.png',
+    mouse02: 'mouse02.png',
+    keyboard02: 'keyboard02.png',
+    reaction: 'reaction.png',
+    game02: 'game02.png',
+    statistics: 'statistics.png',
+    question: 'question.png'
   };
 
   // 获取图标URL
@@ -32,10 +32,11 @@ class IconManager {
     }
 
     // 加载图标
-    const iconPath = this.iconMap[iconName];
-    if (iconPath) {
+    const iconFilename = this.iconMap[iconName];
+    if (iconFilename) {
       try {
-        const iconUrl = new URL(iconPath, import.meta.url).href;
+        // 使用相对于当前文件的路径
+        const iconUrl = new URL(`../assets/icons/${iconFilename}`, import.meta.url).href;
         this.icons.set(iconName, iconUrl);
         this.loadedIcons.add(iconName);
         this.iconCache.set(iconName, iconUrl);
