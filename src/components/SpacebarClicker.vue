@@ -834,10 +834,11 @@
     margin: 0 auto;
     padding: 40px 20px;
     text-align: center;
-    background-color: #121212;
     min-height: 100vh;
     color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #000000;
+    border-radius: 10px;
   }
 
   /* 点击计数显示 */
@@ -1203,20 +1204,21 @@
   }
 
   .buff-card {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.35);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     padding: 15px;
     text-align: left;
     transition: all 0.3s ease;
     width: 100%;
     box-sizing: border-box;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
 
   .buff-card:hover {
     transform: translateY(-5px);
     border-color: #4caf50;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.15);
   }
 
   .buff-card.locked {
@@ -1226,6 +1228,12 @@
 
   .buff-card.max-level {
     border-color: #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+  }
+
+  .buff-card.max-level:hover {
+    border-color: #ffd700;
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.25);
   }
 
   .buff-header {
@@ -1240,6 +1248,7 @@
     color: #4caf50;
     margin: 0;
     font-weight: bold;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
   }
 
   .buff-count {
@@ -1251,6 +1260,7 @@
     display: inline-flex;
     align-items: baseline;
     gap: 2px;
+    background-color: rgba(76, 175, 80, 0.1);
   }
 
   .buff-x {
@@ -1267,7 +1277,7 @@
   }
 
   .buff-description {
-    color: #aaa;
+    color: #ddd;
     font-size: 13px;
     margin-bottom: 8px;
     line-height: 1.4;
@@ -1284,8 +1294,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
   }
 
   .buff-price {
@@ -1366,7 +1377,8 @@
     position: relative;
     transition:
       transform 0.3s ease,
-      box-shadow 0.3s ease;
+      box-shadow 0.3s ease,
+      background-color 0.3s ease;
     z-index: 1;
   }
 
@@ -1374,7 +1386,8 @@
   .buff-card:hover {
     transform: translateY(-5px);
     border-color: #4caf50;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.2);
+    background-color: rgba(0, 0, 0, 0.45);
     z-index: 5;
   }
 
@@ -1387,12 +1400,12 @@
     0%,
     100% {
       box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 10px 30px rgba(76, 175, 80, 0.2),
         0 0 0 rgba(76, 175, 80, 0);
     }
     50% {
       box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 10px 30px rgba(76, 175, 80, 0.2),
         0 0 20px rgba(76, 175, 80, 0.5);
     }
   }
@@ -1614,33 +1627,38 @@
   }
 
   .faq-item-alt {
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
   }
 
   /* 多样化样式 - 项目样式1 */
   .faq-item-alt-1 {
-    border-top: 3px solid #4caf50;
+    border-left: 4px solid #4caf50;
+    border-top: none;
   }
 
   .faq-item-alt-1:hover {
-    background: rgba(0, 0, 0, 0.45);
-    box-shadow: 0 5px 20px rgba(76, 175, 80, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);
+    border-color: rgba(76, 175, 80, 0.5);
   }
 
   /* 多样化样式 - 项目样式2 */
   .faq-item-alt-2 {
-    border-top: 3px solid #667eea;
+    border-left: 4px solid #667eea;
+    border-top: none;
   }
 
   .faq-item-alt-2:hover {
-    background: rgba(0, 0, 0, 0.45);
-    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.5);
   }
 
   .faq-question-alt {
@@ -1649,7 +1667,7 @@
     color: white;
     margin: 0;
     padding: 20px 25px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.03);
     font-family: 'Courier New', monospace;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1665,7 +1683,7 @@
   }
 
   .faq-question-alt:hover {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .faq-content-alt {
@@ -1676,7 +1694,7 @@
   .faq-answer-alt {
     font-size: 15px;
     line-height: 1.6;
-    color: #ddd;
+    color: #e0e0e0;
     margin: 0 0 20px 0;
     padding: 20px 0 0;
     box-sizing: border-box;
@@ -1701,8 +1719,8 @@
   }
 
   .faq-step-number {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1712,6 +1730,7 @@
     flex-shrink: 0;
     margin-top: 3px;
     box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .faq-item-alt-1 .faq-step-number {
@@ -1732,7 +1751,7 @@
   .faq-step-title-alt {
     font-size: 17px;
     font-weight: bold;
-    color: white;
+    color: #ffffff;
     margin: 0 0 8px 0;
     font-family: 'Courier New', monospace;
     box-sizing: border-box;
@@ -1741,7 +1760,7 @@
   .faq-step-content-alt {
     font-size: 14px;
     line-height: 1.6;
-    color: #aaa;
+    color: #cccccc;
     margin: 0;
     padding: 0;
     box-sizing: border-box;

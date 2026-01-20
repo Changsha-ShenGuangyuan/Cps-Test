@@ -622,10 +622,10 @@
     margin: 0 auto;
     text-align: center;
     padding: clamp(10px, 2vw, 20px);
-    background-color: #121212;
     color: white;
     position: relative;
     box-sizing: border-box;
+    background-color: #000000;
     border-radius: 10px;
   }
 
@@ -752,7 +752,6 @@
     line-height: 1.6;
     margin-bottom: clamp(15px, 3vw, 20px);
     padding: clamp(15px, 3vw, 20px);
-    background-color: #000000;
     border-radius: 10px;
     text-align: left;
     height: 300px;

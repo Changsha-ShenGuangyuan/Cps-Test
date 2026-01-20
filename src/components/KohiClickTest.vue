@@ -459,11 +459,11 @@
     margin: 0 auto;
     text-align: center;
     padding: clamp(10px, 2vw, 20px);
-    background-color: #121212;
     box-shadow: none;
     width: 100%;
-    border-radius: 10px;
     box-sizing: border-box;
+    background-color: #000000;
+    border-radius: 10px;
   }
 
   /* 主内容区域 - 左侧游戏 + 右侧历史记录 */

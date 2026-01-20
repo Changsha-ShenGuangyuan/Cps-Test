@@ -516,7 +516,7 @@
     margin: 0 auto;
     text-align: center;
     padding: clamp(10px, 2vw, 20px);
-    background-color: #121212;
+    background-color: #000000;
     box-shadow: none;
     width: 100%;
     border-radius: 10px;

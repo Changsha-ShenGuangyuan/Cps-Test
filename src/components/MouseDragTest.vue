@@ -332,11 +332,11 @@
     margin: 0 auto;
     padding: clamp(10px, 2vw, 20px);
     text-align: center;
-    background-color: #121212;
-    border-radius: 10px;
     box-shadow: none;
     width: 100%;
     box-sizing: border-box;
+    background-color: #000000;
+    border-radius: 10px;
   }
 
   h1 {

@@ -726,7 +726,7 @@
   /* 5秒空格速度测试样式 */
   .space-test-section {
     background: linear-gradient(135deg, #000000 0%, #000000 100%);
-    border-radius: 15px;
+    border-radius: 10px;
     padding: 10px;
     margin-bottom: 40px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);

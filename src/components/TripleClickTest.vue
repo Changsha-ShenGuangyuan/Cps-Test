@@ -326,6 +326,8 @@
     margin: 0 auto;
     padding: 10px 20px;
     text-align: center;
+    background-color: #000000;
+    border-radius: 10px;
   }
 
   /* 测试区域样式 */

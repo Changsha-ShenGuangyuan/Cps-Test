@@ -478,12 +478,12 @@
     margin: 20px auto;
     text-align: center;
     padding: clamp(20px, 4vw, 30px);
-    background-color: #121212;
     color: white;
     position: relative;
     box-sizing: border-box;
-    border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background-color: #000000;
+    border-radius: 10px;
   }
 
   /* 主内容区域 - 左侧游戏 + 右侧历史记录 */
