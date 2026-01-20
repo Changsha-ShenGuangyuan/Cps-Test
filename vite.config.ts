@@ -319,23 +319,39 @@ export default defineConfig({
             }
             return 'vendor';
           }
-          
+
           // 将测试组件按功能模块分组
           if (id.includes('src/components/')) {
-            if (id.includes('ClickTest') || id.includes('DoubleClickTest') || id.includes('TripleClickTest') || id.includes('KohiClickTest')) {
+            if (
+              id.includes('ClickTest') ||
+              id.includes('DoubleClickTest') ||
+              id.includes('TripleClickTest') ||
+              id.includes('KohiClickTest')
+            ) {
               return 'click-tests';
-            } else if (id.includes('SpaceClickTest') || id.includes('SpacebarClicker') || id.includes('KeyboardTest')) {
+            } else if (
+              id.includes('SpaceClickTest') ||
+              id.includes('SpacebarClicker') ||
+              id.includes('KeyboardTest')
+            ) {
               return 'keyboard-tests';
-            } else if (id.includes('ReactionTimeTest') || id.includes('ColorReactionTest') || id.includes('KeyReactionTest')) {
+            } else if (
+              id.includes('ReactionTimeTest') ||
+              id.includes('ColorReactionTest') ||
+              id.includes('KeyReactionTest')
+            ) {
               return 'reaction-tests';
             } else if (id.includes('TypingTest')) {
               return 'typing-tests';
-            } else if (id.includes('ResultModal') || id.includes('RelatedTests') || id.includes('FAQComponent')) {
+            } else if (
+              id.includes('ResultModal') ||
+              id.includes('RelatedTests') ||
+              id.includes('FAQComponent')
+            ) {
               return 'common-components';
             }
           }
         },
-        
       },
       // 优化初始加载性能
       input: {
@@ -360,9 +376,9 @@ export default defineConfig({
           postcssPlugin: 'custom-plugin',
           AtRule: {
             // 可以添加自定义的PostCSS规则
-          }
-        }
-      ]
-    }
+          },
+        },
+      ],
+    },
   },
 });

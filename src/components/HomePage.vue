@@ -109,7 +109,10 @@
             :key="time"
             class="time-select-item"
             :class="{ active: time === selectedTime }"
-            @click="selectedTime = time; navigateTo('/space-click-test/' + time)"
+            @click="
+              selectedTime = time;
+              navigateTo('/space-click-test/' + time);
+            "
           >
             {{ time }} <span>{{ t('secondsTest') }}</span>
           </button>
@@ -722,7 +725,7 @@
 
   /* 5秒空格速度测试样式 */
   .space-test-section {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    background: linear-gradient(135deg, #000000 0%, #000000 100%);
     border-radius: 15px;
     padding: 10px;
     margin-bottom: 40px;
@@ -863,15 +866,6 @@
     }
   }
 
-  /* 超小屏幕适配 */
-  @media (max-width: 480px) {
-    .time-select-item {
-      padding: 8px 10px;
-      font-size: 12px;
-      min-width: 60px;
-    }
-  }
-
   /* 游戏区域 */
   .game-area {
     flex: 1;
@@ -1002,8 +996,6 @@
     box-sizing: border-box;
   }
 
-  
-
   .click-area.playing {
     background-color: #000000;
   }
@@ -1103,32 +1095,6 @@
     }
   }
 
-  /* 移动端动画优化 - 减少不必要的动画 */
-  @media (max-width: 768px) {
-    /* 简化空格键按下动画 */
-    .spacebar-key.space-pressed {
-      animation: none;
-      transform: translateY(2px);
-    }
-
-    /* 简化点击区域发光动画 */
-    .click-area.space-pressed {
-      animation: none;
-    }
-
-    /* 简化按钮脉动动画 */
-    .start-btn:hover::before {
-      animation: none;
-      opacity: 0.4;
-    }
-
-    /* 简化按钮悬停效果 */
-    .start-btn:hover {
-      transform: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-  }
-
   /* 空格键提示 */
   .spacebar-hint {
     margin-top: 10px;
@@ -1188,6 +1154,31 @@
 
   /* 移动端适配 */
   @media (max-width: 768px) {
+    /* 动画优化 - 减少不必要的动画 */
+    /* 简化空格键按下动画 */
+    .spacebar-key.space-pressed {
+      animation: none;
+      transform: translateY(2px);
+    }
+
+    /* 简化点击区域发光动画 */
+    .click-area.space-pressed {
+      animation: none;
+    }
+
+    /* 简化按钮脉动动画 */
+    .start-btn:hover::before {
+      animation: none;
+      opacity: 0.4;
+    }
+
+    /* 简化按钮悬停效果 */
+    .start-btn:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 主要样式优化 */
     .space-test-section {
       padding: 10px;
     }
@@ -1259,51 +1250,88 @@
     .time-select-list {
       gap: 8px;
     }
-  }
 
-  /* 超小屏幕适配 */
-  @media (max-width: 480px) {
-    .click-area {
-      height: clamp(180px, 35vh, 250px);
+    /* 快速开始按钮布局 */
+    .quick-start-buttons {
+      grid-template-columns: 1fr;
+      gap: 12px;
     }
 
-    .game-title {
-      font-size: clamp(20px, 5vw, 24px);
+    /* 容器内边距优化 */
+    .home-container {
+      padding: 10px;
     }
 
-    .spacebar-key {
-      width: 200px;
-      height: 45px;
-      font-size: 14px;
+    /* 按钮样式优化 */
+    .start-btn {
+      padding: 15px 10px;
+      font-size: 15px;
+      min-height: 60px;
+      transition: none;
     }
 
-    /* 超小屏幕提示文字进一步优化 */
-    .hints {
-      margin-top: 0;
-      transform: translateY(-5px);
-      font-size: 14px;
+    .start-btn:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-color: transparent;
     }
 
-    /* 超小屏幕准备就绪文字进一步优化 */
-    .ready-text {
-      font-size: 36px;
-      margin-bottom: 15px;
+    .start-btn:hover::before {
+      display: none;
     }
 
-    /* 时间选择项超小屏幕适配 */
-    .time-select-item {
-      padding: 10px 12px;
-      font-size: 13px;
-      letter-spacing: 0.3px;
+    .start-btn::before {
+      display: none;
     }
 
-    .time-select-title {
-      font-size: 18px;
-      margin-bottom: 16px;
+    /* FAQ项目优化 */
+    .faq-item {
+      padding: 20px 16px;
     }
 
-    .time-select-sidebar {
-      padding: 16px;
+    .faq-question {
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+
+    .faq-question:before {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    .faq-answer {
+      font-size: 16px;
+      margin-left: 28px;
+      line-height: 1.6;
+    }
+
+    /* 点击类型区域优化 */
+    .click-types-section {
+      padding: 40px 15px;
+      margin: 40px 0;
+    }
+
+    .click-types-section .section-title {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .click-types-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .click-type-item {
+      padding: 25px;
+    }
+
+    .click-type-title {
+      font-size: 20px;
+    }
+
+    .click-type-description {
+      font-size: 15px;
     }
   }
 
@@ -1629,7 +1657,7 @@
 
   /* FAQ答案样式 */
   .faq-answer {
-    color: #e0e0e0; /* 浅灰色文本，增强可读性 */
+    color: #cccccc; /* 浅灰色文本，增强可读性 */
     font-size: 18px; /* 小号字号 */
     line-height: 1.65; /* 行高，增强可读性 */
     margin-top: 16px; /* 顶部外边距 */
@@ -1672,13 +1700,6 @@
     text-decoration: none; /* 确保没有下划线 */
   }
 
-  /* 快速开始按钮布局优化 - 统一调整，减少重复媒体查询 */
-  .quick-start-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 15px;
-  }
-
   /* 桌面端快速开始按钮布局 */
   @media (min-width: 1201px) {
     .quick-start-buttons {
@@ -1701,107 +1722,10 @@
     }
   }
 
-  /* FAQ容器布局优化 */
-  .faq-container {
-    max-width: 100%;
-    margin: 0 auto;
-    text-align: left;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-
   /* 桌面端FAQ容器 */
   @media (min-width: 1201px) {
     .faq-container {
       gap: 24px;
-    }
-  }
-
-  /* 移动端容器内边距优化 */
-  @media (max-width: 768px) {
-    .home-container {
-      padding: 10px;
-    }
-  }
-
-  /* 移动端按钮样式优化 */
-  @media (max-width: 768px) {
-    .start-btn {
-      padding: 15px 10px;
-      font-size: 15px;
-      min-height: 60px;
-      transition: none;
-    }
-    
-    .start-btn:hover {
-      transform: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      border-color: transparent;
-    }
-    
-    .start-btn:hover::before {
-      display: none;
-    }
-    
-    .start-btn::before {
-      display: none;
-    }
-  }
-
-  /* 超小屏幕按钮优化 */
-  @media (max-width: 480px) {
-    .start-btn {
-      padding: 12px 8px;
-      font-size: 14px;
-      min-height: 50px;
-    }
-  }
-
-  /* FAQ项目移动端优化 */
-  @media (max-width: 768px) {
-    .faq-item {
-      padding: 20px 16px;
-    }
-
-    .faq-question {
-      font-size: 19px;
-      margin-bottom: 12px;
-    }
-
-    .faq-question:before {
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-    }
-
-    .faq-answer {
-      font-size: 16px;
-      margin-left: 28px;
-      line-height: 1.6;
-    }
-  }
-
-  /* 超小屏幕FAQ优化 */
-  @media (max-width: 480px) {
-    .faq-item {
-      padding: 18px 14px;
-    }
-
-    .faq-question {
-      font-size: 18px;
-    }
-
-    .faq-answer {
-      font-size: 15px;
-      margin-left: 24px;
-    }
-
-    .faq-question:before {
-      width: 18px;
-      height: 18px;
-      margin-right: 6px;
     }
   }
 
@@ -1840,7 +1764,6 @@
   /* 点击类型项样式 */
   .click-type-item {
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 30px;
@@ -1937,7 +1860,83 @@
     }
   }
 
+  /* 超小屏幕适配 */
   @media (max-width: 480px) {
+    /* 时间选择项超小屏幕适配 */
+    .time-select-item {
+      padding: 8px 10px;
+      font-size: 12px;
+      min-width: 60px;
+    }
+
+    /* 点击区域优化 */
+    .click-area {
+      height: clamp(180px, 35vh, 250px);
+    }
+
+    /* 游戏标题优化 */
+    .game-title {
+      font-size: clamp(20px, 5vw, 24px);
+    }
+
+    /* 空格键优化 */
+    .spacebar-key {
+      width: 200px;
+      height: 45px;
+      font-size: 14px;
+    }
+
+    /* 提示文字优化 */
+    .hints {
+      margin-top: 0;
+      transform: translateY(-5px);
+      font-size: 14px;
+    }
+
+    /* 准备就绪文字优化 */
+    .ready-text {
+      font-size: 36px;
+      margin-bottom: 15px;
+    }
+
+    /* 时间选择区域优化 */
+    .time-select-title {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .time-select-sidebar {
+      padding: 16px;
+    }
+
+    /* 按钮优化 */
+    .start-btn {
+      padding: 12px 8px;
+      font-size: 14px;
+      min-height: 50px;
+    }
+
+    /* FAQ优化 */
+    .faq-item {
+      padding: 18px 14px;
+    }
+
+    .faq-question {
+      font-size: 18px;
+    }
+
+    .faq-answer {
+      font-size: 15px;
+      margin-left: 24px;
+    }
+
+    .faq-question:before {
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+    }
+
+    /* 点击类型区域优化 */
     .click-types-section .section-title {
       font-size: 24px;
       margin-bottom: 25px;

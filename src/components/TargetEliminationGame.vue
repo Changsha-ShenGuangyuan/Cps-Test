@@ -522,7 +522,7 @@
               height: `${target.size}px`,
               backgroundColor: target.color,
             }"
-            @click.stop="eliminateTarget(target.id)"
+            @mousedown.stop="eliminateTarget(target.id)"
           ></div>
         </div>
 
