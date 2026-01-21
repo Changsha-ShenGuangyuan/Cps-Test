@@ -121,7 +121,8 @@
     </section>
 
     <!-- 结果弹窗组件 -->
-    <ResultModal
+    <component 
+      :is="ResultModal"
       :visible="showResultModal"
       :type="'space'"
       :cps="cps"
@@ -230,7 +231,7 @@
   import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 
   import { t } from '../i18n/index';
-  // 导入结果弹窗组件
+  // 静态导入结果弹窗组件
   import ResultModal from './ResultModal.vue';
 
   const router = useRouter();
@@ -477,7 +478,10 @@
 
   // 触摸开始处理函数 - 模拟空格键按下
   const handleTouchStart = (event: TouchEvent) => {
-    event.preventDefault();
+    // 只有当事件可取消时才调用preventDefault()
+    if (event.cancelable) {
+      event.preventDefault();
+    }
 
     // 游戏结束，不处理点击事件
     if (isGameOver.value) {
@@ -509,7 +513,10 @@
 
   // 触摸结束处理函数 - 模拟空格键释放
   const handleTouchEnd = (event: TouchEvent) => {
-    event.preventDefault();
+    // 只有当事件可取消时才调用preventDefault()
+    if (event.cancelable) {
+      event.preventDefault();
+    }
 
     // 游戏结束，不处理点击事件
     if (isGameOver.value) {

@@ -252,13 +252,15 @@ export default defineConfig({
             },
             injectTo: 'head',
           },
+          // 预加载关键资源 - 仅在生产模式下注入
+          // 开发模式下Vite会自动处理模块加载，不需要预加载
           // 安全相关的meta标签
           {
             tag: 'meta',
             attrs: {
               'http-equiv': 'Content-Security-Policy',
               content:
-                "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.google-analytics.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://fonts.googleapis.com https://fonts.gstatic.com",
+                "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com",
             },
           },
           {
@@ -322,19 +324,30 @@ export default defineConfig({
 
           // 将测试组件按功能模块分组
           if (id.includes('src/components/')) {
-            if (
-              id.includes('ClickTest') ||
-              id.includes('DoubleClickTest') ||
-              id.includes('TripleClickTest') ||
-              id.includes('KohiClickTest')
-            ) {
-              return 'click-tests';
-            } else if (
-              id.includes('SpaceClickTest') ||
-              id.includes('SpacebarClicker') ||
-              id.includes('KeyboardTest')
-            ) {
-              return 'keyboard-tests';
+            // 基础UI组件单独打包
+            if (id.includes('ResultModal')) {
+              return 'result-modal';
+            } else if (id.includes('RelatedTests')) {
+              return 'related-tests';
+            } else if (id.includes('FAQComponent')) {
+              return 'faq-component';
+            }
+            
+            // 测试组件按类型分组
+            if (id.includes('ClickTest.vue')) {
+              return 'click-test-ui';
+            } else if (id.includes('DoubleClickTest')) {
+              return 'double-click-test';
+            } else if (id.includes('TripleClickTest')) {
+              return 'triple-click-test';
+            } else if (id.includes('KohiClickTest')) {
+              return 'kohi-click-test';
+            } else if (id.includes('SpaceClickTest')) {
+              return 'space-click-test';
+            } else if (id.includes('SpacebarClicker')) {
+              return 'spacebar-clicker';
+            } else if (id.includes('KeyboardTest')) {
+              return 'keyboard-test';
             } else if (
               id.includes('ReactionTimeTest') ||
               id.includes('ColorReactionTest') ||
@@ -343,13 +356,17 @@ export default defineConfig({
               return 'reaction-tests';
             } else if (id.includes('TypingTest')) {
               return 'typing-tests';
-            } else if (
-              id.includes('ResultModal') ||
-              id.includes('RelatedTests') ||
-              id.includes('FAQComponent')
-            ) {
-              return 'common-components';
             }
+          }
+
+          // 将工具函数和公共代码单独打包
+          if (id.includes('src/utils/')) {
+            return 'utils';
+          }
+          
+          // 将国际化文件单独打包
+          if (id.includes('src/i18n/')) {
+            return 'i18n';
           }
         },
       },

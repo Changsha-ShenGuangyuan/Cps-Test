@@ -454,10 +454,11 @@
     </div>
 
     <!-- 相关测试推荐组件 -->
-    <RelatedTests current-test="keyboardTest" />
+    <component :is="RelatedTests" current-test="keyboardTest" />
 
     <!-- 使用通用FAQ组件 -->
-    <FAQComponent
+    <component 
+      :is="FAQComponent"
       :title="t('keyboardTest')"
       :faq="currentFaq"
       :show-popular="true"
@@ -467,12 +468,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, computed } from 'vue';
-  import { t } from '../i18n/index';
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+import { ref, computed, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
+import { t } from '../i18n/index';
+// 懒加载通用FAQ组件
+const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+// 懒加载相关测试推荐组件
+const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 按键代码映射表，将KeyboardEvent.code转换为更简洁的表示
   const keyCodeMap: Record<string, string> = {
@@ -897,49 +898,7 @@
     gap: 10px;
   }
 
-  /* 测试信息区域样式 */
-  .test-info {
-    margin-top: 40px;
-    color: #ffffff;
-  }
 
-  .pressed-keys {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 20px;
-  }
-
-  .pressed-key {
-    background: linear-gradient(145deg, #333333, #2a2a2a);
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: 500;
-    color: #ffffff;
-    box-shadow:
-      0 4px 8px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #444;
-    font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace;
-  }
-
-  .pressed-key:hover {
-    background: linear-gradient(145deg, #3a3a3a, #2d2d2d);
-    transform: translateY(-3px);
-    box-shadow:
-      0 6px 12px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    border-color: #555;
-  }
-
-  .no-keys {
-    color: #6c757d;
-    font-size: 18px;
-    font-style: italic;
-  }
 
   .key-history-text {
     font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace;
@@ -1065,92 +1024,5 @@
     }
   }
 
-  /* 网格布局 */
-  .faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
-  }
 
-  /* 单列布局 */
-  .faq-column {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  /* 全宽样式 */
-  .full-width {
-    grid-column: 1 / -1;
-    background-color: rgba(40, 40, 40, 0.8);
-  }
-
-  /* FAQ 项目 */
-  .faq-item {
-    background-color: rgba(50, 50, 50, 0.7);
-    padding: 25px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(80, 80, 80, 0.5);
-    text-align: left;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    margin: 0;
-    margin-top: 15px;
-  }
-
-  .faq-item:hover {
-    background-color: rgba(60, 60, 60, 0.9);
-    border-color: #4caf50;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    transform: translateY(-3px);
-  }
-
-  /* FAQ 标题 */
-  .faq-item h4 {
-    color: #4caf50;
-    margin: 0 0 15px 0;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.3;
-    font-family:
-      'Segoe UI',
-      system-ui,
-      -apple-system,
-      sans-serif;
-  }
-
-  /* FAQ 内容 */
-  .faq-item p {
-    color: #e0e0e0;
-    margin: 0;
-    line-height: 1.7;
-    font-size: 16px;
-    text-align: left;
-    opacity: 0.9;
-    font-family:
-      'Segoe UI',
-      system-ui,
-      -apple-system,
-      sans-serif;
-  }
-
-  /* FAQ 响应式调整 */
-  @media (max-width: 768px) {
-    .faq-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-
-    .faq-item {
-      padding: 20px;
-    }
-
-    .faq-item h4 {
-      font-size: 16px;
-    }
-
-    .faq-item p {
-      font-size: 14px;
-    }
-  }
 </style>

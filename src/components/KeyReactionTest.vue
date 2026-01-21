@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, computed } from 'vue';
+  import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue';
   import { t } from '../i18n/index';
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 游戏状态常量
   const GameState = {
@@ -386,12 +386,13 @@
     </div>
 
     <!-- 相关测试推荐组件 -->
-    <RelatedTests current-test="keyReactionTest" />
+    <component :is="RelatedTests" current-test="keyReactionTest" />
 
     <!-- FAQ部分 -->
     <div class="info">
       <!-- 使用通用FAQ组件 -->
-      <FAQComponent
+      <component 
+        :is="FAQComponent"
         :title="t('keyReactionTest')"
         :faq="currentFaq"
         :show-popular="true"
@@ -414,7 +415,7 @@
   .game-area {
     width: 80%;
     max-width: 800px;
-    height: 450px;
+    min-height: 500px;
     background-color: #1a1a1a;
     border-radius: 15px;
     margin: 0 auto 20px;
@@ -617,7 +618,7 @@
     bottom: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 15px;
     background-color: #000000;
@@ -625,6 +626,7 @@
     padding: 20px;
     margin: 0;
     z-index: 10;
+    overflow-y: auto;
   }
 
   /* 错误状态样式 */
@@ -767,64 +769,18 @@
     z-index: 2;
   }
 
-  /* 结果样式 */
-  .result {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .result h3 {
-    color: #4caf50;
-    margin-bottom: 20px;
-  }
-
-  .average-time {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: white;
-  }
-
-  .restart-btn {
-    padding: 12px 30px;
-    font-size: 16px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: bold;
-    outline: none; /* 移除默认轮廓 */
-    -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
-  }
-
-  .restart-btn:hover {
-    background-color: #388e3c;
-    transform: scale(1.05);
-  }
-
-  .restart-btn:active {
-    background-color: #2e7d32;
-    transform: scale(0.98);
-    outline: none; /* 移除点击时的轮廓 */
-  }
-
-  .restart-btn:focus {
-    outline: none; /* 移除聚焦轮廓 */
-  }
-
   /* 最终结果样式 */
   .final-result {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 20px;
-    padding: 20px;
+    padding: 30px 20px;
     background-color: transparent;
     border-radius: 0;
     max-width: 100%;
-    max-height: 100%;
+    height: 100%;
     overflow-y: auto;
     box-sizing: border-box;
   }
@@ -980,53 +936,9 @@
     text-align: left; /* 文本左对齐，提高可读性 */
   }
 
-  .faq-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-  }
+  
 
-  .faq-item {
-    text-align: left;
-    background-color: rgba(50, 50, 50, 0.5);
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 25px;
-    transition: all 0.3s ease;
-  }
-
-  .faq-item:hover {
-    background-color: rgba(50, 50, 50, 0.8);
-    border-color: #4caf50;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  }
-
-  .faq-item h4 {
-    color: #4caf50;
-    margin: 0 0 10px 0;
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .faq-item p {
-    color: #ccc;
-    margin: 0;
-    line-height: 1.5;
-    font-size: 14px;
-  }
-
-  .info h3 {
-    color: #4caf50;
-    margin-bottom: 10px;
-  }
-
-  .info p {
-    color: #ccc;
-    line-height: 1.5;
-    margin: 10px 0;
-  }
+  
 
   /* 移动端适配 */
   @media (max-width: 768px) {
@@ -1039,7 +951,7 @@
     /* 游戏区域优化 */
     .game-area {
       width: 90%;
-      height: 450px;
+      min-height: 500px;
       padding: 15px;
     }
 
@@ -1120,7 +1032,8 @@
     /* 最终结果优化 */
     .final-result {
       gap: 15px;
-      padding: 15px;
+      padding: 20px 15px;
+      height: 100%;
     }
 
     /* 轮次结果卡片优化 */
@@ -1198,18 +1111,6 @@
       width: 90%;
       padding: 15px;
       margin-top: 20px;
-    }
-
-    .faq-item {
-      padding: 15px;
-    }
-
-    .faq-item h4 {
-      font-size: 14px;
-    }
-
-    .faq-item p {
-      font-size: 13px;
     }
   }
 </style>

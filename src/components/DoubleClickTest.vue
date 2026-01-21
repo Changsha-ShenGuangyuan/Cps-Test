@@ -103,12 +103,13 @@
     </section>
 
     <!-- 相关测试推荐组件 -->
-    <RelatedTests current-test="doubleClickTest" />
+    <component :is="RelatedTests" current-test="doubleClickTest" />
 
     <!-- FAQ区域 -->
     <div class="faq-section">
       <!-- 使用通用FAQ组件 -->
-      <FAQComponent
+      <component 
+        :is="FAQComponent"
         :title="t('doubleClickTest')"
         :faq="currentFaq"
         :show-popular="true"
@@ -119,30 +120,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
   import { t } from '../i18n/index';
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
-
-  // 响应式变量：屏幕尺寸
-  const isDesktop = ref(window.innerWidth >= 1201);
-
-  // 监听窗口大小变化
-  const handleResize = () => {
-    isDesktop.value = window.innerWidth >= 1201;
-  };
-
-  // 组件挂载时添加窗口大小监听
-  onMounted(() => {
-    window.addEventListener('resize', handleResize);
-  });
-
-  // 组件卸载时移除窗口大小监听
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', handleResize);
-  });
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 测试状态
   const isTesting = ref(false);
@@ -162,18 +145,14 @@
   // 用于记录上一次点击时间，计算双击速度
   const lastClickTime = ref<Record<string, number>>({ left: 0, middle: 0, right: 0 });
 
+  // 导入composable函数
+  import { useRippleEffect } from '../composables/useRippleEffect';
+
   // 测试按钮引用
   const testButtonRef = ref<HTMLElement | null>(null);
 
-  // 涟漪特效类型定义
-  interface Ripple {
-    id: number; // 涟漪唯一标识
-    x: number; // 涟漪中心X坐标
-    y: number; // 涟漪中心Y坐标
-  }
-
-  // 涟漪特效数组
-  const ripples = ref<Ripple[]>([]);
+  // 使用涟漪特效composable
+  const { ripples, addRipple, clearRipples } = useRippleEffect();
 
   // 添加点击特效
   const addClickEffect = (event: MouseEvent) => {
@@ -187,22 +166,7 @@
     const y = event.clientY - rect.top;
 
     // 创建涟漪特效
-    const rippleId = Date.now();
-
-    // 创建新的涟漪对象
-    const newRipple: Ripple = {
-      id: rippleId,
-      x: x,
-      y: y,
-    };
-
-    // 添加涟漪到数组（触发响应式更新）
-    ripples.value = [...ripples.value, newRipple];
-
-    // 动画结束后自动移除涟漪
-    setTimeout(() => {
-      ripples.value = ripples.value.filter((r) => r.id !== rippleId);
-    }, 600); // 与动画时长一致
+    addRipple(x, y);
   };
 
   // 开始测试
@@ -225,6 +189,8 @@
   const resetTest = () => {
     isTesting.value = false;
     resetClicks();
+    // 清除所有涟漪特效
+    clearRipples();
   };
 
   // 处理单击事件
@@ -511,31 +477,9 @@
     -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
   }
 
-  .start-btn {
-    background-color: #4caf50;
-    color: white;
-  }
+  
 
-  .start-btn:hover:not(:disabled) {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-  }
-
-  .start-btn:disabled {
-    background-color: #666;
-    cursor: not-allowed;
-  }
-
-  .start-btn:active:not(:disabled) {
-    transform: scale(0.98);
-    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.6);
-    outline: none; /* 移除点击时的轮廓 */
-  }
-
-  .start-btn:focus:not(:disabled) {
-    outline: none; /* 移除聚焦轮廓 */
-  }
+  
 
   .reset-btn {
     background-color: #f44336;
@@ -559,56 +503,9 @@
     outline: none; /* 移除聚焦轮廓 */
   }
 
-  /* 网格布局 */
-  .faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
-  }
+  
 
-  /* 单列布局 */
-  .faq-column {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  /* FAQ 项目 */
-  .faq-item {
-    background-color: rgba(50, 50, 50, 0.7);
-    padding: 25px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(80, 80, 80, 0.5);
-    text-align: left;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .faq-item:hover {
-    background-color: rgba(60, 60, 60, 0.9);
-    border-color: #4caf50;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    transform: translateY(-3px);
-  }
-
-  /* FAQ 标题 */
-  .faq-item h4 {
-    color: #4caf50;
-    margin: 0 0 15px 0;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.3;
-  }
-
-  /* FAQ 内容 */
-  .faq-item p {
-    color: #e0e0e0;
-    margin: 0;
-    line-height: 1.7;
-    font-size: 16px;
-    text-align: left;
-    opacity: 0.9;
-  }
+  
 
   /* 桌面端布局优化 */
   @media (min-width: 1201px) {
@@ -726,16 +623,6 @@
       max-width: 500px;
       height: 140px;
       font-size: 16px;
-    }
-
-    /* FAQ优化 */
-    .faq-grid {
-      grid-template-columns: 1fr;
-      gap: 15px;
-    }
-
-    .faq-item {
-      padding: 20px;
     }
 
     /* 测试面板边距优化，增加宽度确保统计信息显示完全 */

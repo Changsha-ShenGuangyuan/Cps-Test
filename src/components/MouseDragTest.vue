@@ -30,12 +30,13 @@
     </div>
 
     <!-- 相关测试推荐组件 -->
-    <RelatedTests current-test="mouseDragTest" />
+    <component :is="RelatedTests" current-test="mouseDragTest" />
 
     <!-- FAQ区域 -->
     <div class="faq-section">
       <!-- 使用通用FAQ组件 -->
-      <FAQComponent
+      <component 
+        :is="FAQComponent"
         :title="t('mouseDragTest')"
         :faq="currentFaq"
         :show-popular="true"
@@ -46,12 +47,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue';
   import { t } from '../i18n/index';
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);

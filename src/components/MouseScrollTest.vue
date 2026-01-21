@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import { ref, onUnmounted, computed } from 'vue';
+  import { ref, onUnmounted, computed, defineAsyncComponent } from 'vue';
   import { t } from '../i18n'; // 导入翻译函数
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 组件功能：鼠标滚动测试，测试玩家在滚动区域内每秒最高滚动像素
 
@@ -174,17 +174,18 @@
     </div>
 
     <!-- 相关测试推荐组件 -->
-    <RelatedTests current-test="mouseScrollTest" />
+    <component :is="RelatedTests" current-test="mouseScrollTest" />
 
     <!-- 游戏说明 -->
     <div class="game-instructions">
       <!-- 使用通用FAQ组件 -->
-      <FAQComponent
-        :title="t('mouseScrollTest')"
-        :faq="currentFaq"
-        :show-popular="true"
-        :popular-questions="popularQuestions"
-      />
+          <component 
+            :is="FAQComponent"
+            :title="t('mouseScrollTest')"
+            :faq="currentFaq"
+            :show-popular="true"
+            :popular-questions="popularQuestions"
+          />
     </div>
   </div>
 </template>
@@ -278,14 +279,6 @@
 
   /* 响应式设计 */
   @media (max-width: 600px) {
-    .game-title {
-      font-size: 24px;
-    }
-
-    .header .subtitle {
-      font-size: 16px;
-    }
-
     .speed-value {
       font-size: 32px;
     }

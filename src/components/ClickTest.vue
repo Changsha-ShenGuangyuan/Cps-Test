@@ -1,12 +1,18 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount, watch, defineAsyncComponent } from 'vue';
   import { useRoute, onBeforeRouteUpdate } from 'vue-router';
   import { t } from '../i18n/index';
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  import RelatedTests from './RelatedTests.vue';
-  // 导入结果弹窗组件
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 静态导入结果弹窗组件
   import ResultModal from './ResultModal.vue';
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
+
+  // 导入composable函数
+  import { useClickTestGame } from '../composables/useClickTestGame';
+  import { useRippleEffect } from '../composables/useRippleEffect';
+  import { useClickTestHistory } from '../composables/useClickTestHistory';
 
   // 导入图标资源
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
@@ -19,19 +25,6 @@
   const handleResize = () => {
     isDesktop.value = window.innerWidth >= 1201;
   };
-
-  // 组件挂载时添加事件监听
-  onMounted(() => {
-    window.addEventListener('resize', handleResize);
-  });
-
-  // 组件卸载时移除事件监听
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', handleResize);
-  });
-
-  // 组件功能：点击速度测试组件，支持固定时间测试和自定义时间测试
-  // 支持涟漪特效、实时CPS计算、毫秒级计时等功能
 
   // 路由相关
   const route = useRoute(); // 获取路由实例
@@ -82,247 +75,259 @@
     return [t(`faqClick${testTime.value}Q1`), t(`faqClick${testTime.value}Q2`), t('homeFaqQ1')];
   });
 
-  // 涟漪特效类型定义
-  interface Ripple {
-    id: number; // 涟漪唯一标识
-    x: number; // 涟漪中心X坐标
-    y: number; // 涟漪中心Y坐标
-    size: number; // 涟漪大小
-    opacity: number; // 涟漪透明度
-  }
-
-  // 历史记录类型定义
-  interface HistoryRecord {
-    id: number;
-    testTime: number;
-    clicks: number;
-    cps: number;
-    date: string;
-  }
-
-  // 状态管理
-  const isPlaying = ref(false); // 游戏是否正在进行中
-  const isGameOver = ref(false); // 游戏是否结束（专门用于标识最终状态）
-  const startTime = ref(0); // 游戏开始时间戳
-  const endTime = ref(0); // 游戏结束时间戳
-  const clicks = ref(0); // 点击次数
-  const cps = ref(0); // 最终CPS值（每秒点击次数）
-  const timer = ref(0); // 定时器ID
-  const elapsedTime = ref(0); // 已用时间（毫秒级精度）
-  const ripples = ref<Ripple[]>([]); // 涟漪特效数组
-  const clickAreaRef = ref<HTMLElement | null>(null); // 点击区域DOM引用
-  const showResultModal = ref(false); // 结果弹窗显示状态
-
   // 鼠标按键选择状态
   const mouseButtonOptions = computed(() => [
     // 可选按键列表，使用computed实现响应式翻译
     { value: 0, label: t('leftMouseButton') }, // 左键
     { value: 2, label: t('rightMouseButton') }, // 右键
   ]);
-  const selectedMouseButton = ref(0); // 当前选择的鼠标按键，默认左键
 
-  // 历史记录相关
-  const historyRecords = ref<HistoryRecord[]>([]); // 历史记录数组
+  // 点击区域DOM引用
+  const clickAreaRef = ref<HTMLElement | null>(null);
 
-  // 从localStorage加载历史记录
-  const loadHistory = () => {
-    const saved = localStorage.getItem('clickTestHistory');
-    if (saved) {
-      const loaded = JSON.parse(saved);
-      // 移除可能存在的description字段，确保数据结构一致
-      historyRecords.value = loaded.map((record: any) => {
-        return {
-          ...record,
-          // 只保留需要的字段
-          cps: record.cps,
-          clicks: record.clicks,
-          testTime: record.testTime,
-          date: record.date,
-        };
-      });
-    }
-  };
-
-  // 保存历史记录到localStorage
-  const saveHistory = () => {
-    localStorage.setItem('clickTestHistory', JSON.stringify(historyRecords.value));
-  };
-
-  // 初始化加载历史记录
-  loadHistory();
-
-  // 计算属性：判断时间是否到了
-  const isTimeUp = computed(() => {
-    // 游戏未开始或已结束，返回false
-    if (!isPlaying.value || isGameOver.value) return false;
-
-    // 计算已用时间（秒）
-    const elapsed = (Date.now() - startTime.value) / 1000;
-    return elapsed >= testTime.value; // 已用时间大于等于测试时间则返回true
-  });
-
-  // 计算属性：实时计算当前CPS
-  const currentCps = computed(() => {
-    // 游戏结束时，显示最终CPS值
-    if (isGameOver.value) {
-      return cps.value;
-    }
-
-    // 游戏未开始或无点击则返回0
-    if (!isPlaying.value || clicks.value === 0) return 0;
-
-    // 使用 Timer (elapsedTime) 和 Score (clicks) 进行实时计算
-    // 避免除以0或极小值导致的Infinity
-    if (elapsedTime.value < 0.1) return 0;
-
-    // 计算CPS并保留2位小数
-    return Math.round((clicks.value / elapsedTime.value) * 100) / 100;
-  });
-
+  // 使用composable函数
+  const { ripples, addRipple, clearRipples } = useRippleEffect();
+  const { addHistoryRecord, filteredHistory: getFilteredHistory } = useClickTestHistory('clickTest');
+  
   // 计算属性：根据当前测试时长筛选历史记录
-  const filteredHistory = computed(() => {
-    return historyRecords.value.filter((record) => record.testTime === testTime.value);
-  });
+  const filteredHistory = computed(() => getFilteredHistory(testTime.value));
 
-  // 游戏开始函数
-  const startGame = () => {
-    if (isPlaying.value) return; // 防止重复开始
+  // 游戏状态和方法
+  const isPlaying = ref(false);
+  const isGameOver = ref(false);
+  const clicks = ref(0);
+  const cps = ref(0);
+  const elapsedTime = ref(0);
+  const showResultModal = ref(false);
+  const selectedMouseButton = ref(0);
+  const isTimeUp = ref(false);
+  const currentCps = ref(0);
 
-    // 重置游戏状态
-    clicks.value = 0;
-    startTime.value = Date.now(); // 记录开始时间
-    isPlaying.value = true;
-    isGameOver.value = false; // 确保游戏未结束
-    elapsedTime.value = 0; // 重置已用时间
+  // 游戏方法
+  let gameInstance: any = null;
 
-    // 设置定时器，每50ms更新一次状态
-    timer.value = window.setInterval(() => {
-      // 计算并更新已用时间（毫秒级）
-      const elapsed = (Date.now() - startTime.value) / 1000;
-      elapsedTime.value = Math.min(elapsed, testTime.value);
+  // 初始化游戏实例
+  const initGame = (time: number) => {
+    gameInstance = useClickTestGame(time);
+    
+    // 同步游戏状态到本地ref
+    isPlaying.value = gameInstance.isPlaying.value;
+    isGameOver.value = gameInstance.isGameOver.value;
+    clicks.value = gameInstance.clicks.value;
+    cps.value = gameInstance.cps.value;
+    elapsedTime.value = gameInstance.elapsedTime.value;
+    showResultModal.value = gameInstance.showResultModal.value;
+    selectedMouseButton.value = gameInstance.selectedMouseButton.value;
+    isTimeUp.value = gameInstance.isTimeUp.value;
+    currentCps.value = gameInstance.currentCps.value;
 
-      // 检查时间是否结束（直接计算，不依赖isTimeUp）
-      if (elapsed >= testTime.value) {
-        endGame();
+    // 监听游戏实例状态变化，实时同步到本地ref
+    watch(
+      () => gameInstance.isPlaying.value,
+      (newValue) => {
+        isPlaying.value = newValue;
       }
-    }, 50); // 50ms更新一次，确保毫秒级显示流畅
+    );
+
+    // 监听已用时间变化，实时更新
+    watch(
+      () => gameInstance.elapsedTime.value,
+      (newValue) => {
+        elapsedTime.value = newValue;
+      }
+    );
+
+    // 监听当前CPS变化，实时更新
+    watch(
+      () => gameInstance.currentCps.value,
+      (newValue) => {
+        currentCps.value = newValue;
+      }
+    );
+
+    // 监听点击次数变化，实时更新
+    watch(
+      () => gameInstance.clicks.value,
+      (newValue) => {
+        clicks.value = newValue;
+      }
+    );
+
+    // 监听游戏结束状态变化，实时更新
+    watch(
+      () => gameInstance.isGameOver.value,
+      (newValue) => {
+        isGameOver.value = newValue;
+        // 当游戏结束时，保存历史记录
+        if (newValue) {
+          endGame();
+        }
+      }
+    );
+
+    // 监听结果弹窗状态变化，实时更新
+    watch(
+      () => gameInstance.showResultModal.value,
+      (newValue) => {
+        showResultModal.value = newValue;
+        // 当结果弹窗显示时，同步所有状态，确保cps值正确
+        if (newValue) {
+          isPlaying.value = gameInstance.isPlaying.value;
+          isGameOver.value = gameInstance.isGameOver.value;
+          clicks.value = gameInstance.clicks.value;
+          cps.value = gameInstance.cps.value;
+          elapsedTime.value = gameInstance.elapsedTime.value;
+          isTimeUp.value = gameInstance.isTimeUp.value;
+          currentCps.value = gameInstance.currentCps.value;
+        }
+      }
+    );
+
+    // 监听时间是否到了状态变化，实时更新
+    watch(
+      () => gameInstance.isTimeUp.value,
+      (newValue) => {
+        isTimeUp.value = newValue;
+      }
+    );
+
+    // 监听cps变化，实时更新
+    watch(
+      () => gameInstance.cps.value,
+      (newValue) => {
+        cps.value = newValue;
+      }
+    );
   };
 
-  // 游戏结束函数
-  const endGame = () => {
-    isPlaying.value = false; // 标记游戏结束
-    isGameOver.value = true; // 设置最终结束状态
-    endTime.value = Date.now(); // 记录结束时间
+  // 初始化游戏
+  initGame(testTime.value);
 
-    // 计算最终CPS，使用规定的测试时间，确保与clicks保持一致
-    cps.value = testTime.value > 0 ? Math.round((clicks.value / testTime.value) * 100) / 100 : 0;
+  // 监听testTime变化，更新游戏状态
+  watch(testTime, (newTime) => {
+    initGame(newTime);
+    resetGame();
+  });
 
-    // 确保已用时间显示为规定的测试时间，而不是实际的游戏持续时间
-    elapsedTime.value = testTime.value;
-
-    // 清除定时器
-    clearInterval(timer.value);
-
-    // 创建历史记录
-    const newRecord: HistoryRecord = {
-      id: Date.now(),
-      testTime: testTime.value,
-      clicks: clicks.value,
-      cps: cps.value,
-      date: new Date().toLocaleString(),
-    };
-
-    // 添加到历史记录数组
-    historyRecords.value.unshift(newRecord);
-
-    // 限制历史记录数量（最多保存10条）
-    if (historyRecords.value.length > 10) {
-      historyRecords.value = historyRecords.value.slice(0, 10);
+  // 游戏方法
+  const handleGameClick = (button: number) => {
+    if (gameInstance) {
+      const result = gameInstance.handleClick(button);
+      
+      // 同步游戏状态到本地ref
+      isPlaying.value = gameInstance.isPlaying.value;
+      isGameOver.value = gameInstance.isGameOver.value;
+      clicks.value = gameInstance.clicks.value;
+      cps.value = gameInstance.cps.value;
+      elapsedTime.value = gameInstance.elapsedTime.value;
+      showResultModal.value = gameInstance.showResultModal.value;
+      selectedMouseButton.value = gameInstance.selectedMouseButton.value;
+      isTimeUp.value = gameInstance.isTimeUp.value;
+      currentCps.value = gameInstance.currentCps.value;
+      
+      return result;
     }
+    return false;
+  };
 
-    // 保存到localStorage
-    saveHistory();
+  const resetGame = () => {
+    if (gameInstance) {
+      gameInstance.resetGame();
+      // 同步状态
+      isPlaying.value = gameInstance.isPlaying.value;
+      isGameOver.value = gameInstance.isGameOver.value;
+      clicks.value = gameInstance.clicks.value;
+      cps.value = gameInstance.cps.value;
+      elapsedTime.value = gameInstance.elapsedTime.value;
+      showResultModal.value = gameInstance.showResultModal.value;
+      selectedMouseButton.value = gameInstance.selectedMouseButton.value;
+      isTimeUp.value = gameInstance.isTimeUp.value;
+      currentCps.value = gameInstance.currentCps.value;
+    }
+    clearRipples();
+  };
 
-    // 显示结果弹窗
-    showResultModal.value = true;
+  const endGame = () => {
+    if (gameInstance) {
+      // 检查游戏是否已经结束
+      if (!gameInstance.isGameOver.value) {
+        // 游戏还没有结束，调用gameInstance.endGame()函数
+        const result = gameInstance.endGame();
+        if (result) {
+          addHistoryRecord(result.testTime, result.clicks, result.cps);
+          // 同步状态
+          isPlaying.value = gameInstance.isPlaying.value;
+          isGameOver.value = gameInstance.isGameOver.value;
+          clicks.value = gameInstance.clicks.value;
+          cps.value = gameInstance.cps.value;
+          elapsedTime.value = gameInstance.elapsedTime.value;
+          showResultModal.value = gameInstance.showResultModal.value;
+          isTimeUp.value = gameInstance.isTimeUp.value;
+          currentCps.value = gameInstance.currentCps.value;
+        }
+        return result;
+      } else {
+        // 游戏已经结束，保存历史记录
+        addHistoryRecord(testTime.value, gameInstance.clicks.value, gameInstance.cps.value);
+        // 同步状态
+        isPlaying.value = gameInstance.isPlaying.value;
+        isGameOver.value = gameInstance.isGameOver.value;
+        clicks.value = gameInstance.clicks.value;
+        cps.value = gameInstance.cps.value;
+        elapsedTime.value = gameInstance.elapsedTime.value;
+        showResultModal.value = gameInstance.showResultModal.value;
+        isTimeUp.value = gameInstance.isTimeUp.value;
+        currentCps.value = gameInstance.currentCps.value;
+        // 返回结果
+        return {
+          clicks: gameInstance.clicks.value,
+          cps: gameInstance.cps.value,
+          testTime: testTime.value,
+        };
+      }
+    }
+    return null;
+  };
+
+  // 选择鼠标按键
+  const selectMouseButton = (button: number) => {
+    if (gameInstance) {
+      gameInstance.selectMouseButton(button);
+      selectedMouseButton.value = gameInstance.selectedMouseButton.value;
+    }
   };
 
   // 点击事件处理函数
   const handleClick = (event: MouseEvent) => {
-    // 检查是否是选择的鼠标按键
-    if (event.button !== selectedMouseButton.value) {
-      return;
-    }
-
-    // 游戏结束或时间到了，不处理点击事件
-    if (isGameOver.value || isTimeUp.value) {
-      return;
-    }
-
-    // 游戏未开始且不是第一次点击，不处理点击事件
-    if (!isPlaying.value && clicks.value > 0) {
-      return;
-    }
-
     // 获取点击位置相对于点击区域的坐标
     let x = 0;
     let y = 0;
 
     if (clickAreaRef.value) {
+      // 每次点击都获取最新的位置信息，确保坐标准确
       const rect = clickAreaRef.value.getBoundingClientRect();
       x = event.clientX - rect.left;
       y = event.clientY - rect.top;
     }
 
-    // 创建涟漪特效
-    const rippleId = Date.now();
-
-    // 创建新的涟漪对象
-    const newRipple: Ripple = {
-      id: rippleId,
-      x: x,
-      y: y,
-      size: 0, // 初始大小为0
-      opacity: 1, // 初始完全不透明
-    };
-
-    // 添加涟漪到数组（触发响应式更新）
-    ripples.value = [...ripples.value, newRipple];
-
-    // 动画结束后自动移除涟漪（使用setTimeout一次性移除，避免频繁操作）
-    setTimeout(() => {
-      ripples.value = ripples.value.filter((r) => r.id !== rippleId);
-    }, 600);
-
-    // 开始游戏（如果是第一次点击）
-    if (!isPlaying.value && clicks.value === 0) {
-      startGame();
-    }
-
-    // 更新点击次数（游戏进行中且时间未到）
-    if (isPlaying.value && !isTimeUp.value) {
-      clicks.value++;
+    // 处理游戏点击逻辑
+    const clicked = handleGameClick(event.button);
+    
+    // 如果点击有效，添加涟漪特效
+    if (clicked) {
+      addRipple(x, y);
     }
   };
 
-  // 重置游戏函数
-  const resetGame = () => {
-    // 重置所有游戏状态
-    isPlaying.value = false;
-    isGameOver.value = false;
-    clicks.value = 0;
-    cps.value = 0;
-    elapsedTime.value = 0;
+  // 组件挂载时添加事件监听
+  onMounted(() => {
+    window.addEventListener('resize', handleResize);
+  });
 
-    // 清除定时器
-    clearInterval(timer.value);
-
-    // 清除所有涟漪特效
-    ripples.value = [];
-
-    // 关闭结果弹窗
-    showResultModal.value = false;
-  };
+  // 组件卸载时移除事件监听
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', handleResize);
+  });
 
   // 路由更新前钩子：当路由切换时重置游戏数据
   // 实现每次点击侧边栏切换路由时，重置当前组件的数据
@@ -369,8 +374,7 @@
               class="button-option"
               :class="{ active: selectedMouseButton === option.value }"
               @click="
-                selectedMouseButton = option.value;
-                resetGame();
+                selectMouseButton(option.value);
               "
             >
               <span>{{ option.label }}</span>
@@ -406,7 +410,7 @@
         </div>
 
         <!-- 相关测试推荐组件 -->
-        <RelatedTests current-test="clickTest" />
+        <component :is="RelatedTests" current-test="clickTest" />
 
         <!-- 历史记录区域 - 中等屏幕和移动端显示在相关测试推荐组件下方 -->
         <div v-if="!isDesktop" class="history-sidebar">
@@ -453,7 +457,8 @@
           </div>
 
           <!-- 使用通用FAQ组件 -->
-          <FAQComponent
+          <component 
+            :is="FAQComponent"
             :title="t('faq')"
             :faq="currentFaq"
             :show-popular="true"
@@ -501,7 +506,8 @@
   </div>
 
   <!-- 结果弹窗组件 -->
-  <ResultModal
+  <component 
+    :is="ResultModal"
     :visible="showResultModal"
     :type="'clickTest'"
     :cps="cps"
@@ -761,52 +767,6 @@
   /* 滚动条角落 */
   .history-list::-webkit-scrollbar-corner {
     background: #1a1a1a;
-  }
-
-  /* 时间选择器 */
-  .time-selector {
-    text-align: center;
-    margin: 20px 0;
-    padding: 20px;
-    background-color: #1a1a1a;
-    border-radius: 8px;
-  }
-
-  .time-selector h3 {
-    color: #4caf50;
-    margin-bottom: 15px;
-    font-size: 18px;
-  }
-
-  .time-options {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 10px;
-  }
-
-  .time-btn {
-    padding: 10px 20px;
-    border: 2px solid #4caf50;
-    background-color: #2a2a2a;
-    color: #4caf50;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: bold;
-    font-size: 16px;
-  }
-
-  .time-btn:hover {
-    background-color: #4caf50;
-    color: white;
-    transform: translateY(-2px);
-  }
-
-  .time-btn.active {
-    background-color: #4caf50;
-    color: white;
   }
 
   /* 统计卡片 */
@@ -1140,23 +1100,15 @@
       width: clamp(95%, 98vw, 98%);
     }
 
-    /* 文字大小优化 */
-    .result {
-      font-size: clamp(24px, 6vw, 28px);
-    }
-
-    .final-cps {
-      font-size: clamp(32px, 8vw, 36px);
-    }
-
     /* 历史记录列表优化 */
     .history-item {
       padding: clamp(8px, 2vw, 12px);
     }
 
     .history-item-content {
-      flex-direction: column;
-      align-items: flex-start;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
       gap: 8px;
     }
 
@@ -1165,8 +1117,8 @@
     }
 
     .record-time {
-      width: 100%;
-      text-align: left;
+      width: auto;
+      text-align: right;
       font-size: clamp(10px, 2vw, 12px);
     }
 

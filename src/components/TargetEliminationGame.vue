@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+  import { ref, computed, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue';
   import { t } from '../i18n'; // 导入翻译函数
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 组件功能：目标消除反应训练游戏，测试用户的反应速度和手眼协调能力
   // 支持随机生成多个目标，倒计时，消除目标，统计分数等功能
@@ -297,16 +297,22 @@
     }
   };
 
+  // 容器尺寸缓存
+  const containerRect = ref<DOMRect | null>(null);
+
   // 更新容器尺寸并调整现有目标位置
   const updateContainerSize = () => {
     if (gameContainerRef.value) {
       const oldWidth = containerSize.value.width;
       const oldHeight = containerSize.value.height;
 
-      // 更新容器尺寸
+      // 更新容器尺寸缓存
+      containerRect.value = gameContainerRef.value.getBoundingClientRect();
+
+      // 使用缓存的尺寸信息
       containerSize.value = {
-        width: gameContainerRef.value.offsetWidth,
-        height: gameContainerRef.value.offsetHeight,
+        width: containerRect.value.width,
+        height: containerRect.value.height,
       };
 
       // 如果容器尺寸变化，调整现有目标位置，确保它们不会超出边界
@@ -619,7 +625,8 @@
     <div class="game-instructions info">
       <div class="faq-section">
         <!-- 使用通用FAQ组件 -->
-        <FAQComponent
+        <component 
+          :is="FAQComponent"
           :title="t('targetEliminationGame')"
           :faq="currentFaq"
           :show-popular="true"
@@ -628,7 +635,7 @@
       </div>
 
       <!-- 相关测试推荐组件 -->
-      <RelatedTests current-test="targetEliminationGame" />
+      <component :is="RelatedTests" current-test="targetEliminationGame" />
     </div>
   </div>
 </template>
@@ -1148,62 +1155,7 @@
     text-align: center;
   }
 
-  /* 网格布局 */
-  .faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
-  }
 
-  /* 单列布局 */
-  .faq-column {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  /* 全宽样式 */
-  .full-width {
-    grid-column: 1 / -1;
-    background-color: rgba(40, 40, 40, 0.8);
-  }
-
-  /* FAQ 项目 */
-  .faq-item {
-    background-color: rgba(50, 50, 50, 0.7);
-    padding: 25px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(80, 80, 80, 0.5);
-    text-align: left;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .faq-item:hover {
-    background-color: rgba(60, 60, 60, 0.9);
-    border-color: #4caf50;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    transform: translateY(-3px);
-  }
-
-  /* FAQ 标题 */
-  .faq-item h4 {
-    color: #4caf50;
-    margin: 0 0 15px 0;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.3;
-  }
-
-  /* FAQ 内容 */
-  .faq-item p {
-    color: #e0e0e0;
-    margin: 0;
-    line-height: 1.7;
-    font-size: 16px;
-    text-align: left;
-    opacity: 0.9;
-  }
 
   /* 脉动动画 */
   @keyframes pulse {

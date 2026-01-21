@@ -640,20 +640,6 @@
     font-weight: bold;
   }
 
-  /* 图片 */
-  .result-image {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .result-image img {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-  }
-
   /* 详细信息 */
   .result-details {
     text-align: center;

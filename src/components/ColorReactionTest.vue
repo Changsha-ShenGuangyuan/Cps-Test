@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
   import { t } from '../i18n'; // 导入翻译函数
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 导入图标资源
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
@@ -412,12 +412,13 @@
         </div>
 
         <!-- 相关测试推荐组件 -->
-        <RelatedTests current-test="colorReactionTest" />
+        <component :is="RelatedTests" current-test="colorReactionTest" />
 
         <!-- FAQ部分 -->
         <div class="faq-section">
           <!-- 使用通用FAQ组件 -->
-          <FAQComponent
+          <component 
+            :is="FAQComponent"
             :title="t('colorReactionTest')"
             :faq="currentFaq"
             :show-popular="true"
@@ -1047,35 +1048,7 @@
     margin-bottom: 20px;
   }
 
-  .faq-item {
-    text-align: left; /* 文本左对齐 */
-    background-color: rgba(50, 50, 50, 0.5); /* 半透明深灰色背景 */
-    border: 1px solid transparent; /* 透明边框 */
-    border-radius: 8px; /* 8px圆角边框 */
-    padding: 25px; /* 25px内边距 */
-    transition: all 0.3s ease; /* 所有属性变化0.3秒过渡效果 */
-  }
-
-  .faq-item:hover {
-    background-color: rgba(50, 50, 50, 0.8);
-    border-color: #4caf50;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  }
-
-  .faq-item h4 {
-    color: #4caf50;
-    margin: 0 0 10px 0;
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .faq-item p {
-    color: #ccc;
-    margin: 0;
-    line-height: 1.5;
-    font-size: 14px;
-  }
+  
 
   /* 右侧历史记录侧边栏 */
   .history-sidebar {
@@ -1422,16 +1395,6 @@
       width: 100%;
       max-width: 100%;
       padding: 10px;
-    }
-
-    /* FAQ标题优化 */
-    .faq-item h4 {
-      font-size: 15px;
-    }
-
-    /* FAQ内容优化 */
-    .faq-item p {
-      font-size: 13px;
     }
 
     /* 历史记录日期优化 */

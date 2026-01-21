@@ -100,12 +100,13 @@
     </section>
 
     <!-- 相关测试推荐组件 -->
-    <RelatedTests current-test="tripleClickTest" />
+    <component :is="RelatedTests" current-test="tripleClickTest" />
 
     <!-- FAQ区域 -->
     <div class="faq-section">
       <!-- 使用通用FAQ组件 -->
-      <FAQComponent
+      <component 
+        :is="FAQComponent"
         :title="t('tripleClickTest')"
         :faq="currentFaq"
         :show-popular="true"
@@ -116,30 +117,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
   import { t } from '../i18n/index';
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
-
-  // 响应式变量：屏幕尺寸
-  const isDesktop = ref(window.innerWidth >= 1201);
-
-  // 监听窗口大小变化
-  const handleResize = () => {
-    isDesktop.value = window.innerWidth >= 1201;
-  };
-
-  // 组件挂载时添加窗口大小监听
-  onMounted(() => {
-    window.addEventListener('resize', handleResize);
-  });
-
-  // 组件卸载时移除窗口大小监听
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', handleResize);
-  });
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 测试状态
   const isTesting = ref(false);
@@ -163,18 +146,14 @@
     right: [],
   });
 
+  // 导入composable函数
+  import { useRippleEffect } from '../composables/useRippleEffect';
+
   // 测试按钮引用
   const testButtonRef = ref<HTMLElement | null>(null);
 
-  // 涟漪特效类型定义
-  interface Ripple {
-    id: number; // 涟漪唯一标识
-    x: number; // 涟漪中心X坐标
-    y: number; // 涟漪中心Y坐标
-  }
-
-  // 涟漪特效数组
-  const ripples = ref<Ripple[]>([]);
+  // 使用涟漪特效composable
+  const { ripples, addRipple, clearRipples } = useRippleEffect();
 
   // 添加点击特效
   const addClickEffect = (event: MouseEvent) => {
@@ -188,22 +167,7 @@
     const y = event.clientY - rect.top;
 
     // 创建涟漪特效
-    const rippleId = Date.now();
-
-    // 创建新的涟漪对象
-    const newRipple: Ripple = {
-      id: rippleId,
-      x: x,
-      y: y,
-    };
-
-    // 添加涟漪到数组（触发响应式更新）
-    ripples.value = [...ripples.value, newRipple];
-
-    // 动画结束后自动移除涟漪
-    setTimeout(() => {
-      ripples.value = ripples.value.filter((r) => r.id !== rippleId);
-    }, 600); // 与动画时长一致
+    addRipple(x, y);
   };
 
   // 开始测试
@@ -226,6 +190,8 @@
   const resetTest = () => {
     isTesting.value = false;
     resetClicks();
+    // 清除所有涟漪特效
+    clearRipples();
   };
 
   // 处理单击事件
@@ -537,19 +503,9 @@
     outline: none; /* 移除聚焦轮廓 */
   }
 
-  /* 网格布局 */
-  .faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
-  }
+  
 
-  /* 单列布局 */
-  .faq-column {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
+  
 
   /* FAQ 项目 */
   .faq-item {
@@ -705,16 +661,6 @@
       max-width: 500px;
       height: 140px;
       font-size: 16px;
-    }
-
-    /* FAQ优化 */
-    .faq-grid {
-      grid-template-columns: 1fr;
-      gap: 15px;
-    }
-
-    .faq-item {
-      padding: 20px;
     }
 
     /* 测试面板边距优化，增加宽度确保统计信息显示完全 */

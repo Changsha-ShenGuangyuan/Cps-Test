@@ -1,17 +1,18 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
   import { useRoute, onBeforeRouteUpdate } from 'vue-router';
   import { t } from '../i18n/index';
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
   // 导入结果弹窗组件
   import ResultModal from './ResultModal.vue';
 
   // 导入图标资源
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
   const historyIconUrlRelative = new URL('../assets/icons/history.png', import.meta.url).href;
+
 
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
@@ -87,7 +88,7 @@
   const isGameOver = ref(false); // 游戏是否结束（专门用于标识最终状态）
   const showPressHint = ref(true); // 是否显示"Press SPACE to click"提示
   const startTime = ref(0); // 游戏开始时间戳
-  const endTime = ref(0); // 游戏结束时间戳
+
   const clicks = ref(0); // 点击次数
   const cps = ref(0); // 最终CPS值（每秒点击次数）
   const timer = ref(0); // 定时器ID
@@ -176,7 +177,7 @@
   const endGame = () => {
     isPlaying.value = false; // 标记游戏结束
     isGameOver.value = true; // 设置最终结束状态
-    endTime.value = Date.now(); // 记录结束时间
+
 
     // 计算最终CPS，使用规定的测试时间，确保与clicks保持一致
     cps.value = testTime.value > 0 ? Math.round((clicks.value / testTime.value) * 100) / 100 : 0;
@@ -502,7 +503,7 @@
         </div>
 
         <!-- 相关测试推荐组件 -->
-        <RelatedTests current-test="spaceClickTest" />
+        <component :is="RelatedTests" current-test="spaceClickTest" />
 
         <!-- 历史记录区域 - 中等屏幕和移动端显示在相关测试推荐组件下方 -->
         <div v-if="!isDesktop" class="history-sidebar">
@@ -550,7 +551,8 @@
           </div>
 
           <!-- 使用通用FAQ组件 -->
-          <FAQComponent
+          <component 
+            :is="FAQComponent"
             :title="t('faq')"
             :faq="currentFaq"
             :show-popular="true"
@@ -1235,8 +1237,9 @@
     }
 
     .history-item-content {
-      flex-direction: column;
-      align-items: flex-start;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
       gap: 8px;
     }
 
@@ -1245,8 +1248,8 @@
     }
 
     .record-time {
-      width: 100%;
-      text-align: left;
+      width: auto;
+      text-align: right;
       font-size: clamp(10px, 2vw, 12px);
     }
   }

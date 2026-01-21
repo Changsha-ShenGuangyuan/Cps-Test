@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue';
+  import { ref, computed, onMounted, defineAsyncComponent } from 'vue';
   import { t } from '../i18n/index';
 
   // 导入图标资源
@@ -19,10 +19,10 @@
   // 支持两种测试模式：简单反应测试和颜色反应测试
 
   // 获取当前FAQ内容
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   const currentFaq = computed(() => {
     return [
@@ -167,36 +167,37 @@
     // 初始设置容器大小
     if (typeof window !== 'undefined') {
       const updateContainerSize = () => {
-        const gameArea = document.querySelector('.game-area-inner');
-        if (gameArea) {
+        const activeArea = document.querySelector('.active-state');
+        if (activeArea) {
           // 保存当前位置和容器大小（用于计算相对位置）
           const oldContainerWidth = containerSize.value.width;
           const oldContainerHeight = containerSize.value.height;
           const oldPositionX = targetPosition.value.x;
           const oldPositionY = targetPosition.value.y;
 
-          // 更新容器大小
-          const rect = gameArea.getBoundingClientRect();
+          // 更新容器大小 - 使用 active-state 的尺寸，因为目标元素是相对于它定位的
+          const rect = activeArea.getBoundingClientRect();
           containerSize.value = { width: rect.width, height: rect.height };
 
           // 如果目标当前可见，保持相对位置并确保在容器内
-          if (targetVisible.value && oldContainerWidth > 0 && oldContainerHeight > 0) {
-            const targetSize = 100; // 目标元素实际大小为100px
+            if (targetVisible.value && oldContainerWidth > 0 && oldContainerHeight > 0) {
+              // 根据屏幕尺寸确定目标大小
+              const targetSize = window.innerWidth <= 768 ? 70 : 100; // 移动端70px，桌面端100px
 
-            // 计算相对位置比例
-            const relativeX = oldPositionX / (oldContainerWidth - targetSize);
-            const relativeY = oldPositionY / (oldContainerHeight - targetSize);
+              // 计算相对位置比例
+              const relativeX = oldPositionX / (oldContainerWidth - targetSize);
+              const relativeY = oldPositionY / (oldContainerHeight - targetSize);
 
-            // 根据新容器大小计算新位置
-            const newX = relativeX * (containerSize.value.width - targetSize);
-            const newY = relativeY * (containerSize.value.height - targetSize);
+              // 根据新容器大小计算新位置
+              const newX = relativeX * (containerSize.value.width - targetSize);
+              const newY = relativeY * (containerSize.value.height - targetSize);
 
-            // 更新位置，确保不超出边界
-            targetPosition.value = {
-              x: Math.max(0, Math.min(newX, containerSize.value.width - targetSize)),
-              y: Math.max(0, Math.min(newY, containerSize.value.height - targetSize)),
-            };
-          }
+              // 更新位置，确保不超出边界
+              targetPosition.value = {
+                x: Math.max(0, Math.min(newX, containerSize.value.width - targetSize)),
+                y: Math.max(0, Math.min(newY, containerSize.value.height - targetSize)),
+              };
+            }
         }
       };
 
@@ -221,10 +222,22 @@
 
   // 生成随机位置
   const generateRandomPosition = () => {
+    // 根据屏幕尺寸确定目标大小
+    const targetSize = window.innerWidth <= 768 ? 70 : 100; // 移动端70px，桌面端100px
+    
+    // 确保容器尺寸有效，避免在容器尺寸尚未初始化时计算错误位置
+    let containerWidth = containerSize.value.width;
+    let containerHeight = containerSize.value.height;
+    
+    // 如果容器尺寸无效，使用默认值
+    if (containerWidth <= 0 || containerHeight <= 0) {
+      containerWidth = window.innerWidth * 0.8; // 使用窗口宽度的80%
+      containerHeight = window.innerHeight * 0.5; // 使用窗口高度的50%
+    }
+    
     // 确保目标完全在容器内，根据目标大小动态计算
-    const targetSize = 100; // 目标元素实际大小为100px
-    const x = Math.random() * (containerSize.value.width - targetSize);
-    const y = Math.random() * (containerSize.value.height - targetSize);
+    const x = Math.random() * (containerWidth - targetSize);
+    const y = Math.random() * (containerHeight - targetSize);
     return { x, y };
   };
 
@@ -312,17 +325,31 @@
       // 如果游戏已经结束，不再显示目标
       if (isGameOver.value) return;
 
-      // 生成随机位置
-      targetPosition.value = generateRandomPosition();
-
-      // 根据测试模式生成不同的目标
-      if (testMode.value === TestMode.COLOR) {
-        generateColorTarget();
-      }
-
-      targetVisible.value = true;
-      startTime.value = Date.now();
+      // 先切换到 ACTIVE 状态，确保 .active-state 元素已经渲染
       gameState.value = GameState.ACTIVE as any;
+      
+      // 强制更新 DOM，确保 .active-state 元素已经存在
+      setTimeout(() => {
+        // 更新容器尺寸
+        if (typeof window !== 'undefined') {
+          const activeArea = document.querySelector('.active-state');
+          if (activeArea) {
+            const rect = activeArea.getBoundingClientRect();
+            containerSize.value = { width: rect.width, height: rect.height };
+          }
+        }
+        
+        // 生成随机位置
+        targetPosition.value = generateRandomPosition();
+
+        // 根据测试模式生成不同的目标
+        if (testMode.value === TestMode.COLOR) {
+          generateColorTarget();
+        }
+
+        targetVisible.value = true;
+        startTime.value = Date.now();
+      }, 10); // 短暂延迟，确保 DOM 已经更新
     }, waitTime.value);
   };
 
@@ -388,22 +415,6 @@
       }, 2000);
     }
   };
-
-  // 重置游戏
-  // const resetGame = () => {
-  //   // 重置所有状态
-  //   gameState.value = GameState.READY as any
-  //   isPlaying.value = false
-  //   isGameOver.value = false
-  //   reactionTime.value = 0
-  //   bestReactionTime.value = 0
-  //   averageReactionTime.value = 0
-  //   totalTests.value = 0
-  //   currentRound.value = 0
-  //   testResults.value = []
-  //   targetVisible.value = false
-  //   countdown.value = 3
-  // }
 </script>
 
 <template>
@@ -474,7 +485,7 @@
                 backgroundColor: testMode === TestMode.COLOR ? targetBgColor : COLORS.GREEN,
                 color: testMode === TestMode.COLOR ? targetTextColor : COLORS.BLACK,
               }"
-              @click="handleTargetClick"
+              @mousedown="handleTargetClick"
             >
               <span v-if="testMode === TestMode.COLOR" class="target-text">{{
                 targetTextContent
@@ -491,7 +502,7 @@
         </div>
 
         <!-- 相关测试推荐组件 -->
-        <RelatedTests current-test="reactionTimeTest" />
+        <component :is="RelatedTests" current-test="reactionTimeTest" />
 
         <!-- 历史记录区域 - 中等屏幕和移动端显示在相关测试推荐组件下方 -->
         <div v-if="!isDesktop" class="history-sidebar">
@@ -537,7 +548,8 @@
         <!-- 游戏说明 -->
         <div class="faq-section">
           <!-- 使用通用FAQ组件 -->
-          <FAQComponent
+          <component 
+            :is="FAQComponent"
             :title="t('reactionTest')"
             :faq="currentFaq"
             :show-popular="true"
@@ -1026,41 +1038,6 @@
     padding: 0 10px;
   }
 
-  /* 游戏区域 */
-  .game-area {
-    width: 100%;
-    height: 400px;
-    background-color: #000000;
-    border-radius: 15px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid #333;
-    box-sizing: border-box;
-  }
-
-  /* 准备状态 */
-  .ready-state {
-    text-align: center;
-    z-index: 2;
-  }
-
-  .ready-state h3 {
-    font-size: 28px;
-    margin-bottom: 15px;
-    color: #4caf50;
-  }
-
-  .ready-state p {
-    font-size: 18px;
-    margin-bottom: 30px;
-    opacity: 0.8;
-  }
-
   /* 开始按钮 */
   .start-btn {
     padding: 15px 30px;
@@ -1092,42 +1069,6 @@
     transform: translateY(0);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
     outline: none; /* 移除点击时的轮廓 */
-  }
-
-  /* 倒计时状态 */
-  .countdown-state {
-    text-align: center;
-    z-index: 2;
-  }
-
-  .countdown-state h2 {
-    font-size: 120px;
-    margin: 0;
-    color: #ff7b00;
-    animation: pulse 1s ease-in-out infinite;
-  }
-
-  .countdown-state p {
-    font-size: 24px;
-    opacity: 0.8;
-  }
-
-  /* 等待状态 */
-  .waiting-state {
-    text-align: center;
-    z-index: 2;
-  }
-
-  .waiting-state h3 {
-    font-size: 36px;
-    margin-bottom: 15px;
-    color: #ff7b00;
-    animation: blink 1.5s ease-in-out infinite;
-  }
-
-  .waiting-state p {
-    font-size: 18px;
-    opacity: 0.8;
   }
 
   /* 活跃状态 */
@@ -1166,30 +1107,6 @@
     text-align: center;
   }
 
-  /* 结果状态 */
-  .result-state {
-    text-align: center;
-    z-index: 2;
-  }
-
-  .result-state h3 {
-    font-size: 32px;
-    margin-bottom: 15px;
-    color: #ffffff;
-  }
-
-  .reaction-time {
-    font-size: 72px;
-    font-weight: bold;
-    color: #4caf50;
-    margin-bottom: 15px;
-  }
-
-  .result-state p {
-    font-size: 18px;
-    opacity: 0.8;
-  }
-
   /* 重置按钮 */
   .reset-btn {
     padding: 12px 24px;
@@ -1215,64 +1132,6 @@
     margin-top: 30px;
     margin-bottom: 30px;
     width: 100%;
-  }
-
-  /* 网格布局 */
-  .faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(clamp(300px, 100%, 400px), 1fr));
-    gap: clamp(15px, 3vw, 25px);
-  }
-
-  /* 单列布局 */
-  .faq-column {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(15px, 3vw, 25px);
-  }
-
-  /* 全宽样式 */
-  .full-width {
-    grid-column: 1 / -1;
-    background-color: rgba(40, 40, 40, 0.8);
-    margin-bottom: 15px;
-  }
-
-  /* FAQ 项目 */
-  .faq-item {
-    background-color: rgba(50, 50, 50, 0.7);
-    padding: clamp(20px, 3vw, 25px);
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(80, 80, 80, 0.5);
-    text-align: left;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .faq-item:hover {
-    background-color: rgba(60, 60, 60, 0.9);
-    border-color: #4caf50;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    transform: translateY(-3px);
-  }
-
-  /* FAQ 标题 */
-  .faq-item h4 {
-    color: #4caf50;
-    margin: 0 0 15px 0;
-    font-size: clamp(16px, 2vw, 18px);
-    font-weight: bold;
-    line-height: 1.3;
-  }
-
-  /* FAQ 内容 */
-  .faq-item p {
-    color: #e0e0e0;
-    margin: 0;
-    line-height: 1.7;
-    font-size: clamp(14px, 2vw, 16px);
-    text-align: left;
-    opacity: 0.9;
   }
 
   /* 脉动动画 */
@@ -1379,12 +1238,6 @@
       margin-bottom: 15px;
     }
 
-    /* 游戏区域优化 */
-    .game-area {
-      height: 300px;
-      width: 100%;
-    }
-
     /* 准备状态优化 */
     .ready-state h3 {
       font-size: 22px;
@@ -1398,7 +1251,6 @@
 
     /* 按钮优化 */
     .start-btn,
-    .stop-btn,
     .reset-btn {
       padding: 10px 20px;
       font-size: 16px;
@@ -1451,25 +1303,6 @@
       margin-left: 0;
       margin-bottom: 20px;
       padding: 0 10px;
-    }
-
-    .faq-grid {
-      grid-template-columns: 1fr;
-      gap: 15px;
-    }
-
-    .faq-item {
-      padding: 20px;
-    }
-
-    .faq-item h4 {
-      font-size: 18px;
-      margin-bottom: 12px;
-    }
-
-    .faq-item p {
-      font-size: 15px;
-      line-height: 1.6;
     }
 
     /* 历史记录侧边栏优化 */

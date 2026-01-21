@@ -8,8 +8,8 @@
   const autoClickCount = ref(0); // 自动点击数量
   const isPlaying = ref(false); // 游戏是否正在进行
   const autoCPS = ref(0); // 自动每秒点击数
-  const lastClickTime = ref(Date.now()); // 上次点击时间
-  const manualClickHistory = ref<number[]>([]); // 手动点击历史记录
+
+
 
   // FAQ数据结构
   interface FAQStep {
@@ -53,6 +53,21 @@
   // 空格键按钮状态
   const spacebarAnimating = ref(false);
   const spacebarPressed = ref(false);
+
+  // 位置缓存
+  const elementRectCache = ref<Map<string, DOMRect>>(new Map());
+
+  // 获取元素位置，优先使用缓存
+  const getElementRect = (key: string, element: HTMLElement) => {
+    // 检查缓存是否存在
+    if (elementRectCache.value.has(key)) {
+      return elementRectCache.value.get(key)!;
+    }
+    // 缓存不存在时获取新位置并缓存
+    const rect = element.getBoundingClientRect();
+    elementRectCache.value.set(key, rect);
+    return rect;
+  };
 
   // BUFF类型定义
   interface Buff {
@@ -298,7 +313,7 @@
       // 创建购买特效
       createBuyBuffEffect(buff, element);
       // 创建粒子爆发特效
-      createBuyBuffParticleEffect(element);
+      createBuyBuffParticleEffect(element, buff.id);
 
       // 检查是否解锁新BUFF
       checkUnlockBuffs();
@@ -361,10 +376,6 @@
 
   // 更新每秒点击数
   const updateClicksPerSecond = () => {
-    const now = Date.now();
-
-    // 更新手动CPS
-    manualClickHistory.value = manualClickHistory.value.filter((time) => now - time < 1000);
 
     // 计算自动CPS：所有已购买BUFF的每秒点击贡献之和
     let totalAutoCPS = 0;
@@ -407,10 +418,8 @@
       isPlaying.value = true;
     }
 
-    // 记录点击时间
-    const now = Date.now();
-    manualClickHistory.value.push(now);
-    lastClickTime.value = now;
+
+
 
     // 播放空格键动画
     playSpacebarAnimation();
@@ -584,8 +593,8 @@
 
   // 创建BUFF购买特效
   const createBuyBuffEffect = (buff: Buff, element: HTMLElement) => {
-    // 获取BUFF卡片的位置信息
-    const rect = element.getBoundingClientRect();
+    // 获取BUFF卡片的位置信息，使用缓存
+    const rect = getElementRect(`buff-${buff.id}`, element);
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
@@ -616,9 +625,9 @@
   };
 
   // 创建BUFF购买粒子爆发特效
-  const createBuyBuffParticleEffect = (element: HTMLElement) => {
-    // 获取BUFF卡片的位置信息
-    const rect = element.getBoundingClientRect();
+  const createBuyBuffParticleEffect = (element: HTMLElement, buffId: string) => {
+    // 获取BUFF卡片的位置信息，使用缓存
+    const rect = getElementRect(`buff-${buffId}`, element);
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
@@ -1204,27 +1213,25 @@
   }
 
   .buff-card {
-    background-color: rgba(0, 0, 0, 0.35);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background-color: rgba(30, 30, 30, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     padding: 15px;
     text-align: left;
     transition: all 0.3s ease;
     width: 100%;
     box-sizing: border-box;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
   }
 
   .buff-card:hover {
     transform: translateY(-5px);
     border-color: #4caf50;
-    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.15);
+    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.25);
+    background-color: rgba(40, 40, 40, 0.9);
   }
 
-  .buff-card.locked {
-    opacity: 0.6;
-    filter: grayscale(100%);
-  }
+
 
   .buff-card.max-level {
     border-color: #ffd700;
@@ -1334,9 +1341,7 @@
     cursor: pointer;
   }
 
-  .buff-card.locked {
-    cursor: not-allowed;
-  }
+
 
   .buff-card.max-level {
     cursor: not-allowed;
@@ -1627,12 +1632,12 @@
   }
 
   .faq-item-alt {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(30, 30, 30, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
   }
@@ -1644,9 +1649,9 @@
   }
 
   .faq-item-alt-1:hover {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);
-    border-color: rgba(76, 175, 80, 0.5);
+    background: rgba(40, 40, 40, 0.9);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.25);
+    border-color: rgba(76, 175, 80, 0.6);
   }
 
   /* 多样化样式 - 项目样式2 */
@@ -1656,9 +1661,9 @@
   }
 
   .faq-item-alt-2:hover {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
-    border-color: rgba(102, 126, 234, 0.5);
+    background: rgba(40, 40, 40, 0.9);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+    border-color: rgba(102, 126, 234, 0.6);
   }
 
   .faq-question-alt {

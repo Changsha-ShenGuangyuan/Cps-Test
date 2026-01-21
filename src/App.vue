@@ -2,7 +2,9 @@
   import { ref, watch, onMounted, onUnmounted, computed, nextTick } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
   import { t, setLanguage, initLanguage, langState } from './i18n/index';
+  // 导入Breadcrumb组件
   import Breadcrumb from './components/Breadcrumb.vue';
+  // 导入ResponsiveImage组件
   import ResponsiveImage from './components/ResponsiveImage.vue';
   import { updateMetaTags } from './router/index';
   import { iconManager } from './utils/iconManager';
@@ -1134,22 +1136,26 @@
     // 检查并保存URL中的分享参数
     checkAndSaveShareParams();
 
-    // 初始化预加载服务
+    // 初始化预加载服务（仅执行轻量级操作）
     preloadService.detectNetworkSpeed();
     
-    // 预加载常用图标
+    // 预加载常用图标（轻量级操作）
     iconManager.preloadCommonIcons();
     
-    // 基于时间的智能预加载
-    preloadService.preloadBasedOnTime();
-    
-    // 预加载常用测试组件
-    preloadService.preloadCommonTestComponents();
-    
-    // 基于用户历史预加载组件
-    if (historyItems.value.length > 0) {
-      preloadService.preloadBasedOnHistory(historyItems.value);
-    }
+    // 将重量级预加载操作移到关键渲染完成后执行
+    // 使用requestAnimationFrame确保在浏览器渲染完成后执行
+    requestAnimationFrame(() => {
+      // 基于时间的智能预加载
+      preloadService.preloadBasedOnTime();
+      
+      // 预加载常用测试组件
+      preloadService.preloadCommonTestComponents();
+      
+      // 基于用户历史预加载组件
+      if (historyItems.value.length > 0) {
+        preloadService.preloadBasedOnHistory(historyItems.value);
+      }
+    });
   });
 
   // 组件卸载时移除事件监听

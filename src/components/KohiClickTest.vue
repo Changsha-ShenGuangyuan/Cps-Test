@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
   import { onBeforeRouteUpdate } from 'vue-router';
   import { t } from '../i18n'; // 导入翻译函数
 
@@ -32,10 +32,10 @@
     return 10; // Kohi测试固定为10秒
   });
 
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
   // 导入结果弹窗组件
   import ResultModal from './ResultModal.vue';
 
@@ -66,14 +66,8 @@
     ];
   });
 
-  // 涟漪特效类型定义
-  interface Ripple {
-    id: number; // 涟漪唯一标识
-    x: number; // 涟漪中心X坐标
-    y: number; // 涟漪中心Y坐标
-    size: number; // 涟漪大小
-    opacity: number; // 涟漪透明度
-  }
+  // 导入composable函数
+  import { useRippleEffect } from '../composables/useRippleEffect';
 
   // 状态管理
   const isPlaying = ref(false); // 游戏是否正在进行中
@@ -84,9 +78,11 @@
   const cps = ref(0); // 最终CPS值（每秒点击次数）
   const timer = ref(0); // 定时器ID
   const elapsedTime = ref(0); // 已用时间（毫秒级精度）
-  const ripples = ref<Ripple[]>([]); // 涟漪特效数组
   const clickAreaRef = ref<HTMLElement | null>(null); // 点击区域DOM引用
   const showResultModal = ref(false); // 结果弹窗显示状态
+
+  // 使用涟漪特效composable
+  const { ripples, addRipple, clearRipples } = useRippleEffect();
 
   // 历史记录相关
   const historyRecords = ref<HistoryRecord[]>([]); // 历史记录数组
@@ -227,24 +223,7 @@
     }
 
     // 创建涟漪特效
-    const rippleId = Date.now();
-
-    // 创建新的涟漪对象
-    const newRipple: Ripple = {
-      id: rippleId,
-      x: x,
-      y: y,
-      size: 0, // 初始大小为0
-      opacity: 1, // 初始完全不透明
-    };
-
-    // 添加涟漪到数组（触发响应式更新）
-    ripples.value = [...ripples.value, newRipple];
-
-    // 动画结束后自动移除涟漪（使用setTimeout一次性移除，避免频繁操作）
-    setTimeout(() => {
-      ripples.value = ripples.value.filter((r) => r.id !== rippleId);
-    }, 600);
+    addRipple(x, y);
 
     // 开始游戏（如果是第一次点击）
     if (!isPlaying.value && clicks.value === 0) {
@@ -271,7 +250,7 @@
     clearInterval(timer.value);
 
     // 清除所有涟漪特效
-    ripples.value = [];
+    clearRipples();
   };
 
   // 组件挂载时添加事件监听
@@ -354,7 +333,7 @@
         </div>
 
         <!-- 相关测试推荐组件 -->
-        <RelatedTests current-test="kohiClickTest" />
+        <component :is="RelatedTests" current-test="kohiClickTest" />
 
         <!-- 历史记录区域 - 中等屏幕和移动端显示在相关测试推荐组件下方 -->
         <div v-if="!isDesktop" class="history-sidebar">
@@ -401,7 +380,12 @@
           </div>
 
           <!-- 使用通用FAQ组件 -->
-          <FAQComponent :title="t('faq')" :faq="currentFaq" :show-popular="false" />
+          <component 
+            :is="FAQComponent"
+            :title="t('faq')"
+            :faq="currentFaq"
+            :show-popular="false"
+          />
         </div>
       </div>
 
@@ -946,8 +930,9 @@
     }
 
     .history-item-content {
-      flex-direction: column;
-      align-items: flex-start;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
       gap: 8px;
     }
 
@@ -956,8 +941,8 @@
     }
 
     .record-time {
-      width: 100%;
-      text-align: left;
+      width: auto;
+      text-align: right;
       font-size: clamp(10px, 2vw, 12px);
     }
   }

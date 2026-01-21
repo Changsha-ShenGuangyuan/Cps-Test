@@ -1,23 +1,15 @@
 <script setup lang="ts">
-  import { ref, computed, onUnmounted, watch, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, computed, watch, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
   import { useRouter } from 'vue-router';
   import { t } from '../i18n'; // 导入翻译函数
-  // 导入通用FAQ组件
-  import FAQComponent from './FAQComponent.vue';
-  // 导入相关测试推荐组件
-  import RelatedTests from './RelatedTests.vue';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
-  // 组件挂载时添加键盘事件监听
-  onMounted(() => {
-    window.addEventListener('keydown', handleKeyDown);
-  });
+  
 
-  // 组件卸载时移除键盘事件监听并恢复滚动条
-  onBeforeUnmount(() => {
-    window.removeEventListener('keydown', handleKeyDown);
-    // 恢复滚动条
-    document.body.style.overflow = '';
-  });
+  
 
   // 处理键盘按下事件
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -77,10 +69,7 @@
     }
   };
 
-  // 组件挂载时验证参数
-  onMounted(() => {
-    validateTimeParam();
-  });
+  
 
   // 监听props变化，重新验证参数
   watch(
@@ -124,6 +113,33 @@
   // 热门问题列表
   const popularQuestions = computed(() => {
     return [t('whatIsTypingTest'), t('whatIsWPM'), t('howToImproveTypingSpeed')];
+  });
+
+  // 组件挂载时的初始化逻辑
+  onMounted(() => {
+    // 添加键盘事件监听
+    window.addEventListener('keydown', handleKeyDown);
+    // 验证时间参数
+    validateTimeParam();
+    // 分割文本为段落
+    splitTextIntoParagraphs();
+    // 添加窗口大小变化事件监听
+    window.addEventListener('resize', splitTextIntoParagraphs);
+  });
+
+  // 组件卸载时的清理逻辑
+  onBeforeUnmount(() => {
+    // 移除键盘事件监听
+    window.removeEventListener('keydown', handleKeyDown);
+    // 移除窗口大小变化事件监听
+    window.removeEventListener('resize', splitTextIntoParagraphs);
+    // 恢复滚动条
+    document.body.style.overflow = '';
+    // 清除定时器
+    if (gameTimer.value) {
+      clearInterval(gameTimer.value);
+      gameTimer.value = null;
+    }
   });
 
   // 状态管理
@@ -288,10 +304,7 @@
     return paragraphs.value[currentParagraphIndex.value] || '';
   });
 
-  // 初始化
-  onMounted(() => {
-    splitTextIntoParagraphs();
-  });
+  
 
   // 监听文本变化
   watch(currentText, () => {
@@ -299,15 +312,9 @@
     currentParagraphIndex.value = 0;
   });
 
-  // 监听窗口大小变化，重新分割段落
-  onMounted(() => {
-    window.addEventListener('resize', splitTextIntoParagraphs);
-  });
+  
 
-  // 清理事件监听
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', splitTextIntoParagraphs);
-  });
+  
 
   // 计算属性：格式化剩余时间
   const formattedTime = computed(() => {
@@ -499,14 +506,6 @@
     currentParagraphIndex.value = 0;
   };
 
-  // 组件卸载
-  onUnmounted(() => {
-    // 清除定时器
-    if (gameTimer.value) {
-      clearInterval(gameTimer.value);
-      gameTimer.value = null;
-    }
-  });
 </script>
 
 <template>
@@ -598,12 +597,13 @@
         </div>
 
         <!-- 相关测试推荐组件 -->
-        <RelatedTests current-test="typingTest" />
+        <component :is="RelatedTests" current-test="typingTest" />
 
         <!-- FAQ区域 -->
         <div class="faq-section">
           <!-- 使用通用FAQ组件 -->
-          <FAQComponent
+          <component 
+            :is="FAQComponent"
             :title="t('typingTest')"
             :faq="currentFaq"
             :show-popular="true"
@@ -767,11 +767,6 @@
     align-items: center;
   }
 
-  /* 文本内容容器 */
-  .text-content {
-    transition: transform 0.3s ease;
-    will-change: transform;
-  }
 
   /* 文本字符样式 */
   .text-display span {
