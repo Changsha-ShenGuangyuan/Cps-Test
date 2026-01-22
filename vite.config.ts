@@ -241,17 +241,6 @@ export default defineConfig({
             },
             injectTo: 'head',
           },
-          // 预加载字体
-          {
-            tag: 'link',
-            attrs: {
-              rel: 'preload',
-              href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-              as: 'style',
-              onload: "this.onload=null;this.rel='stylesheet'",
-            },
-            injectTo: 'head',
-          },
           // 预加载关键资源 - 仅在生产模式下注入
           // 开发模式下Vite会自动处理模块加载，不需要预加载
           // 安全相关的meta标签
@@ -260,7 +249,7 @@ export default defineConfig({
             attrs: {
               'http-equiv': 'Content-Security-Policy',
               content:
-                "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com",
+                "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
             },
           },
           {
