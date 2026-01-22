@@ -101,7 +101,7 @@ class CacheManager {
       componentCacheSize: this.componentCache.size,
       resourceCacheSize: this.resourceCache.size,
       totalCacheSize: this.componentCache.size + this.resourceCache.size,
-      maxCacheSize: this.maxCacheSize
+      maxCacheSize: this.maxCacheSize,
     };
   }
 

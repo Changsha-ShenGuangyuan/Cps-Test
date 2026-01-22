@@ -14,7 +14,7 @@ class IconManager {
     reaction: 'reaction.png',
     game02: 'game02.png',
     statistics: 'statistics.png',
-    question: 'question.png'
+    question: 'question.png',
   };
 
   // 获取图标URL
@@ -53,9 +53,9 @@ class IconManager {
   // 预加载常用图标
   preloadCommonIcons() {
     const commonIcons = ['home', 'history', 'chick', 'keyboard02', 'reaction'];
-    
+
     // 异步预加载图标
-    commonIcons.forEach(iconName => {
+    commonIcons.forEach((iconName) => {
       setTimeout(() => {
         this.getIconUrl(iconName);
       }, 100);
@@ -64,7 +64,7 @@ class IconManager {
 
   // 批量预加载图标
   preloadIcons(iconNames: string[]) {
-    iconNames.forEach(iconName => {
+    iconNames.forEach((iconName) => {
       setTimeout(() => {
         this.getIconUrl(iconName);
       }, 50);

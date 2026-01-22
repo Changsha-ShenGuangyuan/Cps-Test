@@ -417,7 +417,7 @@
         <!-- FAQ部分 -->
         <div class="faq-section">
           <!-- 使用通用FAQ组件 -->
-          <component 
+          <component
             :is="FAQComponent"
             :title="t('colorReactionTest')"
             :faq="currentFaq"
@@ -1047,8 +1047,6 @@
     margin-right: auto; /* 水平居中对齐 */
     margin-bottom: 20px;
   }
-
-  
 
   /* 右侧历史记录侧边栏 */
   .history-sidebar {

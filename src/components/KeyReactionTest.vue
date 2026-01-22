@@ -391,7 +391,7 @@
     <!-- FAQ部分 -->
     <div class="info">
       <!-- 使用通用FAQ组件 -->
-      <component 
+      <component
         :is="FAQComponent"
         :title="t('keyReactionTest')"
         :faq="currentFaq"
@@ -935,10 +935,6 @@
     margin: 30px auto 0; /* 居中显示，顶部外边距30px */
     text-align: left; /* 文本左对齐，提高可读性 */
   }
-
-  
-
-  
 
   /* 移动端适配 */
   @media (max-width: 768px) {

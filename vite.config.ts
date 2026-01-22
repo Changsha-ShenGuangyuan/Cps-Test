@@ -321,7 +321,7 @@ export default defineConfig({
             } else if (id.includes('FAQComponent')) {
               return 'faq-component';
             }
-            
+
             // 测试组件按类型分组
             if (id.includes('ClickTest.vue')) {
               return 'click-test-ui';
@@ -352,7 +352,7 @@ export default defineConfig({
           if (id.includes('src/utils/')) {
             return 'utils';
           }
-          
+
           // 将国际化文件单独打包
           if (id.includes('src/i18n/')) {
             return 'i18n';

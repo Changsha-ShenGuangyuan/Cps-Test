@@ -108,7 +108,7 @@
     <!-- FAQ区域 -->
     <div class="faq-section">
       <!-- 使用通用FAQ组件 -->
-      <component 
+      <component
         :is="FAQComponent"
         :title="t('doubleClickTest')"
         :faq="currentFaq"
@@ -477,10 +477,6 @@
     -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
   }
 
-  
-
-  
-
   .reset-btn {
     background-color: #f44336;
     color: white;
@@ -502,10 +498,6 @@
   .reset-btn:focus {
     outline: none; /* 移除聚焦轮廓 */
   }
-
-  
-
-  
 
   /* 桌面端布局优化 */
   @media (min-width: 1201px) {

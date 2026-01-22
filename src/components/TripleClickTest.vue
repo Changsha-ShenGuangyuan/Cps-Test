@@ -105,7 +105,7 @@
     <!-- FAQ区域 -->
     <div class="faq-section">
       <!-- 使用通用FAQ组件 -->
-      <component 
+      <component
         :is="FAQComponent"
         :title="t('tripleClickTest')"
         :faq="currentFaq"
@@ -502,10 +502,6 @@
   .reset-btn:focus {
     outline: none; /* 移除聚焦轮廓 */
   }
-
-  
-
-  
 
   /* FAQ 项目 */
   .faq-item {

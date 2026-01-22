@@ -16,7 +16,7 @@
     height: 0,
     className: '',
     lazy: true,
-    priority: false
+    priority: false,
   });
 
   // 检测设备类型
@@ -34,7 +34,7 @@
   // 计算图片尺寸
   const imageWidth = computed(() => {
     if (!props.width) return 'auto';
-    
+
     if (isMobile.value) {
       return Math.floor(props.width * 0.7);
     } else if (isTablet.value) {
@@ -45,7 +45,7 @@
 
   const imageHeight = computed(() => {
     if (!props.height) return 'auto';
-    
+
     if (isMobile.value) {
       return Math.floor(props.height * 0.7);
     } else if (isTablet.value) {
@@ -71,7 +71,7 @@
     isTablet,
     isDesktop,
     imageWidth,
-    imageHeight
+    imageHeight,
   });
 </script>
 

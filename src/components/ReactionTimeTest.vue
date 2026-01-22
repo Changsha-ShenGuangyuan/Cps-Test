@@ -180,24 +180,24 @@
           containerSize.value = { width: rect.width, height: rect.height };
 
           // 如果目标当前可见，保持相对位置并确保在容器内
-            if (targetVisible.value && oldContainerWidth > 0 && oldContainerHeight > 0) {
-              // 根据屏幕尺寸确定目标大小
-              const targetSize = window.innerWidth <= 768 ? 70 : 100; // 移动端70px，桌面端100px
+          if (targetVisible.value && oldContainerWidth > 0 && oldContainerHeight > 0) {
+            // 根据屏幕尺寸确定目标大小
+            const targetSize = window.innerWidth <= 768 ? 70 : 100; // 移动端70px，桌面端100px
 
-              // 计算相对位置比例
-              const relativeX = oldPositionX / (oldContainerWidth - targetSize);
-              const relativeY = oldPositionY / (oldContainerHeight - targetSize);
+            // 计算相对位置比例
+            const relativeX = oldPositionX / (oldContainerWidth - targetSize);
+            const relativeY = oldPositionY / (oldContainerHeight - targetSize);
 
-              // 根据新容器大小计算新位置
-              const newX = relativeX * (containerSize.value.width - targetSize);
-              const newY = relativeY * (containerSize.value.height - targetSize);
+            // 根据新容器大小计算新位置
+            const newX = relativeX * (containerSize.value.width - targetSize);
+            const newY = relativeY * (containerSize.value.height - targetSize);
 
-              // 更新位置，确保不超出边界
-              targetPosition.value = {
-                x: Math.max(0, Math.min(newX, containerSize.value.width - targetSize)),
-                y: Math.max(0, Math.min(newY, containerSize.value.height - targetSize)),
-              };
-            }
+            // 更新位置，确保不超出边界
+            targetPosition.value = {
+              x: Math.max(0, Math.min(newX, containerSize.value.width - targetSize)),
+              y: Math.max(0, Math.min(newY, containerSize.value.height - targetSize)),
+            };
+          }
         }
       };
 
@@ -224,17 +224,17 @@
   const generateRandomPosition = () => {
     // 根据屏幕尺寸确定目标大小
     const targetSize = window.innerWidth <= 768 ? 70 : 100; // 移动端70px，桌面端100px
-    
+
     // 确保容器尺寸有效，避免在容器尺寸尚未初始化时计算错误位置
     let containerWidth = containerSize.value.width;
     let containerHeight = containerSize.value.height;
-    
+
     // 如果容器尺寸无效，使用默认值
     if (containerWidth <= 0 || containerHeight <= 0) {
       containerWidth = window.innerWidth * 0.8; // 使用窗口宽度的80%
       containerHeight = window.innerHeight * 0.5; // 使用窗口高度的50%
     }
-    
+
     // 确保目标完全在容器内，根据目标大小动态计算
     const x = Math.random() * (containerWidth - targetSize);
     const y = Math.random() * (containerHeight - targetSize);
@@ -327,7 +327,7 @@
 
       // 先切换到 ACTIVE 状态，确保 .active-state 元素已经渲染
       gameState.value = GameState.ACTIVE as any;
-      
+
       // 强制更新 DOM，确保 .active-state 元素已经存在
       setTimeout(() => {
         // 更新容器尺寸
@@ -338,7 +338,7 @@
             containerSize.value = { width: rect.width, height: rect.height };
           }
         }
-        
+
         // 生成随机位置
         targetPosition.value = generateRandomPosition();
 
@@ -548,7 +548,7 @@
         <!-- 游戏说明 -->
         <div class="faq-section">
           <!-- 使用通用FAQ组件 -->
-          <component 
+          <component
             :is="FAQComponent"
             :title="t('reactionTest')"
             :faq="currentFaq"

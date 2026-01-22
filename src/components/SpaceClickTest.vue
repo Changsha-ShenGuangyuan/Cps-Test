@@ -13,7 +13,6 @@
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
   const historyIconUrlRelative = new URL('../assets/icons/history.png', import.meta.url).href;
 
-
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
 
@@ -177,7 +176,6 @@
   const endGame = () => {
     isPlaying.value = false; // 标记游戏结束
     isGameOver.value = true; // 设置最终结束状态
-
 
     // 计算最终CPS，使用规定的测试时间，确保与clicks保持一致
     cps.value = testTime.value > 0 ? Math.round((clicks.value / testTime.value) * 100) / 100 : 0;
@@ -551,7 +549,7 @@
           </div>
 
           <!-- 使用通用FAQ组件 -->
-          <component 
+          <component
             :is="FAQComponent"
             :title="t('faq')"
             :faq="currentFaq"

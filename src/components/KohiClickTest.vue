@@ -380,12 +380,7 @@
           </div>
 
           <!-- 使用通用FAQ组件 -->
-          <component 
-            :is="FAQComponent"
-            :title="t('faq')"
-            :faq="currentFaq"
-            :show-popular="false"
-          />
+          <component :is="FAQComponent" :title="t('faq')" :faq="currentFaq" :show-popular="false" />
         </div>
       </div>
 

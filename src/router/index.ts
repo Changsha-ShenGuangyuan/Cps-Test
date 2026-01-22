@@ -739,27 +739,29 @@ router.beforeEach((to, _from, next) => {
   const pathSegments = to.path.split('/').filter((segment) => segment !== '');
   const supportedLanguages = ['zh-CN', 'ja', 'ko'];
   const allLanguages = ['zh-CN', 'ja', 'ko', 'en'];
-  
+
   // 检查是否有重复的语言前缀
   if (pathSegments.length >= 2) {
     const firstSegment = pathSegments[0];
     const secondSegment = pathSegments[1];
-    
+
     // 确保 segments 不是 undefined
     if (firstSegment && secondSegment) {
       // 情况1: /lang/en/path (如 /ko/en/multi-click-test/triple)
       if (supportedLanguages.includes(firstSegment) && secondSegment === 'en') {
         const remainingPath = pathSegments.slice(2).join('/');
-        const redirectPath = remainingPath ? `/${firstSegment}/${remainingPath}` : `/${firstSegment}`;
+        const redirectPath = remainingPath
+          ? `/${firstSegment}/${remainingPath}`
+          : `/${firstSegment}`;
         console.log(`重定向1: ${to.path} -> ${redirectPath}`);
         return next({ path: redirectPath, replace: true });
       }
-      
+
       // 情况2: /lang1/lang2/path (如 /zh-CN/ja/test)
       if (allLanguages.includes(firstSegment) && allLanguages.includes(secondSegment)) {
         const remainingPath = pathSegments.slice(2).join('/');
         let redirectPath = '';
-        
+
         // 如果第一个段是支持的语言，使用第一个段
         if (supportedLanguages.includes(firstSegment)) {
           redirectPath = remainingPath ? `/${firstSegment}/${remainingPath}` : `/${firstSegment}`;
@@ -768,13 +770,13 @@ router.beforeEach((to, _from, next) => {
         else if (firstSegment === 'en' && supportedLanguages.includes(secondSegment)) {
           redirectPath = remainingPath ? `/${secondSegment}/${remainingPath}` : `/${secondSegment}`;
         }
-        
+
         if (redirectPath) {
           console.log(`重定向2: ${to.path} -> ${redirectPath}`);
           return next({ path: redirectPath, replace: true });
         }
       }
-      
+
       // 情况3: /en/path (如 /en/multi-click-test/triple) - 重定向到 /path
       if (firstSegment === 'en' && !allLanguages.includes(secondSegment)) {
         const remainingPath = pathSegments.slice(1).join('/');
@@ -784,7 +786,7 @@ router.beforeEach((to, _from, next) => {
       }
     }
   }
-  
+
   // 情况4: /en (单独的 /en) - 重定向到 /
   if (pathSegments.length === 1 && pathSegments[0] === 'en') {
     console.log(`重定向4: ${to.path} -> /`);
@@ -794,7 +796,7 @@ router.beforeEach((to, _from, next) => {
   // 设置canonical标签（每个语言版本使用自己的URL作为规范URL）
   try {
     const canonicalUrl = `${window.location.origin}${to.path}`;
-    
+
     // 避免重复更新相同的canonical标签
     if (lastCanonicalTag !== canonicalUrl) {
       let canonicalTag = document.querySelector('link[rel="canonical"]');
@@ -814,7 +816,7 @@ router.beforeEach((to, _from, next) => {
   // 设置hreflang标签
   const languages = ['zh-CN', 'en', 'ja', 'ko'];
   const currentHreflangKey = `${to.path}_${languages.join('_')}`;
-  
+
   // 避免重复生成相同的hreflang标签
   if (lastHreflangTags !== currentHreflangKey) {
     // 先移除所有现有hreflang标签

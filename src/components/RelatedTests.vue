@@ -196,7 +196,8 @@
   }
 
   /* 按钮颜色样式 - 简化版 */
-  .start-btn.clickTest, .start-btn.tripleClickTest {
+  .start-btn.clickTest,
+  .start-btn.tripleClickTest {
     background: #2196f3;
   }
 

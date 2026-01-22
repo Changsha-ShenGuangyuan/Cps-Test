@@ -35,7 +35,7 @@
     <!-- FAQ区域 -->
     <div class="faq-section">
       <!-- 使用通用FAQ组件 -->
-      <component 
+      <component
         :is="FAQComponent"
         :title="t('mouseDragTest')"
         :faq="currentFaq"

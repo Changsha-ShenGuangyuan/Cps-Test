@@ -457,7 +457,7 @@
     <component :is="RelatedTests" current-test="keyboardTest" />
 
     <!-- 使用通用FAQ组件 -->
-    <component 
+    <component
       :is="FAQComponent"
       :title="t('keyboardTest')"
       :faq="currentFaq"
@@ -468,12 +468,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
-import { t } from '../i18n/index';
-// 懒加载通用FAQ组件
-const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
-// 懒加载相关测试推荐组件
-const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
+  import { ref, computed, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
+  import { t } from '../i18n/index';
+  // 懒加载通用FAQ组件
+  const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
+  // 懒加载相关测试推荐组件
+  const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
   // 按键代码映射表，将KeyboardEvent.code转换为更简洁的表示
   const keyCodeMap: Record<string, string> = {
@@ -898,8 +898,6 @@ const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
     gap: 10px;
   }
 
-
-
   .key-history-text {
     font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace;
     font-size: 14px;
@@ -1023,6 +1021,4 @@ const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
       min-width: 1100px;
     }
   }
-
-
 </style>

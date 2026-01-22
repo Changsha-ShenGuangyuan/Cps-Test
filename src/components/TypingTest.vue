@@ -7,10 +7,6 @@
   // 懒加载相关测试推荐组件
   const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
-  
-
-  
-
   // 处理键盘按下事件
   const handleKeyDown = (e: KeyboardEvent) => {
     // 定义允许开始游戏的按键类型：数字、字母、符号
@@ -68,8 +64,6 @@
       router.replace('/404');
     }
   };
-
-  
 
   // 监听props变化，重新验证参数
   watch(
@@ -304,17 +298,11 @@
     return paragraphs.value[currentParagraphIndex.value] || '';
   });
 
-  
-
   // 监听文本变化
   watch(currentText, () => {
     splitTextIntoParagraphs();
     currentParagraphIndex.value = 0;
   });
-
-  
-
-  
 
   // 计算属性：格式化剩余时间
   const formattedTime = computed(() => {
@@ -505,7 +493,6 @@
     // 重置段落索引
     currentParagraphIndex.value = 0;
   };
-
 </script>
 
 <template>
@@ -602,7 +589,7 @@
         <!-- FAQ区域 -->
         <div class="faq-section">
           <!-- 使用通用FAQ组件 -->
-          <component 
+          <component
             :is="FAQComponent"
             :title="t('typingTest')"
             :faq="currentFaq"
@@ -766,7 +753,6 @@
     display: flex;
     align-items: center;
   }
-
 
   /* 文本字符样式 */
   .text-display span {

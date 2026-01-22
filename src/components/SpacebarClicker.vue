@@ -9,8 +9,6 @@
   const isPlaying = ref(false); // 游戏是否正在进行
   const autoCPS = ref(0); // 自动每秒点击数
 
-
-
   // FAQ数据结构
   interface FAQStep {
     id: string;
@@ -376,7 +374,6 @@
 
   // 更新每秒点击数
   const updateClicksPerSecond = () => {
-
     // 计算自动CPS：所有已购买BUFF的每秒点击贡献之和
     let totalAutoCPS = 0;
 
@@ -417,9 +414,6 @@
     if (!isPlaying.value) {
       isPlaying.value = true;
     }
-
-
-
 
     // 播放空格键动画
     playSpacebarAnimation();
@@ -1231,8 +1225,6 @@
     background-color: rgba(40, 40, 40, 0.9);
   }
 
-
-
   .buff-card.max-level {
     border-color: #ffd700;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
@@ -1340,8 +1332,6 @@
   .buff-card {
     cursor: pointer;
   }
-
-
 
   .buff-card.max-level {
     cursor: not-allowed;

@@ -625,7 +625,7 @@
     <div class="game-instructions info">
       <div class="faq-section">
         <!-- 使用通用FAQ组件 -->
-        <component 
+        <component
           :is="FAQComponent"
           :title="t('targetEliminationGame')"
           :faq="currentFaq"
@@ -1154,8 +1154,6 @@
     font-weight: bold;
     text-align: center;
   }
-
-
 
   /* 脉动动画 */
   @keyframes pulse {

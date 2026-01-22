@@ -87,8 +87,9 @@
 
   // 使用composable函数
   const { ripples, addRipple, clearRipples } = useRippleEffect();
-  const { addHistoryRecord, filteredHistory: getFilteredHistory } = useClickTestHistory('clickTest');
-  
+  const { addHistoryRecord, filteredHistory: getFilteredHistory } =
+    useClickTestHistory('clickTest');
+
   // 计算属性：根据当前测试时长筛选历史记录
   const filteredHistory = computed(() => getFilteredHistory(testTime.value));
 
@@ -109,7 +110,7 @@
   // 初始化游戏实例
   const initGame = (time: number) => {
     gameInstance = useClickTestGame(time);
-    
+
     // 同步游戏状态到本地ref
     isPlaying.value = gameInstance.isPlaying.value;
     isGameOver.value = gameInstance.isGameOver.value;
@@ -213,7 +214,7 @@
   const handleGameClick = (button: number) => {
     if (gameInstance) {
       const result = gameInstance.handleClick(button);
-      
+
       // 同步游戏状态到本地ref
       isPlaying.value = gameInstance.isPlaying.value;
       isGameOver.value = gameInstance.isGameOver.value;
@@ -224,7 +225,7 @@
       selectedMouseButton.value = gameInstance.selectedMouseButton.value;
       isTimeUp.value = gameInstance.isTimeUp.value;
       currentCps.value = gameInstance.currentCps.value;
-      
+
       return result;
     }
     return false;
@@ -312,7 +313,7 @@
 
     // 处理游戏点击逻辑
     const clicked = handleGameClick(event.button);
-    
+
     // 如果点击有效，添加涟漪特效
     if (clicked) {
       addRipple(x, y);
@@ -373,9 +374,7 @@
               :key="option.value"
               class="button-option"
               :class="{ active: selectedMouseButton === option.value }"
-              @click="
-                selectMouseButton(option.value);
-              "
+              @click="selectMouseButton(option.value)"
             >
               <span>{{ option.label }}</span>
             </button>
@@ -457,7 +456,7 @@
           </div>
 
           <!-- 使用通用FAQ组件 -->
-          <component 
+          <component
             :is="FAQComponent"
             :title="t('faq')"
             :faq="currentFaq"
@@ -472,12 +471,12 @@
         <div class="history-header">
           <h3>
             <img
-                :src="historyIconUrlRelative"
-                width="30"
-                height="30"
-                :alt="t('historyIconAlt')"
-                class="history-icon"
-              />
+              :src="historyIconUrlRelative"
+              width="30"
+              height="30"
+              :alt="t('historyIconAlt')"
+              class="history-icon"
+            />
             {{ t('history') }}
           </h3>
         </div>
@@ -506,7 +505,7 @@
   </div>
 
   <!-- 结果弹窗组件 -->
-  <component 
+  <component
     :is="ResultModal"
     :visible="showResultModal"
     :type="'clickTest'"

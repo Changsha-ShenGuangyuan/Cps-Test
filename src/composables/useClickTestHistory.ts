@@ -16,7 +16,7 @@ export interface HistoryRecord {
 export function useClickTestHistory(testType: string = 'clickTest') {
   // 历史记录相关
   const historyRecords = ref<HistoryRecord[]>([]); // 历史记录数组
-  
+
   // 从localStorage加载历史记录
   const loadHistory = () => {
     const saved = localStorage.getItem(`${testType}History`);

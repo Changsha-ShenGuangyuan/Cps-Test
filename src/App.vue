@@ -14,14 +14,15 @@
   class PreloadService {
     private preloadedComponents: Set<string> = new Set();
     private networkSpeed: 'slow' | 'medium' | 'fast' = 'medium';
-    private userBehavior: Map<string, { clicks: number; views: number; lastAccessed: number }> = new Map();
+    private userBehavior: Map<string, { clicks: number; views: number; lastAccessed: number }> =
+      new Map();
 
     // 检测网络速度
     detectNetworkSpeed() {
       if ('connection' in navigator) {
         const connection = navigator.connection as any;
         const effectiveType = connection.effectiveType || '4g';
-        
+
         if (effectiveType === '2g') {
           this.networkSpeed = 'slow';
         } else if (effectiveType === '3g') {
@@ -34,36 +35,38 @@
 
     // 预加载组件
     async preloadComponent(componentPath: string, priority: 'high' | 'medium' | 'low' = 'medium') {
-    // 检查缓存
-    const cachedComponent = cacheManager.getCachedComponent(componentPath);
-    if (cachedComponent) {
-      this.preloadedComponents.add(componentPath);
-      return;
-    }
+      // 检查缓存
+      const cachedComponent = cacheManager.getCachedComponent(componentPath);
+      if (cachedComponent) {
+        this.preloadedComponents.add(componentPath);
+        return;
+      }
 
-    // 跳过已经预加载的组件
-    if (this.preloadedComponents.has(componentPath)) {
-      return;
-    }
+      // 跳过已经预加载的组件
+      if (this.preloadedComponents.has(componentPath)) {
+        return;
+      }
 
-    // 根据网络速度和优先级决定是否预加载
-    if (this.networkSpeed === 'slow' && priority === 'low') {
-      return;
-    }
+      // 根据网络速度和优先级决定是否预加载
+      if (this.networkSpeed === 'slow' && priority === 'low') {
+        return;
+      }
 
-    try {
-      // 动态导入组件
-      const component = await import(`./components/${componentPath}.vue`);
-      this.preloadedComponents.add(componentPath);
-      // 缓存组件
-      cacheManager.cacheComponent(componentPath, component);
-    } catch (error) {
-      console.warn(`Failed to preload component ${componentPath}:`, error);
+      try {
+        // 动态导入组件
+        const component = await import(`./components/${componentPath}.vue`);
+        this.preloadedComponents.add(componentPath);
+        // 缓存组件
+        cacheManager.cacheComponent(componentPath, component);
+      } catch (error) {
+        console.warn(`Failed to preload component ${componentPath}:`, error);
+      }
     }
-  }
 
     // 批量预加载组件
-    async preloadComponents(components: Array<{ path: string; priority: 'high' | 'medium' | 'low' }>) {
+    async preloadComponents(
+      components: Array<{ path: string; priority: 'high' | 'medium' | 'low' }>
+    ) {
       // 按照优先级排序
       const sortedComponents = [...components].sort((a, b) => {
         const priorityOrder = { high: 0, medium: 1, low: 2 };
@@ -85,7 +88,7 @@
         { path: 'ReactionTimeTest', priority: 'medium' },
         { path: 'TypingTest', priority: 'medium' },
         { path: 'ResultModal', priority: 'high' },
-        { path: 'RelatedTests', priority: 'low' }
+        { path: 'RelatedTests', priority: 'low' },
       ];
 
       await this.preloadComponents(commonComponents);
@@ -101,13 +104,14 @@
         '/typing-test/': 'TypingTest',
         '/kohi-click-test': 'KohiClickTest',
         '/spacebar-clicker': 'SpacebarClicker',
-        '/target-elimination-game': 'TargetEliminationGame'
+        '/target-elimination-game': 'TargetEliminationGame',
       };
 
       const componentsToPreload = new Set<string>();
 
       // 分析历史记录，找出用户常用的组件
-      for (const item of historyItems.slice(0, 5)) { // 只考虑最近5条历史记录
+      for (const item of historyItems.slice(0, 5)) {
+        // 只考虑最近5条历史记录
         for (const [pathPrefix, componentName] of Object.entries(pathToComponentMap)) {
           if (item.path.includes(pathPrefix)) {
             componentsToPreload.add(componentName);
@@ -129,7 +133,7 @@
         '/space-click-test/': ['SpacebarClicker', 'KeyboardTest'],
         '/reaction-time-test/': ['ColorReactionTest', 'KeyReactionTest'],
         '/typing-test/': ['KeyboardTest'],
-        '/keyboard-test': ['TypingTest', 'KeyReactionTest']
+        '/keyboard-test': ['TypingTest', 'KeyReactionTest'],
       };
 
       for (const [pathPrefix, relatedComponents] of Object.entries(pathToRelatedComponents)) {
@@ -157,7 +161,7 @@
       const behavior = this.userBehavior.get(componentName) || {
         clicks: 0,
         views: 0,
-        lastAccessed: Date.now()
+        lastAccessed: Date.now(),
       };
 
       if (action === 'click') {
@@ -171,8 +175,9 @@
 
       // 最多保存20个组件的行为数据
       if (this.userBehavior.size > 20) {
-        const oldestComponent = Array.from(this.userBehavior.entries())
-          .sort((a, b) => a[1].lastAccessed - b[1].lastAccessed)[0];
+        const oldestComponent = Array.from(this.userBehavior.entries()).sort(
+          (a, b) => a[1].lastAccessed - b[1].lastAccessed
+        )[0];
         if (oldestComponent) {
           this.userBehavior.delete(oldestComponent[0]);
         }
@@ -190,7 +195,7 @@
         componentsToPreload = [
           { path: 'ClickTest', priority: 'high' },
           { path: 'SpaceClickTest', priority: 'high' },
-          { path: 'ResultModal', priority: 'high' }
+          { path: 'ResultModal', priority: 'high' },
         ];
       } else if (currentHour >= 12 && currentHour < 18) {
         // 下午时段，预加载更多测试类型
@@ -199,7 +204,7 @@
           { path: 'SpaceClickTest', priority: 'high' },
           { path: 'KeyboardTest', priority: 'medium' },
           { path: 'ReactionTimeTest', priority: 'medium' },
-          { path: 'ResultModal', priority: 'high' }
+          { path: 'ResultModal', priority: 'high' },
         ];
       } else {
         // 晚上时段，预加载所有常用组件
@@ -209,7 +214,7 @@
           { path: 'KeyboardTest', priority: 'medium' },
           { path: 'ReactionTimeTest', priority: 'medium' },
           { path: 'TypingTest', priority: 'medium' },
-          { path: 'ResultModal', priority: 'high' }
+          { path: 'ResultModal', priority: 'high' },
         ];
       }
 
@@ -255,7 +260,11 @@
   // 语言选择相关
   const languages = [
     { code: 'en', name: 'ENGLISH', flag: new URL('@/assets/flags/um.png', import.meta.url).href },
-    { code: 'zh-CN',name: '简体中文',flag: new URL('@/assets/flags/cn.png', import.meta.url).href,},
+    {
+      code: 'zh-CN',
+      name: '简体中文',
+      flag: new URL('@/assets/flags/cn.png', import.meta.url).href,
+    },
     { code: 'ja', name: '日本語', flag: new URL('@/assets/flags/jp.png', import.meta.url).href },
     { code: 'ko', name: '한국어', flag: new URL('@/assets/flags/kr.png', import.meta.url).href },
   ];
@@ -1069,9 +1078,13 @@
   // 点击事件处理函数
   const handleClickEvent = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-    
+
     // 检测是否点击了测试相关的元素
-    if (target.closest('.main-nav-item') || target.closest('.submenu-item') || target.closest('.auxiliary-nav-item')) {
+    if (
+      target.closest('.main-nav-item') ||
+      target.closest('.submenu-item') ||
+      target.closest('.auxiliary-nav-item')
+    ) {
       // 分析点击的目标，记录相应的组件行为
       const pathToComponentMap: Record<string, string> = {
         'click-test': 'ClickTest',
@@ -1081,9 +1094,9 @@
         'typing-test': 'TypingTest',
         'kohi-click-test': 'KohiClickTest',
         'spacebar-clicker': 'SpacebarClicker',
-        'target-elimination-game': 'TargetEliminationGame'
+        'target-elimination-game': 'TargetEliminationGame',
       };
-      
+
       for (const [pathPrefix, componentName] of Object.entries(pathToComponentMap)) {
         if (window.location.pathname.includes(pathPrefix)) {
           preloadService.recordUserBehavior(componentName, 'click');
@@ -1100,10 +1113,10 @@
     removeRouterListener = router.afterEach((to) => {
       // 添加到历史记录
       addHistoryItem(to.path);
-      
+
       // 路由切换后预加载相关组件
       preloadService.preloadNextPossibleComponents(to.path);
-      
+
       // 记录用户行为
       const pathToComponentMap: Record<string, string> = {
         '/click-test/': 'ClickTest',
@@ -1113,9 +1126,9 @@
         '/typing-test/': 'TypingTest',
         '/kohi-click-test': 'KohiClickTest',
         '/spacebar-clicker': 'SpacebarClicker',
-        '/target-elimination-game': 'TargetEliminationGame'
+        '/target-elimination-game': 'TargetEliminationGame',
       };
-      
+
       for (const [pathPrefix, componentName] of Object.entries(pathToComponentMap)) {
         if (to.path.includes(pathPrefix)) {
           preloadService.recordUserBehavior(componentName, 'view');
@@ -1138,19 +1151,19 @@
 
     // 初始化预加载服务（仅执行轻量级操作）
     preloadService.detectNetworkSpeed();
-    
+
     // 预加载常用图标（轻量级操作）
     iconManager.preloadCommonIcons();
-    
+
     // 将重量级预加载操作移到关键渲染完成后执行
     // 使用requestAnimationFrame确保在浏览器渲染完成后执行
     requestAnimationFrame(() => {
       // 基于时间的智能预加载
       preloadService.preloadBasedOnTime();
-      
+
       // 预加载常用测试组件
       preloadService.preloadCommonTestComponents();
-      
+
       // 基于用户历史预加载组件
       if (historyItems.value.length > 0) {
         preloadService.preloadBasedOnHistory(historyItems.value);
@@ -1588,6 +1601,7 @@
               <div
                 class="menu-item-header"
                 :class="{ active: isItemActive(item) }"
+                role="button"
                 :aria-expanded="item.isExpanded"
                 @click="toggleMenu(item)"
               >
@@ -2751,8 +2765,6 @@
     opacity: 1;
   }
 
-  
-
   /* 移除级联动画，使用简单的淡入效果 */
   .submenu-item {
     padding: 15px 20px 15px 50px;
@@ -2799,8 +2811,6 @@
     background-color: #333;
     color: #4caf50;
   }
-
-  
 
   /* 右侧主内容 */
   .content {
@@ -3144,9 +3154,6 @@
       width: calc(100vw - 20px);
     }
   }
-
-
-  
 
   .clicks {
     font-size: 48px;

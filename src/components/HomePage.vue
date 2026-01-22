@@ -102,7 +102,7 @@
 
       <!-- 时间选择区域 -->
       <div class="time-select-section">
-        <h3 class="time-select-title">{{ t('selectTime') }}</h3>
+        <h2 class="time-select-title">{{ t('selectTime') }}</h2>
         <div class="time-select-list">
           <button
             v-for="time in supportedTimes"
@@ -121,7 +121,7 @@
     </section>
 
     <!-- 结果弹窗组件 -->
-    <component 
+    <component
       :is="ResultModal"
       :visible="showResultModal"
       :type="'space'"

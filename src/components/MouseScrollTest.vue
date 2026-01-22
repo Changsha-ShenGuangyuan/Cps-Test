@@ -164,9 +164,9 @@
       <div class="speed-display">
         <div class="speed-value">{{ currentSpeed }} {{ t('pixelsPerSecond') }}</div>
         <div class="scroll-prompt">
-          {{ 
-            currentSpeed > 0 || maxSpeed <= 0 
-              ? t('scrollAsFastAsPossible') 
+          {{
+            currentSpeed > 0 || maxSpeed <= 0
+              ? t('scrollAsFastAsPossible')
               : `${t('yourBestScore')} ${maxSpeed} ${t('pixelsPerSecond')}`
           }}
         </div>
@@ -179,13 +179,13 @@
     <!-- 游戏说明 -->
     <div class="game-instructions">
       <!-- 使用通用FAQ组件 -->
-          <component 
-            :is="FAQComponent"
-            :title="t('mouseScrollTest')"
-            :faq="currentFaq"
-            :show-popular="true"
-            :popular-questions="popularQuestions"
-          />
+      <component
+        :is="FAQComponent"
+        :title="t('mouseScrollTest')"
+        :faq="currentFaq"
+        :show-popular="true"
+        :popular-questions="popularQuestions"
+      />
     </div>
   </div>
 </template>
@@ -206,8 +206,6 @@
     text-rendering: optimizeLegibility;
     border-radius: 10px;
   }
-
-
 
   /* 测试区域 */
   .test-area {

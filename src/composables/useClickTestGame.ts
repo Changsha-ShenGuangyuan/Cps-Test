@@ -16,8 +16,6 @@ export function useClickTestGame(testTime: number) {
   const elapsedTime = ref(0); // 已用时间（毫秒级精度）
   const showResultModal = ref(false); // 结果弹窗显示状态
 
-
-
   // 鼠标按键选择状态
   const selectedMouseButton = ref(0); // 当前选择的鼠标按键，默认左键
 
@@ -98,8 +96,6 @@ export function useClickTestGame(testTime: number) {
     };
   };
 
-
-
   // 点击事件处理函数
   const handleClick = (eventButton: number) => {
     // 检查是否是选择的鼠标按键
@@ -164,7 +160,7 @@ export function useClickTestGame(testTime: number) {
     selectedMouseButton,
     isTimeUp,
     currentCps,
-    
+
     // 方法
     startGame,
     endGame,
