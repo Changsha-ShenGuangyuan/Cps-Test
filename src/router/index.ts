@@ -342,16 +342,22 @@ const router = createRouter({
   },
 });
 
-// 导入i18n翻译函数
-import { t } from '../i18n/index';
+// 导入i18n翻译函数和语言状态
+import { t, langState } from '../i18n/index';
 
-// 缓存上一次的路由信息，避免重复更新
+// 缓存上一次的路由信息和语言，避免重复更新
 let lastRoute: any = null;
+let lastLang: string = '';
 
 // 提取meta标签更新逻辑为独立函数，支持响应式更新
 export const updateMetaTags = (to: any) => {
-  // 避免重复更新相同路由的meta标签
-  if (lastRoute && lastRoute.path === to.path && lastRoute.meta === to.meta) {
+  // 避免重复更新相同路由的meta标签，同时考虑语言变化
+  if (
+    lastRoute &&
+    lastRoute.path === to.path &&
+    lastRoute.meta === to.meta &&
+    lastLang === langState.current
+  ) {
     return;
   }
 
@@ -633,8 +639,9 @@ export const updateMetaTags = (to: any) => {
     }
   }
 
-  // 缓存当前路由信息
+  // 缓存当前路由信息和语言
   lastRoute = to;
+  lastLang = langState.current;
 };
 
 // 获取不带语言前缀的路径

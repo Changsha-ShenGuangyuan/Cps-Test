@@ -1075,37 +1075,6 @@
   // 存储路由导航监听器的移除函数
   let removeRouterListener: (() => void) | null = null;
 
-  // 点击事件处理函数
-  const handleClickEvent = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-
-    // 检测是否点击了测试相关的元素
-    if (
-      target.closest('.main-nav-item') ||
-      target.closest('.submenu-item') ||
-      target.closest('.auxiliary-nav-item')
-    ) {
-      // 分析点击的目标，记录相应的组件行为
-      const pathToComponentMap: Record<string, string> = {
-        'click-test': 'ClickTest',
-        'space-click-test': 'SpaceClickTest',
-        'keyboard-test': 'KeyboardTest',
-        'reaction-time-test': 'ReactionTimeTest',
-        'typing-test': 'TypingTest',
-        'kohi-click-test': 'KohiClickTest',
-        'spacebar-clicker': 'SpacebarClicker',
-        'target-elimination-game': 'TargetEliminationGame',
-      };
-
-      for (const [pathPrefix, componentName] of Object.entries(pathToComponentMap)) {
-        if (window.location.pathname.includes(pathPrefix)) {
-          preloadService.recordUserBehavior(componentName, 'click');
-          break;
-        }
-      }
-    }
-  };
-
   onMounted(() => {
     document.addEventListener('click', closeAllMenus);
 
@@ -1113,35 +1082,10 @@
     removeRouterListener = router.afterEach((to) => {
       // 添加到历史记录
       addHistoryItem(to.path);
-
-      // 路由切换后预加载相关组件
-      preloadService.preloadNextPossibleComponents(to.path);
-
-      // 记录用户行为
-      const pathToComponentMap: Record<string, string> = {
-        '/click-test/': 'ClickTest',
-        '/space-click-test/': 'SpaceClickTest',
-        '/keyboard-test': 'KeyboardTest',
-        '/reaction-time-test': 'ReactionTimeTest',
-        '/typing-test/': 'TypingTest',
-        '/kohi-click-test': 'KohiClickTest',
-        '/spacebar-clicker': 'SpacebarClicker',
-        '/target-elimination-game': 'TargetEliminationGame',
-      };
-
-      for (const [pathPrefix, componentName] of Object.entries(pathToComponentMap)) {
-        if (to.path.includes(pathPrefix)) {
-          preloadService.recordUserBehavior(componentName, 'view');
-          break;
-        }
-      }
     });
 
     // 添加窗口大小改变监听，自动调整侧边栏状态和设备类型
     window.addEventListener('resize', handleResize);
-
-    // 添加点击事件监听，记录用户点击行为
-    document.addEventListener('click', handleClickEvent);
 
     // 初始加载时，根据当前语言设置更新meta标签
     updateMetaTags(route);
@@ -1155,27 +1099,12 @@
     // 预加载常用图标（轻量级操作）
     iconManager.preloadCommonIcons();
 
-    // 将重量级预加载操作移到关键渲染完成后执行
-    // 使用requestAnimationFrame确保在浏览器渲染完成后执行
-    requestAnimationFrame(() => {
-      // 基于时间的智能预加载
-      preloadService.preloadBasedOnTime();
-
-      // 预加载常用测试组件
-      preloadService.preloadCommonTestComponents();
-
-      // 基于用户历史预加载组件
-      if (historyItems.value.length > 0) {
-        preloadService.preloadBasedOnHistory(historyItems.value);
-      }
-    });
   });
 
   // 组件卸载时移除事件监听
   onUnmounted(() => {
     document.removeEventListener('click', closeAllMenus);
     window.removeEventListener('resize', handleResize);
-    document.removeEventListener('click', handleClickEvent);
     // 移除路由导航监听器
     if (removeRouterListener) {
       removeRouterListener();
