@@ -21,10 +21,22 @@
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
 
-  // 监听窗口大小变化
-  const handleResize = () => {
-    isDesktop.value = window.innerWidth >= 1201;
+  // 节流函数，减少频繁触发
+  const throttle = (func: Function, delay: number) => {
+    let inThrottle: boolean;
+    return function(this: any, ...args: any[]) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, delay);
+      }
+    };
   };
+
+  // 监听窗口大小变化（使用节流优化）
+  const handleResize = throttle(() => {
+    isDesktop.value = window.innerWidth >= 1201;
+  }, 200);
 
   // 路由相关
   const route = useRoute(); // 获取路由实例
@@ -305,7 +317,7 @@
     let y = 0;
 
     if (clickAreaRef.value) {
-      // 每次点击都获取最新的位置信息，确保坐标准确
+      // 每次点击都获取最新的位置信息，确保点击位置和涟漪效果位置一致
       const rect = clickAreaRef.value.getBoundingClientRect();
       x = event.clientX - rect.left;
       y = event.clientY - rect.top;

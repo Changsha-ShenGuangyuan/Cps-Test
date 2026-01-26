@@ -4,6 +4,7 @@ import viteCompression from 'vite-plugin-compression';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import sitemapPlugin from 'vite-plugin-sitemap';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import VitePluginPurgeCSS from 'vite-plugin-purgecss';
 import path from 'path';
 
 // https://vite.dev/config/
@@ -18,17 +19,23 @@ export default defineConfig({
     viteCompression({
       algorithm: 'gzip',
       ext: '.gz',
-      threshold: 10240, // 10KB以上的文件才会被压缩
+      threshold: 1024, // 1KB以上的文件就会被压缩
       deleteOriginFile: false,
-      verbose: false,
+      verbose: true,
+      filter: (fileName) => {
+        return !fileName.includes('node_modules');
+      },
     }),
     // 添加Brotil压缩，提供更高的压缩率
     viteCompression({
       algorithm: 'brotliCompress',
       ext: '.br',
-      threshold: 10240, // 10KB以上的文件才会被压缩
+      threshold: 1024, // 1KB以上的文件就会被压缩
       deleteOriginFile: false,
-      verbose: false,
+      verbose: true,
+      filter: (fileName) => {
+        return !fileName.includes('node_modules');
+      },
     }),
     ViteImageOptimizer({
       png: {
@@ -276,9 +283,37 @@ export default defineConfig({
         ],
       },
     }),
+    // PurgeCSS插件，用于移除未使用的CSS
+    VitePluginPurgeCSS({
+      content: [
+        './index.html',
+        './src/**/*.vue',
+        './src/**/*.ts',
+        './src/**/*.tsx',
+        './src/**/*.js',
+        './src/**/*.jsx',
+      ],
+      safelist: {
+        standard: [/^v-/, /^router-link/, /^nuxt-/],
+        deep: [/^transition/, /^modal/, /^tooltip/],
+      },
+      defaultExtractor: (content: string) => {
+        const contentWithoutStyleBlocks = content.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+        return contentWithoutStyleBlocks.match(/[A-Za-z0-9-_/:]+/g) || [];
+      },
+    }),
   ],
   server: {
     host: '0.0.0.0',
+    headers: {
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'SAMEORIGIN',
+      'X-XSS-Protection': '1; mode=block',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    },
+  },
+  preview: {
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
@@ -309,6 +344,19 @@ export default defineConfig({
               return 'vue-vendor';
             }
             return 'vendor';
+          }
+
+          // 将composable函数单独打包
+          if (id.includes('src/composables/')) {
+            if (id.includes('useClickTestGame')) {
+              return 'click-test-game';
+            } else if (id.includes('useClickTestHistory')) {
+              return 'click-test-history';
+            } else if (id.includes('useRippleEffect')) {
+              return 'click-test-ripple';
+            } else {
+              return 'composables';
+            }
           }
 
           // 将测试组件按功能模块分组
