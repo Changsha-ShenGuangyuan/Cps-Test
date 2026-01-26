@@ -4,7 +4,6 @@ import viteCompression from 'vite-plugin-compression';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import sitemapPlugin from 'vite-plugin-sitemap';
 import { createHtmlPlugin } from 'vite-plugin-html';
-import VitePluginPurgeCSS from 'vite-plugin-purgecss';
 import path from 'path';
 
 // https://vite.dev/config/
@@ -281,25 +280,6 @@ export default defineConfig({
             },
           },
         ],
-      },
-    }),
-    // PurgeCSS插件，用于移除未使用的CSS
-    VitePluginPurgeCSS({
-      content: [
-        './index.html',
-        './src/**/*.vue',
-        './src/**/*.ts',
-        './src/**/*.tsx',
-        './src/**/*.js',
-        './src/**/*.jsx',
-      ],
-      safelist: {
-        standard: [/^v-/, /^router-link/, /^nuxt-/, /^sidebar/, /^content/, /^main-content/, /^header/, /^footer/],
-        deep: [/^transition/, /^modal/, /^tooltip/],
-      },
-      defaultExtractor: (content: string) => {
-        const contentWithoutStyleBlocks = content.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
-        return contentWithoutStyleBlocks.match(/[A-Za-z0-9-_/:]+/g) || [];
       },
     }),
   ],
