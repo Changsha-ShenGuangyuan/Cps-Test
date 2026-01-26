@@ -7,8 +7,16 @@
   // 导入ResponsiveImage组件
   import ResponsiveImage from './components/ResponsiveImage.vue';
   import { updateMetaTags } from './router/index';
+  // 导入工具类（仅在生产环境中预加载）
   import { iconManager } from './utils/iconManager';
-  import { cacheManager } from './utils/cacheManager';
+  // 缓存管理器仅在生产环境中使用
+  let cacheManager: any = null;
+  if (import.meta.env.PROD) {
+    // 动态导入缓存管理器
+    import('./utils/cacheManager').then(({ cacheManager: cm }) => {
+      cacheManager = cm;
+    });
+  }
 
   // 预加载服务
   class PreloadService {
@@ -36,10 +44,12 @@
     // 预加载组件
     async preloadComponent(componentPath: string, priority: 'high' | 'medium' | 'low' = 'medium') {
       // 检查缓存
-      const cachedComponent = cacheManager.getCachedComponent(componentPath);
-      if (cachedComponent) {
-        this.preloadedComponents.add(componentPath);
-        return;
+      if (cacheManager) {
+        const cachedComponent = cacheManager.getCachedComponent(componentPath);
+        if (cachedComponent) {
+          this.preloadedComponents.add(componentPath);
+          return;
+        }
       }
 
       // 跳过已经预加载的组件
@@ -57,7 +67,9 @@
         const component = await import(`./components/${componentPath}.vue`);
         this.preloadedComponents.add(componentPath);
         // 缓存组件
-        cacheManager.cacheComponent(componentPath, component);
+        if (cacheManager) {
+          cacheManager.cacheComponent(componentPath, component);
+        }
       } catch (error) {
         console.warn(`Failed to preload component ${componentPath}:`, error);
       }
@@ -1075,6 +1087,20 @@
   // 存储路由导航监听器的移除函数
   let removeRouterListener: (() => void) | null = null;
 
+  // 用户交互后触发预加载
+  const handleUserInteraction = () => {
+    // 只在生产环境中进行预加载
+    if (import.meta.env.PROD) {
+      // 预加载常用测试组件
+      preloadService.preloadCommonTestComponents();
+      // 预加载基于时间的组件
+      preloadService.preloadBasedOnTime();
+    }
+    // 移除事件监听器，避免重复触发
+    window.removeEventListener('click', handleUserInteraction);
+    window.removeEventListener('touchstart', handleUserInteraction);
+  };
+
   onMounted(() => {
     document.addEventListener('click', closeAllMenus);
 
@@ -1099,12 +1125,19 @@
     // 预加载常用图标（轻量级操作）
     iconManager.preloadCommonIcons();
 
+    // 添加用户交互监听器，在用户首次交互后触发预加载
+    window.addEventListener('click', handleUserInteraction);
+    window.addEventListener('touchstart', handleUserInteraction);
+
   });
 
   // 组件卸载时移除事件监听
   onUnmounted(() => {
     document.removeEventListener('click', closeAllMenus);
     window.removeEventListener('resize', handleResize);
+    // 移除用户交互监听器
+    window.removeEventListener('click', handleUserInteraction);
+    window.removeEventListener('touchstart', handleUserInteraction);
     // 移除路由导航监听器
     if (removeRouterListener) {
       removeRouterListener();
