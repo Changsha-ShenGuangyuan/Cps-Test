@@ -99,7 +99,7 @@ const publicRoutes = [
   {
     path: '/space-click-test/:time(\\d+)',
     name: 'SpaceClickTest',
-    component: () => import(/* rollupChunkName: "keyboard" */ '../components/SpaceClickTest.vue'), // 空格点击测试组件
+    component: () => import(/* rollupChunkName: "space-click-test" */ '../components/SpaceClickTest.vue'), // 空格点击测试组件
     props: true,
     meta: {
       title: '空格点击测试 - CPSTest',

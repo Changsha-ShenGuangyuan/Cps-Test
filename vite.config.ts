@@ -294,7 +294,7 @@ export default defineConfig({
         './src/**/*.jsx',
       ],
       safelist: {
-        standard: [/^v-/, /^router-link/, /^nuxt-/],
+        standard: [/^v-/, /^router-link/, /^nuxt-/, /^sidebar/, /^content/, /^main-content/, /^header/, /^footer/],
         deep: [/^transition/, /^modal/, /^tooltip/],
       },
       defaultExtractor: (content: string) => {

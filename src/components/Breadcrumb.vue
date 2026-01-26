@@ -181,7 +181,7 @@
   }
 
   .breadcrumb-link {
-    color: #4caf50;
+    color: #66cc66;
     text-decoration: none;
     transition: all 0.2s ease;
     padding: 3px 5px;
@@ -192,11 +192,12 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     letter-spacing: 0.2px;
+    font-weight: 500;
   }
 
   .breadcrumb-link:hover {
     color: #ffffff;
-    background-color: rgba(76, 175, 80, 0.2);
+    background-color: rgba(102, 204, 102, 0.3);
     text-decoration: none;
   }
 
