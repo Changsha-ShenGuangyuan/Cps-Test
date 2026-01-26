@@ -44,6 +44,7 @@
     "vue-tsc": "^3.1.4"
   },
   "overrides": {
-    "vite": "npm:rolldown-vite@7.2.5"
+    "vite": "npm:rolldown-vite@7.2.5",
+    "lodash": "^4.17.23"
   }
 }
