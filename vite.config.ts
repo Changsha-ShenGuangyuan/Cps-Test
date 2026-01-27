@@ -374,6 +374,12 @@ export default defineConfig({
               return 'reaction-tests';
             } else if (id.includes('TypingTest')) {
               return 'typing-tests';
+            } else if (id.includes('MouseDragTest')) {
+              return 'mouse-drag-test';
+            } else if (id.includes('MouseScrollTest')) {
+              return 'mouse-scroll-test';
+            } else if (id.includes('TargetEliminationGame')) {
+              return 'target-elimination-game';
             }
           }
 
@@ -421,6 +427,10 @@ export default defineConfig({
           },
         },
       ],
+    },
+    // 优化CSS代码分割
+    modules: {
+      localsConvention: 'camelCase',
     },
   },
 });
