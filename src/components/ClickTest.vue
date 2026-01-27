@@ -4,8 +4,8 @@
   import { t } from '../i18n/index';
   // 懒加载通用FAQ组件
   const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
-  // 静态导入结果弹窗组件
-  import ResultModal from './ResultModal.vue';
+  // 懒加载结果弹窗组件
+  const ResultModal = defineAsyncComponent(() => import('./ResultModal.vue'));
   // 懒加载相关测试推荐组件
   const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
@@ -16,7 +16,6 @@
 
   // 导入图标资源
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
-  const historyIconUrlRelative = new URL('../assets/icons/history.png', import.meta.url).href;
 
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
@@ -124,47 +123,20 @@
     gameInstance = useClickTestGame(time);
 
     // 同步游戏状态到本地ref
-    isPlaying.value = gameInstance.isPlaying.value;
-    isGameOver.value = gameInstance.isGameOver.value;
-    clicks.value = gameInstance.clicks.value;
-    cps.value = gameInstance.cps.value;
-    elapsedTime.value = gameInstance.elapsedTime.value;
-    showResultModal.value = gameInstance.showResultModal.value;
-    selectedMouseButton.value = gameInstance.selectedMouseButton.value;
-    isTimeUp.value = gameInstance.isTimeUp.value;
-    currentCps.value = gameInstance.currentCps.value;
+    const syncGameState = () => {
+      isPlaying.value = gameInstance.isPlaying.value;
+      isGameOver.value = gameInstance.isGameOver.value;
+      clicks.value = gameInstance.clicks.value;
+      cps.value = gameInstance.cps.value;
+      elapsedTime.value = gameInstance.elapsedTime.value;
+      showResultModal.value = gameInstance.showResultModal.value;
+      selectedMouseButton.value = gameInstance.selectedMouseButton.value;
+      isTimeUp.value = gameInstance.isTimeUp.value;
+      currentCps.value = gameInstance.currentCps.value;
+    };
 
-    // 监听游戏实例状态变化，实时同步到本地ref
-    watch(
-      () => gameInstance.isPlaying.value,
-      (newValue) => {
-        isPlaying.value = newValue;
-      }
-    );
-
-    // 监听已用时间变化，实时更新
-    watch(
-      () => gameInstance.elapsedTime.value,
-      (newValue) => {
-        elapsedTime.value = newValue;
-      }
-    );
-
-    // 监听当前CPS变化，实时更新
-    watch(
-      () => gameInstance.currentCps.value,
-      (newValue) => {
-        currentCps.value = newValue;
-      }
-    );
-
-    // 监听点击次数变化，实时更新
-    watch(
-      () => gameInstance.clicks.value,
-      (newValue) => {
-        clicks.value = newValue;
-      }
-    );
+    // 初始同步
+    syncGameState();
 
     // 监听游戏结束状态变化，实时更新
     watch(
@@ -185,30 +157,40 @@
         showResultModal.value = newValue;
         // 当结果弹窗显示时，同步所有状态，确保cps值正确
         if (newValue) {
-          isPlaying.value = gameInstance.isPlaying.value;
-          isGameOver.value = gameInstance.isGameOver.value;
-          clicks.value = gameInstance.clicks.value;
-          cps.value = gameInstance.cps.value;
-          elapsedTime.value = gameInstance.elapsedTime.value;
-          isTimeUp.value = gameInstance.isTimeUp.value;
-          currentCps.value = gameInstance.currentCps.value;
+          syncGameState();
         }
       }
     );
 
-    // 监听时间是否到了状态变化，实时更新
+    // 监听已用时间变化，实时更新
     watch(
-      () => gameInstance.isTimeUp.value,
+      () => gameInstance.elapsedTime.value,
       (newValue) => {
-        isTimeUp.value = newValue;
+        elapsedTime.value = newValue;
       }
     );
 
-    // 监听cps变化，实时更新
+    // 监听当前CPS变化，实时更新
     watch(
-      () => gameInstance.cps.value,
+      () => gameInstance.currentCps.value,
       (newValue) => {
-        cps.value = newValue;
+        currentCps.value = newValue;
+      }
+    );
+
+    // 监听游戏进行状态变化，实时更新
+    watch(
+      () => gameInstance.isPlaying.value,
+      (newValue) => {
+        isPlaying.value = newValue;
+      }
+    );
+
+    // 监听点击次数变化，实时更新
+    watch(
+      () => gameInstance.clicks.value,
+      (newValue) => {
+        clicks.value = newValue;
       }
     );
   };
@@ -226,18 +208,11 @@
   const handleGameClick = (button: number) => {
     if (gameInstance) {
       const result = gameInstance.handleClick(button);
-
       // 同步游戏状态到本地ref
       isPlaying.value = gameInstance.isPlaying.value;
-      isGameOver.value = gameInstance.isGameOver.value;
       clicks.value = gameInstance.clicks.value;
-      cps.value = gameInstance.cps.value;
-      elapsedTime.value = gameInstance.elapsedTime.value;
-      showResultModal.value = gameInstance.showResultModal.value;
-      selectedMouseButton.value = gameInstance.selectedMouseButton.value;
-      isTimeUp.value = gameInstance.isTimeUp.value;
       currentCps.value = gameInstance.currentCps.value;
-
+      elapsedTime.value = gameInstance.elapsedTime.value;
       return result;
     }
     return false;
@@ -268,29 +243,11 @@
         const result = gameInstance.endGame();
         if (result) {
           addHistoryRecord(result.testTime, result.clicks, result.cps);
-          // 同步状态
-          isPlaying.value = gameInstance.isPlaying.value;
-          isGameOver.value = gameInstance.isGameOver.value;
-          clicks.value = gameInstance.clicks.value;
-          cps.value = gameInstance.cps.value;
-          elapsedTime.value = gameInstance.elapsedTime.value;
-          showResultModal.value = gameInstance.showResultModal.value;
-          isTimeUp.value = gameInstance.isTimeUp.value;
-          currentCps.value = gameInstance.currentCps.value;
         }
         return result;
       } else {
         // 游戏已经结束，保存历史记录
         addHistoryRecord(testTime.value, gameInstance.clicks.value, gameInstance.cps.value);
-        // 同步状态
-        isPlaying.value = gameInstance.isPlaying.value;
-        isGameOver.value = gameInstance.isGameOver.value;
-        clicks.value = gameInstance.clicks.value;
-        cps.value = gameInstance.cps.value;
-        elapsedTime.value = gameInstance.elapsedTime.value;
-        showResultModal.value = gameInstance.showResultModal.value;
-        isTimeUp.value = gameInstance.isTimeUp.value;
-        currentCps.value = gameInstance.currentCps.value;
         // 返回结果
         return {
           clicks: gameInstance.clicks.value,
@@ -483,7 +440,7 @@
         <div class="history-header">
           <h3>
             <img
-              :src="historyIconUrlRelative"
+              :src="historyIconUrl"
               width="30"
               height="30"
               :alt="t('historyIconAlt')"
@@ -534,9 +491,7 @@
     text-align: center;
     padding: clamp(10px, 2vw, 20px);
     background-color: #000000;
-    box-shadow: none;
     width: 100%;
-    border-radius: 10px;
     box-sizing: border-box;
   }
 
@@ -857,19 +812,7 @@
     border: 2px solid #333;
     position: relative;
     overflow: hidden;
-  }
-
-  .click-area:hover {
-    transform: none;
-  }
-
-  .click-area.playing {
-    background-color: #000000;
-  }
-
-  .click-area.time-up {
-    background-color: #000000;
-  }
+}
 
   /* 涟漪特效容器 */
   .ripple-container {
@@ -1081,56 +1024,11 @@
       margin-top: 20px;
     }
 
-    /* 统计卡片横向排列，缩小样式 */
-    .stats-cards {
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .stat-card {
-      flex: 1;
-      min-width: clamp(70px, 20vw, 80px);
-      max-width: none;
-      padding: clamp(6px, 2vw, 8px) clamp(8px, 2vw, 12px);
-    }
-
-    .stat-value {
-      font-size: clamp(20px, 5vw, 24px);
-      margin-bottom: 2px;
-    }
-
-    .stat-label {
-      font-size: clamp(10px, 2vw, 12px);
-    }
-
     /* 点击区域优化 */
     .click-area {
       height: clamp(200px, 40vh, 300px);
       font-size: clamp(18px, 4vw, 20px);
       width: clamp(95%, 98vw, 98%);
-    }
-
-    /* 历史记录列表优化 */
-    .history-item {
-      padding: clamp(8px, 2vw, 12px);
-    }
-
-    .history-item-content {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .tags {
-      justify-content: flex-start;
-    }
-
-    .record-time {
-      width: auto;
-      text-align: right;
-      font-size: clamp(10px, 2vw, 12px);
     }
 
     /* 鼠标按键选择器移动端适配 */
@@ -1147,21 +1045,6 @@
     .button-option {
       padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
       font-size: clamp(12px, 2.5vw, 14px);
-    }
-  }
-
-  /* 超小屏幕适配 */
-  @media (max-width: 480px) {
-    .click-area {
-      height: clamp(180px, 35vh, 250px);
-    }
-
-    .history-sidebar {
-      height: clamp(220px, 35vh, 280px);
-    }
-
-    .game-title {
-      font-size: clamp(20px, 5vw, 24px);
     }
   }
 </style>

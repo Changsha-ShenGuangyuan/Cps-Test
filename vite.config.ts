@@ -306,10 +306,11 @@ export default defineConfig({
   cacheDir: '.vite/cache',
   build: {
     minify: 'terser',
-    chunkSizeWarningLimit: 300, // 降低chunk大小警告阈值，更严格控制chunk大小
+    chunkSizeWarningLimit: 200, // 进一步降低chunk大小警告阈值
     cssCodeSplit: true, // 启用CSS代码分割
     cssMinify: 'lightningcss', // 使用更高效的CSS压缩
     target: ['es2015', 'edge88', 'firefox78', 'chrome87', 'safari14'], // 优化目标浏览器
+    // 增强Tree Shaking
     rollupOptions: {
       output: {
         // 配置chunk命名规则
@@ -386,10 +387,17 @@ export default defineConfig({
             return 'i18n';
           }
         },
+        
       },
       // 优化初始加载性能
       input: {
         main: path.resolve(__dirname, 'index.html'),
+      },
+      // 增强tree shaking
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        unknownGlobalSideEffects: false,
       },
     },
     // 禁用生产环境的sourcemap

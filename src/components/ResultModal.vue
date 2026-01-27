@@ -612,15 +612,11 @@
     z-index: 10;
   }
 
-  /* 关闭按钮内的X符号样式，向上移动4px */
-  .close-btn span {
-    transform: translateY(-3px);
-  }
+  
 
   .close-btn:hover {
     background-color: rgba(76, 175, 80, 0.1);
     color: #45a049;
-    transform: translateY(-2px);
   }
 
   .close-btn:active {
