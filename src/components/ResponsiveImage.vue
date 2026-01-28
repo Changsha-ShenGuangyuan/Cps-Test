@@ -34,23 +34,11 @@
   // 计算图片尺寸
   const imageWidth = computed(() => {
     if (!props.width) return 'auto';
-
-    if (isMobile.value) {
-      return Math.floor(props.width * 0.7);
-    } else if (isTablet.value) {
-      return Math.floor(props.width * 0.85);
-    }
     return props.width;
   });
 
   const imageHeight = computed(() => {
     if (!props.height) return 'auto';
-
-    if (isMobile.value) {
-      return Math.floor(props.height * 0.7);
-    } else if (isTablet.value) {
-      return Math.floor(props.height * 0.85);
-    }
     return props.height;
   });
 
@@ -91,7 +79,7 @@
 <style scoped>
   img {
     max-width: 100%;
-    height: auto;
+    max-height: 100%;
     object-fit: contain;
   }
 </style>
