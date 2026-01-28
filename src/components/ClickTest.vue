@@ -371,10 +371,7 @@
             ></div>
           </div>
 
-          <div v-if="isPlaying">
-            <!-- 游戏进行中 -->
-          </div>
-          <div v-else class="start-text">{{ t('clickHere') }} {{ t('startGame') }}</div>
+          <div v-if="!isPlaying" class="start-text">{{ t('clickHere') }} {{ t('startGame') }}</div>
         </div>
 
         <!-- 相关测试推荐组件 -->
@@ -586,13 +583,13 @@
   }
 
   .history-header h3 {
-    color: #ffffff; /* 设置文字颜色为白色，确保在深色背景上清晰可见 */
-    font-size: 18px; /* 设置字体大小为18像素，作为标题层级的标准大小 */
-    margin: 0 0 12px 0; /* 清除上下外边距，只保留底部12像素外边距，与下方内容保持适当距离 */
-    text-align: left; /* 设置文字左对齐，符合标题的常规排版 */
-    display: flex; /* 使用flex布局，便于图标和文字的水平排列 */
-    align-items: center; /* 垂直居中对齐，确保图标和文字在同一水平线上 */
-    gap: 8px; /* 设置图标与文字之间的间距为8像素，保证视觉层次感 */
+    color: #ffffff;
+    font-size: 18px;
+    margin: 0 0 12px 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   /* 历史记录列表 */

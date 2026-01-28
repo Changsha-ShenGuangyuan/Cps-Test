@@ -133,38 +133,13 @@
     <!-- 快速开始区域 -->
     <section class="quick-start-section">
       <div class="quick-start-buttons">
-        <button class="start-btn click-test" @click="navigateTo('/click-test/1')">
-          <span class="btn-text">{{ t('clickTest') }}</span>
-        </button>
-        <button class="start-btn reaction-test" @click="navigateTo('/reaction-time-test')">
-          <span class="btn-text">{{ t('simpleReactionTest') }}</span>
-        </button>
-        <button class="start-btn typing-test" @click="navigateTo('/typing-test/1')">
-          <span class="btn-text">{{ t('typingTest') }}</span>
-        </button>
-        <button class="start-btn space-test" @click="navigateTo('/space-click-test/1')">
-          <span class="btn-text">{{ t('spaceClickTest') }}</span>
-        </button>
-        <button class="start-btn kohi-test" @click="navigateTo('/kohi-click-test')">
-          <span class="btn-text">{{ t('kohiClickTest') }}</span>
-        </button>
-        <button class="start-btn color-test" @click="navigateTo('/color-reaction-test')">
-          <span class="btn-text">{{ t('colorReactionTest') }}</span>
-        </button>
-        <button class="start-btn key-test" @click="navigateTo('/key-reaction-test')">
-          <span class="btn-text">{{ t('keyReactionTest') }}</span>
-        </button>
-        <button class="start-btn target-test" @click="navigateTo('/target-elimination-game')">
-          <span class="btn-text">{{ t('targetEliminationGame') }}</span>
-        </button>
-        <button class="start-btn scroll-test" @click="navigateTo('/mouse-scroll-test')">
-          <span class="btn-text">{{ t('mouseScrollTest') }}</span>
-        </button>
-        <button class="start-btn drag-test" @click="navigateTo('/mouse-drag-test')">
-          <span class="btn-text">{{ t('mouseDragTest') }}</span>
-        </button>
-        <button class="start-btn keyboard-test" @click="navigateTo('/keyboard-test')">
-          <span class="btn-text">{{ t('keyboardTest') }}</span>
+        <button 
+          v-for="(button, index) in quickStartButtons" 
+          :key="index" 
+          :class="['start-btn', button.type]" 
+          @click="navigateTo(button.path)"
+        >
+          <span class="btn-text">{{ t(button.text) }}</span>
         </button>
       </div>
     </section>
@@ -192,35 +167,15 @@
 
     <!-- FAQ区域 -->
     <section id="faq" class="faq-section">
-      <div class="faq-container">
-        <div v-if="isFaqVisible" class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ1') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA1'))"></p>
-        </div>
-        <div v-if="isFaqVisible" class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ2') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA2'))"></p>
-        </div>
-        <div v-if="isFaqVisible" class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ3') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA3'))"></p>
-        </div>
-        <div v-if="isFaqVisible" class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ9') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA9'))"></p>
-        </div>
-        <div v-if="isFaqVisible" class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ11') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA11'))"></p>
-        </div>
-        <div v-if="isFaqVisible" class="faq-item">
-          <h3 class="faq-question">{{ t('homeFaqQ12') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('homeFaqA12'))"></p>
-        </div>
-        <div v-if="isFaqVisible" class="faq-item">
-          <h3 class="faq-question">{{ t('kohiFaqQ1') }}</h3>
-          <p class="faq-answer" v-html="formatAnswer(t('kohiFaqA1'))"></p>
-        </div>
+      <div class="faq-container" v-if="isFaqVisible">
+        <article 
+          v-for="(item, index) in faqItems" 
+          :key="index" 
+          class="faq-item"
+        >
+          <h3 class="faq-question">{{ t(item.question) }}</h3>
+          <p class="faq-answer" v-html="formatAnswer(t(item.answer))"></p>
+        </article>
       </div>
     </section>
   </div>
@@ -309,6 +264,21 @@
   const supportedTimes = [1, 5, 10, 15, 30, 60];
   // 当前选中的时间
   const selectedTime = ref(5);
+
+  // 快速开始按钮数据数组
+  const quickStartButtons = [
+    { path: '/click-test/1', text: 'clickTest', type: 'click-test' },
+    { path: '/reaction-time-test', text: 'simpleReactionTest', type: 'reaction-test' },
+    { path: '/typing-test/1', text: 'typingTest', type: 'typing-test' },
+    { path: '/space-click-test/1', text: 'spaceClickTest', type: 'space-test' },
+    { path: '/kohi-click-test', text: 'kohiClickTest', type: 'kohi-test' },
+    { path: '/color-reaction-test', text: 'colorReactionTest', type: 'color-test' },
+    { path: '/key-reaction-test', text: 'keyReactionTest', type: 'key-test' },
+    { path: '/target-elimination-game', text: 'targetEliminationGame', type: 'target-test' },
+    { path: '/mouse-scroll-test', text: 'mouseScrollTest', type: 'scroll-test' },
+    { path: '/mouse-drag-test', text: 'mouseDragTest', type: 'drag-test' },
+    { path: '/keyboard-test', text: 'keyboardTest', type: 'keyboard-test' }
+  ];
 
   // 5秒空格速度测试相关变量
   const isPlaying = ref(false);
@@ -554,19 +524,42 @@
   let faqObserver: IntersectionObserver | null = null;
   let clickTypesObserver: IntersectionObserver | null = null;
 
+  // FAQ 数据数组
+  const faqItems = [
+    { question: 'homeFaqQ1', answer: 'homeFaqA1' },
+    { question: 'homeFaqQ2', answer: 'homeFaqA2' },
+    { question: 'homeFaqQ3', answer: 'homeFaqA3' },
+    { question: 'homeFaqQ9', answer: 'homeFaqA9' },
+    { question: 'homeFaqQ11', answer: 'homeFaqA11' },
+    { question: 'homeFaqQ12', answer: 'homeFaqA12' },
+    { question: 'kohiFaqQ1', answer: 'kohiFaqA1' }
+  ];
+
   // 实现按需渲染功能
   const setupIntersectionObservers = () => {
+    // 检查浏览器是否支持 Intersection Observer
+    if (!('IntersectionObserver' in window)) {
+      // 如果不支持，直接显示所有内容
+      isFaqVisible.value = true;
+      isClickTypesVisible.value = true;
+      return;
+    }
+
     // FAQ区域观察者
     faqObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             isFaqVisible.value = true;
+            // 停止观察，因为内容已经渲染
             faqObserver?.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1, // 当元素10%进入视口时触发
+        rootMargin: '50px 0px' // 提前50px开始观察，实现预加载效果
+      }
     );
 
     // 点击技巧区域观察者
@@ -575,11 +568,15 @@
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             isClickTypesVisible.value = true;
+            // 停止观察，因为内容已经渲染
             clickTypesObserver?.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1 }
+      {
+        threshold: 0.1,
+        rootMargin: '50px 0px'
+      }
     );
 
     // 观察目标元素
@@ -588,10 +585,16 @@
 
     if (faqElement) {
       faqObserver.observe(faqElement);
+    } else {
+      // 如果找不到元素，直接显示内容
+      isFaqVisible.value = true;
     }
 
     if (clickTypesElement) {
       clickTypesObserver.observe(clickTypesElement);
+    } else {
+      // 如果找不到元素，直接显示内容
+      isClickTypesVisible.value = true;
     }
   };
 
@@ -613,13 +616,16 @@
     // 清理观察者
     if (faqObserver) {
       faqObserver.disconnect();
+      faqObserver = null;
     }
     if (clickTypesObserver) {
       clickTypesObserver.disconnect();
+      clickTypesObserver = null;
     }
 
     if (timer) {
       clearInterval(timer);
+      timer = null;
     }
   });
 
@@ -922,15 +928,15 @@
   }
 
   .timer-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* 紫色渐变 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
 
   .click-rate-card {
-    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); /* 粉色渐变 */
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
   }
 
   .score-card {
-    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); /* 青色渐变 */
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
   }
 
   .stat-value {
@@ -1074,19 +1080,6 @@
     border-color: #4caf50;
     box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.2);
     animation: clickGlow 0.3s ease-in-out;
-  }
-
-  /* 脉动动画 */
-  @keyframes pulse {
-    0% {
-      transform: translateY(0) scale(1);
-    }
-    50% {
-      transform: translateY(3px) scale(0.97);
-    }
-    100% {
-      transform: translateY(2px) scale(0.98);
-    }
   }
 
   /* 点击发光动画 */
@@ -1240,10 +1233,6 @@
     }
 
     /* 时间选择区域优化 */
-    .time-select-sidebar {
-      padding: 18px;
-    }
-
     .time-select-title {
       font-size: 19px;
       margin-bottom: 18px;
@@ -1348,13 +1337,6 @@
     text-align: center; /* 文本居中 */
   }
 
-  /* 快速开始区域标题样式 */
-  .quick-start-section h2 {
-    color: #4caf50; /* 主题色 */
-    margin-bottom: 30px; /* 底部外边距 */
-    font-size: 32px;
-  }
-
   /* 快速开始按钮网格布局 */
   .quick-start-buttons {
     display: grid; /* 使用CSS Grid布局 */
@@ -1384,209 +1366,118 @@
   /* 开始按钮聚焦样式 */
   .start-btn:focus {
     outline: none; /* 移除默认轮廓 */
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3); /* 聚焦阴影效果 */
   }
 
   /* 开始按钮基础悬停效果 */
   .start-btn:hover {
-    transform: translateY(-2px); /* 向上移动2px */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* 增强阴影 */
-    border-color: rgba(255, 255, 255, 0.3); /* 边框颜色变为半透明白色 */
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.3);
   }
 
   /* 开始按钮点击效果 */
   .start-btn:active {
-    transform: translateY(0); /* 恢复原位 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* 减小阴影 */
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   }
 
-  /* 按钮围绕发光特效 - 基础样式 */
-  .start-btn::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 12px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-    filter: blur(4px); /* 模糊效果 */
-    background: linear-gradient(45deg, currentColor, transparent);
-  }
-
-  /* 悬停时显示发光特效 */
-  .start-btn:hover::before {
-    opacity: 0.6;
-    animation: pulse 2s infinite; /* 脉动动画 */
-  }
-
-  /* 脉动动画 */
-  @keyframes pulse {
-    0%,
-    100% {
-      transform: scale(1);
-      opacity: 0.6;
-    }
-    50% {
-      transform: scale(1.05);
-      opacity: 0.8;
-    }
-  }
-
-  /* 点击测试按钮 - 蓝色渐变 */
+  /* 点击测试按钮 - 蓝色 */
   .start-btn.click-test {
-    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    background: #1976d2;
   }
 
   .start-btn.click-test:hover {
-    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    background: #1565c0;
   }
 
-  /* 点击测试按钮 - 蓝色发光 */
-  .start-btn.click-test::before {
-    background: linear-gradient(45deg, #2196f3, transparent);
-  }
-
-  /* 反应测试按钮 - 橙色渐变 */
+  /* 反应测试按钮 - 橙色 */
   .start-btn.reaction-test {
-    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    background: #f57c00;
   }
 
   .start-btn.reaction-test:hover {
-    background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+    background: #e65100;
   }
 
-  /* 反应测试按钮 - 橙色发光 */
-  .start-btn.reaction-test::before {
-    background: linear-gradient(45deg, #ff9800, transparent);
-  }
-
-  /* 打字测试按钮 - 紫色渐变 */
+  /* 打字测试按钮 - 紫色 */
   .start-btn.typing-test {
-    background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+    background: #7b1fa2;
   }
 
   .start-btn.typing-test:hover {
-    background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%);
+    background: #6a1b9a;
   }
 
-  /* 打字测试按钮 - 紫色发光 */
-  .start-btn.typing-test::before {
-    background: linear-gradient(45deg, #9c27b0, transparent);
-  }
-
-  /* 空格点击测试按钮 - 绿色渐变 */
+  /* 空格点击测试按钮 - 绿色 */
   .start-btn.space-test {
-    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    background: #388e3c;
   }
 
   .start-btn.space-test:hover {
-    background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+    background: #2e7d32;
   }
 
-  /* 空格点击测试按钮 - 绿色发光 */
-  .start-btn.space-test::before {
-    background: linear-gradient(45deg, #4caf50, transparent);
-  }
-
-  /* Kohi点击测试按钮 - 深橙色渐变 */
+  /* Kohi点击测试按钮 - 深橙色 */
   .start-btn.kohi-test {
-    background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
+    background: #e64a19;
   }
 
   .start-btn.kohi-test:hover {
-    background: linear-gradient(135deg, #e64a19 0%, #bf360c 100%);
+    background: #bf360c;
   }
 
-  /* Kohi点击测试按钮 - 深橙色发光 */
-  .start-btn.kohi-test::before {
-    background: linear-gradient(45deg, #ff5722, transparent);
-  }
-
-  /* 颜色反应测试按钮 - 粉色渐变 */
+  /* 颜色反应测试按钮 - 粉色 */
   .start-btn.color-test {
-    background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+    background: #c2185b;
   }
 
   .start-btn.color-test:hover {
-    background: linear-gradient(135deg, #c2185b 0%, #ad1457 100%);
+    background: #ad1457;
   }
 
-  /* 颜色反应测试按钮 - 粉色发光 */
-  .start-btn.color-test::before {
-    background: linear-gradient(45deg, #e91e63, transparent);
-  }
-
-  /* 按键反应测试按钮 - 青色渐变 */
+  /* 按键反应测试按钮 - 青色 */
   .start-btn.key-test {
-    background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+    background: #0097a7;
   }
 
   .start-btn.key-test:hover {
-    background: linear-gradient(135deg, #0097a7 0%, #00838f 100%);
+    background: #00838f;
   }
 
-  /* 按键反应测试按钮 - 青色发光 */
-  .start-btn.key-test::before {
-    background: linear-gradient(45deg, #00bcd4, transparent);
-  }
-
-  /* 目标消除游戏按钮 - 紫色渐变（不同色调） */
+  /* 目标消除游戏按钮 - 紫色 */
   .start-btn.target-test {
-    background: linear-gradient(135deg, #673ab7 0%, #512da8 100%);
+    background: #512da8;
   }
 
   .start-btn.target-test:hover {
-    background: linear-gradient(135deg, #512da8 0%, #4527a0 100%);
+    background: #4527a0;
   }
 
-  /* 目标消除游戏按钮 - 紫色发光 */
-  .start-btn.target-test::before {
-    background: linear-gradient(45deg, #673ab7, transparent);
-  }
-
-  /* 鼠标滚动测试按钮 - 黄色渐变 */
+  /* 鼠标滚动测试按钮 - 黄色 */
   .start-btn.scroll-test {
-    background: linear-gradient(135deg, #ffc107 0%, #ffa000 100%);
+    background: #ffa000;
   }
 
   .start-btn.scroll-test:hover {
-    background: linear-gradient(135deg, #ffa000 0%, #ff8f00 100%);
+    background: #ff8f00;
   }
 
-  /* 鼠标滚动测试按钮 - 黄色发光 */
-  .start-btn.scroll-test::before {
-    background: linear-gradient(45deg, #ffc107, transparent);
-  }
-
-  /* 鼠标拖动测试按钮 - 绿色渐变（不同色调） */
+  /* 鼠标拖动测试按钮 - 绿色 */
   .start-btn.drag-test {
-    background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%);
+    background: #689f38;
   }
 
   .start-btn.drag-test:hover {
-    background: linear-gradient(135deg, #689f38 0%, #558b2f 100%);
+    background: #558b2f;
   }
 
-  /* 鼠标拖动测试按钮 - 绿色发光 */
-  .start-btn.drag-test::before {
-    background: linear-gradient(45deg, #8bc34a, transparent);
-  }
-
-  /* 键盘测试按钮 - 绿色渐变（不同色调） */
+  /* 键盘测试按钮 - 绿色 */
   .start-btn.keyboard-test {
-    background: linear-gradient(135deg, #00e676 0%, #00c853 100%);
+    background: #00c853;
   }
 
   .start-btn.keyboard-test:hover {
-    background: linear-gradient(135deg, #00c853 0%, #00bfa5 100%);
-  }
-
-  /* 键盘测试按钮 - 绿色发光 */
-  .start-btn.keyboard-test::before {
-    background: linear-gradient(45deg, #00e676, transparent);
+    background: #00bfa5;
   }
 
   /* 按钮文本样式 */
@@ -1607,70 +1498,70 @@
 
   /* FAQ项目样式 */
   .faq-item {
-    padding: 24px; /* 内边距，增加空间 */
-    background-color: #2a2a2a; /* 深色背景，接近黑色 */
-    border-radius: 8px; /* 圆角边框 */
-    transition: all 0.3s ease; /* 过渡动画 */
-    border: 1px solid #333; /* 深色边框 */
-    height: auto; /* 自动高度 */
-    display: flex; /* 弹性布局 */
-    flex-direction: column; /* 垂直方向排列 */
-    box-sizing: border-box; /* 确保内边距不影响总宽度 */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+    padding: 24px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid #333;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
   /* FAQ项目悬停效果 */
   .faq-item:hover {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* 增强阴影效果 */
-    border-color: #444; /* 边框颜色加深 */
-    transform: translateY(0); /* 取消悬停上移效果 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-color: #444;
+    transform: translateY(0);
   }
 
   /* FAQ项目触摸反馈效果 */
   .faq-item:active {
-    transform: translateY(0); /* 取消触摸上移效果 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 减小阴影 */
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   /* FAQ问题样式 */
   .faq-question {
-    color: #ffffff; /* 白色文本 */
-    margin-bottom: 16px; /* 底部外边距，增加间距 */
-    font-size: 20px; /* 中号字号 */
-    font-weight: 600; /* 加粗，突出问题 */
-    display: flex; /* 弹性布局 */
-    align-items: flex-start; /* 顶部对齐 */
-    flex-shrink: 0; /* 不收缩，保持原尺寸 */
-    line-height: 1.5; /* 行高，增强可读性 */
+    color: #ffffff;
+    margin-bottom: 16px;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: flex-start;
+    flex-shrink: 0;
+    line-height: 1.5;
     position: relative;
     padding-bottom: 10px;
-    border-bottom: 1px solid #333; /* 添加底部分割线 */
+    border-bottom: 1px solid #333;
   }
 
   /* FAQ问题前缀图标 - 使用伪元素 */
   .faq-question:before {
-    content: ''; /* 清除文本内容 */
+    content: '';
     display: inline-block;
-    width: 24px; /* 图片宽度 */
-    height: 24px; /* 图片高度 */
-    background-image: url('@/assets/icons/question.png'); /* 使用资源图片 */
-    background-size: contain; /* 背景图片自适应 */
-    background-repeat: no-repeat; /* 不重复 */
-    background-position: center; /* 居中显示 */
-    margin-right: 12px; /* 右侧外边距 */
-    margin-top: 2px; /* 顶部微调 */
-    flex-shrink: 0; /* 不收缩 */
+    width: 24px;
+    height: 24px;
+    background-image: url('@/assets/icons/question.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 12px;
+    margin-top: 2px;
+    flex-shrink: 0;
   }
 
   /* FAQ答案样式 */
   .faq-answer {
-    color: #cccccc; /* 浅灰色文本，增强可读性 */
-    font-size: 18px; /* 小号字号 */
-    line-height: 1.65; /* 行高，增强可读性 */
-    margin-top: 16px; /* 顶部外边距 */
-    margin-left: 36px; /* 左侧缩进，与问题图标对齐 */
-    flex-grow: 1; /* 弹性增长，占据剩余空间 */
-    word-break: break-word; /* 确保长单词换行 */
+    color: #cccccc;
+    font-size: 18px;
+    line-height: 1.65;
+    margin-top: 16px;
+    margin-left: 36px;
+    flex-grow: 1;
+    word-break: break-word;
   }
 
   /* FAQ答案中的列表样式 */

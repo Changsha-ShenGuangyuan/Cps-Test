@@ -1093,8 +1093,6 @@
     if (import.meta.env.PROD) {
       // 预加载常用测试组件
       preloadService.preloadCommonTestComponents();
-      // 预加载基于时间的组件
-      preloadService.preloadBasedOnTime();
     }
     // 移除事件监听器，避免重复触发
     window.removeEventListener('click', handleUserInteraction);
@@ -1118,9 +1116,6 @@
 
     // 检查并保存URL中的分享参数
     checkAndSaveShareParams();
-
-    // 初始化预加载服务（仅执行轻量级操作）
-    preloadService.detectNetworkSpeed();
 
     // 预加载常用图标（轻量级操作）
     iconManager.preloadCommonIcons();

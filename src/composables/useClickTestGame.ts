@@ -6,81 +6,67 @@ import { ref, computed } from 'vue';
  */
 export function useClickTestGame(testTime: number) {
   // 状态管理
-  const isPlaying = ref(false); // 游戏是否正在进行中
-  const isGameOver = ref(false); // 游戏是否结束（专门用于标识最终状态）
-  const startTime = ref(0); // 游戏开始时间戳
-  const endTime = ref(0); // 游戏结束时间戳
-  const clicks = ref(0); // 点击次数
-  const cps = ref(0); // 最终CPS值（每秒点击次数）
-  const timer = ref(0); // 定时器ID
-  const elapsedTime = ref(0); // 已用时间（毫秒级精度）
-  const showResultModal = ref(false); // 结果弹窗显示状态
+  const isPlaying = ref(false);
+  const isGameOver = ref(false);
+  const startTime = ref(0);
+  const clicks = ref(0);
+  const cps = ref(0);
+  const timer = ref(0);
+  const elapsedTime = ref(0);
+  const showResultModal = ref(false);
 
   // 鼠标按键选择状态
-  const selectedMouseButton = ref(0); // 当前选择的鼠标按键，默认左键
+  const selectedMouseButton = ref(0);
 
   // 计算属性：判断时间是否到了
   const isTimeUp = computed(() => {
-    // 游戏未开始或已结束，返回false
     if (!isPlaying.value || isGameOver.value) return false;
-
-    // 计算已用时间（秒）
     const elapsed = (Date.now() - startTime.value) / 1000;
-    return elapsed >= testTime; // 已用时间大于等于测试时间则返回true
+    return elapsed >= testTime;
   });
 
   // 计算属性：实时计算当前CPS
   const currentCps = computed(() => {
-    // 游戏结束时，显示最终CPS值
     if (isGameOver.value) {
       return cps.value;
     }
-
-    // 游戏未开始或无点击则返回0
     if (!isPlaying.value || clicks.value === 0) return 0;
-
-    // 使用 Timer (elapsedTime) 和 Score (clicks) 进行实时计算
-    // 避免除以0或极小值导致的Infinity
     if (elapsedTime.value < 0.1) return 0;
-
-    // 计算CPS并保留2位小数
     return Math.round((clicks.value / elapsedTime.value) * 100) / 100;
   });
 
   // 游戏开始函数
   const startGame = () => {
-    if (isPlaying.value) return; // 防止重复开始
+    if (isPlaying.value) return;
 
     // 重置游戏状态
     clicks.value = 0;
-    startTime.value = Date.now(); // 记录开始时间
+    startTime.value = Date.now();
     isPlaying.value = true;
-    isGameOver.value = false; // 确保游戏未结束
-    elapsedTime.value = 0; // 重置已用时间
+    isGameOver.value = false;
+    elapsedTime.value = 0;
 
     // 设置定时器，每50ms更新一次状态
     timer.value = window.setInterval(() => {
-      // 计算并更新已用时间（毫秒级）
       const elapsed = (Date.now() - startTime.value) / 1000;
       elapsedTime.value = Math.min(elapsed, testTime);
 
-      // 检查时间是否结束（直接计算，不依赖isTimeUp）
+      // 检查时间是否结束
       if (elapsed >= testTime) {
         endGame();
       }
-    }, 50); // 50ms更新一次，确保毫秒级显示流畅
+    }, 50);
   };
 
   // 游戏结束函数
   const endGame = () => {
-    isPlaying.value = false; // 标记游戏结束
-    isGameOver.value = true; // 设置最终结束状态
-    endTime.value = Date.now(); // 记录结束时间
+    isPlaying.value = false;
+    isGameOver.value = true;
 
-    // 计算最终CPS，使用规定的测试时间，确保与clicks保持一致
+    // 计算最终CPS
     cps.value = testTime > 0 ? Math.round((clicks.value / testTime) * 100) / 100 : 0;
 
-    // 确保已用时间显示为规定的测试时间，而不是实际的游戏持续时间
+    // 确保已用时间显示为规定的测试时间
     elapsedTime.value = testTime;
 
     // 清除定时器
