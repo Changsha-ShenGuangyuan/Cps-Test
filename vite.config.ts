@@ -319,6 +319,11 @@ export default defineConfig({
         entryFileNames: 'assets/[name]-[hash].js',
         // 优化代码分割策略
         manualChunks: (id) => {
+          // 优先处理i18n模块，确保总是单独打包
+          if (id.includes('src/i18n/')) {
+            return 'i18n';
+          }
+          
           // 将第三方库单独打包
           if (id.includes('node_modules')) {
             if (id.includes('vue') || id.includes('vue-router') || id.includes('@vueuse/head')) {
@@ -386,11 +391,6 @@ export default defineConfig({
           // 将工具函数和公共代码单独打包
           if (id.includes('src/utils/')) {
             return 'utils';
-          }
-
-          // 将国际化文件单独打包
-          if (id.includes('src/i18n/')) {
-            return 'i18n';
           }
         },
         
