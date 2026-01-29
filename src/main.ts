@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
-import './style.css';
+// 注意：全局CSS已在index.html中通过preload预加载
+// import './style.css';
 import App from './App.vue';
 import router from './router';
 import { createHead } from '@vueuse/head';

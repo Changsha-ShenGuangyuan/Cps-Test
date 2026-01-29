@@ -332,14 +332,10 @@ export default defineConfig({
             return 'vendor';
           }
 
-          // 将composable函数单独打包
+          // 将composable函数与相关组件一起打包
           if (id.includes('src/composables/')) {
-            if (id.includes('useClickTestGame')) {
-              return 'click-test-game';
-            } else if (id.includes('useClickTestHistory')) {
-              return 'click-test-history';
-            } else if (id.includes('useRippleEffect')) {
-              return 'click-test-ripple';
+            if (id.includes('useClickTestGame') || id.includes('useClickTestHistory') || id.includes('useRippleEffect')) {
+              return 'click-test-ui'; // 将ClickTest相关的composable与组件一起打包
             } else {
               return 'composables';
             }
@@ -414,7 +410,7 @@ export default defineConfig({
     preprocessorOptions: {
       // 可以在此添加CSS预处理器配置
     },
-    // 启用CSS压缩
+    // 禁用开发环境sourcemap，减少文件大小
     devSourcemap: false,
     // 优化CSS输出
     postcss: {
@@ -432,5 +428,12 @@ export default defineConfig({
     modules: {
       localsConvention: 'camelCase',
     },
+  },
+  // 优化资源加载
+  optimizeDeps: {
+    // 预构建依赖
+    include: ['vue', 'vue-router', '@vueuse/head'],
+    // 禁用自动依赖发现，提高构建速度
+    force: false,
   },
 });

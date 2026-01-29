@@ -1252,7 +1252,7 @@
     /* 点击区域优化 */
     .click-area {
       width: 95%;
-      height: 450px;
+      height: 400px;
       font-size: 20px;
     }
 
@@ -1304,73 +1304,73 @@
 
     /* 最终结果优化 */
     .final-result {
-      gap: 10px;
+      gap: 8px;
       padding: 5px;
     }
 
     /* 结果标题优化 */
     .result-title {
-      font-size: 14px;
-      padding: 5px 12px;
+      font-size: 12px;
+      padding: 4px 10px;
     }
 
     /* 轮次结果卡片优化 */
     .round-results-cards {
-      padding: 10px;
-      gap: 8px;
+      padding: 8px;
+      gap: 6px;
     }
 
     /* 单轮结果卡片优化 */
     .round-result-card {
-      min-width: 70px;
-      padding: 0 8px;
+      min-width: 60px;
+      padding: 0 6px;
     }
 
     /* 轮次时间优化 */
     .round-time {
-      font-size: 24px;
+      font-size: 20px;
     }
 
     /* 轮次标签优化 */
     .round-label {
-      font-size: 11px;
+      font-size: 10px;
     }
 
     /* 平均反应时间容器优化 */
     .average-container {
-      padding: 10px;
-      gap: 8px;
+      padding: 8px;
+      gap: 6px;
     }
 
     /* 平均反应时间标签优化 */
     .average-label {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     /* 平均反应时间优化 */
     .average-time {
-      font-size: 32px;
+      font-size: 28px;
     }
 
     /* 鼓励文字优化 */
     .encouragement {
-      padding: 0 5px;
+      padding: 0 4px;
     }
 
     /* 鼓励文字标题优化 */
     .encouragement-title {
-      font-size: 18px;
+      font-size: 16px;
     }
 
     /* 鼓励文字内容优化 */
     .encouragement-text {
-      font-size: 13px;
+      font-size: 12px;
     }
 
     /* 重新开始按钮优化 */
     .try-again-btn {
-      padding: 10px 24px;
-      font-size: 14px;
+      padding: 8px 20px;
+      font-size: 12px;
     }
 
     /* 历史记录侧边栏优化 */

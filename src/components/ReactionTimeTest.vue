@@ -1107,57 +1107,11 @@
     text-align: center;
   }
 
-  /* 重置按钮 */
-  .reset-btn {
-    padding: 12px 24px;
-    font-size: 18px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .reset-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-  }
-
   /* FAQ 部分 */
   .faq-section {
     margin-top: 30px;
     margin-bottom: 30px;
     width: 100%;
-  }
-
-  /* 脉动动画 */
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  /* 闪烁动画 */
-  @keyframes blink {
-    0% {
-      opacity: 0.5;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.5;
-    }
   }
 
   /* 中等屏幕布局优化：历史记录显示在相关测试推荐组件下方 */

@@ -24,11 +24,6 @@
   const router = useRouter();
   const route = useRoute();
 
-  // 菜单展开状态接口
-  interface MenuExpandedStates {
-    [key: number]: boolean;
-  }
-
   // 菜单项目接口
   interface MenuItem {
     id: number;
@@ -327,8 +322,6 @@
   const menuItems = ref<MenuItem[]>([]);
   initMenuItems();
 
-  // 网站名称
-  const websiteName = computed(() => t('websiteName'));
   const mobileWebsiteName = computed(() => t('websiteName').split(' - ')[0]);
 
   // 切换侧边栏显示状态
@@ -826,10 +819,25 @@
     color: #aaaaaa;
   }
 
-  .submenu-item:hover {
-    background-color: transparent;
-    border-left-color: transparent;
-    color: #4caf50;
+  /* 桌面端悬停效果 */
+  @media (min-width: 769px) {
+    .submenu-item:hover {
+      background-color: transparent;
+      border-left-color: transparent;
+      color: #4caf50;
+      padding-left: 68px;
+      transition: all 0.2s ease;
+    }
+  }
+  
+  /* 移动端无悬停效果 */
+  @media (max-width: 768px) {
+    .submenu-item:hover {
+      background-color: transparent;
+      border-left-color: transparent;
+      color: #4caf50;
+      padding-left: 58px; /* 保持原始缩进 */
+    }
   }
 
   .submenu-item.active {
