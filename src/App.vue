@@ -49,7 +49,8 @@
 
   // 检测设备类型（true为移动端，false为桌面端）
   const isMobile = ref(window.innerWidth <= 1000);
-  const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
+// 检测是否为触摸设备
+  // const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
   // 添加新的历史记录项
   const addHistoryItem = (path: string) => {
@@ -162,8 +163,7 @@
   // 监听路由变化，更新当前路径并滚动到顶部
   watch(
     () => route,
-    (newRoute) => {
-      const newPath = newRoute.path;
+    () => {
       // 路由变化时将内容区域滚动到顶部
       scrollToTop();
 
