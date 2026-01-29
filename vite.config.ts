@@ -319,6 +319,11 @@ export default defineConfig({
         entryFileNames: 'assets/[name]-[hash].js',
         // 优化代码分割策略
         manualChunks: (id) => {
+          // 优先处理路由文件，确保单独打包
+          if (id.includes('src/router/')) {
+            return 'router';
+          }
+
           // 优先处理i18n模块，确保总是单独打包
           if (id.includes('src/i18n/')) {
             return 'i18n';

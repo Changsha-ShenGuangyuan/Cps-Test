@@ -12,50 +12,56 @@ interface TranslationResources {
   [key: string]: TranslationValue;
 }
 
-// 翻译资源 - 按需加载
-const resources: TranslationResources = {
+// 翻译资源 - 按需加载，使用reactive使其成为响应式
+const resources = reactive<TranslationResources>({
   en: {}, // 默认语言，后续会动态加载
   'zh-CN': {},
   ja: {},
-  ko: {}
-};
+  ko: {},
+});
 
 // 语言资源缓存
-const loadedLanguages = new Set<string>(['en']); // 默认语言已加载
+const loadedLanguages = new Set<string>(); // 初始为空，后续按需加载
 
 // 语言资源加载函数（按需加载）
 const loadLanguageResource = async (lang: string): Promise<boolean> => {
   try {
-    // 检查语言是否已加载
-    if (loadedLanguages.has(lang)) {
-      return true;
+    // 无论是否已加载，都强制重新加载英语资源，确保初始加载正确
+    if (lang === 'en' || !loadedLanguages.has(lang)) {
+      // 动态导入语言资源
+      let messages: TranslationValue;
+      switch (lang) {
+        case 'zh-CN':
+          messages = (await import('./locales/zh-CN/common')).default;
+          break;
+        case 'en':
+          messages = (await import('./locales/en/common')).default;
+          break;
+        case 'ja':
+          messages = (await import('./locales/ja/common')).default;
+          break;
+        case 'ko':
+          messages = (await import('./locales/ko/common')).default;
+          break;
+        default:
+          messages = (await import('./locales/en/common')).default;
+      }
+
+      // 更新资源
+      resources[lang] = messages;
+
+      // 标记为已加载
+      loadedLanguages.add(lang);
+
+      // 如果加载的是当前语言，强制触发currentResources重新计算
+      if (lang === langState.current) {
+        // 通过先赋一个不同的值，然后再赋回原来的值，触发响应式更新
+        const tempLang = langState.current;
+        langState.current = '';
+        langState.current = tempLang;
+      }
     }
-    
-    // 动态导入语言资源
-    let messages: TranslationValue;
-    switch (lang) {
-      case 'zh-CN':
-        messages = (await import('./locales/zh-CN/common')).default;
-        break;
-      case 'en':
-        messages = (await import('./locales/en/common')).default;
-        break;
-      case 'ja':
-        messages = (await import('./locales/ja/common')).default;
-        break;
-      case 'ko':
-        messages = (await import('./locales/ko/common')).default;
-        break;
-      default:
-        messages = (await import('./locales/en/common')).default;
-    }
-    
-    // 更新资源
-    resources[lang] = messages;
-    
-    // 标记为已加载
-    loadedLanguages.add(lang);
-    
+
     return true;
   } catch (error) {
     console.error(`Failed to load language resource for ${lang}:`, error);
@@ -139,9 +145,15 @@ export const initLanguage = async () => {
       // 默认语言（英语）不需要前缀
       if (finalLang === 'en') {
         // 直接使用原始路径，不需要添加前缀
+        // 但在导航前先加载语言资源并设置状态
+        await loadLanguageResource(finalLang);
+        langState.current = finalLang;
         window.location.href = basePath;
       } else {
         // 其他语言添加前缀
+        // 在导航前先加载语言资源并设置状态
+        await loadLanguageResource(finalLang);
+        langState.current = finalLang;
         window.location.href = `/${finalLang}${basePath}`;
       }
       return; // 终止当前函数执行

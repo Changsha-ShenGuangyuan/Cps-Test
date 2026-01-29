@@ -37,7 +37,7 @@
   // 懒加载相关测试推荐组件
   const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
   // 导入结果弹窗组件
-  import ResultModal from './ResultModal.vue';
+  const ResultModal = defineAsyncComponent(() => import('./ResultModal.vue'));
 
   // 获取10秒测试的FAQ
   const currentFaq = computed(() => {

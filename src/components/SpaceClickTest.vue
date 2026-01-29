@@ -7,7 +7,7 @@
   // 懒加载相关测试推荐组件
   const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
   // 导入结果弹窗组件
-  import ResultModal from './ResultModal.vue';
+  const ResultModal = defineAsyncComponent(() => import('./ResultModal.vue'));
 
   // 导入图标资源
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;

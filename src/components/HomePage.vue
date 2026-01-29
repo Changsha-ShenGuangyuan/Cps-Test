@@ -183,7 +183,8 @@
 
   import { t } from '../i18n/index';
   // 静态导入结果弹窗组件
-  import ResultModal from './ResultModal.vue';
+  import { defineAsyncComponent } from 'vue';
+  const ResultModal = defineAsyncComponent(() => import('./ResultModal.vue'));
 
   const router = useRouter();
 

@@ -28,5 +28,28 @@ app.use(VueLazyload, {
 
 app.use(router);
 app.use(head);
-app.use(i18n);
-app.mount('#app');
+
+// 等待i18n初始化完成后再挂载应用
+async function initApp() {
+  try {
+    // 手动初始化i18n
+    await import('./i18n').then(async (module) => {
+      // 调用initLanguage函数确保语言资源加载完成
+      await module.initLanguage();
+    });
+
+    // 然后使用i18n插件
+    app.use(i18n);
+
+    // 最后挂载应用
+    app.mount('#app');
+  } catch (error) {
+    console.error('初始化应用失败:', error);
+    // 即使失败也要挂载应用，确保网站能正常访问
+    app.use(i18n);
+    app.mount('#app');
+  }
+}
+
+// 启动应用初始化
+initApp();
