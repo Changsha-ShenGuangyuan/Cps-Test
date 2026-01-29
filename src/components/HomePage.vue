@@ -1354,7 +1354,7 @@
     color: #ffffff; /* 白色文本 */
     font-family: inherit; /* 继承父元素字体 */
     font-size: 16px; /* 字号 */
-    font-weight: 500; /* 中等粗细 */
+    font-weight: 600; /* 加粗文本，提高可读性 */
     position: relative; /* 相对定位，用于伪元素 */
     overflow: visible; /* 允许伪元素超出 */
   }
@@ -1449,31 +1449,32 @@
     background: #4527a0;
   }
 
-  /* 鼠标滚动测试按钮 - 黄色 */
+  /* 鼠标滚动测试按钮 - 深黄色 */
   .start-btn.scroll-test {
-    background: #ffa000;
+    background: #e65100;
+    color: #ffffff;
   }
 
   .start-btn.scroll-test:hover {
-    background: #ff8f00;
+    background: #bf360c;
   }
 
   /* 鼠标拖动测试按钮 - 绿色 */
   .start-btn.drag-test {
-    background: #689f38;
-  }
-
-  .start-btn.drag-test:hover {
     background: #558b2f;
   }
 
-  /* 键盘测试按钮 - 绿色 */
+  .start-btn.drag-test:hover {
+    background: #33691e;
+  }
+
+  /* 键盘测试按钮 - 深绿色 */
   .start-btn.keyboard-test {
-    background: #00c853;
+    background: #2e7d32;
   }
 
   .start-btn.keyboard-test:hover {
-    background: #00bfa5;
+    background: #1b5e20;
   }
 
   /* 按钮文本样式 */

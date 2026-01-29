@@ -161,6 +161,8 @@
       :src="currentLanguageFlag"
       :alt="currentLanguageName"
       class-name="language-image"
+      :width="32"
+      :height="24"
       :lazy="false"
       :priority="true"
     />
@@ -186,8 +188,8 @@
           :src="lang.flag"
           :alt="lang.name"
           class-name="flag-icon"
-          :width="20"
-          :height="15"
+          :width="32"
+          :height="24"
           :lazy="true"
           :priority="false"
         />
