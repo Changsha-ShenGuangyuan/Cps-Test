@@ -23,6 +23,20 @@ const resources = reactive<TranslationResources>({
 // 语言资源缓存
 const loadedLanguages = new Set<string>(); // 初始为空，后续按需加载
 
+// 预加载默认语言（英语）资源，确保翻译立即可用
+const preloadDefaultLanguage = async () => {
+  try {
+    const defaultMessages = await import('./locales/en/common');
+    resources['en'] = defaultMessages.default;
+    loadedLanguages.add('en');
+  } catch (error) {
+    console.error('Failed to preload default language resource:', error);
+  }
+};
+
+// 立即预加载默认语言
+preloadDefaultLanguage();
+
 // 语言资源加载函数（按需加载）
 const loadLanguageResource = async (lang: string): Promise<boolean> => {
   try {
