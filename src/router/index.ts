@@ -466,7 +466,7 @@ export const updateMetaTags = (to: any) => {
     pageTitle = to.meta.title || t('websiteName');
   }
   // 完整标题格式：页面标题 - 网站名称（用于SEO和品牌推广）
-  const fullPageTitle = to.name === 'Home' ? `${pageTitle}` : `${pageTitle} - ${t('websiteName').split(' - ')[1] || 'CPSTestGo'}`;
+  const fullPageTitle = to.name === 'Home' ? `${pageTitle}` : `${pageTitle} - CPSTestGo`;
   document.title = fullPageTitle;
 
   // 设置meta描述 - 根据路由参数动态生成
