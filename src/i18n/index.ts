@@ -3,9 +3,6 @@ import { updateMetaTags } from '../router/index';
 import router from '../router/index';
 import { CookieManager, COOKIE_NAMES } from '../utils/cookie';
 
-// 导入默认语言的翻译资源（英语）
-import en from './locales/en/common';
-
 // 定义翻译资源类型 - 支持嵌套对象
 interface TranslationValue {
   [key: string]: string | TranslationValue;
@@ -15,24 +12,55 @@ interface TranslationResources {
   [key: string]: TranslationValue;
 }
 
-// 翻译资源 - 初始只加载默认语言（英语）
+// 翻译资源 - 按需加载
 const resources: TranslationResources = {
-  en: en,
+  en: {}, // 默认语言，后续会动态加载
+  'zh-CN': {},
+  ja: {},
+  ko: {}
 };
 
-// 语言资源加载函数
+// 语言资源缓存
+const loadedLanguages = new Set<string>(['en']); // 默认语言已加载
+
+// 语言资源加载函数（按需加载）
 const loadLanguageResource = async (lang: string): Promise<boolean> => {
-  if (!resources[lang]) {
-    try {
-      const module = await import(/* @vite-ignore */ `./locales/${lang}/common`);
-      resources[lang] = module.default;
+  try {
+    // 检查语言是否已加载
+    if (loadedLanguages.has(lang)) {
       return true;
-    } catch (error) {
-      console.error(`Failed to load language resource for ${lang}:`, error);
-      return false;
     }
+    
+    // 动态导入语言资源
+    let messages: TranslationValue;
+    switch (lang) {
+      case 'zh-CN':
+        messages = (await import('./locales/zh-CN/common')).default;
+        break;
+      case 'en':
+        messages = (await import('./locales/en/common')).default;
+        break;
+      case 'ja':
+        messages = (await import('./locales/ja/common')).default;
+        break;
+      case 'ko':
+        messages = (await import('./locales/ko/common')).default;
+        break;
+      default:
+        messages = (await import('./locales/en/common')).default;
+    }
+    
+    // 更新资源
+    resources[lang] = messages;
+    
+    // 标记为已加载
+    loadedLanguages.add(lang);
+    
+    return true;
+  } catch (error) {
+    console.error(`Failed to load language resource for ${lang}:`, error);
+    return false;
   }
-  return true;
 };
 
 // 当前语言 - 使用reactive使其成为响应式
@@ -47,7 +75,7 @@ export const currentLang = computed(() => langState.current);
 export const setLanguage = async (lang: string) => {
   // 加载语言资源
   const loaded = await loadLanguageResource(lang);
-  
+
   if (loaded) {
     langState.current = lang;
     // 使用Cookie存储语言偏好，过期时间设置为365天
@@ -181,10 +209,10 @@ export default {
   install: async (app: any) => {
     // 初始化语言
     await initLanguage();
-    
+
     // 全局注册翻译函数
     app.config.globalProperties.$t = t;
-    
+
     // 提供语言相关的状态和方法
     app.provide('i18n', {
       langState,
@@ -192,7 +220,7 @@ export default {
       setLanguage,
       getLanguage,
       currentResources,
-      t
+      t,
     });
-  }
+  },
 };

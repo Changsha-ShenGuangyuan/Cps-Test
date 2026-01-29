@@ -49,7 +49,7 @@
 
   // 检测设备类型（true为移动端，false为桌面端）
   const isMobile = ref(window.innerWidth <= 1000);
-// 检测是否为触摸设备
+  // 检测是否为触摸设备
   // const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
   // 添加新的历史记录项
