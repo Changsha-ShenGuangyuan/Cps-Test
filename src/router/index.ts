@@ -63,7 +63,8 @@ const publicRoutes = [
   {
     path: '/multi-click-test/double',
     name: 'DoubleClickTest',
-    component: () => import(/* rollupChunkName: "double-click-test" */ '../components/DoubleClickTest.vue'), // 双击连点测试组件
+    component: () =>
+      import(/* rollupChunkName: "double-click-test" */ '../components/DoubleClickTest.vue'), // 双击连点测试组件
     props: true,
     meta: {
       title: '双击连点测试 - CPSTest',
@@ -79,7 +80,8 @@ const publicRoutes = [
   {
     path: '/multi-click-test/triple',
     name: 'TripleClickTest',
-    component: () => import(/* rollupChunkName: "triple-click-test" */ '../components/TripleClickTest.vue'), // 三连击测试组件
+    component: () =>
+      import(/* rollupChunkName: "triple-click-test" */ '../components/TripleClickTest.vue'), // 三连击测试组件
     props: true,
     meta: {
       title: '三连击测试 - CPSTest',
@@ -99,7 +101,8 @@ const publicRoutes = [
   {
     path: '/space-click-test/:time(\\d+)',
     name: 'SpaceClickTest',
-    component: () => import(/* rollupChunkName: "space-click-test" */ '../components/SpaceClickTest.vue'), // 空格点击测试组件
+    component: () =>
+      import(/* rollupChunkName: "space-click-test" */ '../components/SpaceClickTest.vue'), // 空格点击测试组件
     props: true,
     meta: {
       title: '空格点击测试 - CPSTest',
@@ -115,7 +118,8 @@ const publicRoutes = [
   {
     path: '/kohi-click-test',
     name: 'KohiClickTest',
-    component: () => import(/* rollupChunkName: "kohi-click-test" */ '../components/KohiClickTest.vue'), // 科霍点击测试组件
+    component: () =>
+      import(/* rollupChunkName: "kohi-click-test" */ '../components/KohiClickTest.vue'), // 科霍点击测试组件
     props: true,
     meta: {
       title: 'Kohi点击测试 - CPSTest',

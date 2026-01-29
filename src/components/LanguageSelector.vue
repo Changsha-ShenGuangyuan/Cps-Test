@@ -31,18 +31,16 @@
     toggleLanguageMenu(e);
   };
 
-  // 使用 computed 确保 currentLanguage 始终与 langState.current 保持同步
-  const currentLanguage = computed(() => langState.current);
   const isLanguageMenuOpen = ref(false);
 
   // 计算当前语言的国旗和名称
   const currentLanguageFlag = computed(() => {
-    const lang = languages.find((l) => l.code === currentLanguage.value);
+    const lang = languages.find((l) => l.code === langState.current);
     return lang ? lang.flag : '';
   });
 
   const currentLanguageName = computed(() => {
-    const lang = languages.find((l) => l.code === currentLanguage.value);
+    const lang = languages.find((l) => l.code === langState.current);
     return lang ? lang.name : '';
   });
 
@@ -87,23 +85,6 @@
   // 鼠标离开菜单时隐藏
   const onMenuMouseLeave = () => {
     hideLanguageMenu();
-  };
-
-  // 辅助函数：从路径中移除语言前缀
-  const removeLanguagePrefix = (path: string) => {
-    const supportedLanguages = ['zh-CN', 'ja', 'ko'];
-    const pathSegments = path.split('/').filter((segment) => segment !== '');
-
-    if (
-      pathSegments.length > 0 &&
-      pathSegments[0] &&
-      supportedLanguages.includes(pathSegments[0])
-    ) {
-      // 移除语言前缀
-      return `/${pathSegments.slice(1).join('/')}`;
-    }
-
-    return path;
   };
 
   // 切换语言 - 使用路径跳转实现
@@ -158,7 +139,7 @@
 
   // 暴露方法给父组件
   defineExpose({
-    closeMenu
+    closeMenu,
   });
 </script>
 
@@ -195,7 +176,7 @@
         v-for="(lang, index) in languages"
         :key="index"
         class="language-option"
-        :class="{ active: lang.code === currentLanguage }"
+        :class="{ active: lang.code === langState.current }"
         role="menuitem"
         :aria-label="lang.name"
         @click.stop="switchLanguage(lang.code)"

@@ -23,11 +23,11 @@
   // 节流函数，减少频繁触发
   const throttle = (func: Function, delay: number) => {
     let inThrottle: boolean;
-    return function(this: any, ...args: any[]) {
+    return function (this: any, ...args: any[]) {
       if (!inThrottle) {
         func.apply(this, args);
         inThrottle = true;
-        setTimeout(() => inThrottle = false, delay);
+        setTimeout(() => (inThrottle = false), delay);
       }
     };
   };
@@ -809,7 +809,7 @@
     border: 2px solid #333;
     position: relative;
     overflow: hidden;
-}
+  }
 
   /* 涟漪特效容器 */
   .ripple-container {

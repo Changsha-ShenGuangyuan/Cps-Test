@@ -30,7 +30,7 @@
   // 防抖函数，用于优化localStorage写入
   const debounce = (func: Function, delay: number) => {
     let timeoutId: number | null;
-    return function(this: any, ...args: any[]) {
+    return function (this: any, ...args: any[]) {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
@@ -125,7 +125,7 @@
       const validTypes = ['double', 'triple'];
       return !!type && validTypes.includes(type);
     }
-    
+
     // 其他路径默认有效
     return true;
   };
@@ -205,10 +205,10 @@
   // const addLanguagePrefix = (path: string) => {
   //   // 先移除可能存在的语言前缀，避免重复添加
   //   const basePath = removeLanguagePrefix(path);
-  // 
+  //
   //   // 获取当前语言
   //   const currentLang = localStorage.getItem('language') || 'en';
-  // 
+  //
   //   // 根据当前语言添加语言前缀
   //   let fullPath = basePath;
   //   if (currentLang !== 'en') {
@@ -216,7 +216,7 @@
   //     const normalizedPath = basePath.startsWith('/') ? basePath : `/${basePath}`;
   //     fullPath = `/${currentLang}${normalizedPath}`;
   //   }
-  // 
+  //
   //   return fullPath;
   // };
 
@@ -357,7 +357,7 @@
   // 暴露方法给父组件
   defineExpose({
     addHistoryItem,
-    closeHistory
+    closeHistory,
   });
 
   // 使用图标管理服务获取图标URL
@@ -415,11 +415,7 @@
     >
       <div class="history-header">
         <h3>{{ t('history') }}</h3>
-        <button
-          class="remove-all-btn"
-          aria-label="清除所有历史记录"
-          @click.stop="removeAllHistory"
-        >
+        <button class="remove-all-btn" aria-label="清除所有历史记录" @click.stop="removeAllHistory">
           {{ t('removeAll') }}
         </button>
       </div>

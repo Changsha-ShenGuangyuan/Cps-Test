@@ -323,7 +323,7 @@ export default defineConfig({
           if (id.includes('src/i18n/')) {
             return 'i18n';
           }
-          
+
           // 将第三方库单独打包
           if (id.includes('node_modules')) {
             if (id.includes('vue') || id.includes('vue-router') || id.includes('@vueuse/head')) {
@@ -334,7 +334,11 @@ export default defineConfig({
 
           // 将composable函数与相关组件一起打包
           if (id.includes('src/composables/')) {
-            if (id.includes('useClickTestGame') || id.includes('useClickTestHistory') || id.includes('useRippleEffect')) {
+            if (
+              id.includes('useClickTestGame') ||
+              id.includes('useClickTestHistory') ||
+              id.includes('useRippleEffect')
+            ) {
               return 'click-test-ui'; // 将ClickTest相关的composable与组件一起打包
             } else {
               return 'composables';
@@ -389,7 +393,6 @@ export default defineConfig({
             return 'utils';
           }
         },
-        
       },
       // 优化初始加载性能
       input: {

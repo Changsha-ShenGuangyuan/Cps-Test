@@ -133,10 +133,10 @@
     <!-- 快速开始区域 -->
     <section class="quick-start-section">
       <div class="quick-start-buttons">
-        <button 
-          v-for="(button, index) in quickStartButtons" 
-          :key="index" 
-          :class="['start-btn', button.type]" 
+        <button
+          v-for="(button, index) in quickStartButtons"
+          :key="index"
+          :class="['start-btn', button.type]"
           @click="navigateTo(button.path)"
         >
           <span class="btn-text">{{ t(button.text) }}</span>
@@ -167,12 +167,8 @@
 
     <!-- FAQ区域 -->
     <section id="faq" class="faq-section">
-      <div class="faq-container" v-if="isFaqVisible">
-        <article 
-          v-for="(item, index) in faqItems" 
-          :key="index" 
-          class="faq-item"
-        >
+      <div v-if="isFaqVisible" class="faq-container">
+        <article v-for="(item, index) in faqItems" :key="index" class="faq-item">
           <h3 class="faq-question">{{ t(item.question) }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t(item.answer))"></p>
         </article>
@@ -277,7 +273,7 @@
     { path: '/target-elimination-game', text: 'targetEliminationGame', type: 'target-test' },
     { path: '/mouse-scroll-test', text: 'mouseScrollTest', type: 'scroll-test' },
     { path: '/mouse-drag-test', text: 'mouseDragTest', type: 'drag-test' },
-    { path: '/keyboard-test', text: 'keyboardTest', type: 'keyboard-test' }
+    { path: '/keyboard-test', text: 'keyboardTest', type: 'keyboard-test' },
   ];
 
   // 5秒空格速度测试相关变量
@@ -532,7 +528,7 @@
     { question: 'homeFaqQ9', answer: 'homeFaqA9' },
     { question: 'homeFaqQ11', answer: 'homeFaqA11' },
     { question: 'homeFaqQ12', answer: 'homeFaqA12' },
-    { question: 'kohiFaqQ1', answer: 'kohiFaqA1' }
+    { question: 'kohiFaqQ1', answer: 'kohiFaqA1' },
   ];
 
   // 实现按需渲染功能
@@ -556,9 +552,9 @@
           }
         });
       },
-      { 
+      {
         threshold: 0.1, // 当元素10%进入视口时触发
-        rootMargin: '50px 0px' // 提前50px开始观察，实现预加载效果
+        rootMargin: '50px 0px', // 提前50px开始观察，实现预加载效果
       }
     );
 
@@ -575,7 +571,7 @@
       },
       {
         threshold: 0.1,
-        rootMargin: '50px 0px'
+        rootMargin: '50px 0px',
       }
     );
 

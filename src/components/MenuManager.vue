@@ -9,12 +9,12 @@
   const props = defineProps({
     isSidebarOpen: {
       type: Boolean,
-      default: false
+      default: false,
     },
     mobileWebsiteName: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   });
 
   // 定义事件
@@ -531,7 +531,7 @@
   defineExpose({
     toggleSidebar,
     closeSidebar,
-    navigateTo
+    navigateTo,
   });
 
   onMounted(() => {
@@ -689,9 +689,7 @@
     left: 0;
   }
 
-
-
-.sidebar-header {
+  .sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -829,7 +827,7 @@
       transition: all 0.2s ease;
     }
   }
-  
+
   /* 移动端无悬停效果 */
   @media (max-width: 768px) {
     .submenu-item:hover {
@@ -886,7 +884,9 @@
   /* 动画效果 */
   .submenu-enter-active,
   .submenu-leave-active {
-    transition: max-height 0.3s ease, opacity 0.3s ease;
+    transition:
+      max-height 0.3s ease,
+      opacity 0.3s ease;
     overflow: hidden;
     max-height: 500px;
     opacity: 1;

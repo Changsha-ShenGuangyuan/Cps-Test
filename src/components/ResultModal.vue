@@ -612,8 +612,6 @@
     z-index: 10;
   }
 
-  
-
   .close-btn:hover {
     background-color: rgba(76, 175, 80, 0.1);
     color: #45a049;

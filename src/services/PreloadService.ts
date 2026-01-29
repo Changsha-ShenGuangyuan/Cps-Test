@@ -2,13 +2,14 @@
 class PreloadService {
   private preloadedComponents: Set<string> = new Set();
   private networkSpeed: 'slow' | 'medium' | 'fast' = 'medium';
-  private userBehavior: Map<string, { clicks: number; views: number; lastAccessed: number }> = new Map();
+  private userBehavior: Map<string, { clicks: number; views: number; lastAccessed: number }> =
+    new Map();
   private cacheManager: any = null;
 
   constructor() {
     // 检测网络速度
     this.detectNetworkSpeed();
-    
+
     // 初始化缓存管理器（仅在生产环境）
     this.initCacheManager();
   }
@@ -236,6 +237,4 @@ class PreloadService {
 export const preloadService = new PreloadService();
 
 // 导出类型
-export type {
-  PreloadService
-};
+export type { PreloadService };

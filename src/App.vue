@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, watch, onMounted, onUnmounted, computed, nextTick } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
-  import { t, setLanguage, initLanguage, langState } from './i18n/index';
+  import { t, setLanguage, langState } from './i18n/index';
   // 导入Breadcrumb组件
   import Breadcrumb from './components/Breadcrumb.vue';
   // 导入ResponsiveImage组件
@@ -15,19 +15,8 @@
   import { updateMetaTags } from './router/index';
   // 导入工具类（仅在生产环境中预加载）
   import { iconManager } from './utils/iconManager';
-  // 缓存管理器仅在生产环境中使用
-  let cacheManager: any = null;
-  if (import.meta.env.PROD) {
-    // 动态导入缓存管理器
-    import('./utils/cacheManager').then(({ cacheManager: cm }) => {
-      cacheManager = cm;
-    });
-  }
-
   // 组件引用
-  const languageSelectorRef = ref<InstanceType<typeof LanguageSelector> | null>(null);
   const historySelectorRef = ref<InstanceType<typeof HistorySelector> | null>(null);
-  const menuManagerRef = ref<InstanceType<typeof MenuManager> | null>(null);
 
   const websiteName = computed(() => t('websiteName'));
   const mobileWebsiteName = computed(() => t('websiteName').split(' - ')[0]);
@@ -35,9 +24,6 @@
   // 路由实例
   const router = useRouter();
   const route = useRoute();
-
-  // 初始化语言
-  initLanguage();
 
   // 添加语言变化监听器，确保meta标签始终更新
   watch(
@@ -342,7 +328,7 @@
     <!-- 主内容区域 -->
     <div class="main-content" role="main">
       <!-- 左侧侧边栏 -->
-      <MenuManager 
+      <MenuManager
         ref="menuManagerRef"
         :is-sidebar-open="isSidebarOpen"
         :mobile-website-name="mobileWebsiteName"
@@ -351,7 +337,12 @@
       />
 
       <!-- 右侧主内容 - 路由视图 -->
-      <main ref="contentRef" class="content" role="main" @click="isMobile && isSidebarOpen && closeSidebar()">
+      <main
+        ref="contentRef"
+        class="content"
+        role="main"
+        @click="isMobile && isSidebarOpen && closeSidebar()"
+      >
         <!-- 面包屑导航 - 404页面不显示 -->
         <Breadcrumb v-if="route.name !== 'NotFound' && route.name !== 'PrivacyPolicy'" />
         <!-- 路由视图 -->
@@ -614,7 +605,7 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    
+
     .content::-webkit-scrollbar {
       display: none;
     }
@@ -736,7 +727,7 @@
       position: relative;
       z-index: 2000;
     }
-    
+
     .footer {
       padding: 15px 0;
       font-size: 13px;
