@@ -213,9 +213,9 @@
   };
 
   // 切换语言 - 使用路径跳转实现
-  const switchLanguage = (languageCode: string) => {
-    // 设置语言状态
-    setLanguage(languageCode);
+  const switchLanguage = async (languageCode: string) => {
+    // 等待语言资源加载完成
+    await setLanguage(languageCode);
 
     // 获取当前路径，去除语言前缀
     const currentPath = route.path;
@@ -246,14 +246,9 @@
     }
 
     // 跳转到新的URL
-    router.push(newPath).then(() => {
-      // 获取更新后的路由信息
-      const updatedRoute = router.currentRoute.value;
-      // 路由跳转完成后更新meta标签
-      nextTick(() => {
-        updateMetaTags(updatedRoute);
-      });
-    });
+    if (newPath !== currentPath) {
+      await router.push(newPath);
+    }
   };
 </script>
 

@@ -93,7 +93,6 @@ class PreloadService {
   // 预加载常用测试组件
   async preloadCommonTestComponents() {
     const commonComponents: Array<{ path: string; priority: 'high' | 'medium' | 'low' }> = [
-      { path: 'ClickTest', priority: 'high' },
       { path: 'SpaceClickTest', priority: 'high' },
       { path: 'KeyboardTest', priority: 'medium' },
       { path: 'ReactionTimeTest', priority: 'medium' },
@@ -204,14 +203,12 @@ class PreloadService {
     if (currentHour >= 6 && currentHour < 12) {
       // 早晨时段，预加载常用测试
       componentsToPreload = [
-        { path: 'ClickTest', priority: 'high' },
         { path: 'SpaceClickTest', priority: 'high' },
         { path: 'ResultModal', priority: 'high' },
       ];
     } else if (currentHour >= 12 && currentHour < 18) {
       // 下午时段，预加载更多测试类型
       componentsToPreload = [
-        { path: 'ClickTest', priority: 'high' },
         { path: 'SpaceClickTest', priority: 'high' },
         { path: 'KeyboardTest', priority: 'medium' },
         { path: 'ReactionTimeTest', priority: 'medium' },
@@ -220,7 +217,6 @@ class PreloadService {
     } else {
       // 晚上时段，预加载所有常用组件
       componentsToPreload = [
-        { path: 'ClickTest', priority: 'high' },
         { path: 'SpaceClickTest', priority: 'high' },
         { path: 'KeyboardTest', priority: 'medium' },
         { path: 'ReactionTimeTest', priority: 'medium' },

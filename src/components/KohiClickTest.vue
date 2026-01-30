@@ -67,7 +67,8 @@
   });
 
   // 导入composable函数
-  import { useRippleEffect } from '../composables/useRippleEffect';
+  // 动态导入composable函数
+  let useRippleEffect: any = null;
 
   // 状态管理
   const isPlaying = ref(false); // 游戏是否正在进行中
@@ -81,8 +82,26 @@
   const clickAreaRef = ref<HTMLElement | null>(null); // 点击区域DOM引用
   const showResultModal = ref(false); // 结果弹窗显示状态
 
-  // 使用涟漪特效composable
-  const { ripples, addRipple, clearRipples } = useRippleEffect();
+  // 涟漪效果相关
+  let ripples: any = null;
+  let addRipple: any = null;
+  let clearRipples: any = null;
+
+  // 懒加载composable函数
+  const loadComposables = async () => {
+    if (!useRippleEffect) {
+      const { useRippleEffect: rippleComposable } = await import('../composables/useRippleEffect');
+      useRippleEffect = rippleComposable;
+
+      // 初始化涟漪效果
+      if (useRippleEffect) {
+        const rippleEffects = useRippleEffect();
+        ripples = rippleEffects.ripples;
+        addRipple = rippleEffects.addRipple;
+        clearRipples = rippleEffects.clearRipples;
+      }
+    }
+  };
 
   // 历史记录相关
   const historyRecords = ref<HistoryRecord[]>([]); // 历史记录数组
@@ -200,8 +219,8 @@
     showResultModal.value = true;
   };
 
-  // 点击事件处理函数
-  const handleClick = (event: MouseEvent) => {
+  // 处理点击事件
+  const handleClick = async (event: MouseEvent) => {
     // 游戏结束或时间到了，不处理点击事件
     if (isGameOver.value || isTimeUp.value) {
       return;
@@ -222,8 +241,13 @@
       y = event.clientY - rect.top;
     }
 
+    // 确保加载了composables
+    await loadComposables();
+
     // 创建涟漪特效
-    addRipple(x, y);
+    if (addRipple) {
+      addRipple(x, y);
+    }
 
     // 开始游戏（如果是第一次点击）
     if (!isPlaying.value && clicks.value === 0) {
@@ -250,7 +274,9 @@
     clearInterval(timer.value);
 
     // 清除所有涟漪特效
-    clearRipples();
+    if (clearRipples) {
+      clearRipples();
+    }
   };
 
   // 组件挂载时添加事件监听

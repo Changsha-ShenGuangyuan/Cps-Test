@@ -29,12 +29,12 @@ app.use(VueLazyload, {
 app.use(router);
 app.use(head);
 
-// 等待i18n初始化完成后再挂载应用
+// 初始化应用
 async function initApp() {
   try {
-    // 手动初始化i18n
+    // 等待语言资源加载完成
     await import('./i18n').then(async (module) => {
-      // 调用initLanguage函数确保语言资源加载完成
+      // 先初始化语言资源
       await module.initLanguage();
     });
 

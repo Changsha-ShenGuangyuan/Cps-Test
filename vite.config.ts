@@ -6,6 +6,8 @@ import sitemapPlugin from 'vite-plugin-sitemap';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import path from 'path';
 
+import { visualizer } from 'rollup-plugin-visualizer';
+
 // https://vite.dev/config/
 export default defineConfig({
   resolve: {
@@ -15,6 +17,17 @@ export default defineConfig({
   },
   plugins: [
     vue(),
+    // 自定义插件，用于移除ClickTest相关的预加载链接
+    {
+      name: 'remove-click-test-preload',
+      enforce: 'post',
+      transformIndexHtml(html) {
+        // 移除ClickTest相关的预加载链接，同时处理大小写情况
+        return html
+          .replace(/<link rel="modulepreload"[^>]*href="[^"]*(click-test|ClickTest)[^>]*>/g, '')
+          .replace(/<link rel="stylesheet"[^>]*href="[^"]*(click-test|ClickTest)[^>]*>/g, '');
+      },
+    },
     viteCompression({
       algorithm: 'gzip',
       ext: '.gz',
@@ -312,6 +325,16 @@ export default defineConfig({
     target: ['es2015', 'edge88', 'firefox78', 'chrome87', 'safari14'], // 优化目标浏览器
     // 增强Tree Shaking
     rollupOptions: {
+      plugins: [
+        // 构建分析插件
+        visualizer({
+          open: true, // 构建完成后自动打开分析报告
+          gzipSize: true, // 显示gzip压缩后的大小
+          brotliSize: true, // 显示brotli压缩后的大小
+          filename: 'dist/stats.html', // 分析报告输出路径
+          template: 'treemap', // 报告类型：treemap, sunburst, network, raw-data, list
+        }),
+      ],
       output: {
         // 配置chunk命名规则
         chunkFileNames: 'assets/[name]-[hash].js',
@@ -319,59 +342,80 @@ export default defineConfig({
         entryFileNames: 'assets/[name]-[hash].js',
         // 优化代码分割策略
         manualChunks: (id) => {
-          // 优先处理路由文件，确保单独打包
+          // 优先处理Vue相关核心库，确保它们始终单独打包
+          if (
+            id.includes('node_modules') &&
+            (id.includes('vue/dist/') ||
+              id.includes('@vue/runtime') ||
+              id.includes('@vue/runtime-dom'))
+          ) {
+            return 'vue-runtime';
+          }
+
+          // 优先处理其他第三方库
+          if (id.includes('node_modules')) {
+            // 确保 Vue 相关库始终单独打包
+            if (id.includes('vue') || id.includes('vue-router') || id.includes('@vueuse/head')) {
+              return 'vue-vendor';
+            }
+            // 其他第三方库打包到通用vendor
+            return 'vendor';
+          }
+
+          // 优先处理路由文件
           if (id.includes('src/router/')) {
             return 'router';
           }
 
-          // 优先处理i18n模块，确保总是单独打包
+          // 优先处理i18n模块
           if (id.includes('src/i18n/')) {
             return 'i18n';
           }
 
-          // 将第三方库单独打包
-          if (id.includes('node_modules')) {
-            if (id.includes('vue') || id.includes('vue-router') || id.includes('@vueuse/head')) {
-              return 'vue-vendor';
-            }
-            return 'vendor';
+          // 将工具函数单独打包
+          if (id.includes('src/utils/')) {
+            return 'utils';
           }
 
-          // 将composable函数与相关组件一起打包
+          // 将composable函数单独打包
           if (id.includes('src/composables/')) {
-            if (
-              id.includes('useClickTestGame') ||
-              id.includes('useClickTestHistory') ||
-              id.includes('useRippleEffect')
-            ) {
-              return 'click-test-ui'; // 将ClickTest相关的composable与组件一起打包
-            } else {
-              return 'composables';
+            // ClickTest相关的composable
+            if (id.includes('useClickTestGame') || id.includes('useClickTestHistory')) {
+              return 'click-test-composables';
             }
+            // 其他composable打包到通用composables
+            return 'composables';
           }
 
-          // 将测试组件按功能模块分组
+          // 基础UI组件单独打包
           if (id.includes('src/components/')) {
-            // 基础UI组件单独打包
+            // 通用UI组件
             if (id.includes('ResultModal')) {
               return 'result-modal';
             } else if (id.includes('RelatedTests')) {
               return 'related-tests';
             } else if (id.includes('FAQComponent')) {
               return 'faq-component';
+            } else if (id.includes('Breadcrumb')) {
+              return 'breadcrumb';
+            } else if (id.includes('LanguageSelector')) {
+              return 'language-selector';
+            } else if (id.includes('MenuManager')) {
+              return 'menu-manager';
             }
 
             // 测试组件按类型分组
-            if (id.includes('ClickTest.vue')) {
-              return 'click-test-ui';
+            // 先检查更具体的组件名称，避免字符串包含导致的错误匹配
+            if (id.includes('SpaceClickTest')) {
+              return 'space-click-test';
             } else if (id.includes('DoubleClickTest')) {
               return 'double-click-test';
             } else if (id.includes('TripleClickTest')) {
               return 'triple-click-test';
             } else if (id.includes('KohiClickTest')) {
               return 'kohi-click-test';
-            } else if (id.includes('SpaceClickTest')) {
-              return 'space-click-test';
+            } else if (id.includes('ClickTest')) {
+              return 'click-test';
             } else if (id.includes('SpacebarClicker')) {
               return 'spacebar-clicker';
             } else if (id.includes('KeyboardTest')) {
@@ -391,11 +435,6 @@ export default defineConfig({
             } else if (id.includes('TargetEliminationGame')) {
               return 'target-elimination-game';
             }
-          }
-
-          // 将工具函数和公共代码单独打包
-          if (id.includes('src/utils/')) {
-            return 'utils';
           }
         },
       },

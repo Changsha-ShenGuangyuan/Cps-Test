@@ -9,10 +9,23 @@
   // 懒加载相关测试推荐组件
   const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
-  // 导入composable函数
-  import { useClickTestGame } from '../composables/useClickTestGame';
-  import { useRippleEffect } from '../composables/useRippleEffect';
-  import { useClickTestHistory } from '../composables/useClickTestHistory';
+  // 动态导入所有composable函数，避免在组件加载时立即加载
+  let useClickTestGame: any = null;
+  let useClickTestHistory: any = null;
+  let useRippleEffect: any = null;
+
+  // 懒加载composable函数
+  const loadComposables = async () => {
+    if (!useClickTestGame || !useClickTestHistory || !useRippleEffect) {
+      const { useClickTestGame: gameComposable } = await import('../composables/useClickTestGame');
+      const { useClickTestHistory: historyComposable } =
+        await import('../composables/useClickTestHistory');
+      const { useRippleEffect: rippleComposable } = await import('../composables/useRippleEffect');
+      useClickTestGame = gameComposable;
+      useClickTestHistory = historyComposable;
+      useRippleEffect = rippleComposable;
+    }
+  };
 
   // 导入图标资源
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
@@ -96,13 +109,10 @@
   // 点击区域DOM引用
   const clickAreaRef = ref<HTMLElement | null>(null);
 
-  // 使用composable函数
-  const { ripples, addRipple, clearRipples } = useRippleEffect();
-  const { addHistoryRecord, filteredHistory: getFilteredHistory } =
-    useClickTestHistory('clickTest');
-
-  // 计算属性：根据当前测试时长筛选历史记录
-  const filteredHistory = computed(() => getFilteredHistory(testTime.value));
+  // 涟漪效果相关
+  let ripples: any = null;
+  let addRipple: any = null;
+  let clearRipples: any = null;
 
   // 游戏状态和方法
   const isPlaying = ref(false);
@@ -115,12 +125,33 @@
   const isTimeUp = ref(false);
   const currentCps = ref(0);
 
+  // 历史记录相关
+  let addHistoryRecord: any = null;
+  let getFilteredHistory: any = null;
+
+  // 计算属性：根据当前测试时长筛选历史记录
+  const filteredHistory = computed(() => {
+    if (getFilteredHistory) {
+      return getFilteredHistory(testTime.value);
+    }
+    return [];
+  });
+
   // 游戏方法
   let gameInstance: any = null;
 
   // 初始化游戏实例
-  const initGame = (time: number) => {
+  const initGame = async (time: number) => {
+    await loadComposables();
     gameInstance = useClickTestGame(time);
+
+    // 初始化涟漪效果
+    if (useRippleEffect) {
+      const rippleEffects = useRippleEffect();
+      ripples = rippleEffects.ripples;
+      addRipple = rippleEffects.addRipple;
+      clearRipples = rippleEffects.clearRipples;
+    }
 
     // 同步游戏状态到本地ref
     const syncGameState = () => {
@@ -141,11 +172,11 @@
     // 监听游戏结束状态变化，实时更新
     watch(
       () => gameInstance.isGameOver.value,
-      (newValue) => {
+      async (newValue) => {
         isGameOver.value = newValue;
         // 当游戏结束时，保存历史记录
         if (newValue) {
-          endGame();
+          await endGame();
         }
       }
     );
@@ -195,12 +226,24 @@
     );
   };
 
-  // 初始化游戏
-  initGame(testTime.value);
+  // 初始化历史记录
+  const initHistory = async () => {
+    await loadComposables();
+    const { addHistoryRecord: addRecord, filteredHistory: getFiltered } =
+      useClickTestHistory('clickTest');
+    addHistoryRecord = addRecord;
+    getFilteredHistory = getFiltered;
+  };
+
+  // 组件挂载时初始化
+  onMounted(async () => {
+    await initHistory();
+    await initGame(testTime.value);
+  });
 
   // 监听testTime变化，更新游戏状态
-  watch(testTime, (newTime) => {
-    initGame(newTime);
+  watch(testTime, async (newTime) => {
+    await initGame(newTime);
     resetGame();
   });
 
@@ -232,22 +275,27 @@
       isTimeUp.value = gameInstance.isTimeUp.value;
       currentCps.value = gameInstance.currentCps.value;
     }
-    clearRipples();
+    // 检查clearRipples是否已初始化
+    if (clearRipples) {
+      clearRipples();
+    }
   };
 
-  const endGame = () => {
+  const endGame = async () => {
     if (gameInstance) {
       // 检查游戏是否已经结束
       if (!gameInstance.isGameOver.value) {
         // 游戏还没有结束，调用gameInstance.endGame()函数
         const result = gameInstance.endGame();
-        if (result) {
+        if (result && addHistoryRecord) {
           addHistoryRecord(result.testTime, result.clicks, result.cps);
         }
         return result;
       } else {
         // 游戏已经结束，保存历史记录
-        addHistoryRecord(testTime.value, gameInstance.clicks.value, gameInstance.cps.value);
+        if (addHistoryRecord) {
+          addHistoryRecord(testTime.value, gameInstance.clicks.value, gameInstance.cps.value);
+        }
         // 返回结果
         return {
           clicks: gameInstance.clicks.value,
@@ -285,7 +333,10 @@
 
     // 如果点击有效，添加涟漪特效
     if (clicked) {
-      addRipple(x, y);
+      // 检查addRipple是否已初始化
+      if (addRipple) {
+        addRipple(x, y);
+      }
     }
   };
 

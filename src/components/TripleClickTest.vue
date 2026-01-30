@@ -146,18 +146,39 @@
     right: [],
   });
 
-  // 导入composable函数
-  import { useRippleEffect } from '../composables/useRippleEffect';
+  // 动态导入composable函数
+  let useRippleEffect: any = null;
 
   // 测试按钮引用
   const testButtonRef = ref<HTMLElement | null>(null);
 
-  // 使用涟漪特效composable
-  const { ripples, addRipple, clearRipples } = useRippleEffect();
+  // 涟漪效果相关
+  let ripples: any = null;
+  let addRipple: any = null;
+  let clearRipples: any = null;
+
+  // 懒加载composable函数
+  const loadComposables = async () => {
+    if (!useRippleEffect) {
+      const { useRippleEffect: rippleComposable } = await import('../composables/useRippleEffect');
+      useRippleEffect = rippleComposable;
+
+      // 初始化涟漪效果
+      if (useRippleEffect) {
+        const rippleEffects = useRippleEffect();
+        ripples = rippleEffects.ripples;
+        addRipple = rippleEffects.addRipple;
+        clearRipples = rippleEffects.clearRipples;
+      }
+    }
+  };
 
   // 添加点击特效
-  const addClickEffect = (event: MouseEvent) => {
+  const addClickEffect = async (event: MouseEvent) => {
     if (!testButtonRef.value) return;
+
+    // 确保加载了composables
+    await loadComposables();
 
     // 获取测试按钮的位置信息
     const rect = testButtonRef.value.getBoundingClientRect();
@@ -167,7 +188,9 @@
     const y = event.clientY - rect.top;
 
     // 创建涟漪特效
-    addRipple(x, y);
+    if (addRipple) {
+      addRipple(x, y);
+    }
   };
 
   // 开始测试
@@ -191,15 +214,17 @@
     isTesting.value = false;
     resetClicks();
     // 清除所有涟漪特效
-    clearRipples();
+    if (clearRipples) {
+      clearRipples();
+    }
   };
 
   // 处理单击事件
-  const handleClick = (button: 'left' | 'middle' | 'right', event: MouseEvent) => {
+  const handleClick = async (button: 'left' | 'middle' | 'right', event: MouseEvent) => {
     startTest(); // 点击区域直接开始测试
 
     // 添加点击特效
-    addClickEffect(event);
+    await addClickEffect(event);
 
     // 更新对应按键的总点击次数
     if (button === 'left') {

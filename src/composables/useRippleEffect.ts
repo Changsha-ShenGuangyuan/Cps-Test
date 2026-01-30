@@ -14,6 +14,8 @@ export interface Ripple {
 export function useRippleEffect(rippleDuration: number = 600) {
   // 涟漪特效数组
   const ripples = ref<Ripple[]>([]);
+  // 涟漪ID计数器，确保每个涟漪都有唯一ID
+  let rippleIdCounter = 0;
 
   /**
    * 添加涟漪特效
@@ -21,8 +23,8 @@ export function useRippleEffect(rippleDuration: number = 600) {
    * @param y 涟漪中心Y坐标
    */
   const addRipple = (x: number, y: number) => {
-    // 创建涟漪特效
-    const rippleId = Date.now();
+    // 创建涟漪特效，使用自增计数器确保唯一ID
+    const rippleId = ++rippleIdCounter;
 
     // 创建新的涟漪对象
     const newRipple: Ripple = {

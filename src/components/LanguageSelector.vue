@@ -88,9 +88,9 @@
   };
 
   // 切换语言 - 使用路径跳转实现
-  const switchLanguage = (languageCode: string) => {
-    // 设置语言状态
-    setLanguage(languageCode);
+  const switchLanguage = async (languageCode: string) => {
+    // 设置语言状态并等待资源加载完成
+    await setLanguage(languageCode);
 
     // 清除可能存在的延迟隐藏定时器，确保菜单能立即关闭
     if (hideTimeout) {
@@ -129,7 +129,9 @@
     }
 
     // 跳转到新的URL
-    router.push(newPath);
+    if (newPath !== currentPath) {
+      await router.push(newPath);
+    }
   };
 
   // 关闭菜单
