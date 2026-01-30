@@ -466,9 +466,12 @@ export const updateMetaTags = (to: any) => {
     pageTitle = to.meta.title || t('websiteName');
   }
   // 完整标题格式：页面标题 - 网站名称（用于SEO和品牌推广）
-  let fullPageTitle = to.name === 'Home' ? `${pageTitle}` : `${pageTitle} - CPSTestGo`;
-  if(fullPageTitle == 'websiteName') 
-    fullPageTitle = 'Spacebar Clicker - CPSTestGo';
+  const websiteName = t('websiteName');
+  let fullPageTitle = to.name === 'Home' ? `${pageTitle}` : `${pageTitle} - ${websiteName}`;
+  // 确保标题不为空且有意义
+  if (!fullPageTitle || fullPageTitle === websiteName) {
+    fullPageTitle = `${t('spacebarClicker')} - ${websiteName}`;
+  }
 
   document.title = fullPageTitle;
 

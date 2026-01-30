@@ -313,6 +313,8 @@ export default defineConfig({
       'X-XSS-Protection': '1; mode=block',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+      // 为静态资源添加缓存控制头
+      'Cache-Control': 'public, max-age=31536000, immutable',
     },
   },
   // 启用持久化缓存，提升构建性能
