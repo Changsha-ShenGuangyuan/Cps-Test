@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
   import { t } from '../i18n/index';
 
   // 游戏状态管理
@@ -8,49 +8,22 @@
   const autoClickCount = ref(0); // 自动点击数量
   const isPlaying = ref(false); // 游戏是否正在进行
   const autoCPS = ref(0); // 自动每秒点击数
-
-  // FAQ数据结构
-  interface FAQStep {
-    id: string;
-    title: string;
-    content: string;
-  }
-
-  interface FAQItem {
-    id: string;
-    question: string;
-    answer: string;
-    steps?: FAQStep[];
-  }
-
-  const faqs = ref<FAQItem[]>([
-    {
-      id: 'what-is',
-      question: 'faqSpacebarQ1',
-      answer: 'faqSpacebarA1',
-    },
-    {
-      id: 'how-to-play',
-      question: 'faqSpacebarQ2',
-      answer: 'faqSpacebarA2',
-      steps: [
-        {
-          id: 'step-1',
-          title: 'faqSpacebarStep1Title',
-          content: 'faqSpacebarStep1Content',
-        },
-        {
-          id: 'step-2',
-          title: 'faqSpacebarStep2Title',
-          content: 'faqSpacebarStep2Content',
-        },
-      ],
-    },
-  ]);
+  const isLoading = ref(true); // 加载状态
 
   // 空格键按钮状态
   const spacebarAnimating = ref(false);
   const spacebarPressed = ref(false);
+
+  // 游戏状态键名
+  const GAME_STATE_KEY = 'spacebarClickerGameState';
+
+  // 自动点击的时间间隔（毫秒）
+  const AUTO_CLICK_INTERVAL = 100; // 每100ms增加一次点击
+  // 保存自动点击的累积点击数（包括小数）
+  const autoClickAccumulator = ref(0);
+
+  // 空格键按钮引用
+  const spacebarButton = ref<HTMLElement | null>(null);
 
   // 位置缓存
   const elementRectCache = ref<Map<string, DOMRect>>(new Map());
@@ -85,198 +58,246 @@
   }
 
   // 初始化BUFF列表 - 只存储翻译键，名称和描述在模板中动态翻译
-  const buffs = ref<Buff[]>([
-    {
-      id: 'internZhang',
-      name: '', // 动态翻译，模板中使用t('buff.internZhang.name')
-      description: '', // 动态翻译，模板中使用t('buff.internZhang.description')
-      basePrice: 50, // 从10调整为50
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+  const buffs = ref<Buff[]>([]);
+
+  // 初始化BUFF数据
+  const initBuffs = () => {
+    buffs.value = [
+      {
+        id: 'internZhang',
+        name: '', // 动态翻译，模板中使用t('buff.internZhang.name')
+        description: '', // 动态翻译，模板中使用t('buff.internZhang.description')
+        basePrice: 50, // 从10调整为50
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 2000,
+        effectValue: 2, // 调整为2，保持平衡
+        effectType: 'interval',
+        priceMultiplier: 1.15,
       },
-      interval: 2000,
-      effectValue: 2, // 调整为2，保持平衡
-      effectType: 'interval',
-      priceMultiplier: 1.15,
-    },
-    {
-      id: 'roomba',
-      name: '',
-      description: '',
-      basePrice: 100, // 从25调整为100
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'roomba',
+        name: '',
+        description: '',
+        basePrice: 100, // 从25调整为100
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 3000,
+        effectValue: 3, // 调整为3，保持平衡
+        effectType: 'interval',
+        priceMultiplier: 1.18,
       },
-      interval: 3000,
-      effectValue: 3, // 调整为3，保持平衡
-      effectType: 'interval',
-      priceMultiplier: 1.18,
-    },
-    {
-      id: 'typewriter',
-      name: '',
-      description: '',
-      basePrice: 200, // 从100调整为200
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'typewriter',
+        name: '',
+        description: '',
+        basePrice: 200, // 从100调整为200
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 1000,
+        effectValue: 5, // 调整为5，保持平衡
+        effectType: 'interval',
+        priceMultiplier: 1.2,
       },
-      interval: 1000,
-      effectValue: 5, // 调整为5，保持平衡
-      effectType: 'interval',
-      priceMultiplier: 1.2,
-    },
-    {
-      id: 'serverFan',
-      name: '',
-      description: '',
-      basePrice: 500, // 从120调整为500
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'serverFan',
+        name: '',
+        description: '',
+        basePrice: 500, // 从120调整为500
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 1000,
+        effectValue: 8, // 调整为8，保持平衡
+        effectType: 'interval',
+        priceMultiplier: 1.22,
       },
-      interval: 1000,
-      effectValue: 8, // 调整为8，保持平衡
-      effectType: 'interval',
-      priceMultiplier: 1.22,
-    },
-    {
-      id: 'aiScript',
-      name: '',
-      description: '',
-      basePrice: 1000, // 从300调整为1000
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'aiScript',
+        name: '',
+        description: '',
+        basePrice: 1000, // 从300调整为1000
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 1000,
+        effectValue: 12, // 调整为12，保持平衡
+        effectType: 'interval',
+        priceMultiplier: 1.24,
       },
-      interval: 1000,
-      effectValue: 12, // 调整为12，保持平衡
-      effectType: 'interval',
-      priceMultiplier: 1.24,
-    },
-    {
-      id: 'octopus',
-      name: '',
-      description: '',
-      basePrice: 2500, // 从700调整为2500
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'octopus',
+        name: '',
+        description: '',
+        basePrice: 2500, // 从700调整为2500
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 1000,
+        effectValue: 20, // 调整为20，保持平衡
+        effectType: 'interval',
+        priceMultiplier: 1.26,
       },
-      interval: 1000,
-      effectValue: 20, // 调整为20，保持平衡
-      effectType: 'interval',
-      priceMultiplier: 1.26,
-    },
-    {
-      id: 'quantumTwin',
-      name: '',
-      description: '',
-      basePrice: 5000, // 从1500调整为5000
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        // 被动效果，在handleManualClick中处理
+      {
+        id: 'quantumTwin',
+        name: '',
+        description: '',
+        basePrice: 5000, // 从1500调整为5000
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          // 被动效果，在handleManualClick中处理
+        },
+        effectValue: 2, // 从1调整为2，被动效果翻倍
+        effectType: 'passive',
+        // 价格数组：第一次购买便宜，后续逐步增长
+        priceArray: [
+          5000, // 等级 0 → 1
+          15000, // 等级 1 → 2
+          45000, // 等级 2 → 3
+          135000, // 等级 3 → 4
+          405000, // 等级 4 → 5
+          1215000, // 等级 5 → 6
+          3645000, // 等级 6 → 7
+          10935000, // 等级 7 → 8
+          32805000, // 等级 8 → 9
+          98415000, // 等级 9 → 10
+        ],
+        // 当价格数组不够时，使用价格倍数作为备选
+        priceMultiplier: 3,
       },
-      effectValue: 2, // 从1调整为2，被动效果翻倍
-      effectType: 'passive',
-      // 价格数组：第一次购买便宜，后续逐步增长
-      priceArray: [
-        5000, // 等级 0 → 1
-        15000, // 等级 1 → 2
-        45000, // 等级 2 → 3
-        135000, // 等级 3 → 4
-        405000, // 等级 4 → 5
-        1215000, // 等级 5 → 6
-        3645000, // 等级 6 → 7
-        10935000, // 等级 7 → 8
-        32805000, // 等级 8 → 9
-        98415000, // 等级 9 → 10
-        // 后续等级价格可以继续扩展，或者使用默认的价格倍数计算
-      ],
-      // 当价格数组不够时，使用价格倍数作为备选
-      priceMultiplier: 3,
-    },
-    {
-      id: 'hamsterWheel',
-      name: '',
-      description: '',
-      basePrice: 5000, // 从3500调整为5000
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'hamsterWheel',
+        name: '',
+        description: '',
+        basePrice: 5000, // 从3500调整为5000
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 1000,
+        effectValue: 60, // 从6调整为60，大幅提高效率
+        effectType: 'interval',
+        priceMultiplier: 1.32,
       },
-      interval: 1000,
-      effectValue: 60, // 从6调整为60，大幅提高效率
-      effectType: 'interval',
-      priceMultiplier: 1.32,
-    },
-    {
-      id: 'parrot',
-      name: '',
-      description: '',
-      basePrice: 10000, // 从8000调整为10000
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'parrot',
+        name: '',
+        description: '',
+        basePrice: 10000, // 从8000调整为10000
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 1000,
+        effectValue: 100, // 从10调整为100，大幅提高效率
+        effectType: 'interval',
+        priceMultiplier: 1.35,
       },
-      interval: 1000,
-      effectValue: 100, // 从10调整为100，大幅提高效率
-      effectType: 'interval',
-      priceMultiplier: 1.35,
-    },
-    {
-      id: 'brokenArm',
-      name: '',
-      description: '',
-      basePrice: 20000, // 从15000调整为20000
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'brokenArm',
+        name: '',
+        description: '',
+        basePrice: 20000, // 从15000调整为20000
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 1000,
+        effectValue: 200, // 从20调整为200，大幅提高效率
+        effectType: 'interval',
+        priceMultiplier: 1.38,
       },
-      interval: 1000,
-      effectValue: 200, // 从20调整为200，大幅提高效率
-      effectType: 'interval',
-      priceMultiplier: 1.38,
-    },
-    {
-      id: 'starlink',
-      name: '',
-      description: '',
-      basePrice: 50000, // 从30000调整为50000
-      currentLevel: 0,
-      maxLevel: 100,
-      unlocked: false,
-      effect: function () {
-        handleAutoClick(this.effectValue);
+      {
+        id: 'starlink',
+        name: '',
+        description: '',
+        basePrice: 50000, // 从30000调整为50000
+        currentLevel: 0,
+        maxLevel: 100,
+        unlocked: false,
+        effect: function () {
+          handleAutoClick(this.effectValue);
+        },
+        interval: 1000,
+        effectValue: 500, // 从40调整为500，大幅提高效率
+        effectType: 'interval',
+        priceMultiplier: 1.4,
       },
-      interval: 1000,
-      effectValue: 500, // 从40调整为500，大幅提高效率
-      effectType: 'interval',
-      priceMultiplier: 1.4,
-    },
-  ]);
+    ];
+  };
+
+  // FAQ数据结构
+  interface FAQStep {
+    id: string;
+    title: string;
+    content: string;
+  }
+
+  interface FAQItem {
+    id: string;
+    question: string;
+    answer: string;
+    steps?: FAQStep[];
+  }
+
+  const faqs = ref<FAQItem[]>([]);
+
+  // 初始化FAQ数据
+  const initFAQs = () => {
+    faqs.value = [
+      {
+        id: 'what-is',
+        question: 'faqSpacebarQ1',
+        answer: 'faqSpacebarA1',
+      },
+      {
+        id: 'how-to-play',
+        question: 'faqSpacebarQ2',
+        answer: 'faqSpacebarA2',
+        steps: [
+          {
+            id: 'step-1',
+            title: 'faqSpacebarStep1Title',
+            content: 'faqSpacebarStep1Content',
+          },
+          {
+            id: 'step-2',
+            title: 'faqSpacebarStep2Title',
+            content: 'faqSpacebarStep2Content',
+          },
+        ],
+      },
+    ];
+  };
 
   // 计算已解锁的BUFF列表
   const unlockedBuffs = computed(() => {
@@ -321,34 +342,30 @@
     }
   };
 
-  // 保存自动点击的累积点击数（包括小数）
-  const autoClickAccumulator = ref(0);
-  // 自动点击的时间间隔（毫秒）
-  const AUTO_CLICK_INTERVAL = 100; // 每100ms增加一次点击
-
-  // 游戏状态键名
-  const GAME_STATE_KEY = 'spacebarClickerGameState';
-
   // 保存游戏状态到localStorage
   const saveGameState = () => {
-    const gameState = {
-      clickCount: clickCount.value,
-      manualClickCount: manualClickCount.value,
-      autoClickCount: autoClickCount.value,
-      buffs: buffs.value.map((buff) => ({
-        id: buff.id,
-        currentLevel: buff.currentLevel,
-        unlocked: buff.unlocked,
-      })),
-    };
-    localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
+    try {
+      const gameState = {
+        clickCount: clickCount.value,
+        manualClickCount: manualClickCount.value,
+        autoClickCount: autoClickCount.value,
+        buffs: buffs.value.map((buff) => ({
+          id: buff.id,
+          currentLevel: buff.currentLevel,
+          unlocked: buff.unlocked,
+        })),
+      };
+      localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
+    } catch (error) {
+      console.error('Failed to save game state:', error);
+    }
   };
 
   // 从localStorage加载游戏状态
   const loadGameState = () => {
-    const savedState = localStorage.getItem(GAME_STATE_KEY);
-    if (savedState) {
-      try {
+    try {
+      const savedState = localStorage.getItem(GAME_STATE_KEY);
+      if (savedState) {
         const gameState = JSON.parse(savedState);
 
         // 恢复点击次数
@@ -366,9 +383,9 @@
             }
           });
         }
-      } catch (error) {
-        console.error('Failed to load game state:', error);
       }
+    } catch (error) {
+      console.error('Failed to load game state:', error);
     }
   };
 
@@ -444,6 +461,8 @@
 
   // 为键盘操作创建点击特效
   const createClickEffectForKeyboard = () => {
+    if (!spacebarButton.value) return;
+
     // 计算点击倍数（量子纠缠触发器）：每次点击的数值翻倍
     const quantumBuff = buffs.value.find((b) => b.id === 'quantumTwin');
     const clickMultiplier = quantumBuff
@@ -452,10 +471,7 @@
     const clickValue = 1 * clickMultiplier;
 
     // 获取按钮中心位置
-    const spacebarButton = document.querySelector('.spacebar-button');
-    if (!spacebarButton) return;
-
-    const buttonRect = spacebarButton.getBoundingClientRect();
+    const buttonRect = spacebarButton.value.getBoundingClientRect();
 
     // 计算按钮中心在窗口中的坐标
     const centerX = buttonRect.left + buttonRect.width / 2;
@@ -676,41 +692,60 @@
   let globalAutoClickTimer: number;
 
   // 组件挂载时添加事件监听
-  onMounted(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+  onMounted(async () => {
+    try {
+      // 初始化数据
+      initBuffs();
+      initFAQs();
 
-    // 加载游戏状态
-    loadGameState();
+      // 加载游戏状态
+      loadGameState();
 
-    // 更新每秒点击速度
-    updateClicksPerSecond();
+      // 检查是否解锁新BUFF
+      checkUnlockBuffs();
 
-    // 每秒更新一次点击速度
-    cpsUpdateTimer = window.setInterval(updateClicksPerSecond, 100);
+      // 更新每秒点击速度
+      updateClicksPerSecond();
 
-    // 设置全局自动点击定时器，每100ms触发一次，实现平滑增加
-    globalAutoClickTimer = window.setInterval(() => {
-      // 根据当前autoCPS计算这段时间应增加的点击数
-      // autoCPS是每秒点击数，所以每100ms增加的点击数是 autoCPS * 0.1
-      const clicksToAdd = autoCPS.value * (AUTO_CLICK_INTERVAL / 1000);
+      // 等待DOM更新完成
+      await nextTick();
 
-      // 只有当有点击数要增加时才处理
-      if (clicksToAdd > 0) {
-        // 将点击数添加到累积器
-        autoClickAccumulator.value += clicksToAdd;
+      // 标记加载完成
+      isLoading.value = false;
 
-        // 计算本次应增加的整数点击数
-        const integerClicks = Math.floor(autoClickAccumulator.value);
+      // 添加键盘事件监听
+      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keyup', handleKeyUp);
 
-        // 如果有整数点击数，就增加到总点击数
-        if (integerClicks > 0) {
-          handleAutoClick(integerClicks);
-          // 从累积器中减去已增加的整数点击数
-          autoClickAccumulator.value -= integerClicks;
+      // 每秒更新一次点击速度
+      cpsUpdateTimer = window.setInterval(updateClicksPerSecond, 100);
+
+      // 设置全局自动点击定时器，每100ms触发一次，实现平滑增加
+      globalAutoClickTimer = window.setInterval(() => {
+        // 根据当前autoCPS计算这段时间应增加的点击数
+        // autoCPS是每秒点击数，所以每100ms增加的点击数是 autoCPS * 0.1
+        const clicksToAdd = autoCPS.value * (AUTO_CLICK_INTERVAL / 1000);
+
+        // 只有当有点击数要增加时才处理
+        if (clicksToAdd > 0) {
+          // 将点击数添加到累积器
+          autoClickAccumulator.value += clicksToAdd;
+
+          // 计算本次应增加的整数点击数
+          const integerClicks = Math.floor(autoClickAccumulator.value);
+
+          // 如果有整数点击数，就增加到总点击数
+          if (integerClicks > 0) {
+            handleAutoClick(integerClicks);
+            // 从累积器中减去已增加的整数点击数
+            autoClickAccumulator.value -= integerClicks;
+          }
         }
-      }
-    }, AUTO_CLICK_INTERVAL);
+      }, AUTO_CLICK_INTERVAL);
+    } catch (error) {
+      console.error('Error in onMounted:', error);
+      isLoading.value = false;
+    }
   });
 
   // 组件卸载时移除事件监听和定时器
@@ -719,10 +754,14 @@
     window.removeEventListener('keyup', handleKeyUp);
 
     // 清除CPS更新定时器
-    clearInterval(cpsUpdateTimer);
+    if (cpsUpdateTimer) {
+      clearInterval(cpsUpdateTimer);
+    }
 
     // 清除全局自动点击定时器
-    clearInterval(globalAutoClickTimer);
+    if (globalAutoClickTimer) {
+      clearInterval(globalAutoClickTimer);
+    }
   });
 </script>
 
@@ -742,6 +781,7 @@
     <div class="spacebar-section">
       <div ref="clickEffectsContainer" class="click-effects-container"></div>
       <button
+        ref="spacebarButton"
         class="spacebar-button"
         :class="{ animating: spacebarAnimating, pressed: spacebarPressed }"
         @contextmenu.prevent=""
