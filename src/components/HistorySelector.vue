@@ -556,6 +556,7 @@
     color: #ffffff;
     margin-bottom: 4px;
     line-height: 1.4;
+    padding-right: 24px; /* 为删除按钮留出空间 */
   }
 
   .history-time {
