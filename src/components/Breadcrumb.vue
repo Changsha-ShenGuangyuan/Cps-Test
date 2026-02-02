@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { computed } from 'vue';
   import { useRoute } from 'vue-router';
-  import { t } from '../i18n';
+  import { t, langState } from '../i18n/index';
 
   // 获取当前路由
   const route = useRoute();
@@ -23,18 +23,38 @@
   // 计算面包屑数据
   const breadcrumbs = computed(() => {
     let path = route.path;
-    const breadcrumbItems = [{ name: t('home'), path: '/' }];
+    // 根据当前语言动态生成首页路径
+    const homePath = langState.current === 'en' ? '/' : `/${langState.current}`;
+    const breadcrumbItems = [{ name: t('home'), path: homePath }];
 
-    // 过滤掉语言前缀（如 /zh-CN/click-test/5 -> /click-test/5，/ja/spacebar-clicker -> /spacebar-clicker）
+    // 检查是否有语言前缀
     const langPrefixRegex = /^\/([a-z]{2}-[A-Z]{2}|[a-z]{2})\//;
-    if (langPrefixRegex.test(path)) {
-      path = path.replace(langPrefixRegex, '/');
+    const hasLangPrefix = langPrefixRegex.test(path);
+    
+    // 确定是否需要移除语言前缀（英语时移除，其他语言时保留）
+    const shouldRemoveLangPrefix = langState.current !== 'en';
+    
+    // 用于路径匹配的基础路径
+    let basePath = path;
+    if (shouldRemoveLangPrefix && hasLangPrefix) {
+      basePath = path.replace(langPrefixRegex, '/');
+    }
+
+    // 用于参数提取的路径
+    let paramPath = path;
+    // 参数索引
+    let paramIndex = 2;
+    if (hasLangPrefix && !shouldRemoveLangPrefix) {
+      paramIndex = 3;
+    } else if (hasLangPrefix && shouldRemoveLangPrefix) {
+      paramPath = basePath;
+      paramIndex = 2;
     }
 
     // 处理点击测试路由
-    if (path.startsWith('/click-test/')) {
+    if (basePath.startsWith('/click-test/')) {
       // 提取时间参数
-      const time = path.split('/')[2];
+      const time = paramPath.split('/')[paramIndex];
       breadcrumbItems.push({
         name: t('clickTest'),
         path: route.path.replace(/\/\d+$/, '/5'),
@@ -45,9 +65,9 @@
       });
     }
     // 处理空格点击测试路由
-    else if (path.startsWith('/space-click-test/')) {
+    else if (basePath.startsWith('/space-click-test/')) {
       // 提取时间参数
-      const time = path.split('/')[2];
+      const time = paramPath.split('/')[paramIndex];
       breadcrumbItems.push({
         name: t('spaceClickTest'),
         path: route.path.replace(/\/\d+$/, '/5'),
@@ -58,51 +78,51 @@
       });
     }
     // 处理Kohi点击测试路由
-    else if (path === '/kohi-click-test') {
+    else if (basePath === '/kohi-click-test') {
       breadcrumbItems.push({
         name: t('kohiClickTest'),
         path: route.path,
       });
     }
     // 处理反应时间测试路由
-    else if (path === '/reaction-time-test') {
+    else if (basePath === '/reaction-time-test') {
       breadcrumbItems.push({
         name: t('reactionTest'),
         path: route.path,
       });
     }
     // 处理颜色反应测试路由
-    else if (path === '/color-reaction-test') {
+    else if (basePath === '/color-reaction-test') {
       breadcrumbItems.push({
         name: t('colorReactionTest'),
         path: route.path,
       });
     }
     // 处理按键反应测试路由
-    else if (path === '/key-reaction-test') {
+    else if (basePath === '/key-reaction-test') {
       breadcrumbItems.push({
         name: t('keyReactionTest'),
         path: route.path,
       });
     }
     // 处理目标消除游戏路由
-    else if (path === '/target-elimination-game') {
+    else if (basePath === '/target-elimination-game') {
       breadcrumbItems.push({
         name: t('targetEliminationGame'),
         path: route.path,
       });
     }
     // 处理鼠标滚动测试路由
-    else if (path === '/mouse-scroll-test') {
+    else if (basePath === '/mouse-scroll-test') {
       breadcrumbItems.push({
         name: t('mouseScrollTest'),
         path: route.path,
       });
     }
     // 处理打字测试路由
-    else if (path.startsWith('/typing-test/')) {
+    else if (basePath.startsWith('/typing-test/')) {
       // 提取时间参数
-      const time = path.split('/')[2];
+      const time = paramPath.split('/')[paramIndex];
       breadcrumbItems.push({
         name: t('typingTest'),
         path: route.path.replace(/\/\d+$/, '/1'),
@@ -113,9 +133,9 @@
       });
     }
     // 处理连点测试路由
-    else if (path.startsWith('/multi-click-test/')) {
+    else if (basePath.startsWith('/multi-click-test/')) {
       // 提取类型参数
-      const type = path.split('/')[2] || '';
+      const type = paramPath.split('/')[paramIndex] || '';
       breadcrumbItems.push({
         name: t('clickSeriesTest'),
         path: route.path.replace(/\/[^/]+$/, '/double'),
@@ -134,21 +154,21 @@
     }
 
     // 处理鼠标拖动测试路由
-    else if (path === '/mouse-drag-test') {
+    else if (basePath === '/mouse-drag-test') {
       breadcrumbItems.push({
         name: t('mouseDragTest'),
         path: route.path,
       });
     }
     // 处理键盘测试路由
-    else if (path === '/keyboard-test') {
+    else if (basePath === '/keyboard-test') {
       breadcrumbItems.push({
         name: t('keyboardTest'),
         path: route.path,
       });
     }
     // 处理空格键点击器路由
-    else if (path === '/spacebar-clicker') {
+    else if (basePath === '/spacebar-clicker') {
       breadcrumbItems.push({
         name: t('spacebarClicker'),
         path: route.path,
