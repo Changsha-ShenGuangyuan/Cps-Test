@@ -1,15 +1,17 @@
 <script setup lang="ts">
-  import { ref, watch, onMounted, onUnmounted, computed, nextTick } from 'vue';
+  import { ref, watch, onMounted, onUnmounted, computed, nextTick, defineAsyncComponent } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
   import { t, setLanguage, langState } from './i18n/index';
-  // 导入Breadcrumb组件
-  import Breadcrumb from './components/Breadcrumb.vue';
-  // 导入ResponsiveImage组件
+  // 导入ResponsiveImage组件（首屏关键组件）
   import ResponsiveImage from './components/ResponsiveImage.vue';
+  
   // 导入拆分的组件
   import LanguageSelector from './components/LanguageSelector.vue';
   import HistorySelector from './components/HistorySelector.vue';
   import MenuManager from './components/MenuManager.vue';
+  
+  // 懒加载非首屏组件
+  const Breadcrumb = defineAsyncComponent(() => import('./components/Breadcrumb.vue'));
   // 导入预加载服务
   import { preloadService } from './services/PreloadService';
   import { updateMetaTags } from './router/index';

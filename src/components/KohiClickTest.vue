@@ -5,7 +5,6 @@
 
   // 导入图标资源
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
-  const historyIconUrlRelative = new URL('../assets/icons/history.png', import.meta.url).href;
 
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
@@ -366,7 +365,7 @@
           <div class="history-header">
             <h3>
               <img
-                v-lazy="historyIconUrl"
+                :src="historyIconUrl"
                 width="30"
                 height="30"
                 :alt="t('historyIconAlt')"
@@ -415,7 +414,7 @@
         <div class="history-header">
           <h3>
             <img
-              v-lazy="historyIconUrlRelative"
+              :src="historyIconUrl"
               width="30"
               height="30"
               :alt="t('historyIconAlt')"

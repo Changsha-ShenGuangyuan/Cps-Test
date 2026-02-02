@@ -12,18 +12,18 @@
             <div class="stats-cards">
               <div class="stat-card timer-card">
                 <div class="stat-value">
-                  {{ !isPlaying && clicks === 0 ? 0 : elapsedTime.toFixed(3) }}
+                  {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.elapsedTime.toFixed(3) }}
                 </div>
                 <div class="stat-label">{{ t('time') }}</div>
               </div>
               <div class="stat-card click-rate-card">
                 <div class="stat-value">
-                  {{ !isPlaying && clicks === 0 ? 0 : currentCps.toFixed(2) }}
+                  {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : currentCps.toFixed(2) }}
                 </div>
                 <div class="stat-label">{{ t('clicksPerSecond') }}</div>
               </div>
               <div class="stat-card score-card">
-                <div class="stat-value">{{ clicks }}</div>
+                <div class="stat-value">{{ gameState.clicks }}</div>
                 <div class="stat-label">{{ t('score') }}</div>
               </div>
             </div>
@@ -32,17 +32,17 @@
             <div
               class="click-area"
               :class="{
-                playing: isPlaying,
-                'space-pressed': isSpacePressed,
+                playing: gameState.isPlaying,
+                'space-pressed': gameState.isSpacePressed,
               }"
             >
               <!-- 游戏进行中显示 -->
-              <div v-if="isPlaying" class="playing-content">
+              <div v-if="gameState.isPlaying" class="playing-content">
                 <!-- 空格键图标 -->
                 <div class="spacebar-icon">
                   <div
                     class="spacebar-key"
-                    :class="{ 'space-pressed': isSpacePressed }"
+                    :class="{ 'space-pressed': gameState.isSpacePressed }"
                     @touchstart="handleTouchStart"
                     @touchend="handleTouchEnd"
                     @touchcancel="handleTouchEnd"
@@ -52,11 +52,11 @@
                 </div>
 
                 <!-- 提示文字 -->
-                <div v-if="showPressHint" class="hints">{{ t('holdSpaceBar') }}</div>
+                <div v-if="gameState.showPressHint" class="hints">{{ t('holdSpaceBar') }}</div>
               </div>
 
               <!-- 游戏准备就绪显示 -->
-              <div v-else-if="isGameReady" class="ready-content">
+              <div v-else-if="gameState.isGameReady" class="ready-content">
                 <!-- 提示文字 -->
                 <div class="ready-text">{{ t('gettingReady') }}</div>
 
@@ -64,7 +64,7 @@
                 <div class="spacebar-icon">
                   <div
                     class="spacebar-key"
-                    :class="{ 'space-pressed': isSpacePressed }"
+                    :class="{ 'space-pressed': gameState.isSpacePressed }"
                     @touchstart="handleTouchStart"
                     @touchend="handleTouchEnd"
                     @touchcancel="handleTouchEnd"
@@ -83,7 +83,7 @@
                 <div class="spacebar-icon">
                   <div
                     class="spacebar-key"
-                    :class="{ 'space-pressed': isSpacePressed }"
+                    :class="{ 'space-pressed': gameState.isSpacePressed }"
                     style="cursor: pointer"
                     @click="handleSpacebarClick"
                     @touchstart="handleTouchStart"
@@ -123,15 +123,15 @@
     <!-- 结果弹窗组件 -->
     <component
       :is="ResultModal"
-      :visible="showResultModal"
+      :visible="gameState.showResultModal"
       :type="'space'"
-      :cps="cps"
+      :cps="gameState.cps"
       :time="testDuration"
       @close="resetGame"
     />
 
     <!-- 快速开始区域 -->
-    <section class="quick-start-section">
+    <section v-if="!isMobile || isQuickStartVisible" class="quick-start-section">
       <div class="quick-start-buttons">
         <button
           v-for="(button, index) in quickStartButtons"
@@ -145,19 +145,19 @@
     </section>
 
     <!-- 点击技巧展示区域 -->
-    <section class="click-types-section">
+    <section v-if="!isMobile || isClickTypesVisible" class="click-types-section">
       <div class="container">
         <h2 class="section-title">{{ t('clickTypes') }}</h2>
         <div class="click-types-grid">
-          <div v-if="isClickTypesVisible" class="click-type-item butterfly">
+          <div class="click-type-item butterfly">
             <h3 class="click-type-title">{{ t('butterflyClick') }}</h3>
             <p class="click-type-description">{{ t('butterflyClickDesc') }}</p>
           </div>
-          <div v-if="isClickTypesVisible" class="click-type-item jitter">
+          <div class="click-type-item jitter">
             <h3 class="click-type-title">{{ t('jitterClick') }}</h3>
             <p class="click-type-description">{{ t('jitterClickDesc') }}</p>
           </div>
-          <div v-if="isClickTypesVisible" class="click-type-item drag">
+          <div class="click-type-item drag">
             <h3 class="click-type-title">{{ t('dragClick') }}</h3>
             <p class="click-type-description">{{ t('dragClickDesc') }}</p>
           </div>
@@ -166,8 +166,8 @@
     </section>
 
     <!-- FAQ区域 -->
-    <section id="faq" class="faq-section">
-      <div v-if="isFaqVisible" class="faq-container">
+    <section v-if="!isMobile || isFaqVisible" id="faq" class="faq-section">
+      <div class="faq-container">
         <article v-for="(item, index) in faqItems" :key="index" class="faq-item">
           <h3 class="faq-question">{{ t(item.question) }}</h3>
           <p class="faq-answer" v-html="formatAnswer(t(item.answer))"></p>
@@ -182,9 +182,13 @@
   import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 
   import { t } from '../i18n/index';
-  // 静态导入结果弹窗组件
+  // 懒加载结果弹窗组件
   import { defineAsyncComponent } from 'vue';
-  const ResultModal = defineAsyncComponent(() => import('./ResultModal.vue'));
+  const ResultModal = defineAsyncComponent({
+    loader: () => import('./ResultModal.vue'),
+    delay: 200,
+    timeout: 3000
+  });
 
   const router = useRouter();
 
@@ -202,57 +206,80 @@
     });
   };
 
+  // 缓存关键词正则表达式，避免重复创建
+  const keywordRegexCache = new Map();
+  // 缓存格式化答案结果，避免重复计算
+  const formattedAnswerCache = new Map();
+
+  // 需要突出显示的关键词列表
+  const keywords = [
+    'CPS Test',
+    '点击速度测试',
+    'Clicks Per Second',
+    '蝴蝶点击',
+    '抖动点击',
+    '拖动点击',
+    '高精度计时',
+    'performance.now()',
+    '防作弊机制',
+    '爆发力',
+    '耐力',
+    '肌肉记忆',
+    '高回报率鼠标',
+    '1000Hz',
+    '1秒',
+    '5秒',
+    '10秒',
+    '15秒',
+    '30秒',
+    '60秒',
+    '移动端',
+    '桌面端',
+    '本地存储',
+    'Minecraft',
+    'CS:GO',
+    '反应速度',
+    '手眼协调',
+    '策略意识',
+    '人体工学',
+    'PvP能力',
+    '电竞领域',
+    'AI分析',
+  ];
+
+  // 预创建所有关键词的正则表达式
+  keywords.forEach((keyword) => {
+    if (!keywordRegexCache.has(keyword)) {
+      const regex = new RegExp(`(${keyword})`, 'gi');
+      keywordRegexCache.set(keyword, regex);
+    }
+  });
+
   // 格式化答案，将换行符转换为<br>标签，并将关键词替换为绿色样式
   const formatAnswer = (answer: string) => {
-    // 需要突出显示的关键词列表
-    const keywords = [
-      'CPS Test',
-      '点击速度测试',
-      'Clicks Per Second',
-      '蝴蝶点击',
-      '抖动点击',
-      '拖动点击',
-      '高精度计时',
-      'performance.now()',
-      '防作弊机制',
-      '爆发力',
-      '耐力',
-      '肌肉记忆',
-      '高回报率鼠标',
-      '1000Hz',
-      '1秒',
-      '5秒',
-      '10秒',
-      '15秒',
-      '30秒',
-      '60秒',
-      '移动端',
-      '桌面端',
-      '本地存储',
-      'Minecraft',
-      'CS:GO',
-      '反应速度',
-      '手眼协调',
-      '策略意识',
-      '人体工学',
-      'PvP能力',
-      '电竞领域',
-      'AI分析',
-    ];
+    // 检查缓存中是否已有格式化结果
+    if (formattedAnswerCache.has(answer)) {
+      return formattedAnswerCache.get(answer);
+    }
 
     // 将答案转换为HTML，替换换行符
     let htmlAnswer = answer.replace(/\n/g, '<br>');
 
     // 替换关键词为绿色样式
     keywords.forEach((keyword) => {
-      // 创建正则表达式，使用全局匹配和不区分大小写
-      const regex = new RegExp(`(${keyword})`, 'gi');
-      // 替换为带有绿色样式的span标签
-      htmlAnswer = htmlAnswer.replace(
-        regex,
-        '<span style="color: #4CAF50; font-weight: 500;">$1</span>'
-      );
+      // 从缓存中获取正则表达式
+      const regex = keywordRegexCache.get(keyword);
+      if (regex) {
+        // 替换为带有绿色样式的span标签
+        htmlAnswer = htmlAnswer.replace(
+          regex,
+          '<span style="color: #4CAF50; font-weight: 500;">$1</span>'
+        );
+      }
     });
+
+    // 缓存格式化结果
+    formattedAnswerCache.set(answer, htmlAnswer);
 
     return htmlAnswer;
   };
@@ -262,7 +289,7 @@
   // 当前选中的时间
   const selectedTime = ref(5);
 
-  // 快速开始按钮数据数组
+  // 快速开始按钮数据数组 - 静态数据，不需要响应式
   const quickStartButtons = [
     { path: '/click-test/1', text: 'clickTest', type: 'click-test' },
     { path: '/reaction-time-test', text: 'simpleReactionTest', type: 'reaction-test' },
@@ -278,106 +305,185 @@
   ];
 
   // 5秒空格速度测试相关变量
-  const isPlaying = ref(false);
-  const isGameReady = ref(false);
-  const isGameOver = ref(false);
-  const showPressHint = ref(true);
+  const gameState = ref({
+    isPlaying: false,
+    isGameReady: false,
+    isGameOver: false,
+    showPressHint: true,
+    clicks: 0,
+    cps: 0,
+    elapsedTime: 0,
+    isSpacePressed: false,
+    showResultModal: false
+  });
   let startTime = 0; // 不需要响应式，仅用于游戏逻辑
-  const clicks = ref(0);
-  const cps = ref(0);
-  let timer: number | null = null; // 不需要响应式，仅用于游戏逻辑
-  const elapsedTime = ref(0);
-  const isSpacePressed = ref(false);
-  const showResultModal = ref(false);
+  let rafId: number | null = null; // 存储requestAnimationFrame的ID
   const testDuration = 5; // 5秒测试 - 常量，不需要响应式
 
-  // 实时计算当前CPS
+  // 上一次计算的CPS值
+  let lastCpsValue = 0;
+  // 上一次计算的时间戳
+  let lastCpsCalcTime = 0;
+  // CPS计算节流间隔（毫秒）
+  const cpsCalcInterval = 100;
+
+  // 实时计算当前CPS，添加节流优化
   const currentCps = computed(() => {
     // 游戏结束时，显示最终CPS值
-    if (isGameOver.value) {
-      return cps.value;
+    if (gameState.value.isGameOver) {
+      return gameState.value.cps;
     }
 
     // 游戏未开始或无点击则返回0
-    if (!isPlaying.value || clicks.value === 0) return 0;
+    if (!gameState.value.isPlaying || gameState.value.clicks === 0) return 0;
 
     // 避免除以0或极小值导致的Infinity
-    if (elapsedTime.value < 0.1) return 0;
+    if (gameState.value.elapsedTime < 0.1) return 0;
+
+    // 获取当前时间戳
+    const now = Date.now();
+
+    // 节流处理：限制计算频率
+    if (now - lastCpsCalcTime < cpsCalcInterval) {
+      return lastCpsValue;
+    }
 
     // 计算CPS并保留2位小数
-    return Math.round((clicks.value / elapsedTime.value) * 100) / 100;
+    const cpsValue = Math.round((gameState.value.clicks / gameState.value.elapsedTime) * 100) / 100;
+
+    // 更新缓存值和时间戳
+    lastCpsValue = cpsValue;
+    lastCpsCalcTime = now;
+
+    return cpsValue;
   });
 
   // 点击空格键按钮处理函数
   const handleSpacebarClick = () => {
     // 标记游戏准备就绪
-    isGameReady.value = true;
+    gameState.value.isGameReady = true;
     // 重新显示提示
-    showPressHint.value = true;
+    gameState.value.showPressHint = true;
+  };
+
+  // 游戏循环函数 - 使用requestAnimationFrame
+  const gameLoop = () => {
+    // 计算并更新已用时间（秒）
+    const elapsed = (Date.now() - startTime) / 1000;
+    gameState.value.elapsedTime = Math.min(elapsed, testDuration);
+
+    // 检查时间是否结束
+    if (elapsed >= testDuration) {
+      endGame();
+    } else {
+      // 继续下一帧
+      rafId = requestAnimationFrame(gameLoop);
+    }
   };
 
   // 游戏开始函数
   const startGame = () => {
-    if (isPlaying.value) return; // 防止重复开始
+    if (gameState.value.isPlaying) return; // 防止重复开始
 
     // 重置游戏状态
-    clicks.value = 0;
+    gameState.value.clicks = 0;
     startTime = Date.now(); // 记录开始时间
-    isPlaying.value = true;
-    isGameOver.value = false; // 确保游戏未结束
-    elapsedTime.value = 0; // 重置已用时间
+    gameState.value.isPlaying = true;
+    gameState.value.isGameOver = false; // 确保游戏未结束
+    gameState.value.elapsedTime = 0; // 重置已用时间
 
-    // 设置定时器，每50ms更新一次状态
-    timer = window.setInterval(() => {
-      // 计算并更新已用时间（秒）
-      const elapsed = (Date.now() - startTime) / 1000;
-      elapsedTime.value = Math.min(elapsed, testDuration);
-
-      // 检查时间是否结束
-      if (elapsed >= testDuration) {
-        endGame();
-      }
-    }, 50); // 50ms更新一次，确保毫秒级显示流畅
+    // 使用requestAnimationFrame开始游戏循环
+    rafId = requestAnimationFrame(gameLoop);
   };
 
   // 游戏结束函数
   const endGame = () => {
-    isPlaying.value = false; // 标记游戏结束
-    isGameOver.value = true; // 设置最终结束状态
+    gameState.value.isPlaying = false; // 标记游戏结束
+    gameState.value.isGameOver = true; // 设置最终结束状态
 
     // 计算最终CPS，使用规定的测试时间
-    cps.value = testDuration > 0 ? Math.round((clicks.value / testDuration) * 100) / 100 : 0;
+    gameState.value.cps = testDuration > 0 ? Math.round((gameState.value.clicks / testDuration) * 100) / 100 : 0;
 
     // 确保已用时间显示为规定的测试时间
-    elapsedTime.value = testDuration;
+    gameState.value.elapsedTime = testDuration;
 
-    // 清除定时器
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
+    // 清除requestAnimationFrame
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
     }
 
     // 显示结果弹窗
-    showResultModal.value = true;
+    gameState.value.showResultModal = true;
   };
 
   // 重置游戏函数
   const resetGame = () => {
     // 重置所有游戏状态，回到初始状态
-    isPlaying.value = false;
-    isGameReady.value = false; // 重置准备状态，需要重新点击空格键
-    isGameOver.value = false;
-    isSpacePressed.value = false; // 重置空格键按下状态
-    clicks.value = 0;
-    cps.value = 0;
-    elapsedTime.value = 0;
-    showPressHint.value = true; // 重置提示显示
-    showResultModal.value = false; // 关闭结果弹窗
+    gameState.value.isPlaying = false;
+    gameState.value.isGameReady = false; // 重置准备状态，需要重新点击空格键
+    gameState.value.isGameOver = false;
+    gameState.value.isSpacePressed = false; // 重置空格键按下状态
+    gameState.value.clicks = 0;
+    gameState.value.cps = 0;
+    gameState.value.elapsedTime = 0;
+    gameState.value.showPressHint = true; // 重置提示显示
+    gameState.value.showResultModal = false; // 关闭结果弹窗
 
-    // 清除定时器
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
+    // 清除requestAnimationFrame
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  };
+
+  // 通用的空格键按下处理逻辑
+  const handleKeyDown = () => {
+    // 游戏结束，不处理点击事件
+    if (gameState.value.isGameOver) {
+      return;
+    }
+
+    // 游戏未准备就绪，不处理点击事件
+    if (!gameState.value.isGameReady) {
+      return;
+    }
+
+    // 如果已经按下，不再处理
+    if (gameState.value.isSpacePressed) {
+      return;
+    }
+
+    // 标记空格键已按下
+    gameState.value.isSpacePressed = true;
+
+    // 隐藏提示
+    gameState.value.showPressHint = false;
+
+    // 游戏未开始，开始游戏
+    if (!gameState.value.isPlaying) {
+      startGame();
+    }
+  };
+
+  // 通用的空格键释放处理逻辑
+  const handleKeyUp = () => {
+    // 游戏结束，不处理点击事件
+    if (gameState.value.isGameOver) {
+      return;
+    }
+
+    // 游戏未准备就绪，不处理点击事件
+    if (!gameState.value.isGameReady) {
+      return;
+    }
+
+    // 标记空格键已释放
+    gameState.value.isSpacePressed = false;
+
+    // 更新点击次数（游戏进行中）
+    if (gameState.value.isPlaying) {
+      gameState.value.clicks++;
     }
   };
 
@@ -389,31 +495,7 @@
     // 阻止空格的默认行为（防止页面滚动）
     event.preventDefault();
 
-    // 游戏结束，不处理点击事件
-    if (isGameOver.value) {
-      return;
-    }
-
-    // 游戏未准备就绪，不处理点击事件
-    if (!isGameReady.value) {
-      return;
-    }
-
-    // 如果已经按下，不再处理
-    if (isSpacePressed.value) {
-      return;
-    }
-
-    // 标记空格键已按下
-    isSpacePressed.value = true;
-
-    // 隐藏提示
-    showPressHint.value = false;
-
-    // 游戏未开始，开始游戏
-    if (!isPlaying.value) {
-      startGame();
-    }
+    handleKeyDown();
   };
 
   // 空格键释放处理函数
@@ -424,23 +506,7 @@
     // 阻止空格的默认行为（防止页面滚动）
     event.preventDefault();
 
-    // 游戏结束，不处理点击事件
-    if (isGameOver.value) {
-      return;
-    }
-
-    // 游戏未准备就绪，不处理点击事件
-    if (!isGameReady.value) {
-      return;
-    }
-
-    // 标记空格键已释放
-    isSpacePressed.value = false;
-
-    // 更新点击次数（游戏进行中）
-    if (isPlaying.value) {
-      clicks.value++;
-    }
+    handleKeyUp();
   };
 
   // 触摸开始处理函数 - 模拟空格键按下
@@ -451,29 +517,29 @@
     }
 
     // 游戏结束，不处理点击事件
-    if (isGameOver.value) {
+    if (gameState.value.isGameOver) {
       return;
     }
 
     // 如果已经按下，不再处理
-    if (isSpacePressed.value) {
+    if (gameState.value.isSpacePressed) {
       return;
     }
 
     // 标记空格键已按下
-    isSpacePressed.value = true;
+    gameState.value.isSpacePressed = true;
 
     // 隐藏提示
-    showPressHint.value = false;
+    gameState.value.showPressHint = false;
 
     // 游戏未准备就绪，先设置为准备就绪状态
-    if (!isGameReady.value) {
-      isGameReady.value = true;
+    if (!gameState.value.isGameReady) {
+      gameState.value.isGameReady = true;
       return;
     }
 
     // 游戏未开始，开始游戏
-    if (!isPlaying.value) {
+    if (!gameState.value.isPlaying) {
       startGame();
     }
   };
@@ -485,41 +551,54 @@
       event.preventDefault();
     }
 
-    // 游戏结束，不处理点击事件
-    if (isGameOver.value) {
-      return;
-    }
-
-    // 游戏未准备就绪，不处理点击事件
-    if (!isGameReady.value) {
-      return;
-    }
-
-    // 标记空格键已释放
-    isSpacePressed.value = false;
-
-    // 更新点击次数（游戏进行中）
-    if (isPlaying.value) {
-      clicks.value++;
-    }
+    handleKeyUp();
   };
+
+  // 窗口大小变化处理函数
+  const handleResize = () => {
+    isMobile.value = window.innerWidth <= 768;
+  };
+
+  // 设备检测变量
+  const isMobile = ref(false);
 
   // 组件挂载时添加事件监听
   onMounted(() => {
-    renderFeatureStructuredData();
-    renderGuideStructuredData();
+    // 检测设备类型 - 关键操作，立即执行
+    isMobile.value = window.innerWidth <= 768;
+    
+    // 监听窗口 resize 事件 - 关键操作，立即执行
+    window.addEventListener('resize', handleResize);
+    
+    // 监听键盘事件 - 关键操作，立即执行
     window.addEventListener('keydown', handleSpaceDown);
     window.addEventListener('keyup', handleSpaceUp);
 
-    // 设置交叉观察者
-    setupIntersectionObservers();
+    // 延迟执行非关键操作，避免阻塞移动端渲染
+    if (typeof requestIdleCallback === 'function') {
+      // 使用 requestIdleCallback 延迟执行
+      requestIdleCallback(() => {
+        renderFeatureStructuredData();
+        renderGuideStructuredData();
+        setupIntersectionObservers();
+      });
+    } else {
+      // 降级方案：使用 setTimeout 延迟执行
+      setTimeout(() => {
+        renderFeatureStructuredData();
+        renderGuideStructuredData();
+        setupIntersectionObservers();
+      }, 100);
+    }
   });
 
   // 按需渲染相关变量
   const isFaqVisible = ref(false);
   const isClickTypesVisible = ref(false);
+  const isQuickStartVisible = ref(false);
   let faqObserver: IntersectionObserver | null = null;
   let clickTypesObserver: IntersectionObserver | null = null;
+  let quickStartObserver: IntersectionObserver | null = null;
 
   // FAQ 数据数组
   const faqItems = [
@@ -532,53 +611,61 @@
     { question: 'kohiFaqQ1', answer: 'kohiFaqA1' },
   ];
 
-  // 实现按需渲染功能
+  // 实现按需渲染功能，优化Intersection Observer配置
   const setupIntersectionObservers = () => {
     // 检查浏览器是否支持 Intersection Observer
     if (!('IntersectionObserver' in window)) {
       // 如果不支持，直接显示所有内容
       isFaqVisible.value = true;
       isClickTypesVisible.value = true;
+      isQuickStartVisible.value = true;
       return;
     }
 
-    // FAQ区域观察者
-    faqObserver = new IntersectionObserver(
-      (entries) => {
+    // 通用的交叉观察回调函数
+    const observerCallback = (visibleRef: any, observer: IntersectionObserver | null) => {
+      return (entries: IntersectionObserverEntry[]) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            isFaqVisible.value = true;
+            visibleRef.value = true;
             // 停止观察，因为内容已经渲染
-            faqObserver?.unobserve(entry.target);
+            if (observer) {
+              observer.unobserve(entry.target);
+            }
           }
         });
-      },
-      {
-        threshold: 0.1, // 当元素10%进入视口时触发
-        rootMargin: '50px 0px', // 提前50px开始观察，实现预加载效果
-      }
+      };
+    };
+
+    // 优化的观察选项
+    const observerOptions = {
+      threshold: 0.05, // 当元素5%进入视口时触发，提高灵敏度
+      rootMargin: '100px 0px', // 提前100px开始观察，更好的预加载效果
+      root: null // 使用默认根元素（视口）
+    };
+
+    // FAQ区域观察者
+    faqObserver = new IntersectionObserver(
+      observerCallback(isFaqVisible, faqObserver),
+      observerOptions
     );
 
     // 点击技巧区域观察者
     clickTypesObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            isClickTypesVisible.value = true;
-            // 停止观察，因为内容已经渲染
-            clickTypesObserver?.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: '50px 0px',
-      }
+      observerCallback(isClickTypesVisible, clickTypesObserver),
+      observerOptions
+    );
+
+    // 快速开始区域观察者
+    quickStartObserver = new IntersectionObserver(
+      observerCallback(isQuickStartVisible, quickStartObserver),
+      observerOptions
     );
 
     // 观察目标元素
     const faqElement = document.getElementById('faq');
     const clickTypesElement = document.querySelector('.click-types-section');
+    const quickStartElement = document.querySelector('.quick-start-section');
 
     if (faqElement) {
       faqObserver.observe(faqElement);
@@ -592,6 +679,13 @@
     } else {
       // 如果找不到元素，直接显示内容
       isClickTypesVisible.value = true;
+    }
+
+    if (quickStartElement) {
+      quickStartObserver.observe(quickStartElement);
+    } else {
+      // 如果找不到元素，直接显示内容
+      isQuickStartVisible.value = true;
     }
   };
 
@@ -609,6 +703,7 @@
 
     window.removeEventListener('keydown', handleSpaceDown);
     window.removeEventListener('keyup', handleSpaceUp);
+    window.removeEventListener('resize', handleResize);
 
     // 清理观察者
     if (faqObserver) {
@@ -619,28 +714,47 @@
       clickTypesObserver.disconnect();
       clickTypesObserver = null;
     }
+    if (quickStartObserver) {
+      quickStartObserver.disconnect();
+      quickStartObserver = null;
+    }
 
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
     }
   });
 
-  // 通用结构化数据生成函数
+  // 通用结构化数据生成函数 - 优化DOM操作
   const renderStructuredData = (id: string, data: any) => {
-    // 检查是否已存在结构化数据元素
-    let structuredDataElement: HTMLScriptElement | null = document.getElementById(
-      id
-    ) as HTMLScriptElement | null;
-    if (!structuredDataElement) {
-      structuredDataElement = document.createElement('script');
-      structuredDataElement.id = id;
-      structuredDataElement.type = 'application/ld+json';
-      document.head.appendChild(structuredDataElement);
-    }
+    // 使用try-catch包装，避免DOM操作失败影响整体功能
+    try {
+      // 检查是否已存在结构化数据元素
+      let structuredDataElement: HTMLScriptElement | null = document.getElementById(
+        id
+      ) as HTMLScriptElement | null;
+      if (!structuredDataElement) {
+        // 创建新元素
+        structuredDataElement = document.createElement('script');
+        structuredDataElement.id = id;
+        structuredDataElement.type = 'application/ld+json';
+        // 使用appendChild添加到head
+        document.head.appendChild(structuredDataElement);
+      }
 
-    // 更新结构化数据内容
-    structuredDataElement.textContent = JSON.stringify(data);
+      // 优化JSON字符串化，使用replacer函数处理可能的循环引用
+      structuredDataElement.textContent = JSON.stringify(data, (key, value) => {
+        // 处理可能的循环引用
+        if (typeof value === 'object' && value !== null && key !== '') {
+          // 简单处理：如果是对象且不是null，返回其字符串表示
+          return String(value);
+        }
+        return value;
+      });
+    } catch (error) {
+      // 静默处理错误，避免影响其他功能
+      console.warn('Failed to render structured data:', error);
+    }
   };
 
   // 生成功能特性结构化数据
@@ -1068,7 +1182,7 @@
       inset 0 2px 0 rgba(0, 0, 0, 0.2);
     border-color: #4caf50;
     color: #ffffff;
-    animation: pulse 0.2s ease-in-out;
+    /* 移除动画，使用简单的状态变化 */
   }
 
   /* 点击区域按下特效 */
@@ -1076,20 +1190,7 @@
     background-color: #000000;
     border-color: #4caf50;
     box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.2);
-    animation: clickGlow 0.3s ease-in-out;
-  }
-
-  /* 点击发光动画 */
-  @keyframes clickGlow {
-    0% {
-      box-shadow: inset 0 0 0 rgba(76, 175, 80, 0);
-    }
-    50% {
-      box-shadow: inset 0 0 50px rgba(76, 175, 80, 0.3);
-    }
-    100% {
-      box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.2);
-    }
+    /* 移除动画，使用简单的状态变化 */
   }
 
   /* 空格键提示 */
@@ -1151,182 +1252,176 @@
 
   /* 移动端适配 */
   @media (max-width: 768px) {
-    /* 动画优化 - 减少不必要的动画 */
-    /* 简化空格键按下动画 */
-    .spacebar-key.space-pressed {
-      animation: none;
-      transform: translateY(2px);
-    }
+      /* 动画优化 - 减少不必要的动画和过渡 */
+      /* 简化空格键按下效果 */
+      .spacebar-key.space-pressed {
+        transform: translateY(2px);
+        transition: none; /* 移除过渡效果，提高响应速度 */
+      }
 
-    /* 简化点击区域发光动画 */
-    .click-area.space-pressed {
-      animation: none;
-    }
+      /* 简化点击区域效果 */
+      .click-area.space-pressed {
+        transition: none; /* 移除过渡效果，提高响应速度 */
+      }
 
-    /* 简化按钮脉动动画 */
-    .start-btn:hover::before {
-      animation: none;
-      opacity: 0.4;
-    }
+      /* 简化按钮效果 */
+      .start-btn:hover {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: none; /* 移除过渡效果，提高响应速度 */
+      }
 
-    /* 简化按钮悬停效果 */
-    .start-btn:hover {
-      transform: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
+      /* 简化所有过渡效果 */
+      .time-select-item,
+      .start-btn,
+      .click-type-item {
+        transition: none; /* 移除过渡效果，提高响应速度 */
+      }
 
-    /* 主要样式优化 */
-    .space-test-section {
-      padding: 10px;
-    }
+      /* 主要样式优化 */
+      .space-test-section {
+        padding: 10px;
+      }
 
-    /* 统计卡片横向排列，缩小样式 */
-    .stats-cards {
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-    }
+      /* 统计卡片横向排列，缩小样式 */
+      .stats-cards {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
 
-    .stat-card {
-      flex: 1;
-      min-width: clamp(70px, 20vw, 80px);
-      max-width: none;
-      padding: clamp(6px, 2vw, 8px) clamp(8px, 2vw, 12px);
-    }
+      .stat-card {
+        flex: 1;
+        min-width: clamp(70px, 20vw, 80px);
+        max-width: none;
+        padding: clamp(6px, 2vw, 8px) clamp(8px, 2vw, 12px);
+      }
 
-    .stat-value {
-      font-size: clamp(22px, 5vw, 26px);
-      margin-bottom: 2px;
-    }
+      .stat-value {
+        font-size: clamp(22px, 5vw, 26px);
+        margin-bottom: 2px;
+      }
 
-    .stat-label {
-      font-size: clamp(12px, 2vw, 14px);
-    }
+      .stat-label {
+        font-size: clamp(12px, 2vw, 14px);
+      }
 
-    /* 点击区域优化 */
-    .click-area {
-      height: clamp(200px, 40vh, 300px);
-      font-size: clamp(18px, 4vw, 20px);
-      width: clamp(95%, 98vw, 98%);
-    }
+      /* 点击区域优化 */
+      .click-area {
+        height: clamp(200px, 40vh, 300px);
+        font-size: clamp(18px, 4vw, 20px);
+        width: clamp(95%, 98vw, 98%);
+      }
 
-    /* 空格键优化 */
-    .spacebar-key {
-      width: 250px;
-      height: 50px;
-      font-size: 16px;
-    }
+      /* 空格键优化 */
+      .spacebar-key {
+        width: 250px;
+        height: 50px;
+        font-size: 16px;
+      }
 
-    /* 准备就绪文字优化 */
-    .ready-text {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
+      /* 准备就绪文字优化 */
+      .ready-text {
+        font-size: 48px;
+        margin-bottom: 20px;
+      }
 
-    /* 提示文字优化 - 往上移 */
-    .hints {
-      margin-top: 5px;
-      transform: translateY(-10px);
-    }
+      /* 提示文字优化 - 往上移 */
+      .hints {
+        margin-top: 5px;
+        transform: translateY(-10px);
+      }
 
-    /* 时间选择区域优化 */
-    .time-select-title {
-      font-size: 19px;
-      margin-bottom: 18px;
-    }
+      /* 时间选择区域优化 */
+      .time-select-title {
+        font-size: 19px;
+        margin-bottom: 18px;
+      }
 
-    .time-select-item {
-      padding: 13px 18px;
-      font-size: 14px;
-    }
+      .time-select-item {
+        padding: 13px 18px;
+        font-size: 14px;
+      }
 
-    .time-select-list {
-      gap: 8px;
-    }
+      .time-select-list {
+        gap: 8px;
+      }
 
-    /* 快速开始按钮布局 */
-    .quick-start-buttons {
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
+      /* 快速开始按钮布局 */
+      .quick-start-buttons {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
 
-    /* 容器内边距优化 */
-    .home-container {
-      padding: 10px;
-    }
+      /* 容器内边距优化 */
+      .home-container {
+        padding: 10px;
+      }
 
-    /* 按钮样式优化 */
-    .start-btn {
-      padding: 15px 10px;
-      font-size: 15px;
-      min-height: 60px;
-      transition: none;
-    }
+      /* 按钮样式优化 */
+      .start-btn {
+        padding: 15px 10px;
+        font-size: 15px;
+        min-height: 60px;
+        transition: none;
+      }
 
-    .start-btn:hover {
-      transform: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      border-color: transparent;
-    }
+      .start-btn:hover {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border-color: transparent;
+      }
 
-    .start-btn:hover::before {
-      display: none;
-    }
+      /* FAQ项目优化 */
+      .faq-item {
+        padding: 20px 16px;
+      }
 
-    .start-btn::before {
-      display: none;
-    }
+      .faq-question {
+        font-size: 19px;
+        margin-bottom: 12px;
+      }
 
-    /* FAQ项目优化 */
-    .faq-item {
-      padding: 20px 16px;
-    }
+      .faq-question:before {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      }
 
-    .faq-question {
-      font-size: 19px;
-      margin-bottom: 12px;
-    }
+      .faq-answer {
+        font-size: 16px;
+        margin-left: 28px;
+        line-height: 1.6;
+      }
 
-    .faq-question:before {
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-    }
+      /* 点击类型区域优化 */
+      .click-types-section {
+        padding: 40px 15px;
+        margin: 40px 0;
+      }
 
-    .faq-answer {
-      font-size: 16px;
-      margin-left: 28px;
-      line-height: 1.6;
-    }
+      .click-types-section .section-title {
+        font-size: 28px;
+        margin-bottom: 30px;
+      }
 
-    /* 点击类型区域优化 */
-    .click-types-section {
-      padding: 40px 15px;
-      margin: 40px 0;
-    }
+      .click-types-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
 
-    .click-types-section .section-title {
-      font-size: 28px;
-      margin-bottom: 30px;
-    }
+      .click-type-item {
+        padding: 25px;
+      }
 
-    .click-types-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+      .click-type-title {
+        font-size: 20px;
+      }
 
-    .click-type-item {
-      padding: 25px;
+      .click-type-description {
+        font-size: 15px;
+      }
     }
-
-    .click-type-title {
-      font-size: 20px;
-    }
-
-    .click-type-description {
-      font-size: 15px;
-    }
-  }
 
   /* 快速开始区域样式 */
   .quick-start-section {

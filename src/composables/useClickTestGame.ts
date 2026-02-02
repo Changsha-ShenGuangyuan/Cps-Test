@@ -60,9 +60,6 @@ export function useClickTestGame(testTime: number) {
 
   // 游戏结束函数
   const endGame = () => {
-    isPlaying.value = false;
-    isGameOver.value = true;
-
     // 计算最终CPS
     cps.value = testTime > 0 ? Math.round((clicks.value / testTime) * 100) / 100 : 0;
 
@@ -71,6 +68,9 @@ export function useClickTestGame(testTime: number) {
 
     // 清除定时器
     clearInterval(timer.value);
+
+    isPlaying.value = false;
+    isGameOver.value = true;
 
     // 显示结果弹窗
     showResultModal.value = true;

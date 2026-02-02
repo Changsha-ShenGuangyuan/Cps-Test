@@ -2,13 +2,94 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- 资源提示 - 优化移动端加载 -->
+    <!-- 预连接到关键域名 -->
+    <link rel="dns-prefetch" href="https://www.cpstestgo.com">
+    
+    <!-- 预连接到分析服务 -->
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    
+    <!-- 只预加载移动端首屏关键资源 -->
+    <link rel="preload" href="/logo.png" as="image" type="image/png" crossorigin>
+    
+    <!-- 图标优化：只保留必要的图标链接 -->
     <link rel="icon" type="image/svg+xml" href="/logo.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
-    <link rel="mask-icon" href="/logo.png" color="#5bbad5" />
     
-    <!-- 预加载关键CSS，减少渲染屏蔽请求 -->
-    <link rel="preload" href="/src/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <!-- 移动端首屏关键CSS内联 - 减少CSS请求 -->
+    <style>
+      /* 基础样式重置 */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      
+      /* 移动端基础样式 */
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        width: 100%;
+        overflow-x: hidden;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.5;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.87);
+        background-color: #242424;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* 移动端容器样式 */
+      #app {
+        width: 100%;
+        min-height: 100vh;
+        text-align: left;
+        overflow-x: hidden;
+      }
+      
+      /* 移动端触摸优化 */
+      button, [role="button"] {
+        touch-action: manipulation;
+      }
+      
+      /* 移动端导航栏优化 */
+      @media (max-width: 1000px) {
+        .header {
+          padding: 10px 15px !important;
+          height: 50px !important;
+          background-color: #000000 !important;
+        }
+        
+        .main-nav {
+          display: none !important;
+        }
+        
+        .hamburger-menu {
+          display: block !important;
+        }
+        
+        .content {
+          margin-left: 0 !important;
+          padding: 15px !important;
+        }
+      }
+    </style>
+    
+    <!-- 禁止字体加载阻塞渲染 -->
+    <style>
+      @font-face {
+        font-family: 'System UI';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('System UI'), local('Segoe UI'), local('Roboto'), local('Helvetica Neue'), local('Arial');
+      }
+    </style>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta name="google-site-verification" content="VVE4U7sSEqQxzsAhM9zU6766DDGVfq60D7bqGzONBzs" />

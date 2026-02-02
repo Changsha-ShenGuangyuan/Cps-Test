@@ -251,15 +251,6 @@ export default defineConfig({
             },
             injectTo: 'head',
           },
-          {
-            tag: 'link',
-            attrs: {
-              rel: 'preconnect',
-              href: 'https://cdn.jsdelivr.net',
-              crossorigin: 'anonymous',
-            },
-            injectTo: 'head',
-          },
           // 预加载关键资源 - 仅在生产模式下注入
           // 开发模式下Vite会自动处理模块加载，不需要预加载
           // 安全相关的meta标签
@@ -268,7 +259,7 @@ export default defineConfig({
             attrs: {
               'http-equiv': 'Content-Security-Policy',
               content:
-                "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
+                "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
             },
           },
           {
@@ -304,6 +295,10 @@ export default defineConfig({
       'X-XSS-Protection': '1; mode=block',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+      // 为静态资源添加缓存控制头
+      'Cache-Control': 'public, max-age=31536000, immutable',
+      // 移动端缓存策略
+      'Vary': 'User-Agent, Accept-Encoding',
     },
   },
   preview: {
@@ -313,8 +308,12 @@ export default defineConfig({
       'X-XSS-Protection': '1; mode=block',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-      // 为静态资源添加缓存控制头
+      // 为静态资源添加更激进的缓存控制头
       'Cache-Control': 'public, max-age=31536000, immutable',
+      // 移动端缓存策略
+      'Vary': 'User-Agent, Accept-Encoding',
+      // 移动端资源提示
+      'Link': '</logo.png>; rel=preload; as=image; crossorigin',
     },
   },
   // 启用持久化缓存，提升构建性能

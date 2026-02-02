@@ -42,15 +42,55 @@
     return props.height;
   });
 
+  // 检测浏览器是否支持WebP
+  const supportsWebP = ref(false);
+
+  // 检测WebP支持
+  const checkWebPSupport = () => {
+    const canvas = document.createElement('canvas');
+    if (canvas.getContext && canvas.getContext('2d')) {
+      // 尝试创建一个WebP图像
+      supportsWebP.value = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    }
+  };
+
   // 计算图片源
   const imageSrc = computed(() => {
-    // 这里可以根据设备类型返回不同尺寸的图片
-    // 目前返回原始图片，后续可以扩展为根据设备类型返回不同尺寸
-    return props.src;
+    // 根据设备类型返回不同尺寸的图片
+    let src = props.src;
+    
+    // 为移动端提供更小尺寸的图片
+    if (isMobile.value) {
+      // 替换图片路径，添加mobile后缀
+      src = src.replace(/(\.\w+)$/, '-mobile$1');
+    }
+    
+    // 为平板提供中等尺寸的图片
+    else if (isTablet.value) {
+      // 替换图片路径，添加tablet后缀
+      src = src.replace(/(\.\w+)$/, '-tablet$1');
+    }
+    
+    // 检查是否支持WebP
+    if (supportsWebP.value) {
+      // 替换为WebP格式
+      src = src.replace(/(\.\w+)$/, '.webp');
+    }
+    
+    return src;
   });
+
+  // 图片加载失败处理
+  const handleImageError = (event: Event) => {
+    const img = event.target as HTMLImageElement;
+    // 回退到原始图片
+    img.src = props.src;
+  };
 
   onMounted(() => {
     window.addEventListener('resize', handleResize);
+    // 检查WebP支持
+    checkWebPSupport();
   });
 
   // 暴露计算属性给父组件
@@ -73,6 +113,7 @@
     :loading="lazy ? 'lazy' : 'eager'"
     :decoding="priority ? 'sync' : 'async'"
     :fetchpriority="priority ? 'high' : 'auto'"
+    @error="handleImageError"
   />
 </template>
 

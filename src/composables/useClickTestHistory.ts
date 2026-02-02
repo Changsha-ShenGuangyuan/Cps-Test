@@ -19,7 +19,8 @@ export function useClickTestHistory(testType: string = 'clickTest') {
 
   // 从localStorage加载历史记录
   const loadHistory = () => {
-    const saved = localStorage.getItem(`${testType}History`);
+    const key = `${testType}History`;
+    const saved = localStorage.getItem(key);
     if (saved) {
       const loaded = JSON.parse(saved);
       // 移除可能存在的description字段，确保数据结构一致
@@ -38,7 +39,8 @@ export function useClickTestHistory(testType: string = 'clickTest') {
 
   // 保存历史记录到localStorage
   const saveHistory = () => {
-    localStorage.setItem(`${testType}History`, JSON.stringify(historyRecords.value));
+    const key = `${testType}History`;
+    localStorage.setItem(key, JSON.stringify(historyRecords.value));
   };
 
   // 添加新的历史记录

@@ -11,7 +11,6 @@
 
   // 导入图标资源
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
-  const historyIconUrlRelative = new URL('../assets/icons/history.png', import.meta.url).href;
 
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
@@ -509,7 +508,7 @@
           <div class="history-header">
             <h3>
               <img
-                v-lazy="historyIconUrl"
+                :src="historyIconUrl"
                 width="30"
                 height="30"
                 :alt="t('historyIconAlt')"
@@ -563,17 +562,17 @@
       <div v-if="isDesktop" class="history-sidebar">
         <!-- 历史记录标题 -->
         <div class="history-header">
-          <h3>
-            <img
-              v-lazy="historyIconUrlRelative"
-              width="30"
-              height="30"
-              :alt="t('historyIconAlt')"
-              class="history-icon"
-            />
-            {{ t('history') }}
-          </h3>
-        </div>
+            <h3>
+              <img
+                :src="historyIconUrl"
+                width="30"
+                height="30"
+                :alt="t('historyIconAlt')"
+                class="history-icon"
+              />
+              {{ t('history') }}
+            </h3>
+          </div>
 
         <div class="history-list">
           <div v-if="filteredHistory.length === 0" class="no-history">

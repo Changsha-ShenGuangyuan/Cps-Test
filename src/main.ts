@@ -4,52 +4,43 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { createHead } from '@vueuse/head';
-import VueLazyload from 'vue-lazyload';
 import i18n from './i18n';
 
-const app = createApp(App);
-const head = createHead();
+// 延迟初始化函数，确保DOM已经解析完成
+function initApp() {
+  const app = createApp(App);
+  const head = createHead();
 
-// 全局错误处理（简化版）
-if (import.meta.env.DEV) {
-  app.config.errorHandler = (err) => {
-    console.error('全局错误捕获:', err);
-  };
-}
+  // 简化应用初始化，确保插件按正确顺序加载
+  app.use(router);
+  app.use(head);
 
-// 优化VueLazyload配置
-app.use(VueLazyload, {
-  preLoad: 1.2,
-  error: '/logo.png',
-  loading: '/logo.png',
-  attempt: 1,
-  silent: true,
-});
-
-app.use(router);
-app.use(head);
-
-// 初始化应用
-async function initApp() {
-  try {
-    // 等待语言资源加载完成
-    await import('./i18n').then(async (module) => {
+  // 初始化语言资源并挂载应用
+  import('./i18n').then(async (module) => {
+    try {
       // 先初始化语言资源
       await module.initLanguage();
-    });
-
-    // 然后使用i18n插件
+    } catch (error) {
+      console.error('初始化语言资源失败:', error);
+    } finally {
+      // 无论语言初始化是否成功，都使用i18n插件
+      app.use(i18n);
+      // 挂载应用
+      app.mount('#app');
+    }
+  }).catch((error) => {
+    console.error('加载i18n模块失败:', error);
+    // 即使加载失败也要挂载应用
     app.use(i18n);
-
-    // 最后挂载应用
     app.mount('#app');
-  } catch (error) {
-    console.error('初始化应用失败:', error);
-    // 即使失败也要挂载应用，确保网站能正常访问
-    app.use(i18n);
-    app.mount('#app');
-  }
+  });
 }
 
-// 启动应用初始化
-initApp();
+// 检查DOM是否已经解析完成
+if (document.readyState === 'loading') {
+  // 如果DOM还在加载中，等待DOMContentLoaded事件
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  // 如果DOM已经加载完成，直接初始化
+  initApp();
+}

@@ -18,7 +18,7 @@
   const loadComposables = async () => {
     if (!useClickTestGame || !useClickTestHistory || !useRippleEffect) {
       const { useClickTestGame: gameComposable } = await import('../composables/useClickTestGame');
-      const { useClickTestHistory: historyComposable } =
+      const { useClickTestHistory: historyComposable } = 
         await import('../composables/useClickTestHistory');
       const { useRippleEffect: rippleComposable } = await import('../composables/useRippleEffect');
       useClickTestGame = gameComposable;
@@ -27,8 +27,11 @@
     }
   };
 
-  // 导入图标资源
+  // 导入图标资源（静态数据）
   const historyIconUrl = new URL('@/assets/icons/history.png', import.meta.url).href;
+
+  // 支持的测试时间数组（静态数据）
+  const supportedTimes = [1, 2, 5, 10, 15, 30, 60];
 
   // 响应式变量：屏幕尺寸
   const isDesktop = ref(window.innerWidth >= 1201);
@@ -52,9 +55,6 @@
 
   // 路由相关
   const route = useRoute(); // 获取路由实例
-
-  // 支持的测试时间数组
-  const supportedTimes = [1, 2, 5, 10, 15, 30, 60];
 
   // 路由参数：从URL中获取时间参数
   const routeTime = computed(() => route.params.time);
@@ -115,24 +115,27 @@
   let clearRipples: any = null;
 
   // 游戏状态和方法
-  const isPlaying = ref(false);
-  const isGameOver = ref(false);
-  const clicks = ref(0);
-  const cps = ref(0);
-  const elapsedTime = ref(0);
-  const showResultModal = ref(false);
-  const selectedMouseButton = ref(0);
-  const isTimeUp = ref(false);
-  const currentCps = ref(0);
+  const gameState = ref({
+    isPlaying: false,
+    isGameOver: false,
+    clicks: 0,
+    cps: 0,
+    elapsedTime: 0,
+    showResultModal: false,
+    selectedMouseButton: 0,
+    isTimeUp: false,
+    currentCps: 0
+  });
 
   // 历史记录相关
   let addHistoryRecord: any = null;
-  let getFilteredHistory: any = null;
+  const getFilteredHistory = ref<any>(null);
+  let historyInstance: any = null;
 
   // 计算属性：根据当前测试时长筛选历史记录
   const filteredHistory = computed(() => {
-    if (getFilteredHistory) {
-      return getFilteredHistory(testTime.value);
+    if (getFilteredHistory.value) {
+      return getFilteredHistory.value(testTime.value);
     }
     return [];
   });
@@ -154,17 +157,17 @@
     }
 
     // 同步游戏状态到本地ref
-    const syncGameState = () => {
-      isPlaying.value = gameInstance.isPlaying.value;
-      isGameOver.value = gameInstance.isGameOver.value;
-      clicks.value = gameInstance.clicks.value;
-      cps.value = gameInstance.cps.value;
-      elapsedTime.value = gameInstance.elapsedTime.value;
-      showResultModal.value = gameInstance.showResultModal.value;
-      selectedMouseButton.value = gameInstance.selectedMouseButton.value;
-      isTimeUp.value = gameInstance.isTimeUp.value;
-      currentCps.value = gameInstance.currentCps.value;
-    };
+  const syncGameState = () => {
+    gameState.value.isPlaying = gameInstance.isPlaying.value;
+    gameState.value.isGameOver = gameInstance.isGameOver.value;
+    gameState.value.clicks = gameInstance.clicks.value;
+    gameState.value.cps = gameInstance.cps.value;
+    gameState.value.elapsedTime = gameInstance.elapsedTime.value;
+    gameState.value.showResultModal = gameInstance.showResultModal.value;
+    gameState.value.selectedMouseButton = gameInstance.selectedMouseButton.value;
+    gameState.value.isTimeUp = gameInstance.isTimeUp.value;
+    gameState.value.currentCps = gameInstance.currentCps.value;
+  };
 
     // 初始同步
     syncGameState();
@@ -172,23 +175,23 @@
     // 监听游戏结束状态变化，实时更新
     watch(
       () => gameInstance.isGameOver.value,
-      async (newValue) => {
-        isGameOver.value = newValue;
-        // 当游戏结束时，保存历史记录
-        if (newValue) {
-          await endGame();
-        }
+      (newValue) => {
+        gameState.value.isGameOver = newValue;
       }
     );
 
     // 监听结果弹窗状态变化，实时更新
     watch(
       () => gameInstance.showResultModal.value,
-      (newValue) => {
-        showResultModal.value = newValue;
+      async (newValue) => {
+        gameState.value.showResultModal = newValue;
         // 当结果弹窗显示时，同步所有状态，确保cps值正确
         if (newValue) {
           syncGameState();
+          // 当结果弹窗显示时，保存历史记录
+          if (addHistoryRecord) {
+            addHistoryRecord(testTime.value, gameInstance.clicks.value, gameInstance.cps.value);
+          }
         }
       }
     );
@@ -197,7 +200,7 @@
     watch(
       () => gameInstance.elapsedTime.value,
       (newValue) => {
-        elapsedTime.value = newValue;
+        gameState.value.elapsedTime = newValue;
       }
     );
 
@@ -205,7 +208,7 @@
     watch(
       () => gameInstance.currentCps.value,
       (newValue) => {
-        currentCps.value = newValue;
+        gameState.value.currentCps = newValue;
       }
     );
 
@@ -213,7 +216,7 @@
     watch(
       () => gameInstance.isPlaying.value,
       (newValue) => {
-        isPlaying.value = newValue;
+        gameState.value.isPlaying = newValue;
       }
     );
 
@@ -221,7 +224,7 @@
     watch(
       () => gameInstance.clicks.value,
       (newValue) => {
-        clicks.value = newValue;
+        gameState.value.clicks = newValue;
       }
     );
   };
@@ -229,10 +232,11 @@
   // 初始化历史记录
   const initHistory = async () => {
     await loadComposables();
-    const { addHistoryRecord: addRecord, filteredHistory: getFiltered } =
-      useClickTestHistory('clickTest');
-    addHistoryRecord = addRecord;
-    getFilteredHistory = getFiltered;
+    if (useClickTestHistory) {
+      historyInstance = useClickTestHistory('clickTest');
+      addHistoryRecord = historyInstance.addHistoryRecord;
+      getFilteredHistory.value = historyInstance.filteredHistory;
+    }
   };
 
   // 组件挂载时初始化
@@ -252,10 +256,10 @@
     if (gameInstance) {
       const result = gameInstance.handleClick(button);
       // 同步游戏状态到本地ref
-      isPlaying.value = gameInstance.isPlaying.value;
-      clicks.value = gameInstance.clicks.value;
-      currentCps.value = gameInstance.currentCps.value;
-      elapsedTime.value = gameInstance.elapsedTime.value;
+      gameState.value.isPlaying = gameInstance.isPlaying.value;
+      gameState.value.clicks = gameInstance.clicks.value;
+      gameState.value.currentCps = gameInstance.currentCps.value;
+      gameState.value.elapsedTime = gameInstance.elapsedTime.value;
       return result;
     }
     return false;
@@ -265,15 +269,15 @@
     if (gameInstance) {
       gameInstance.resetGame();
       // 同步状态
-      isPlaying.value = gameInstance.isPlaying.value;
-      isGameOver.value = gameInstance.isGameOver.value;
-      clicks.value = gameInstance.clicks.value;
-      cps.value = gameInstance.cps.value;
-      elapsedTime.value = gameInstance.elapsedTime.value;
-      showResultModal.value = gameInstance.showResultModal.value;
-      selectedMouseButton.value = gameInstance.selectedMouseButton.value;
-      isTimeUp.value = gameInstance.isTimeUp.value;
-      currentCps.value = gameInstance.currentCps.value;
+      gameState.value.isPlaying = gameInstance.isPlaying.value;
+      gameState.value.isGameOver = gameInstance.isGameOver.value;
+      gameState.value.clicks = gameInstance.clicks.value;
+      gameState.value.cps = gameInstance.cps.value;
+      gameState.value.elapsedTime = gameInstance.elapsedTime.value;
+      gameState.value.showResultModal = gameInstance.showResultModal.value;
+      gameState.value.selectedMouseButton = gameInstance.selectedMouseButton.value;
+      gameState.value.isTimeUp = gameInstance.isTimeUp.value;
+      gameState.value.currentCps = gameInstance.currentCps.value;
     }
     // 检查clearRipples是否已初始化
     if (clearRipples) {
@@ -281,38 +285,27 @@
     }
   };
 
-  const endGame = async () => {
-    if (gameInstance) {
-      // 检查游戏是否已经结束
-      if (!gameInstance.isGameOver.value) {
-        // 游戏还没有结束，调用gameInstance.endGame()函数
-        const result = gameInstance.endGame();
-        if (result && addHistoryRecord) {
-          addHistoryRecord(result.testTime, result.clicks, result.cps);
-        }
-        return result;
-      } else {
-        // 游戏已经结束，保存历史记录
-        if (addHistoryRecord) {
-          addHistoryRecord(testTime.value, gameInstance.clicks.value, gameInstance.cps.value);
-        }
-        // 返回结果
-        return {
-          clicks: gameInstance.clicks.value,
-          cps: gameInstance.cps.value,
-          testTime: testTime.value,
-        };
-      }
-    }
-    return null;
-  };
-
   // 选择鼠标按键
   const selectMouseButton = (button: number) => {
     if (gameInstance) {
       gameInstance.selectMouseButton(button);
-      selectedMouseButton.value = gameInstance.selectedMouseButton.value;
+      gameState.value.selectedMouseButton = gameInstance.selectedMouseButton.value;
     }
+  };
+
+  // 统一的点击处理函数
+  const processClick = (x: number, y: number, button: number = 0) => {
+    // 处理游戏点击逻辑
+    const clicked = handleGameClick(button);
+
+    // 如果点击有效，添加涟漪特效
+    if (clicked) {
+      // 检查addRipple是否已初始化
+      if (addRipple) {
+        addRipple(x, y);
+      }
+    }
+    return clicked;
   };
 
   // 点击事件处理函数
@@ -328,16 +321,27 @@
       y = event.clientY - rect.top;
     }
 
-    // 处理游戏点击逻辑
-    const clicked = handleGameClick(event.button);
+    // 调用统一的点击处理函数
+    return processClick(x, y, event.button);
+  };
 
-    // 如果点击有效，添加涟漪特效
-    if (clicked) {
-      // 检查addRipple是否已初始化
-      if (addRipple) {
-        addRipple(x, y);
+  // 触摸事件处理函数
+  const handleTouch = (event: TouchEvent) => {
+    // 获取触摸位置相对于点击区域的坐标
+    let x = 0;
+    let y = 0;
+
+    if (clickAreaRef.value && event.touches.length > 0) {
+      const rect = clickAreaRef.value.getBoundingClientRect();
+      const touch = event.touches[0];
+      if (touch) {
+        x = touch.clientX - rect.left;
+        y = touch.clientY - rect.top;
       }
     }
+
+    // 调用统一的点击处理函数（默认使用左键）
+    return processClick(x, y, 0);
   };
 
   // 组件挂载时添加事件监听
@@ -369,18 +373,18 @@
         <div class="stats-cards">
           <div class="stat-card timer-card">
             <div class="stat-value">
-              {{ !isPlaying && clicks === 0 ? 0 : elapsedTime.toFixed(3) }}
+              {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.elapsedTime.toFixed(3) }}
             </div>
             <div class="stat-label">{{ t('timer') }}</div>
           </div>
           <div class="stat-card click-rate-card">
             <div class="stat-value">
-              {{ !isPlaying && clicks === 0 ? 0 : currentCps.toFixed(2) }}
+              {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.currentCps.toFixed(2) }}
             </div>
             <div class="stat-label">{{ t('clickPerSecond') }}</div>
           </div>
           <div class="stat-card score-card">
-            <div class="stat-value">{{ clicks }}</div>
+            <div class="stat-value">{{ gameState.clicks }}</div>
             <div class="stat-label">{{ t('score') }}</div>
           </div>
         </div>
@@ -393,7 +397,7 @@
               v-for="option in mouseButtonOptions"
               :key="option.value"
               class="button-option"
-              :class="{ active: selectedMouseButton === option.value }"
+              :class="{ active: gameState.selectedMouseButton === option.value }"
               @click="selectMouseButton(option.value)"
             >
               <span>{{ option.label }}</span>
@@ -405,9 +409,12 @@
         <div
           ref="clickAreaRef"
           class="click-area"
-          :class="{ playing: isPlaying, 'time-up': isTimeUp }"
+          :class="{ playing: gameState.isPlaying, 'time-up': gameState.isTimeUp }"
           @click="(e) => handleClick(e)"
           @contextmenu.prevent="(e) => handleClick(e)"
+          @touchstart.prevent="(e) => handleTouch(e)"
+          @touchmove.prevent
+          @touchend.prevent
         >
           <!-- 涟漪特效容器 -->
           <div class="ripple-container">
@@ -422,7 +429,7 @@
             ></div>
           </div>
 
-          <div v-if="!isPlaying" class="start-text">{{ t('clickHere') }} {{ t('startGame') }}</div>
+          <div v-if="!gameState.isPlaying" class="start-text">{{ t('clickHere') }} {{ t('startGame') }}</div>
         </div>
 
         <!-- 相关测试推荐组件 -->
@@ -524,9 +531,9 @@
   <!-- 结果弹窗组件 -->
   <component
     :is="ResultModal"
-    :visible="showResultModal"
+    :visible="gameState.showResultModal"
     :type="'clickTest'"
-    :cps="cps"
+    :cps="gameState.cps"
     :time="testTime"
     @close="resetGame"
   />
@@ -894,14 +901,11 @@
     0% {
       width: 0px;
       height: 0px;
-      opacity: 0.9;
-    }
-    50% {
-      opacity: 0.9;
+      opacity: 0.8;
     }
     100% {
-      width: 500px;
-      height: 500px;
+      width: 400px;
+      height: 400px;
       opacity: 0;
     }
   }
@@ -1064,35 +1068,55 @@
     .history-sidebar {
       width: 100%;
       max-width: 100%;
-      margin: 20px auto 0;
-      height: clamp(250px, 40vh, 300px);
+      margin: 16px 0 0;
+      height: 280px;
     }
 
     .faq-section {
-      margin-top: 20px;
+      margin-top: 16px;
     }
 
     /* 点击区域优化 */
     .click-area {
-      height: clamp(200px, 40vh, 300px);
-      font-size: clamp(18px, 4vw, 20px);
-      width: clamp(95%, 98vw, 98%);
+      height: 250px;
+      font-size: 18px;
+      width: 98%;
+      border-radius: 12px;
     }
 
     /* 鼠标按键选择器移动端适配 */
     .mouse-button-selector {
-      margin: clamp(10px, 2vw, 15px) 0;
-      padding: clamp(8px, 2vw, 12px);
+      margin: 10px 0;
+      padding: 10px;
     }
 
     .mouse-button-selector h3 {
-      font-size: clamp(14px, 3vw, 16px);
-      margin-bottom: clamp(8px, 2vw, 12px);
+      font-size: 14px;
+      margin-bottom: 8px;
     }
 
     .button-option {
-      padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
-      font-size: clamp(12px, 2.5vw, 14px);
+      padding: 8px 12px;
+      font-size: 12px;
+      transition: all 0.1s ease;
+    }
+
+    /* 简化移动端动画效果 */
+    .ripple {
+      animation: ripple-animation 400ms ease-out forwards;
+    }
+
+    @keyframes ripple-animation {
+      0% {
+        width: 0px;
+        height: 0px;
+        opacity: 0.7;
+      }
+      100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+      }
     }
   }
 </style>
