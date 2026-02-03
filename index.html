@@ -12,11 +12,30 @@
     <!-- 只预加载移动端首屏关键资源 -->
     <link rel="preload" href="/logo.png" as="image" type="image/png" crossorigin>
     
+    <!-- 移动端优化：DNS预解析 -->
+    <link rel="dns-prefetch" href="https://cpstestgo.com">
+    <link rel="dns-prefetch" href="https://www.cpstestgo.com">
+    
+    <!-- 生产环境CSS预加载 -->
+    <script>
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = '/assets/css/main.css';
+        link.as = 'style';
+        link.onload = function() {
+          this.onload = null;
+          this.rel = 'stylesheet';
+        };
+        document.head.appendChild(link);
+      }
+    </script>
+    
     <!-- 图标优化：只保留必要的图标链接 -->
     <link rel="icon" type="image/svg+xml" href="/logo.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     
-    <!-- 移动端首屏关键CSS内联 - 减少CSS请求 -->
+    <!-- 首屏关键CSS内联 - 减少CSS请求 -->
     <style>
       /* 基础样式重置 */
       * {
@@ -27,7 +46,7 @@
         user-select: none;
       }
       
-      /* 移动端基础样式 */
+      /* 基础样式 */
       body {
         min-width: 320px;
         min-height: 100vh;
@@ -37,45 +56,283 @@
         line-height: 1.5;
         font-weight: 400;
         color: rgba(255, 255, 255, 0.87);
-        background-color: #242424;
+        background-color: #1a1a1a;
         font-synthesis: none;
         text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
       
-      /* 移动端容器样式 */
+      /* 容器样式 */
       #app {
-        width: 100%;
+        display: flex;
+        flex-direction: column;
         min-height: 100vh;
-        text-align: left;
-        overflow-x: hidden;
+        background-color: #1a1a1a;
+        color: #ffffff;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       }
       
-      /* 移动端触摸优化 */
+      /* 触摸优化 */
       button, [role="button"] {
         touch-action: manipulation;
       }
       
-      /* 移动端导航栏优化 */
+      /* 顶部导航栏 */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #000000;
+        border-bottom: 1px solid #333;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 60px;
+        box-sizing: border-box;
+        transition: height 0.3s ease, padding 0.3s ease;
+      }
+      
+      /* 导航栏左侧区域 */
+      .header-left {
+        display: flex;
+        align-items: center;
+        flex: 1;
+      }
+      
+      /* Logo样式 */
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+      }
+      
+      .logo:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      .logo-image {
+        border-radius: 4px;
+        width: 32px;
+        height: 32px;
+      }
+      
+      .desktop-logo {
+        font-size: 18px;
+        font-weight: 600;
+        color: #4caf50;
+      }
+      
+      .mobile-logo {
+        font-size: 16px;
+        font-weight: 600;
+        color: #4caf50;
+      }
+      
+      /* 导航栏右侧区域 */
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      /* 主导航区域 */
+      .main-nav {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        justify-content: center;
+      }
+      
+      .main-nav-list {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 15px;
+      }
+      
+      .main-nav-item {
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        color: #cccccc;
+        font-size: 14px;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        letter-spacing: 0.2px;
+        text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+      }
+      
+      .main-nav-item:hover {
+        color: #4caf50;
+      }
+      
+      /* 汉堡菜单 */
+      .hamburger-menu {
+        display: none;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        margin-right: 10px;
+        z-index: 1002;
+        color: #ffffff;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        outline: none;
+      }
+      
+      /* 主内容区域 */
+      .main-content {
+        display: flex;
+        flex: 1;
+        margin-top: 60px;
+        min-height: calc(100vh - 60px);
+        transition: margin-top 0.3s ease;
+      }
+      
+      /* 路由视图内容区域 */
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        margin-left: 280px;
+        transition: margin-left 0.3s ease, padding 0.3s ease;
+      }
+      
+      /* 页脚样式 */
+      .footer {
+        background-color: #000000;
+        border-top: 1px solid #333;
+        padding: 20px 0;
+        margin-top: auto;
+        text-align: center;
+        font-size: 14px;
+        color: #888;
+        min-height: 80px;
+        display: flex;
+        align-items: center;
+        transition: padding 0.3s ease, font-size 0.3s ease;
+      }
+      
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        width: 100%;
+      }
+      
+      /* 移动端适配 */
       @media (max-width: 1000px) {
+        /* 导航栏 */
         .header {
           padding: 10px 15px !important;
           height: 50px !important;
           background-color: #000000 !important;
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          z-index: 1000 !important;
         }
         
+        /* 主导航 */
         .main-nav {
           display: none !important;
         }
         
+        /* 汉堡菜单 */
         .hamburger-menu {
           display: block !important;
+          background: transparent !important;
+          border: none !important;
+          cursor: pointer !important;
+          padding: 8px !important;
+          margin-right: 10px !important;
+          z-index: 1002 !important;
+          color: #ffffff !important;
         }
         
+        /* 内容区域 */
         .content {
           margin-left: 0 !important;
           padding: 15px !important;
+          flex: 1 !important;
+          overflow-y: auto !important;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+          margin-top: 50px !important;
+          min-height: calc(100vh - 50px) !important;
+          display: flex !important;
+          flex: 1 !important;
+        }
+        
+        /* Logo */
+        .header-left .logo {
+          display: none !important;
+        }
+        
+        /* 页脚 */
+        .footer {
+          padding: 15px 0 !important;
+          font-size: 13px !important;
+          background-color: #000000 !important;
+          border-top: 1px solid #333 !important;
+        }
+        
+        .footer-content {
+          padding: 0 15px !important;
+          text-align: center !important;
+        }
+        
+        /* 移动端触摸优化 */
+        button, [role="button"] {
+          touch-action: manipulation !important;
+          -webkit-tap-highlight-color: transparent !important;
+        }
+        
+        /* 移动端容器优化 */
+        #app {
+          min-height: 100vh !important;
+          overflow-x: hidden !important;
+        }
+        
+        /* 移动端滚动优化 */
+        body {
+          overflow-x: hidden !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+      }
+      
+      /* 桌面端适配 */
+      @media (min-width: 1001px) {
+        .desktop-logo {
+          display: inline;
+        }
+        
+        .mobile-logo {
+          display: none;
+        }
+        
+        .header-left .logo {
+          display: flex;
+        }
+        
+        .hamburger-menu {
+          display: none;
         }
       }
     </style>

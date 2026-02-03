@@ -381,6 +381,14 @@ export default defineConfig({
           if (id.includes('src/composables')) {
             return 'composables';
           }
+          // 优化CSS相关的代码分割
+          if (id.includes('src/components')) {
+            // 更精确地匹配ClickTest相关组件
+            if (id.includes('ClickTest') || id.includes('click-test') || id.includes('Click')) {
+              return 'components-clicktest';
+            }
+            return 'components';
+          }
         },
         // 优化chunk命名
         chunkFileNames: 'assets/js/[name]-[hash].js',
@@ -407,7 +415,7 @@ export default defineConfig({
     // 优化CSS输出
     postcss: {
       plugins: [
-        // 可以添加PostCSS插件来进一步优化CSS
+        // 添加CSS优化插件
         {
           postcssPlugin: 'custom-plugin',
           AtRule: {
