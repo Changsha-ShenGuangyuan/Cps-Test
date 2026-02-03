@@ -15,21 +15,7 @@
     <!-- 移动端优化：DNS预解析 -->
     <link rel="dns-prefetch" href="https://cpstestgo.com">
     <link rel="dns-prefetch" href="https://www.cpstestgo.com">
-    
-    <!-- 生产环境CSS预加载 -->
-    <script>
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.href = '/assets/css/main.css';
-        link.as = 'style';
-        link.onload = function() {
-          this.onload = null;
-          this.rel = 'stylesheet';
-        };
-        document.head.appendChild(link);
-      }
-    </script>
+  
     
     <!-- 图标优化：只保留必要的图标链接 -->
     <link rel="icon" type="image/svg+xml" href="/logo.png" />
