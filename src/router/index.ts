@@ -468,9 +468,8 @@ export const updateMetaTags = (to: any) => {
   // 完整标题格式：页面标题 - 网站名称（用于SEO和品牌推广）
   let fullPageTitle = to.name === 'Home' ? `${pageTitle}` : `${pageTitle} - CPSTestGo`;
   //强制刷新浏览器，导致网站名称丢失，查不出问题，暂时先做兼容
-  if(fullPageTitle === 'websiteName')  
-    fullPageTitle = 'Spacebar Clicker - CPSTestGo';
-  
+  if (fullPageTitle === 'websiteName') fullPageTitle = 'Spacebar Clicker - CPSTestGo';
+
   document.title = fullPageTitle;
 
   // 设置meta描述 - 根据路由参数动态生成

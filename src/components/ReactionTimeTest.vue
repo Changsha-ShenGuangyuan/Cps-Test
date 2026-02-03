@@ -560,17 +560,17 @@
       <!-- 历史记录区域 - 桌面端显示在右侧 -->
       <div v-if="isDesktop" class="history-sidebar">
         <div class="history-header">
-            <h3>
-              <img
-                :src="historyIconUrl"
-                width="30"
-                height="30"
-                :alt="t('historyIconAlt')"
-                class="history-icon"
-              />
-              {{ t('history') }}
-            </h3>
-          </div>
+          <h3>
+            <img
+              :src="historyIconUrl"
+              width="30"
+              height="30"
+              :alt="t('historyIconAlt')"
+              class="history-icon"
+            />
+            {{ t('history') }}
+          </h3>
+        </div>
 
         <div class="history-list">
           <div v-if="historyRecords.length === 0" class="no-history">

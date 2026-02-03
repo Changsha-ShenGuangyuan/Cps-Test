@@ -774,9 +774,9 @@ export default {
     yourCps: '你的CPS',
     friendCps: '好友CPS',
     vs: 'VS',
-    resultBetter: '✅ 你赢了！比好友快 {difference} CPS',
-    resultWorse: '❌ 好友赢了！比你快 {difference} CPS',
-    resultEqual: '🤝 平局！你们的CPS完全相同',
+    resultBetter: '你赢了！比好友快 {difference} CPS',
+    resultWorse: '好友赢了！比你快 {difference} CPS',
+    resultEqual: '平局！你们的CPS完全相同',
     // 不同CPS范围的描述
     slow: {
       desc1: '你的点击速度较慢，还需要多加练习！',

@@ -9,16 +9,73 @@
   // 懒加载相关测试推荐组件
   const RelatedTests = defineAsyncComponent(() => import('./RelatedTests.vue'));
 
+  // TypeScript 类型定义
+  interface Ripple {
+    id: number;
+    x: number;
+    y: number;
+  }
+
+  interface GameState {
+    isPlaying: boolean;
+    isGameOver: boolean;
+    clicks: number;
+    cps: number;
+    elapsedTime: number;
+    showResultModal: boolean;
+    selectedMouseButton: number;
+    isTimeUp: boolean;
+    currentCps: number;
+  }
+
+  interface HistoryRecord {
+    id: number;
+    testTime: number;
+    clicks: number;
+    cps: number;
+    date: string;
+  }
+
+  interface RippleEffect {
+    ripples: any;
+    addRipple: (x: number, y: number) => number;
+    clearRipples: () => void;
+  }
+
+  interface ClickTestGame {
+    isPlaying: { value: boolean };
+    isGameOver: { value: boolean };
+    clicks: { value: number };
+    cps: { value: number };
+    elapsedTime: { value: number };
+    showResultModal: { value: boolean };
+    selectedMouseButton: { value: number };
+    isTimeUp: { value: boolean };
+    currentCps: { value: number };
+    handleClick: (button: number) => boolean;
+    resetGame: () => void;
+    selectMouseButton: (button: number) => void;
+  }
+
+  interface ClickTestHistory {
+    addHistoryRecord: (time: number, clicks: number, cps: number) => void;
+    filteredHistory: (time: number) => HistoryRecord[];
+  }
+
+  type UseClickTestGame = (time: number) => ClickTestGame;
+  type UseClickTestHistory = (testType: string) => ClickTestHistory;
+  type UseRippleEffect = () => RippleEffect;
+
   // 动态导入所有composable函数，避免在组件加载时立即加载
-  let useClickTestGame: any = null;
-  let useClickTestHistory: any = null;
-  let useRippleEffect: any = null;
+  let useClickTestGame: UseClickTestGame | null = null;
+  let useClickTestHistory: UseClickTestHistory | null = null;
+  let useRippleEffect: UseRippleEffect | null = null;
 
   // 懒加载composable函数
   const loadComposables = async () => {
     if (!useClickTestGame || !useClickTestHistory || !useRippleEffect) {
       const { useClickTestGame: gameComposable } = await import('../composables/useClickTestGame');
-      const { useClickTestHistory: historyComposable } = 
+      const { useClickTestHistory: historyComposable } =
         await import('../composables/useClickTestHistory');
       const { useRippleEffect: rippleComposable } = await import('../composables/useRippleEffect');
       useClickTestGame = gameComposable;
@@ -110,12 +167,12 @@
   const clickAreaRef = ref<HTMLElement | null>(null);
 
   // 涟漪效果相关
-  let ripples: any = null;
-  let addRipple: any = null;
-  let clearRipples: any = null;
+  let ripples: Ripple[] = [];
+  let addRipple: ((x: number, y: number) => void) | null = null;
+  let clearRipples: (() => void) | null = null;
 
   // 游戏状态和方法
-  const gameState = ref({
+  const gameState = ref<GameState>({
     isPlaying: false,
     isGameOver: false,
     clicks: 0,
@@ -124,109 +181,129 @@
     showResultModal: false,
     selectedMouseButton: 0,
     isTimeUp: false,
-    currentCps: 0
+    currentCps: 0,
   });
 
   // 历史记录相关
-  let addHistoryRecord: any = null;
-  const getFilteredHistory = ref<any>(null);
+  let addHistoryRecord: ((time: number, clicks: number, cps: number) => void) | null = null;
+  const getFilteredHistory = ref<((time: number) => HistoryRecord[]) | null>(null);
   let historyInstance: any = null;
 
+  // 虚拟滚动相关
+  const VISIBLE_ITEMS = 5;
+  const ITEM_HEIGHT = 60; // 每条历史记录的高度
+
   // 计算属性：根据当前测试时长筛选历史记录
-  const filteredHistory = computed(() => {
+  const filteredHistory = computed<HistoryRecord[]>(() => {
     if (getFilteredHistory.value) {
       return getFilteredHistory.value(testTime.value);
     }
     return [];
   });
 
+  // 计算属性：历史记录总高度（用于虚拟滚动）
+  const historyTotalHeight = computed(() => {
+    return filteredHistory.value.length * ITEM_HEIGHT;
+  });
+
+  // 计算属性：可见的历史记录（用于虚拟滚动）
+  const visibleHistory = computed(() => {
+    return filteredHistory.value.slice(0, VISIBLE_ITEMS);
+  });
+
   // 游戏方法
-  let gameInstance: any = null;
+  let gameInstance: ClickTestGame | null = null;
 
   // 初始化游戏实例
   const initGame = async (time: number) => {
     await loadComposables();
-    gameInstance = useClickTestGame(time);
+    
+    // 确保 useClickTestGame 不为 null
+    if (useClickTestGame) {
+      gameInstance = useClickTestGame(time);
 
-    // 初始化涟漪效果
-    if (useRippleEffect) {
-      const rippleEffects = useRippleEffect();
-      ripples = rippleEffects.ripples;
-      addRipple = rippleEffects.addRipple;
-      clearRipples = rippleEffects.clearRipples;
-    }
-
-    // 同步游戏状态到本地ref
-  const syncGameState = () => {
-    gameState.value.isPlaying = gameInstance.isPlaying.value;
-    gameState.value.isGameOver = gameInstance.isGameOver.value;
-    gameState.value.clicks = gameInstance.clicks.value;
-    gameState.value.cps = gameInstance.cps.value;
-    gameState.value.elapsedTime = gameInstance.elapsedTime.value;
-    gameState.value.showResultModal = gameInstance.showResultModal.value;
-    gameState.value.selectedMouseButton = gameInstance.selectedMouseButton.value;
-    gameState.value.isTimeUp = gameInstance.isTimeUp.value;
-    gameState.value.currentCps = gameInstance.currentCps.value;
-  };
-
-    // 初始同步
-    syncGameState();
-
-    // 监听游戏结束状态变化，实时更新
-    watch(
-      () => gameInstance.isGameOver.value,
-      (newValue) => {
-        gameState.value.isGameOver = newValue;
+      // 初始化涟漪效果
+      if (useRippleEffect) {
+        const rippleEffects = useRippleEffect();
+        ripples = rippleEffects.ripples;
+        addRipple = rippleEffects.addRipple;
+        clearRipples = rippleEffects.clearRipples;
       }
-    );
 
-    // 监听结果弹窗状态变化，实时更新
-    watch(
-      () => gameInstance.showResultModal.value,
-      async (newValue) => {
-        gameState.value.showResultModal = newValue;
-        // 当结果弹窗显示时，同步所有状态，确保cps值正确
-        if (newValue) {
-          syncGameState();
-          // 当结果弹窗显示时，保存历史记录
-          if (addHistoryRecord) {
-            addHistoryRecord(testTime.value, gameInstance.clicks.value, gameInstance.cps.value);
+      // 同步游戏状态到本地ref
+      const syncGameState = () => {
+        if (gameInstance) {
+          gameState.value.isPlaying = gameInstance.isPlaying.value;
+          gameState.value.isGameOver = gameInstance.isGameOver.value;
+          gameState.value.clicks = gameInstance.clicks.value;
+          gameState.value.cps = gameInstance.cps.value;
+          gameState.value.elapsedTime = gameInstance.elapsedTime.value;
+          gameState.value.showResultModal = gameInstance.showResultModal.value;
+          gameState.value.selectedMouseButton = gameInstance.selectedMouseButton.value;
+          gameState.value.isTimeUp = gameInstance.isTimeUp.value;
+          gameState.value.currentCps = gameInstance.currentCps.value;
+        }
+      };
+
+      // 初始同步
+      syncGameState();
+
+      // 监听游戏结束状态变化，实时更新
+      watch(
+        () => gameInstance?.isGameOver.value || false,
+        (newValue) => {
+          gameState.value.isGameOver = newValue;
+        }
+      );
+
+      // 监听结果弹窗状态变化，实时更新
+      watch(
+        () => gameInstance?.showResultModal.value || false,
+        async (newValue) => {
+          gameState.value.showResultModal = newValue;
+          // 当结果弹窗显示时，同步所有状态，确保cps值正确
+          if (newValue && gameInstance) {
+            syncGameState();
+            // 当结果弹窗显示时，保存历史记录
+            if (addHistoryRecord) {
+              addHistoryRecord(testTime.value, gameInstance.clicks.value, gameInstance.cps.value);
+            }
           }
         }
-      }
-    );
+      );
 
-    // 监听已用时间变化，实时更新
-    watch(
-      () => gameInstance.elapsedTime.value,
-      (newValue) => {
-        gameState.value.elapsedTime = newValue;
-      }
-    );
+      // 监听已用时间变化，实时更新
+      watch(
+        () => gameInstance?.elapsedTime.value || 0,
+        (newValue) => {
+          gameState.value.elapsedTime = newValue;
+        }
+      );
 
-    // 监听当前CPS变化，实时更新
-    watch(
-      () => gameInstance.currentCps.value,
-      (newValue) => {
-        gameState.value.currentCps = newValue;
-      }
-    );
+      // 监听当前CPS变化，实时更新
+      watch(
+        () => gameInstance?.currentCps.value || 0,
+        (newValue) => {
+          gameState.value.currentCps = newValue;
+        }
+      );
 
-    // 监听游戏进行状态变化，实时更新
-    watch(
-      () => gameInstance.isPlaying.value,
-      (newValue) => {
-        gameState.value.isPlaying = newValue;
-      }
-    );
+      // 监听游戏进行状态变化，实时更新
+      watch(
+        () => gameInstance?.isPlaying.value || false,
+        (newValue) => {
+          gameState.value.isPlaying = newValue;
+        }
+      );
 
-    // 监听点击次数变化，实时更新
-    watch(
-      () => gameInstance.clicks.value,
-      (newValue) => {
-        gameState.value.clicks = newValue;
-      }
-    );
+      // 监听点击次数变化，实时更新
+      watch(
+        () => gameInstance?.clicks.value || 0,
+        (newValue) => {
+          gameState.value.clicks = newValue;
+        }
+      );
+    }
   };
 
   // 初始化历史记录
@@ -234,8 +311,10 @@
     await loadComposables();
     if (useClickTestHistory) {
       historyInstance = useClickTestHistory('clickTest');
-      addHistoryRecord = historyInstance.addHistoryRecord;
-      getFilteredHistory.value = historyInstance.filteredHistory;
+      if (historyInstance) {
+        addHistoryRecord = historyInstance.addHistoryRecord;
+        getFilteredHistory.value = historyInstance.filteredHistory;
+      }
     }
   };
 
@@ -293,16 +372,37 @@
     }
   };
 
+  // 处理键盘事件的函数
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      // 使用点击区域的中心作为默认点击位置
+      const x = clickAreaRef.value ? clickAreaRef.value.offsetWidth / 2 : 0;
+      const y = clickAreaRef.value ? clickAreaRef.value.offsetHeight / 2 : 0;
+      processClick(x, y, gameState.value.selectedMouseButton);
+    }
+  };
+
+  // 涟漪效果性能优化：限制同时存在的涟漪数量
+  const MAX_RIPPLES = 10;
+  let rippleCount = 0;
+
   // 统一的点击处理函数
   const processClick = (x: number, y: number, button: number = 0) => {
     // 处理游戏点击逻辑
     const clicked = handleGameClick(button);
 
     // 如果点击有效，添加涟漪特效
-    if (clicked) {
+    if (clicked && rippleCount < MAX_RIPPLES) {
       // 检查addRipple是否已初始化
       if (addRipple) {
         addRipple(x, y);
+        rippleCount++;
+        
+        // 300ms后减少涟漪计数，允许新的涟漪生成
+        setTimeout(() => {
+          rippleCount = Math.max(0, rippleCount - 1);
+        }, 300);
       }
     }
     return clicked;
@@ -325,8 +425,12 @@
     return processClick(x, y, event.button);
   };
 
-  // 触摸事件处理函数
+  // 触摸事件处理函数 - 优化移动端体验
   const handleTouch = (event: TouchEvent) => {
+    // 防止触摸事件的默认行为，避免滚动和缩放干扰
+    event.preventDefault();
+    event.stopPropagation();
+
     // 获取触摸位置相对于点击区域的坐标
     let x = 0;
     let y = 0;
@@ -335,8 +439,13 @@
       const rect = clickAreaRef.value.getBoundingClientRect();
       const touch = event.touches[0];
       if (touch) {
+        // 优化触摸坐标计算，确保在不同设备和屏幕方向下都能准确计算
         x = touch.clientX - rect.left;
         y = touch.clientY - rect.top;
+        
+        // 限制坐标范围，确保触摸位置在点击区域内
+        x = Math.max(0, Math.min(x, rect.width));
+        y = Math.max(0, Math.min(y, rect.height));
       }
     }
 
@@ -368,29 +477,35 @@
       <!-- 左侧游戏区域 -->
       <div class="game-area">
         <!-- 标题栏 -->
-        <h2 class="game-title">{{ testTime }} {{ t('secClickTest') }}</h2>
+        <h2 class="game-title" aria-label="{{ testTime }} {{ t('secClickTest') }}">{{ testTime }} {{ t('secClickTest') }}</h2>
         <!-- 统计卡片 -->
-        <div class="stats-cards">
-          <div class="stat-card timer-card">
-            <div class="stat-value">
-              {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.elapsedTime.toFixed(3) }}
+        <div class="stats-cards" role="group" aria-label="{{ t('gameStats') }}">
+          <div class="stat-card timer-card" role="status" aria-live="polite">
+            <div class="stat-value" aria-label="{{ t('timer') }}: {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.elapsedTime.toFixed(3) }} {{ t('seconds') }}">
+              {{ 
+                !gameState.isPlaying && gameState.clicks === 0
+                  ? 0
+                  : gameState.elapsedTime.toFixed(3)
+              }}
             </div>
             <div class="stat-label">{{ t('timer') }}</div>
           </div>
-          <div class="stat-card click-rate-card">
-            <div class="stat-value">
-              {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.currentCps.toFixed(2) }}
+          <div class="stat-card click-rate-card" role="status" aria-live="polite">
+            <div class="stat-value" aria-label="{{ t('clickPerSecond') }}: {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.currentCps.toFixed(2) }}">
+              {{ 
+                !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.currentCps.toFixed(2)
+              }}
             </div>
             <div class="stat-label">{{ t('clickPerSecond') }}</div>
           </div>
-          <div class="stat-card score-card">
-            <div class="stat-value">{{ gameState.clicks }}</div>
+          <div class="stat-card score-card" role="status" aria-live="polite">
+            <div class="stat-value" aria-label="{{ t('score') }}: {{ gameState.clicks }}">{{ gameState.clicks }}</div>
             <div class="stat-label">{{ t('score') }}</div>
           </div>
         </div>
 
         <!-- 鼠标按键选择器 -->
-        <div class="mouse-button-selector">
+        <div class="mouse-button-selector" role="radiogroup" aria-label="{{ t('selectMouseButton') }}">
           <h3>{{ t('selectMouseButton') }}</h3>
           <div class="button-options">
             <button
@@ -399,6 +514,10 @@
               class="button-option"
               :class="{ active: gameState.selectedMouseButton === option.value }"
               @click="selectMouseButton(option.value)"
+              role="radio"
+              :aria-checked="gameState.selectedMouseButton === option.value"
+              :aria-label="option.label"
+              tabindex="0"
             >
               <span>{{ option.label }}</span>
             </button>
@@ -415,6 +534,11 @@
           @touchstart.prevent="(e) => handleTouch(e)"
           @touchmove.prevent
           @touchend.prevent
+          role="button"
+          :aria-label="!gameState.isPlaying ? t('clickHere') + ' ' + t('startGame') : t('clickToPlay')"
+          :aria-pressed="gameState.isPlaying"
+          tabindex="0"
+          @keydown="handleKeyDown"
         >
           <!-- 涟漪特效容器 -->
           <div class="ripple-container">
@@ -429,7 +553,9 @@
             ></div>
           </div>
 
-          <div v-if="!gameState.isPlaying" class="start-text">{{ t('clickHere') }} {{ t('startGame') }}</div>
+          <div v-if="!gameState.isPlaying" class="start-text">
+            {{ t('clickHere') }} {{ t('startGame') }}
+          </div>
         </div>
 
         <!-- 相关测试推荐组件 -->
@@ -450,22 +576,31 @@
             </h3>
           </div>
 
-          <div class="history-list">
+          <div 
+            ref="historyContainerRef" 
+            class="history-list"
+            :style="{ maxHeight: historyTotalHeight + 'px' }"
+          >
             <div v-if="filteredHistory.length === 0" class="no-history">
               {{ t('noHistory') }}
             </div>
-            <div v-for="record in filteredHistory" :key="record.id" class="history-item">
-              <div class="history-item-content">
-                <div class="main-data">
-                  <span class="cps-value">{{ record.cps }}</span>
-                  <span class="unit">CPS</span>
+            <div v-else>
+              <div v-for="record in visibleHistory" :key="record.id" class="history-item">
+                <div class="history-item-content">
+                  <div class="main-data">
+                    <span class="cps-value">{{ record.cps }}</span>
+                    <span class="unit">CPS</span>
+                  </div>
+                  <div class="tags">
+                    <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
+                  </div>
+                  <div class="record-time">
+                    {{ record.date }}
+                  </div>
                 </div>
-                <div class="tags">
-                  <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
-                </div>
-                <div class="record-time">
-                  {{ record.date }}
-                </div>
+              </div>
+              <div v-if="filteredHistory.length > VISIBLE_ITEMS" class="history-more">
+                +{{ filteredHistory.length - VISIBLE_ITEMS }} {{ t('moreRecords') }}
               </div>
             </div>
           </div>
@@ -505,22 +640,31 @@
           </h3>
         </div>
 
-        <div class="history-list">
+        <div 
+          ref="historyContainerRef" 
+          class="history-list"
+          :style="{ maxHeight: historyTotalHeight + 'px' }"
+        >
           <div v-if="filteredHistory.length === 0" class="no-history">
             {{ t('noHistory') }}
           </div>
-          <div v-for="record in filteredHistory" :key="record.id" class="history-item">
-            <div class="history-item-content">
-              <div class="main-data">
-                <span class="cps-value">{{ record.cps }}</span>
-                <span class="unit">CPS</span>
+          <div v-else>
+            <div v-for="record in visibleHistory" :key="record.id" class="history-item">
+              <div class="history-item-content">
+                <div class="main-data">
+                  <span class="cps-value">{{ record.cps }}</span>
+                  <span class="unit">CPS</span>
+                </div>
+                <div class="tags">
+                  <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
+                </div>
+                <div class="record-time">
+                  {{ record.date }}
+                </div>
               </div>
-              <div class="tags">
-                <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
-              </div>
-              <div class="record-time">
-                {{ record.date }}
-              </div>
+            </div>
+            <div v-if="filteredHistory.length > VISIBLE_ITEMS" class="history-more">
+              +{{ filteredHistory.length - VISIBLE_ITEMS }} {{ t('moreRecords') }}
             </div>
           </div>
         </div>
@@ -667,6 +811,18 @@
     padding: 40px 10px;
     font-style: italic;
     font-size: 13px;
+  }
+
+  /* 更多历史记录提示 */
+  .history-more {
+    color: #4caf50;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-radius: 4px;
+    margin-top: 5px;
   }
 
   /* 历史记录项 */
@@ -894,6 +1050,7 @@
     height: 0px;
     opacity: 0.9;
     animation: ripple-animation 600ms ease-out forwards;
+    will-change: transform, opacity, width, height;
   }
 
   /* 涟漪动画 */
@@ -1001,6 +1158,7 @@
     overflow: hidden;
     box-shadow: none;
     outline: none;
+    will-change: transform, background-color, color, box-shadow;
   }
 
   .button-option::before {

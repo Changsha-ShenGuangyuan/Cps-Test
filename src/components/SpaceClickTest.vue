@@ -562,17 +562,17 @@
       <div v-if="isDesktop" class="history-sidebar">
         <!-- 历史记录标题 -->
         <div class="history-header">
-            <h3>
-              <img
-                :src="historyIconUrl"
-                width="30"
-                height="30"
-                :alt="t('historyIconAlt')"
-                class="history-icon"
-              />
-              {{ t('history') }}
-            </h3>
-          </div>
+          <h3>
+            <img
+              :src="historyIconUrl"
+              width="30"
+              height="30"
+              :alt="t('historyIconAlt')"
+              class="history-icon"
+            />
+            {{ t('history') }}
+          </h3>
+        </div>
 
         <div class="history-list">
           <div v-if="filteredHistory.length === 0" class="no-history">

@@ -1,15 +1,23 @@
 <script setup lang="ts">
-  import { ref, watch, onMounted, onUnmounted, computed, nextTick, defineAsyncComponent } from 'vue';
+  import {
+    ref,
+    watch,
+    onMounted,
+    onUnmounted,
+    computed,
+    nextTick,
+    defineAsyncComponent,
+  } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
   import { t, setLanguage, langState } from './i18n/index';
   // 导入ResponsiveImage组件（首屏关键组件）
   import ResponsiveImage from './components/ResponsiveImage.vue';
-  
+
   // 导入拆分的组件
   import LanguageSelector from './components/LanguageSelector.vue';
   import HistorySelector from './components/HistorySelector.vue';
   import MenuManager from './components/MenuManager.vue';
-  
+
   // 懒加载非首屏组件
   const Breadcrumb = defineAsyncComponent(() => import('./components/Breadcrumb.vue'));
   // 导入预加载服务
@@ -19,6 +27,8 @@
   import { iconManager } from './utils/iconManager';
   // 组件引用
   const historySelectorRef = ref<InstanceType<typeof HistorySelector> | null>(null);
+  const contentRef = ref<HTMLElement | null>(null);
+
 
   const websiteName = computed(() => t('websiteName'));
   const mobileWebsiteName = computed(() => t('websiteName').split(' - ')[0]);
@@ -26,6 +36,18 @@
   // 路由实例
   const router = useRouter();
   const route = useRoute();
+
+  // 节流函数，减少频繁触发
+  const throttle = (func: Function, delay: number) => {
+    let inThrottle = false;
+    return function(this: any, ...args: any[]) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => { inThrottle = false; }, delay);
+      }
+    };
+  };
 
   // 添加语言变化监听器，确保meta标签始终更新
   watch(
@@ -132,39 +154,47 @@
     iconManager.preloadCommonIcons();
 
     // 添加用户交互监听器，在用户首次交互后触发预加载
-    window.addEventListener('click', handleUserInteraction);
-    window.addEventListener('touchstart', handleUserInteraction);
+    window.addEventListener('click', handleUserInteraction, { once: true });
+    window.addEventListener('touchstart', handleUserInteraction, { once: true });
 
     // 组件卸载时移除事件监听
     onUnmounted(() => {
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('click', handleUserInteraction);
-      window.removeEventListener('touchstart', handleUserInteraction);
       if (removeRouterListener) {
         removeRouterListener();
       }
     });
   });
 
-  // 窗口大小改变时的处理函数
-  const handleResize = () => {
-    // 更新设备类型检测
-    isMobile.value = window.innerWidth <= 1000;
+  // 窗口大小改变时的处理函数（使用节流优化）
+  const handleResize = throttle(() => {
+    const width = window.innerWidth;
+    isMobile.value = width <= 1000;
+    
     // 当窗口宽度大于1000px时，自动关闭侧边栏
-    if (window.innerWidth > 1000) {
+    if (width > 1000) {
       closeSidebar();
     }
-  };
+  }, 200);
 
-  // 滚动到顶部函数
+  // 滚动到顶部函数（使用平滑滚动）
   const scrollToTop = () => {
-    // 简化滚动到顶部的实现
-    window.scrollTo(0, 0);
+    if (contentRef.value) {
+      contentRef.value.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
   };
 
   // 监听路由变化，更新当前路径并滚动到顶部
   watch(
-    () => route,
+    () => route.path,
     () => {
       // 路由变化时将内容区域滚动到顶部
       scrollToTop();
@@ -173,8 +203,7 @@
       nextTick(() => {
         // 菜单展开逻辑已移至MenuManager组件
       });
-    },
-    { deep: true }
+    }
   );
 
   // 导航到指定路由
@@ -185,16 +214,16 @@
     // 根据当前语言添加语言前缀
     let fullPath = basePath;
     if (langState.current !== 'en') {
-      // 确保路径以斜杠开头
       const normalizedPath = basePath.startsWith('/') ? basePath : `/${basePath}`;
       fullPath = `/${langState.current}${normalizedPath}`;
     }
 
-    router.push(fullPath);
-    // 导航后将内容区域滚动到顶部
-    scrollToTop();
-    // 导航后关闭侧边栏（移动端）
-    closeSidebar();
+    router.push(fullPath).then(() => {
+      // 导航成功后滚动到顶部
+      scrollToTop();
+      // 导航后关闭侧边栏（移动端）
+      closeSidebar();
+    });
   };
 
   // 辅助函数：从路径中移除语言前缀
@@ -212,6 +241,13 @@
     }
 
     return path;
+  };
+
+  // 处理内容区域点击（关闭侧边栏）
+  const handleContentClick = () => {
+    if (isMobile.value && isSidebarOpen.value) {
+      closeSidebar();
+    }
   };
 
   // 切换语言 - 使用路径跳转实现
@@ -261,7 +297,12 @@
       <!-- 导航栏左侧区域：汉堡菜单 + logo -->
       <div class="header-left">
         <!-- 汉堡菜单按钮（移动端） -->
-        <button class="hamburger-menu" aria-label="菜单" @click="toggleSidebar">
+        <button 
+          class="hamburger-menu" 
+          aria-label="{{ t('menu') }}" 
+          @click="toggleSidebar"
+          :aria-expanded="isSidebarOpen"
+        >
           <svg
             class="menu-icon"
             viewBox="0 0 24 24"
@@ -279,7 +320,13 @@
           </svg>
         </button>
         <!-- 桌面端logo -->
-        <div class="logo" style="cursor: pointer" @click="navigateTo('/')">
+        <div 
+          class="logo" 
+          @click="navigateTo('/')"
+          role="button"
+          tabindex="0"
+          @keydown.enter="navigateTo('/')"
+        >
           <ResponsiveImage
             src="/logo.png"
             :alt="t('logoAlt')"
@@ -294,21 +341,51 @@
         </div>
       </div>
       <!-- 主导航区域：主要测试类型快捷导航 -->
-      <nav class="main-nav" role="navigation" aria-label="主导航">
+      <nav class="main-nav" role="navigation" aria-label="{{ t('mainNavigation') }}">
         <ul class="main-nav-list">
-          <li class="main-nav-item" @click="navigateTo('/click-test/5')">
+          <li 
+            class="main-nav-item" 
+            @click="navigateTo('/click-test/5')"
+            role="button"
+            tabindex="0"
+            @keydown.enter="navigateTo('/click-test/5')"
+          >
             <span>{{ t('clickTest') }}</span>
           </li>
-          <li class="main-nav-item" @click="navigateTo('/space-click-test/5')">
+          <li 
+            class="main-nav-item" 
+            @click="navigateTo('/space-click-test/5')"
+            role="button"
+            tabindex="0"
+            @keydown.enter="navigateTo('/space-click-test/5')"
+          >
             <span>{{ t('spaceClickTest') }}</span>
           </li>
-          <li class="main-nav-item" @click="navigateTo('/keyboard-test')">
+          <li 
+            class="main-nav-item" 
+            @click="navigateTo('/keyboard-test')"
+            role="button"
+            tabindex="0"
+            @keydown.enter="navigateTo('/keyboard-test')"
+          >
             <span>{{ t('keyboardTest') }}</span>
           </li>
-          <li class="main-nav-item" @click="navigateTo('/reaction-time-test')">
+          <li 
+            class="main-nav-item" 
+            @click="navigateTo('/reaction-time-test')"
+            role="button"
+            tabindex="0"
+            @keydown.enter="navigateTo('/reaction-time-test')"
+          >
             <span>{{ t('reactionTest') }}</span>
           </li>
-          <li class="main-nav-item" @click="navigateTo('/typing-test/1')">
+          <li 
+            class="main-nav-item" 
+            @click="navigateTo('/typing-test/1')"
+            role="button"
+            tabindex="0"
+            @keydown.enter="navigateTo('/typing-test/1')"
+          >
             <span>{{ t('typingTest') }}</span>
           </li>
         </ul>
@@ -338,7 +415,7 @@
         ref="contentRef"
         class="content"
         role="main"
-        @click="isMobile && isSidebarOpen && closeSidebar()"
+        @click="handleContentClick"
       >
         <!-- 面包屑导航 - 404页面不显示 -->
         <Breadcrumb v-if="route.name !== 'NotFound' && route.name !== 'PrivacyPolicy'" />
@@ -352,9 +429,9 @@
       <div class="footer-content">
         <p>{{ t('copyright', { year: new Date().getFullYear() }) }}</p>
         <div class="footer-links">
-          <router-link to="/privacy-policy" class="footer-link">{{
-            t('privacyPolicy')
-          }}</router-link>
+          <router-link to="/privacy-policy" class="footer-link" aria-label="{{ t('privacyPolicy') }}">
+            {{ t('privacyPolicy') }}
+          </router-link>
         </div>
       </div>
     </footer>
@@ -371,11 +448,6 @@
     color: #ffffff;
     font-family:
       -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    /* 移除overflow: hidden，允许页面滚动 */
-  }
-
-  /* 字体优化 */
-  .font-optimized {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -396,6 +468,7 @@
     z-index: 1000;
     height: 60px;
     box-sizing: border-box;
+    transition: height 0.3s ease, padding 0.3s ease;
   }
 
   /* 导航栏左侧区域：汉堡菜单 + logo */
@@ -410,6 +483,19 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  .logo:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .logo:focus {
+    outline: 2px solid #4caf50;
+    outline-offset: 2px;
   }
 
   .desktop-logo {
@@ -428,6 +514,7 @@
   .header-right {
     display: flex;
     align-items: center;
+    gap: 12px;
   }
 
   /* 主导航区域样式 */
@@ -478,6 +565,12 @@
     color: #4caf50;
     box-shadow: inset 0 0 0 2px #4caf50;
     border-radius: 4px;
+  }
+
+  /* 主导航项焦点样式 */
+  .main-nav-item:focus {
+    outline: 2px solid #4caf50;
+    outline-offset: 2px;
   }
 
   /* 移动端导航栏优化 */
@@ -537,12 +630,39 @@
 
     /* 桌面端显示logo */
     .header-left .logo {
-      display: flex !important;
+      display: flex;
     }
 
     /* 桌面端隐藏汉堡菜单 */
     .hamburger-menu {
       display: none;
+    }
+  }
+
+  /* 平板设备适配 */
+  @media (min-width: 768px) and (max-width: 1000px) {
+    .content {
+      padding: 20px;
+    }
+  }
+
+  /* 小屏幕设备适配 */
+  @media (max-width: 480px) {
+    .header {
+      padding: 8px 12px;
+    }
+
+    .content {
+      padding: 12px;
+    }
+
+    .footer {
+      padding: 12px 0;
+      font-size: 12px;
+    }
+
+    .footer-content {
+      padding: 0 12px;
     }
   }
 
@@ -569,8 +689,8 @@
 
   /* 汉堡菜单焦点样式 */
   .hamburger-menu:focus {
-    outline: none;
-    box-shadow: none;
+    outline: 2px solid #4caf50;
+    outline-offset: 2px;
   }
 
   /* 汉堡菜单图标 */
@@ -583,7 +703,8 @@
     display: flex;
     flex: 1;
     margin-top: 60px;
-    height: calc(100vh - 60px);
+    min-height: calc(100vh - 60px);
+    transition: margin-top 0.3s ease;
   }
 
   /* 路由视图内容区域 */
@@ -592,19 +713,30 @@
     overflow-y: auto;
     padding: 20px;
     margin-left: 280px;
+    transition: margin-left 0.3s ease, padding 0.3s ease;
   }
 
   /* 移动端适配 */
   @media (max-width: 1000px) {
     .content {
       margin-left: 0;
-      overflow-y: scroll;
+      overflow-y: auto;
       -ms-overflow-style: none;
-      scrollbar-width: none;
+      scrollbar-width: thin;
     }
 
     .content::-webkit-scrollbar {
-      display: none;
+      width: 6px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: #2a2a2a;
+      border-radius: 3px;
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: #4caf50;
+      border-radius: 3px;
     }
   }
 
@@ -620,6 +752,7 @@
     min-height: 80px;
     display: flex;
     align-items: center;
+    transition: padding 0.3s ease, font-size 0.3s ease;
   }
 
   .footer-content {

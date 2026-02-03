@@ -288,17 +288,24 @@ export default defineConfig({
     }),
   ],
   server: {
-    host: '0.0.0.0',
+    host: true, // 使用 true 而不是 'localhost' 或 '0.0.0.0'
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost', // WebSocket 仍然使用 localhost
+      port: 5173,
+    },
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
       'X-XSS-Protection': '1; mode=block',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-      // 为静态资源添加缓存控制头
       'Cache-Control': 'public, max-age=31536000, immutable',
-      // 移动端缓存策略
-      'Vary': 'User-Agent, Accept-Encoding',
+      Vary: 'User-Agent, Accept-Encoding',
+      // 启用压缩支持
+      'Accept-Encoding': 'gzip, deflate, br',
     },
   },
   preview: {
@@ -311,16 +318,18 @@ export default defineConfig({
       // 为静态资源添加更激进的缓存控制头
       'Cache-Control': 'public, max-age=31536000, immutable',
       // 移动端缓存策略
-      'Vary': 'User-Agent, Accept-Encoding',
-      // 移动端资源提示
-      'Link': '</logo.png>; rel=preload; as=image; crossorigin',
+      Vary: 'User-Agent, Accept-Encoding',
+      // 启用压缩支持
+      'Accept-Encoding': 'gzip, deflate, br',
+      // 资源提示
+      Link: '</logo.png>; rel=preload; as=image; crossorigin, </assets/js/vendor-[hash].js>; rel=preload; as=script; crossorigin, </assets/js/home-[hash].js>; rel=preload; as=script; crossorigin',
     },
   },
   // 启用持久化缓存，提升构建性能
   cacheDir: '.vite/cache',
   build: {
     minify: 'terser',
-    chunkSizeWarningLimit: 200, // 进一步降低chunk大小警告阈值
+    chunkSizeWarningLimit: 100, // 进一步降低chunk大小警告阈值
     cssCodeSplit: true, // 启用CSS代码分割
     cssMinify: 'lightningcss', // 使用更高效的CSS压缩
     target: ['es2015', 'edge88', 'firefox78', 'chrome87', 'safari14'], // 优化目标浏览器
@@ -336,112 +345,47 @@ export default defineConfig({
           template: 'treemap', // 报告类型：treemap, sunburst, network, raw-data, list
         }),
       ],
-      output: {
-        // 配置chunk命名规则
-        chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        entryFileNames: 'assets/[name]-[hash].js',
-        // 优化代码分割策略
-        manualChunks: (id) => {
-          // 优先处理Vue相关核心库，确保它们始终单独打包
-          if (
-            id.includes('node_modules') &&
-            (id.includes('vue/dist/') ||
-              id.includes('@vue/runtime') ||
-              id.includes('@vue/runtime-dom'))
-          ) {
-            return 'vue-runtime';
-          }
-
-          // 优先处理其他第三方库
-          if (id.includes('node_modules')) {
-            // 确保 Vue 相关库始终单独打包
-            if (id.includes('vue') || id.includes('vue-router') || id.includes('@vueuse/head')) {
-              return 'vue-vendor';
-            }
-            // 其他第三方库打包到通用vendor
-            return 'vendor';
-          }
-
-          // 优先处理路由文件
-          if (id.includes('src/router/')) {
-            return 'router';
-          }
-
-          // 优先处理i18n模块
-          if (id.includes('src/i18n/')) {
-            return 'i18n';
-          }
-
-          // 将工具函数单独打包
-          if (id.includes('src/utils/')) {
-            return 'utils';
-          }
-
-          // 将composable函数单独打包
-          if (id.includes('src/composables/')) {
-            // ClickTest相关的composable
-            if (id.includes('useClickTestGame') || id.includes('useClickTestHistory')) {
-              return 'click-test-composables';
-            }
-            // 其他composable打包到通用composables
-            return 'composables';
-          }
-
-          // 基础UI组件单独打包
-          if (id.includes('src/components/')) {
-            // 通用UI组件
-            if (id.includes('ResultModal')) {
-              return 'result-modal';
-            } else if (id.includes('RelatedTests')) {
-              return 'related-tests';
-            } else if (id.includes('FAQComponent')) {
-              return 'faq-component';
-            } else if (id.includes('Breadcrumb')) {
-              return 'breadcrumb';
-            } else if (id.includes('LanguageSelector')) {
-              return 'language-selector';
-            } else if (id.includes('MenuManager')) {
-              return 'menu-manager';
-            }
-
-            // 测试组件按类型分组
-            // 先检查更具体的组件名称，避免字符串包含导致的错误匹配
-            if (id.includes('SpaceClickTest')) {
-              return 'space-click-test';
-            } else if (id.includes('DoubleClickTest')) {
-              return 'double-click-test';
-            } else if (id.includes('TripleClickTest')) {
-              return 'triple-click-test';
-            } else if (id.includes('KohiClickTest')) {
-              return 'kohi-click-test';
-            } else if (id.includes('ClickTest')) {
-              return 'click-test';
-            } else if (id.includes('SpacebarClicker')) {
-              return 'spacebar-clicker';
-            } else if (id.includes('KeyboardTest')) {
-              return 'keyboard-test';
-            } else if (
-              id.includes('ReactionTimeTest') ||
-              id.includes('ColorReactionTest') ||
-              id.includes('KeyReactionTest')
-            ) {
-              return 'reaction-tests';
-            } else if (id.includes('TypingTest')) {
-              return 'typing-tests';
-            } else if (id.includes('MouseDragTest')) {
-              return 'mouse-drag-test';
-            } else if (id.includes('MouseScrollTest')) {
-              return 'mouse-scroll-test';
-            } else if (id.includes('TargetEliminationGame')) {
-              return 'target-elimination-game';
-            }
-          }
-        },
-      },
       // 优化初始加载性能
       input: {
         main: path.resolve(__dirname, 'index.html'),
+      },
+      // 配置输出选项
+      output: {
+        // 手动分包配置
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('vue-router')) {
+              return 'vendor';
+            }
+            return 'vendor';
+          }
+          if (id.includes('src/i18n')) {
+            if (id.includes('locales/en')) {
+              return 'i18n-en';
+            } else if (id.includes('locales/zh-CN')) {
+              return 'i18n-zh-CN';
+            } else if (id.includes('locales/ja')) {
+              return 'i18n-ja';
+            } else if (id.includes('locales/ko')) {
+              return 'i18n-ko';
+            } else {
+              return 'i18n-core';
+            }
+          }
+          if (id.includes('src/utils')) {
+            return 'utils';
+          }
+          if (id.includes('src/services')) {
+            return 'services';
+          }
+          if (id.includes('src/composables')) {
+            return 'composables';
+          }
+        },
+        // 优化chunk命名
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
       // 增强tree shaking
       treeshake: {

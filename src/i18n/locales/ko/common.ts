@@ -816,9 +816,9 @@ export default {
     yourCps: '당신의 CPS',
     friendCps: '친구의 CPS',
     vs: 'VS',
-    resultBetter: '✅ 당신이 이겼어요! 친구보다 {difference} CPS 빠릅니다!',
-    resultWorse: '❌ 친구가 이겼어요! 당신보다 {difference} CPS 빠릅니다!',
-    resultEqual: '🤝 무승부! CPS가 완전히 같습니다!',
+    resultBetter: '당신이 이겼어요! 친구보다 {difference} CPS 빠릅니다!',
+    resultWorse: '친구가 이겼어요! 당신보다 {difference} CPS 빠릅니다!',
+    resultEqual: '무승부! CPS가 완전히 같습니다!',
     // 다른 CPS 범위 설명
     slow: {
       desc1: '클릭 속도가 느립니다, 더 많은 연습이 필요합니다!',

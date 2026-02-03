@@ -816,9 +816,9 @@ export default {
     yourCps: 'Your CPS',
     friendCps: "Friend's CPS",
     vs: 'VS',
-    resultBetter: '✅ You won! {difference} CPS faster than your friend',
-    resultWorse: '❌ Your friend won! {difference} CPS faster than you',
-    resultEqual: "🤝 It's a tie! Your CPS is exactly the same",
+    resultBetter: 'You won! {difference} CPS faster than your friend',
+    resultWorse: 'Your friend won! {difference} CPS faster than you',
+    resultEqual: "It's a tie! Your CPS is exactly the same",
     // Different CPS range descriptions
     slow: {
       desc1: 'Your clicking speed is slow, you need more practice!',

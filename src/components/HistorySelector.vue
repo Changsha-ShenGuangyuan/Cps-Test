@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted, watch } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
-  import { t } from '../i18n/index';
+  import { t, langState } from '../i18n/index';
   import ResponsiveImage from './ResponsiveImage.vue';
   import { iconManager } from '../utils/iconManager';
 
@@ -41,6 +41,42 @@
     };
   };
 
+  // 从路径中移除语言前缀
+  const removeLanguagePrefix = (path: string) => {
+    const supportedLanguages = ['zh-CN', 'ja', 'ko'];
+    const pathSegments = path.split('/').filter((segment) => segment !== '');
+
+    if (
+      pathSegments.length > 0 &&
+      pathSegments[0] &&
+      supportedLanguages.includes(pathSegments[0])
+    ) {
+      // 移除语言前缀
+      return `/${pathSegments.slice(1).join('/')}`;
+    }
+
+    return path;
+  };
+
+  // 根据当前语言添加语言前缀
+  const addLanguagePrefix = (path: string) => {
+    // 先移除可能存在的语言前缀，避免重复添加
+    const basePath = removeLanguagePrefix(path);
+
+    // 获取当前语言（使用i18n的langState.current，它是响应式的）
+    const currentLang = langState.current || 'en';
+
+    // 根据当前语言添加语言前缀
+    let fullPath = basePath;
+    if (currentLang !== 'en') {
+      // 确保路径以斜杠开头
+      const normalizedPath = basePath.startsWith('/') ? basePath : `/${basePath}`;
+      fullPath = `/${currentLang}${normalizedPath}`;
+    }
+
+    return fullPath;
+  };
+
   // 从localStorage加载历史记录
   const loadHistoryFromStorage = (): HistoryItem[] => {
     try {
@@ -50,7 +86,7 @@
         // 确保只提取需要的字段，忽略旧格式的title和time字段
         return rawItems.map((item: any) => ({
           id: item.id,
-          path: item.path,
+          path: addLanguagePrefix(item.path),
           timestamp: item.timestamp,
         }));
       }
@@ -97,7 +133,26 @@
   };
 
   // 历史记录数据
-  const historyItems = ref<HistoryItem[]>(loadHistoryFromStorage());
+  const historyItems = ref<HistoryItem[]>([]);
+
+  // 初始化历史记录数据
+  const initHistoryItems = () => {
+    historyItems.value = loadHistoryFromStorage();
+  };
+
+  // 监听语言变化，更新历史记录数据
+  watch(
+    () => langState.current,
+    () => {
+      initHistoryItems();
+    }
+  );
+
+  // 组件挂载时初始化历史记录数据
+  onMounted(() => {
+    initHistoryItems();
+    document.addEventListener('click', closeHistoryOnOutsideClick);
+  });
 
   // 验证路径参数的有效性
   const validatePathParams = (basePath: string): boolean => {
@@ -128,23 +183,6 @@
 
     // 其他路径默认有效
     return true;
-  };
-
-  // 从路径中移除语言前缀
-  const removeLanguagePrefix = (path: string) => {
-    const supportedLanguages = ['zh-CN', 'ja', 'ko'];
-    const pathSegments = path.split('/').filter((segment) => segment !== '');
-
-    if (
-      pathSegments.length > 0 &&
-      pathSegments[0] &&
-      supportedLanguages.includes(pathSegments[0])
-    ) {
-      // 移除语言前缀
-      return `/${pathSegments.slice(1).join('/')}`;
-    }
-
-    return path;
   };
 
   // 添加新的历史记录项
@@ -200,25 +238,6 @@
     historyItems.value = [];
     saveHistoryToStorage(historyItems.value);
   };
-
-  // 根据当前语言添加语言前缀（预留方法）
-  // const addLanguagePrefix = (path: string) => {
-  //   // 先移除可能存在的语言前缀，避免重复添加
-  //   const basePath = removeLanguagePrefix(path);
-  //
-  //   // 获取当前语言
-  //   const currentLang = localStorage.getItem('language') || 'en';
-  //
-  //   // 根据当前语言添加语言前缀
-  //   let fullPath = basePath;
-  //   if (currentLang !== 'en') {
-  //     // 确保路径以斜杠开头
-  //     const normalizedPath = basePath.startsWith('/') ? basePath : `/${basePath}`;
-  //     fullPath = `/${currentLang}${normalizedPath}`;
-  //   }
-  //
-  //   return fullPath;
-  // };
 
   // 检查历史记录项是否与当前路径匹配
   const isHistoryItemActive = (item: HistoryItem) => {
@@ -362,10 +381,6 @@
 
   // 使用图标管理服务获取图标URL
   const historyIconUrl = iconManager.getIconUrl('history');
-
-  onMounted(() => {
-    document.addEventListener('click', closeHistoryOnOutsideClick);
-  });
 
   onUnmounted(() => {
     document.removeEventListener('click', closeHistoryOnOutsideClick);

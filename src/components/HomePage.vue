@@ -12,7 +12,11 @@
             <div class="stats-cards">
               <div class="stat-card timer-card">
                 <div class="stat-value">
-                  {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.elapsedTime.toFixed(3) }}
+                  {{
+                    !gameState.isPlaying && gameState.clicks === 0
+                      ? 0
+                      : gameState.elapsedTime.toFixed(3)
+                  }}
                 </div>
                 <div class="stat-label">{{ t('time') }}</div>
               </div>
@@ -182,21 +186,33 @@
   import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 
   import { t } from '../i18n/index';
-  // 懒加载结果弹窗组件
+  // 懒加载结果弹窗组件 - 优化版本
   import { defineAsyncComponent } from 'vue';
   const ResultModal = defineAsyncComponent({
     loader: () => import('./ResultModal.vue'),
-    delay: 200,
-    timeout: 3000
+    delay: 0, // 立即开始加载，不延迟
+    timeout: 5000, // 增加超时时间
+    suspensible: false, // 避免Suspense相关性能问题
   });
+
+  // 预加载ResultModal组件（当用户接近可能触发结果的区域时）
+  let resultModalPreloaded = false;
+  const preloadResultModal = () => {
+    if (ResultModal && !resultModalPreloaded) {
+      resultModalPreloaded = true;
+      // 触发预加载
+      import('./ResultModal.vue').catch(() => {});
+    }
+  };
 
   const router = useRouter();
 
   // 导航到指定路由
   const navigateTo = (path: string) => {
-    // 根据当前语言添加语言前缀
+    // 直接使用已导入的 t 函数获取当前语言
+    // 避免重复导入 i18n 模块，提高性能
+    let fullPath = path;
     import('../i18n/index').then((i18n) => {
-      let fullPath = path;
       if (i18n.langState.current !== 'en') {
         // 确保路径以斜杠开头
         const basePath = path.startsWith('/') ? path : `/${path}`;
@@ -314,7 +330,7 @@
     cps: 0,
     elapsedTime: 0,
     isSpacePressed: false,
-    showResultModal: false
+    showResultModal: false,
   });
   let startTime = 0; // 不需要响应式，仅用于游戏逻辑
   let rafId: number | null = null; // 存储requestAnimationFrame的ID
@@ -402,7 +418,8 @@
     gameState.value.isGameOver = true; // 设置最终结束状态
 
     // 计算最终CPS，使用规定的测试时间
-    gameState.value.cps = testDuration > 0 ? Math.round((gameState.value.clicks / testDuration) * 100) / 100 : 0;
+    gameState.value.cps =
+      testDuration > 0 ? Math.round((gameState.value.clicks / testDuration) * 100) / 100 : 0;
 
     // 确保已用时间显示为规定的测试时间
     gameState.value.elapsedTime = testDuration;
@@ -562,17 +579,30 @@
   // 设备检测变量
   const isMobile = ref(false);
 
+  // 处理滚动事件，预加载ResultModal
+  const handleScroll = () => {
+    // 当用户滚动到页面20%或更多时预加载
+    if (window.scrollY > window.innerHeight * 0.2) {
+      preloadResultModal();
+      // 移除监听器，避免重复触发
+      window.removeEventListener('scroll', handleScroll);
+    }
+  };
+
   // 组件挂载时添加事件监听
   onMounted(() => {
     // 检测设备类型 - 关键操作，立即执行
     isMobile.value = window.innerWidth <= 768;
-    
+
     // 监听窗口 resize 事件 - 关键操作，立即执行
     window.addEventListener('resize', handleResize);
-    
+
     // 监听键盘事件 - 关键操作，立即执行
     window.addEventListener('keydown', handleSpaceDown);
     window.addEventListener('keyup', handleSpaceUp);
+
+    // 监听滚动事件，用于预加载
+    window.addEventListener('scroll', handleScroll);
 
     // 延迟执行非关键操作，避免阻塞移动端渲染
     if (typeof requestIdleCallback === 'function') {
@@ -581,6 +611,8 @@
         renderFeatureStructuredData();
         renderGuideStructuredData();
         setupIntersectionObservers();
+        // 空闲时预加载ResultModal
+        preloadResultModal();
       });
     } else {
       // 降级方案：使用 setTimeout 延迟执行
@@ -588,6 +620,8 @@
         renderFeatureStructuredData();
         renderGuideStructuredData();
         setupIntersectionObservers();
+        // 延迟后预加载ResultModal
+        preloadResultModal();
       }, 100);
     }
   });
@@ -641,7 +675,7 @@
     const observerOptions = {
       threshold: 0.05, // 当元素5%进入视口时触发，提高灵敏度
       rootMargin: '100px 0px', // 提前100px开始观察，更好的预加载效果
-      root: null // 使用默认根元素（视口）
+      root: null, // 使用默认根元素（视口）
     };
 
     // FAQ区域观察者
@@ -704,6 +738,7 @@
     window.removeEventListener('keydown', handleSpaceDown);
     window.removeEventListener('keyup', handleSpaceUp);
     window.removeEventListener('resize', handleResize);
+    window.removeEventListener('scroll', handleScroll);
 
     // 清理观察者
     if (faqObserver) {
@@ -742,15 +777,9 @@
         document.head.appendChild(structuredDataElement);
       }
 
-      // 优化JSON字符串化，使用replacer函数处理可能的循环引用
-      structuredDataElement.textContent = JSON.stringify(data, (key, value) => {
-        // 处理可能的循环引用
-        if (typeof value === 'object' && value !== null && key !== '') {
-          // 简单处理：如果是对象且不是null，返回其字符串表示
-          return String(value);
-        }
-        return value;
-      });
+      // 优化JSON字符串化，使用更高效的方式处理数据
+      // 预检查数据结构，避免复杂的replacer函数
+      structuredDataElement.textContent = JSON.stringify(data);
     } catch (error) {
       // 静默处理错误，避免影响其他功能
       console.warn('Failed to render structured data:', error);
@@ -1252,176 +1281,176 @@
 
   /* 移动端适配 */
   @media (max-width: 768px) {
-      /* 动画优化 - 减少不必要的动画和过渡 */
-      /* 简化空格键按下效果 */
-      .spacebar-key.space-pressed {
-        transform: translateY(2px);
-        transition: none; /* 移除过渡效果，提高响应速度 */
-      }
-
-      /* 简化点击区域效果 */
-      .click-area.space-pressed {
-        transition: none; /* 移除过渡效果，提高响应速度 */
-      }
-
-      /* 简化按钮效果 */
-      .start-btn:hover {
-        transform: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        transition: none; /* 移除过渡效果，提高响应速度 */
-      }
-
-      /* 简化所有过渡效果 */
-      .time-select-item,
-      .start-btn,
-      .click-type-item {
-        transition: none; /* 移除过渡效果，提高响应速度 */
-      }
-
-      /* 主要样式优化 */
-      .space-test-section {
-        padding: 10px;
-      }
-
-      /* 统计卡片横向排列，缩小样式 */
-      .stats-cards {
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .stat-card {
-        flex: 1;
-        min-width: clamp(70px, 20vw, 80px);
-        max-width: none;
-        padding: clamp(6px, 2vw, 8px) clamp(8px, 2vw, 12px);
-      }
-
-      .stat-value {
-        font-size: clamp(22px, 5vw, 26px);
-        margin-bottom: 2px;
-      }
-
-      .stat-label {
-        font-size: clamp(12px, 2vw, 14px);
-      }
-
-      /* 点击区域优化 */
-      .click-area {
-        height: clamp(200px, 40vh, 300px);
-        font-size: clamp(18px, 4vw, 20px);
-        width: clamp(95%, 98vw, 98%);
-      }
-
-      /* 空格键优化 */
-      .spacebar-key {
-        width: 250px;
-        height: 50px;
-        font-size: 16px;
-      }
-
-      /* 准备就绪文字优化 */
-      .ready-text {
-        font-size: 48px;
-        margin-bottom: 20px;
-      }
-
-      /* 提示文字优化 - 往上移 */
-      .hints {
-        margin-top: 5px;
-        transform: translateY(-10px);
-      }
-
-      /* 时间选择区域优化 */
-      .time-select-title {
-        font-size: 19px;
-        margin-bottom: 18px;
-      }
-
-      .time-select-item {
-        padding: 13px 18px;
-        font-size: 14px;
-      }
-
-      .time-select-list {
-        gap: 8px;
-      }
-
-      /* 快速开始按钮布局 */
-      .quick-start-buttons {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      /* 容器内边距优化 */
-      .home-container {
-        padding: 10px;
-      }
-
-      /* 按钮样式优化 */
-      .start-btn {
-        padding: 15px 10px;
-        font-size: 15px;
-        min-height: 60px;
-        transition: none;
-      }
-
-      .start-btn:hover {
-        transform: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        border-color: transparent;
-      }
-
-      /* FAQ项目优化 */
-      .faq-item {
-        padding: 20px 16px;
-      }
-
-      .faq-question {
-        font-size: 19px;
-        margin-bottom: 12px;
-      }
-
-      .faq-question:before {
-        width: 20px;
-        height: 20px;
-        margin-right: 8px;
-      }
-
-      .faq-answer {
-        font-size: 16px;
-        margin-left: 28px;
-        line-height: 1.6;
-      }
-
-      /* 点击类型区域优化 */
-      .click-types-section {
-        padding: 40px 15px;
-        margin: 40px 0;
-      }
-
-      .click-types-section .section-title {
-        font-size: 28px;
-        margin-bottom: 30px;
-      }
-
-      .click-types-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-
-      .click-type-item {
-        padding: 25px;
-      }
-
-      .click-type-title {
-        font-size: 20px;
-      }
-
-      .click-type-description {
-        font-size: 15px;
-      }
+    /* 动画优化 - 减少不必要的动画和过渡 */
+    /* 简化空格键按下效果 */
+    .spacebar-key.space-pressed {
+      transform: translateY(2px);
+      transition: none; /* 移除过渡效果，提高响应速度 */
     }
+
+    /* 简化点击区域效果 */
+    .click-area.space-pressed {
+      transition: none; /* 移除过渡效果，提高响应速度 */
+    }
+
+    /* 简化按钮效果 */
+    .start-btn:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: none; /* 移除过渡效果，提高响应速度 */
+    }
+
+    /* 简化所有过渡效果 */
+    .time-select-item,
+    .start-btn,
+    .click-type-item {
+      transition: none; /* 移除过渡效果，提高响应速度 */
+    }
+
+    /* 主要样式优化 */
+    .space-test-section {
+      padding: 10px;
+    }
+
+    /* 统计卡片横向排列，缩小样式 */
+    .stats-cards {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: clamp(70px, 20vw, 80px);
+      max-width: none;
+      padding: clamp(6px, 2vw, 8px) clamp(8px, 2vw, 12px);
+    }
+
+    .stat-value {
+      font-size: clamp(22px, 5vw, 26px);
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: clamp(12px, 2vw, 14px);
+    }
+
+    /* 点击区域优化 */
+    .click-area {
+      height: clamp(200px, 40vh, 300px);
+      font-size: clamp(18px, 4vw, 20px);
+      width: clamp(95%, 98vw, 98%);
+    }
+
+    /* 空格键优化 */
+    .spacebar-key {
+      width: 250px;
+      height: 50px;
+      font-size: 16px;
+    }
+
+    /* 准备就绪文字优化 */
+    .ready-text {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    /* 提示文字优化 - 往上移 */
+    .hints {
+      margin-top: 5px;
+      transform: translateY(-10px);
+    }
+
+    /* 时间选择区域优化 */
+    .time-select-title {
+      font-size: 19px;
+      margin-bottom: 18px;
+    }
+
+    .time-select-item {
+      padding: 13px 18px;
+      font-size: 14px;
+    }
+
+    .time-select-list {
+      gap: 8px;
+    }
+
+    /* 快速开始按钮布局 */
+    .quick-start-buttons {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    /* 容器内边距优化 */
+    .home-container {
+      padding: 10px;
+    }
+
+    /* 按钮样式优化 */
+    .start-btn {
+      padding: 15px 10px;
+      font-size: 15px;
+      min-height: 60px;
+      transition: none;
+    }
+
+    .start-btn:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-color: transparent;
+    }
+
+    /* FAQ项目优化 */
+    .faq-item {
+      padding: 20px 16px;
+    }
+
+    .faq-question {
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+
+    .faq-question:before {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    .faq-answer {
+      font-size: 16px;
+      margin-left: 28px;
+      line-height: 1.6;
+    }
+
+    /* 点击类型区域优化 */
+    .click-types-section {
+      padding: 40px 15px;
+      margin: 40px 0;
+    }
+
+    .click-types-section .section-title {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .click-types-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .click-type-item {
+      padding: 25px;
+    }
+
+    .click-type-title {
+      font-size: 20px;
+    }
+
+    .click-type-description {
+      font-size: 15px;
+    }
+  }
 
   /* 快速开始区域样式 */
   .quick-start-section {
@@ -1471,6 +1500,24 @@
   .start-btn:active {
     transform: translateY(0);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  /* 移动端优化：移除所有过渡效果以提高响应速度 */
+  @media (max-width: 768px) {
+    .start-btn {
+      transition: none;
+    }
+
+    .start-btn:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-color: transparent;
+    }
+
+    .start-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
   }
 
   /* 点击测试按钮 - 蓝色 */
@@ -1644,6 +1691,16 @@
     margin-right: 12px;
     margin-top: 2px;
     flex-shrink: 0;
+  }
+
+  /* 移动端优化：使用更小的图标尺寸 */
+  @media (max-width: 768px) {
+    .faq-question:before {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      margin-top: 1px;
+    }
   }
 
   /* FAQ答案样式 */

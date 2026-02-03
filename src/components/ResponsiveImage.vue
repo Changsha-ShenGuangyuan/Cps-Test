@@ -56,27 +56,35 @@
 
   // 计算图片源
   const imageSrc = computed(() => {
+    // 检查是否是图标文件（来自assets/icons目录）
+    const isIcon = props.src.includes('assets/icons');
+
+    // 如果是图标文件，直接返回原始路径，不进行设备后缀和WebP转换
+    if (isIcon) {
+      return props.src;
+    }
+
     // 根据设备类型返回不同尺寸的图片
     let src = props.src;
-    
+
     // 为移动端提供更小尺寸的图片
     if (isMobile.value) {
       // 替换图片路径，添加mobile后缀
       src = src.replace(/(\.\w+)$/, '-mobile$1');
     }
-    
+
     // 为平板提供中等尺寸的图片
     else if (isTablet.value) {
       // 替换图片路径，添加tablet后缀
       src = src.replace(/(\.\w+)$/, '-tablet$1');
     }
-    
+
     // 检查是否支持WebP
     if (supportsWebP.value) {
       // 替换为WebP格式
       src = src.replace(/(\.\w+)$/, '.webp');
     }
-    
+
     return src;
   });
 

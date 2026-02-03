@@ -818,9 +818,9 @@ export default {
     yourCps: 'あなたのCPS',
     friendCps: 'フレンドのCPS',
     vs: 'VS',
-    resultBetter: '✅ あなたの勝ち！フレンドより {difference} CPS 速いです！',
-    resultWorse: '❌ フレンドの勝ち！あなたより {difference} CPS 速いです！',
-    resultEqual: '🤝 引き分け！CPSが完全に同じです！',
+    resultBetter: 'あなたの勝ち！フレンドより {difference} CPS 速いです！',
+    resultWorse: 'フレンドの勝ち！あなたより {difference} CPS 速いです！',
+    resultEqual: '引き分け！CPSが完全に同じです！',
     // 異なるCPS範囲の説明
     slow: {
       desc1: 'クリック速度が遅いです、もっと練習が必要です！',

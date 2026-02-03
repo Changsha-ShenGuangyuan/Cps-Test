@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+  import { computed, onMounted, onUnmounted, watch, shallowRef } from 'vue';
   import { t } from '../i18n/index';
 
   // 组件属性
@@ -17,8 +17,8 @@
     type: string;
   }
 
-  // 对比数据响应式变量
-  const friendData = ref<ShareParams | null>(null);
+  // 对比数据响应式变量（使用shallowRef提高性能）
+  const friendData = shallowRef<ShareParams | null>(null);
 
   // 从sessionStorage获取分享参数
   const getShareParams = () => {
@@ -123,98 +123,45 @@
     }
   };
 
-  // 阻止滚动的事件处理函数
-  const preventScroll = (e: Event) => {
-    if (e instanceof WheelEvent || e instanceof TouchEvent) {
-      e.preventDefault();
-    } else if (e instanceof KeyboardEvent) {
-      const scrollKeys = [
-        'ArrowUp',
-        'ArrowDown',
-        'ArrowLeft',
-        'ArrowRight',
-        ' ',
-        'PageUp',
-        'PageDown',
-        'Home',
-        'End',
-      ];
-      if (scrollKeys.includes(e.key)) {
-        e.preventDefault();
-      }
-    }
-  };
-
-  // 禁用滚动函数
+  // 禁用滚动函数（简化实现）
   const disableScroll = () => {
-    // 获取当前滚动位置
+    // 保存当前滚动位置
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-    // 保存当前滚动位置
+    
+    // 保存滚动位置到body数据集
     document.body.dataset.scrollTop = scrollTop.toString();
     document.body.dataset.scrollLeft = scrollLeft.toString();
-
-    // 保存原始样式
-    document.body.dataset.originalScrollbarWidth = document.body.style.scrollbarWidth;
-
-    // 隐藏滚动条视觉样式 - 不改变overflow属性，保持滚动条存在
-    document.body.style.scrollbarWidth = 'none'; // Firefox
-
-    // 添加WebKit滚动条隐藏样式
-    const style = document.createElement('style');
-    style.id = 'hide-scrollbar-style';
-    style.textContent = `
-      /* WebKit浏览器：隐藏滚动条但保持其功能 */
-      body::-webkit-scrollbar {
-        display: none !important;
-      }
-      
-      /* IE/Edge：隐藏滚动条但保持其功能 */
-      body {
-        -ms-overflow-style: none !important;
-      }
-      
-      /* 确保overflow保持auto，不改变页面布局 */
-      body {
-        overflow: auto !important;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // 阻止滚动事件，锁定背景滚动
-    document.addEventListener('wheel', preventScroll, { passive: false });
-    document.addEventListener('touchmove', preventScroll, { passive: false });
-    document.addEventListener('keydown', preventScroll, { passive: false });
+    
+    // 使用CSS固定定位阻止滚动
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollTop}px`;
+    document.body.style.left = `-${scrollLeft}px`;
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    document.body.style.overflow = 'hidden';
   };
 
-  // 启用滚动函数
+  // 启用滚动函数（简化实现）
   const enableScroll = () => {
     // 恢复滚动位置
     const scrollTop = parseInt(document.body.dataset.scrollTop || '0');
     const scrollLeft = parseInt(document.body.dataset.scrollLeft || '0');
-
-    // 恢复原始滚动条样式
-    document.body.style.scrollbarWidth = document.body.dataset.originalScrollbarWidth || '';
-
-    // 移除滚动条隐藏样式
-    const style = document.getElementById('hide-scrollbar-style');
-    if (style) {
-      document.head.removeChild(style);
-    }
-
-    // 移除滚动阻止事件
-    document.removeEventListener('wheel', preventScroll);
-    document.removeEventListener('touchmove', preventScroll);
-    document.removeEventListener('keydown', preventScroll);
-
+    
+    // 恢复原始样式
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    document.body.style.overflow = '';
+    
     // 恢复滚动位置
     window.scrollTo(scrollLeft, scrollTop);
-
+    
     // 清除保存的属性
     delete document.body.dataset.scrollTop;
     delete document.body.dataset.scrollLeft;
-    delete document.body.dataset.originalScrollbarWidth;
   };
 
   // 监听 visible 属性变化，只在弹窗可见时添加事件监听
@@ -331,15 +278,20 @@
     };
   };
 
-  // 计算属性：当前分享链接
-  const shareLinks = computed(() => getShareLinks());
+  // 计算属性：当前分享链接（只在visible为true时计算）
+  const shareLinks = computed(() => {
+    if (!props.visible) return null;
+    return getShareLinks();
+  });
 
   // 分享函数
   const shareTo = (platform: string) => {
     // 其他平台正常分享
-    const link = shareLinks.value[platform as keyof typeof shareLinks.value];
-    if (link) {
-      window.open(link, '_blank', 'noopener,noreferrer');
+    if (shareLinks.value) {
+      const link = shareLinks.value[platform as keyof typeof shareLinks.value];
+      if (link) {
+        window.open(link, '_blank', 'noopener,noreferrer');
+      }
     }
   };
 </script>
@@ -498,7 +450,7 @@
     border: 2px solid #333;
     opacity: 0;
     transform: scale(0.6) translateY(50px);
-    animation: scaleIn 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+    animation: scaleIn 0.5s ease-out forwards;
     font-family:
       -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
       'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -506,6 +458,7 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     font-size: 16px;
+    will-change: transform, opacity;
   }
 
   /* 淡入动画 */
@@ -524,10 +477,6 @@
       opacity: 0;
       transform: scale(0.6) translateY(50px);
     }
-    70% {
-      opacity: 1;
-      transform: scale(1.05) translateY(-10px);
-    }
     to {
       opacity: 1;
       transform: scale(1) translateY(0);
@@ -538,27 +487,30 @@
   .cps-result h2 {
     opacity: 0;
     transform: scale(0.8) translateY(20px);
-    animation: cpsFadeIn 0.8s cubic-bezier(0.68, -0.6, 0.32, 1.6) 0.4s forwards;
+    animation: fadeInUp 0.5s ease-out 0.2s forwards;
+    will-change: transform, opacity;
   }
 
   /* 详细信息动画 */
   .result-details p {
     opacity: 0;
     transform: translateY(10px);
-    animation: textFadeIn 0.6s ease-out 0.8s forwards;
+    animation: fadeInUp 0.5s ease-out 0.3s forwards;
+    will-change: transform, opacity;
   }
 
   /* 按钮动画 */
   .ok-btn {
     opacity: 0;
     transform: translateY(10px);
-    animation: textFadeIn 0.6s ease-out 1s forwards;
+    animation: fadeInUp 0.5s ease-out 0.4s forwards;
     pointer-events: none;
     animation-fill-mode: forwards;
+    will-change: transform, opacity;
   }
 
-  /* 动画结束后启用点击 */
-  @keyframes textFadeIn {
+  /* 淡入上移动画 */
+  @keyframes fadeInUp {
     from {
       opacity: 0;
       transform: translateY(20px);
@@ -568,22 +520,6 @@
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
-    }
-  }
-
-  /* CPS结果动画 */
-  @keyframes cpsFadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.8) translateY(20px);
-    }
-    60% {
-      opacity: 1;
-      transform: scale(1.1) translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
     }
   }
 
@@ -671,7 +607,7 @@
     margin: 20px 0;
     opacity: 0.5;
     transition: opacity 0.3s ease;
-    animation: textFadeIn 0.6s ease-out 1s forwards;
+    animation: fadeInUp 0.6s ease-out 1s forwards;
     opacity: 0;
   }
 
@@ -685,7 +621,7 @@
     margin-bottom: 25px;
     opacity: 0;
     transform: translateY(20px);
-    animation: textFadeIn 0.6s ease-out 1.2s forwards;
+    animation: fadeInUp 0.6s ease-out 1.2s forwards;
   }
 
   /* 分享标题 */
@@ -721,7 +657,7 @@
     outline: none;
     opacity: 0;
     transform: translateY(10px);
-    animation: textFadeIn 0.6s ease-out 1.4s forwards;
+    animation: fadeInUp 0.6s ease-out 1.4s forwards;
     font-family: inherit;
     letter-spacing: 0.3px;
     pointer-events: none;
@@ -777,7 +713,7 @@
     text-align: center;
     margin-bottom: 25px;
     opacity: 0;
-    animation: textFadeIn 0.6s ease-out 1.2s forwards;
+    animation: fadeInUp 0.6s ease-out 1.2s forwards;
   }
 
   /* 对比标题样式 */
@@ -789,7 +725,7 @@
     margin-top: 10px;
     opacity: 0;
     transform: translateY(10px);
-    animation: textFadeIn 0.6s ease-out 1.3s forwards;
+    animation: fadeInUp 0.6s ease-out 1.3s forwards;
   }
 
   /* 对比内容样式 */
@@ -800,7 +736,7 @@
     margin-bottom: 20px;
     opacity: 0;
     transform: translateY(10px);
-    animation: textFadeIn 0.6s ease-out 1.4s forwards;
+    animation: fadeInUp 0.6s ease-out 1.4s forwards;
   }
 
   /* 对比项样式 */
@@ -852,7 +788,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     opacity: 0;
     transform: translateY(10px);
-    animation: textFadeIn 0.6s ease-out 1.5s forwards;
+    animation: fadeInUp 0.6s ease-out 1.5s forwards;
   }
 
   /* 结果更好样式 */

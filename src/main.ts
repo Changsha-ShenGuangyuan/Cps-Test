@@ -16,24 +16,26 @@ function initApp() {
   app.use(head);
 
   // 初始化语言资源并挂载应用
-  import('./i18n').then(async (module) => {
-    try {
-      // 先初始化语言资源
-      await module.initLanguage();
-    } catch (error) {
-      console.error('初始化语言资源失败:', error);
-    } finally {
-      // 无论语言初始化是否成功，都使用i18n插件
+  import('./i18n')
+    .then(async (module) => {
+      try {
+        // 先初始化语言资源
+        await module.initLanguage();
+      } catch (error) {
+        console.error('初始化语言资源失败:', error);
+      } finally {
+        // 无论语言初始化是否成功，都使用i18n插件
+        app.use(i18n);
+        // 挂载应用
+        app.mount('#app');
+      }
+    })
+    .catch((error) => {
+      console.error('加载i18n模块失败:', error);
+      // 即使加载失败也要挂载应用
       app.use(i18n);
-      // 挂载应用
       app.mount('#app');
-    }
-  }).catch((error) => {
-    console.error('加载i18n模块失败:', error);
-    // 即使加载失败也要挂载应用
-    app.use(i18n);
-    app.mount('#app');
-  });
+    });
 }
 
 // 检查DOM是否已经解析完成

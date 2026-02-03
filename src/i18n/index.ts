@@ -230,6 +230,18 @@ export const t = (key: string, params: Record<string, any> = {}): string => {
   return translation;
 };
 
+// 提供useI18n composable
+export const useI18n = () => {
+  return {
+    t,
+    langState,
+    currentLang,
+    setLanguage,
+    getLanguage,
+    currentResources,
+  };
+};
+
 // 默认导出，用于 main.ts 中的导入
 export default {
   install: async (app: any) => {
