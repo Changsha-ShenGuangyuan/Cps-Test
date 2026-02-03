@@ -4,35 +4,21 @@
     <meta charset="UTF-8" />
     <!-- 资源提示 - 优化移动端加载 -->
     <!-- 预连接到关键域名 -->
-    <link rel="preconnect" href="https://www.cpstestgo.com" crossorigin>
-    <link rel="preconnect" href="https://cpstestgo.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.cpstestgo.com">
     
     <!-- 预连接到分析服务 -->
-    <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
     
-    <!-- 只预加载首屏关键资源 -->
+    <!-- 只预加载移动端首屏关键资源 -->
     <link rel="preload" href="/logo.png" as="image" type="image/png" crossorigin>
     
-    <!-- 关键JavaScript文件预加载 -->
+    <!-- 移动端优化：DNS预解析 -->
+    <link rel="dns-prefetch" href="https://cpstestgo.com">
+    <link rel="dns-prefetch" href="https://www.cpstestgo.com">
+    
+    <!-- 生产环境CSS预加载 -->
     <script>
       if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        // 预加载关键JS文件
-        const criticalScripts = [
-          '/assets/js/vendor.js',
-          '/assets/js/utils.js',
-          '/assets/js/composables.js'
-        ];
-        
-        criticalScripts.forEach(src => {
-          const link = document.createElement('link');
-          link.rel = 'preload';
-          link.href = src;
-          link.as = 'script';
-          document.head.appendChild(link);
-        });
-        
-        // 预加载关键CSS文件
         const link = document.createElement('link');
         link.rel = 'preload';
         link.href = '/assets/css/main.css';
@@ -42,26 +28,6 @@
           this.rel = 'stylesheet';
         };
         document.head.appendChild(link);
-      }
-    </script>
-    
-    <!-- 非关键CSS延迟加载 -->
-    <script>
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        // 延迟加载非关键CSS
-        window.addEventListener('load', function() {
-          const nonCriticalStyles = [
-            '/assets/css/Breadcrumb.css',
-            '/assets/css/main.css'
-          ];
-          
-          nonCriticalStyles.forEach(href => {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = href;
-            document.head.appendChild(link);
-          });
-        });
       }
     </script>
     
