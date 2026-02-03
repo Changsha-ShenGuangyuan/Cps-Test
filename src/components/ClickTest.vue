@@ -189,26 +189,13 @@
   const getFilteredHistory = ref<((time: number) => HistoryRecord[]) | null>(null);
   let historyInstance: any = null;
 
-  // 虚拟滚动相关
-  const VISIBLE_ITEMS = 5;
-  const ITEM_HEIGHT = 60; // 每条历史记录的高度
-
+  // 历史记录相关
   // 计算属性：根据当前测试时长筛选历史记录
   const filteredHistory = computed<HistoryRecord[]>(() => {
     if (getFilteredHistory.value) {
       return getFilteredHistory.value(testTime.value);
     }
     return [];
-  });
-
-  // 计算属性：历史记录总高度（用于虚拟滚动）
-  const historyTotalHeight = computed(() => {
-    return filteredHistory.value.length * ITEM_HEIGHT;
-  });
-
-  // 计算属性：可见的历史记录（用于虚拟滚动）
-  const visibleHistory = computed(() => {
-    return filteredHistory.value.slice(0, VISIBLE_ITEMS);
   });
 
   // 游戏方法
@@ -579,28 +566,22 @@
           <div 
             ref="historyContainerRef" 
             class="history-list"
-            :style="{ maxHeight: historyTotalHeight + 'px' }"
           >
             <div v-if="filteredHistory.length === 0" class="no-history">
               {{ t('noHistory') }}
             </div>
-            <div v-else>
-              <div v-for="record in visibleHistory" :key="record.id" class="history-item">
-                <div class="history-item-content">
-                  <div class="main-data">
-                    <span class="cps-value">{{ record.cps }}</span>
-                    <span class="unit">CPS</span>
-                  </div>
-                  <div class="tags">
-                    <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
-                  </div>
-                  <div class="record-time">
-                    {{ record.date }}
-                  </div>
+            <div v-for="record in filteredHistory" :key="record.id" class="history-item">
+              <div class="history-item-content">
+                <div class="main-data">
+                  <span class="cps-value">{{ record.cps }}</span>
+                  <span class="unit">CPS</span>
                 </div>
-              </div>
-              <div v-if="filteredHistory.length > VISIBLE_ITEMS" class="history-more">
-                +{{ filteredHistory.length - VISIBLE_ITEMS }} {{ t('moreRecords') }}
+                <div class="tags">
+                  <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
+                </div>
+                <div class="record-time">
+                  {{ record.date }}
+                </div>
               </div>
             </div>
           </div>
@@ -641,30 +622,24 @@
         </div>
 
         <div 
-          ref="historyContainerRef" 
-          class="history-list"
-          :style="{ maxHeight: historyTotalHeight + 'px' }"
-        >
+            ref="historyContainerRef" 
+            class="history-list"
+          >
           <div v-if="filteredHistory.length === 0" class="no-history">
             {{ t('noHistory') }}
           </div>
-          <div v-else>
-            <div v-for="record in visibleHistory" :key="record.id" class="history-item">
-              <div class="history-item-content">
-                <div class="main-data">
-                  <span class="cps-value">{{ record.cps }}</span>
-                  <span class="unit">CPS</span>
-                </div>
-                <div class="tags">
-                  <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
-                </div>
-                <div class="record-time">
-                  {{ record.date }}
-                </div>
+          <div v-for="record in filteredHistory" :key="record.id" class="history-item">
+            <div class="history-item-content">
+              <div class="main-data">
+                <span class="cps-value">{{ record.cps }}</span>
+                <span class="unit">CPS</span>
               </div>
-            </div>
-            <div v-if="filteredHistory.length > VISIBLE_ITEMS" class="history-more">
-              +{{ filteredHistory.length - VISIBLE_ITEMS }} {{ t('moreRecords') }}
+              <div class="tags">
+                <span class="tag clicks-tag">{{ record.clicks }}{{ t('clicks') }}</span>
+              </div>
+              <div class="record-time">
+                {{ record.date }}
+              </div>
             </div>
           </div>
         </div>
@@ -802,10 +777,11 @@
     flex: 1;
     overflow-y: auto;
     padding: 5px;
+    min-height: 0;
   }
 
   /* 无历史记录提示 */
-  .no-history {
+  .history-sidebar .no-history {
     color: #888;
     text-align: center;
     padding: 40px 10px;
@@ -814,7 +790,7 @@
   }
 
   /* 更多历史记录提示 */
-  .history-more {
+  .history-sidebar .history-more {
     color: #4caf50;
     text-align: center;
     padding: 10px;
@@ -822,27 +798,30 @@
     font-weight: bold;
     background-color: rgba(76, 175, 80, 0.1);
     border-radius: 4px;
-    margin-top: 5px;
+    margin-top: 12px;
   }
 
   /* 历史记录项 */
-  .history-item {
-    background-color: #2a2a2a;
-    border-radius: 4px;
-    padding: 8px 10px;
-    transition: all 0.2s ease;
-    border: 1px solid #333;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    position: relative;
-    z-index: 1;
+  .history-sidebar .history-item {
+    background-color: #2a2a2a !important;
+    border-radius: 4px !important;
+    padding: 8px 10px !important;
+    transition: all 0.2s ease !important;
+    border: 1px solid #333 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    position: relative !important;
+    z-index: 1 !important;
+    line-height: 1 !important;
+    height: auto !important;
+    min-height: 36px !important;
   }
 
-  .history-item:hover {
-    background-color: #333;
-    border-color: #4caf50;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 2;
+  .history-sidebar .history-item:hover {
+    background-color: #333 !important;
+    border-color: #4caf50 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+    z-index: 2 !important;
   }
 
   /* 历史记录图标 */
@@ -851,98 +830,100 @@
   }
 
   /* 历史记录项内容 */
-  .history-item-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+  .history-sidebar .history-item-content {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    flex: 1 !important;
+    min-width: 0 !important;
   }
 
   /* 主要数据 */
-  .main-data {
-    display: flex;
-    align-items: baseline;
-    gap: 5px;
-    flex: 0 0 auto;
+  .history-sidebar .main-data {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 5px !important;
+    flex: 0 0 auto !important;
   }
 
-  .main-data .cps-value {
-    color: #ffa500;
-    font-size: 20px;
-    font-weight: bold;
-    line-height: 1;
+  .history-sidebar .main-data .cps-value {
+    color: #ffa500 !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
   }
 
-  .main-data .unit {
-    color: #888;
-    font-size: 11px;
-    font-weight: normal;
+  .history-sidebar .main-data .unit {
+    color: #888 !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
   }
 
   /* 标签区域 */
-  .tags {
-    display: flex;
-    gap: 8px;
-    flex: 1;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
+  .history-sidebar .tags {
+    display: flex !important;
+    gap: 8px !important;
+    flex: 1 !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
   }
 
   /* 标签样式 */
-  .tag {
-    padding: 3px 6px;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+  .history-sidebar .tag {
+    padding: 3px 6px !important;
+    border-radius: 3px !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
   }
 
   /* 点击次数标签 */
-  .clicks-tag {
-    background-color: #2196f3;
-    color: #ffffff;
+  .history-sidebar .clicks-tag {
+    background-color: #2196f3 !important;
+    color: #ffffff !important;
   }
 
   /* 记录时间 */
-  .record-time {
-    color: #888;
-    font-size: 11px;
-    font-weight: normal;
-    text-align: right;
-    white-space: nowrap;
-    flex: 0 0 auto;
+  .history-sidebar .record-time {
+    color: #888 !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+    flex: 0 0 auto !important;
   }
 
   /* 滚动条样式 */
-  .history-list::-webkit-scrollbar {
+  .history-sidebar .history-list::-webkit-scrollbar {
     width: 6px;
   }
 
-  .history-list::-webkit-scrollbar-track {
+  .history-sidebar .history-list::-webkit-scrollbar-track {
     background: #2a2a2a;
     border-radius: 3px;
     margin: 8px 0;
   }
 
-  .history-list::-webkit-scrollbar-thumb {
+  .history-sidebar .history-list::-webkit-scrollbar-thumb {
     background: #4caf50;
     border-radius: 3px;
     transition: all 0.2s ease;
   }
 
-  .history-list::-webkit-scrollbar-thumb:hover {
+  .history-sidebar .history-list::-webkit-scrollbar-thumb:hover {
     background: #45a049;
     transform: scaleX(1.2);
   }
 
-  .history-list::-webkit-scrollbar-thumb:active {
+  .history-sidebar .history-list::-webkit-scrollbar-thumb:active {
     background: #3d8b40;
   }
 
   /* 滚动条角落 */
-  .history-list::-webkit-scrollbar-corner {
+  .history-sidebar .history-list::-webkit-scrollbar-corner {
     background: #1a1a1a;
   }
 
