@@ -322,7 +322,7 @@ export default defineConfig({
       // 启用压缩支持
       'Accept-Encoding': 'gzip, deflate, br',
       // 资源提示
-      Link: '</logo.png>; rel=preload; as=image; crossorigin, </assets/js/vendor-[hash].js>; rel=preload; as=script; crossorigin, </assets/js/home-[hash].js>; rel=preload; as=script; crossorigin',
+      Link: '</logo.png>; rel=preload; as=image; crossorigin',
     },
   },
   // 启用持久化缓存，提升构建性能
