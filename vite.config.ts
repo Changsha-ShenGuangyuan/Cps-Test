@@ -387,7 +387,33 @@ export default defineConfig({
             if (id.includes('ClickTest') || id.includes('click-test') || id.includes('Click')) {
               return 'components-clicktest';
             }
+            // 拆分大型组件
+            if (id.includes('HomePage')) {
+              return 'components-homepage';
+            }
+            if (id.includes('Breadcrumb')) {
+              return 'components-breadcrumb';
+            }
+            if (id.includes('MenuManager')) {
+              return 'components-menu';
+            }
+            if (id.includes('ResponsiveImage')) {
+              return 'components-image';
+            }
             return 'components';
+          }
+          // 拆分页面级组件
+          if (id.includes('src/views')) {
+            if (id.includes('ClickTest')) {
+              return 'views-clicktest';
+            }
+            if (id.includes('SpaceClick')) {
+              return 'views-spaceclick';
+            }
+            if (id.includes('ReactionTime')) {
+              return 'views-reaction';
+            }
+            return 'views';
           }
         },
         // 优化chunk命名
