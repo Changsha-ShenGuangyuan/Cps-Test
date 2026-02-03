@@ -66,23 +66,26 @@
       return props.src;
     }
 
+    // 检查是否是logo文件
+    const isLogo = props.src.includes('logo.png');
+
     // 根据设备类型返回不同尺寸的图片
     let src = props.src;
 
-    // 为移动端提供更小尺寸的图片
-    if (isMobile.value) {
+    // 为移动端提供更小尺寸的图片（仅对非logo文件）
+    if (isMobile.value && !isLogo) {
       // 替换图片路径，添加mobile后缀
       src = src.replace(/(\.\w+)$/, '-mobile$1');
     }
 
-    // 为平板提供中等尺寸的图片
-    else if (isTablet.value) {
+    // 为平板提供中等尺寸的图片（仅对非logo文件）
+    else if (isTablet.value && !isLogo) {
       // 替换图片路径，添加tablet后缀
       src = src.replace(/(\.\w+)$/, '-tablet$1');
     }
 
-    // 检查是否支持WebP
-    if (supportsWebP.value) {
+    // 检查是否支持WebP（仅对非logo文件）
+    if (supportsWebP.value && !isLogo) {
       // 替换为WebP格式
       src = src.replace(/(\.\w+)$/, '.webp');
     }
