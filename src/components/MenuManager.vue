@@ -563,6 +563,7 @@
           :height="24"
           :lazy="true"
           :priority="true"
+          :skip-device-suffix="true"
         />
         <span class="sidebar-logo-text">{{ mobileWebsiteName }}</span>
       </div>
@@ -604,6 +605,7 @@
                 :height="20"
                 :lazy="true"
                 :priority="false"
+                :skip-device-suffix="true"
               />
               <span class="menu-item-name">{{ item.name }}</span>
               <span

@@ -9,6 +9,7 @@
     className?: string;
     lazy?: boolean;
     priority?: boolean;
+    skipDeviceSuffix?: boolean;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -17,6 +18,7 @@
     className: '',
     lazy: true,
     priority: false,
+    skipDeviceSuffix: false,
   });
 
   // 检测设备类型
@@ -59,8 +61,8 @@
     // 检查是否是图标文件（来自assets/icons目录）
     const isIcon = props.src.includes('assets/icons');
 
-    // 如果是图标文件，直接返回原始路径，不进行设备后缀和WebP转换
-    if (isIcon) {
+    // 如果是图标文件或设置了skipDeviceSuffix，直接返回原始路径，不进行设备后缀和WebP转换
+    if (isIcon || props.skipDeviceSuffix) {
       return props.src;
     }
 
