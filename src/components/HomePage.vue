@@ -619,9 +619,6 @@
       // 监听窗口 resize 事件
       window.addEventListener('resize', handleResize);
 
-      // 监听滚动事件，用于预加载
-      window.addEventListener('scroll', handleScroll);
-
       // 执行非关键操作
       if (typeof requestIdleCallback === 'function') {
         // 使用 requestIdleCallback 延迟执行
@@ -629,8 +626,6 @@
           renderFeatureStructuredData();
           renderGuideStructuredData();
           setupIntersectionObservers();
-          // 空闲时预加载ResultModal
-          preloadResultModal();
         });
       } else {
         // 降级方案：使用 setTimeout 延迟执行
@@ -638,11 +633,21 @@
           renderFeatureStructuredData();
           renderGuideStructuredData();
           setupIntersectionObservers();
-          // 延迟后预加载ResultModal
-          preloadResultModal();
         }, 100);
       }
     }, 0);
+
+    // 首屏加载完成后（3秒后）再添加滚动监听器和预加载
+    setTimeout(() => {
+      // 监听滚动事件，用于预加载
+      window.addEventListener('scroll', handleScroll);
+      
+      // 测试开始按钮点击时预加载
+      const startButtons = document.querySelectorAll('.start-test-btn');
+      startButtons.forEach(button => {
+        button.addEventListener('click', preloadResultModal);
+      });
+    }, 3000);
   });
 
   // 按需渲染相关变量

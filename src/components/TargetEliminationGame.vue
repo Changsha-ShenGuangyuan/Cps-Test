@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue';
+  import { ref, computed, onMounted, onUnmounted, watch, defineAsyncComponent, nextTick } from 'vue';
   import { t } from '../i18n'; // 导入翻译函数
   // 懒加载通用FAQ组件
   const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));
@@ -61,8 +61,8 @@
   const gameMode = ref<'static' | 'dynamic'>('static'); // 游戏模式：静态或动态
   const speedLevel = ref(1); // 速度等级：1-3，1为最慢，3为最快
 
-  // 计算属性：游戏容器尺寸
-  const containerSize = ref({ width: 600, height: 400 });
+  // 游戏容器尺寸（初始值设为与CSS一致，避免布局偏移）
+  const containerSize = ref({ width: 0, height: 430 });
 
   // 计算属性：格式化剩余时间
   const formattedTime = computed(() => {
@@ -310,20 +310,24 @@
       containerRect.value = gameContainerRef.value.getBoundingClientRect();
 
       // 使用缓存的尺寸信息
-      containerSize.value = {
-        width: containerRect.value.width,
-        height: containerRect.value.height,
-      };
+      const newWidth = containerRect.value.width;
+      const newHeight = containerRect.value.height;
 
-      // 如果容器尺寸变化，调整现有目标位置，确保它们不会超出边界
-      if (oldWidth !== containerSize.value.width || oldHeight !== containerSize.value.height) {
+      // 只有当尺寸确实发生变化时才更新，避免不必要的重新渲染
+      if (Math.abs(oldWidth - newWidth) > 1 || Math.abs(oldHeight - newHeight) > 1) {
+        containerSize.value = {
+          width: newWidth,
+          height: newHeight,
+        };
+
+        // 调整现有目标位置，确保它们不会超出边界
         targets.value = targets.value.map((target) => {
           if (!target.active) return target;
 
           // 确保目标X坐标在新容器内
           let newX = target.x;
-          if (newX + target.size > containerSize.value.width) {
-            newX = containerSize.value.width - target.size;
+          if (newX + target.size > newWidth) {
+            newX = newWidth - target.size;
           }
           if (newX < 0) {
             newX = 0;
@@ -331,8 +335,8 @@
 
           // 确保目标Y坐标在新容器内
           let newY = target.y;
-          if (newY + target.size > containerSize.value.height) {
-            newY = containerSize.value.height - target.size;
+          if (newY + target.size > newHeight) {
+            newY = newHeight - target.size;
           }
           if (newY < 0) {
             newY = 0;
@@ -349,7 +353,7 @@
   };
 
   // 组件挂载
-  onMounted(() => {
+  onMounted(async () => {
     // 加载最佳分数
     const savedBestScore = localStorage.getItem('targetEliminationBestScore');
     if (savedBestScore) {
@@ -357,6 +361,8 @@
     }
     // 开始游戏循环
     startGameLoop();
+    // 等待DOM更新完成后再设置容器尺寸
+    await nextTick();
     // 设置容器尺寸
     updateContainerSize();
     // 添加窗口大小变化监听
@@ -677,6 +683,7 @@
     grid-column: 1;
     grid-row: 1;
     height: 430px;
+    min-height: 430px;
     width: 100%;
     background-color: #000000;
     border-radius: 15px;
@@ -686,6 +693,7 @@
     border: 2px solid #333;
     box-sizing: border-box;
     margin: 0;
+    transition: height 0.3s ease, width 0.3s ease;
   }
 
   /* 外部设置面板 */
@@ -794,9 +802,11 @@
     justify-content: center;
     align-items: center;
     height: 100%;
+    min-height: 400px;
     gap: 20px;
     padding: 40px;
     box-sizing: border-box;
+    transition: all 0.3s ease;
   }
 
   /* 外部设置面板 */
@@ -992,8 +1002,10 @@
     justify-content: center;
     align-items: center;
     height: 100%;
+    min-height: 400px;
     z-index: 10;
     position: relative;
+    transition: all 0.3s ease;
   }
 
   .countdown-number {
@@ -1001,13 +1013,16 @@
     font-weight: bold;
     color: #ff7b00;
     animation: pulse 1s ease-in-out infinite;
+    transition: all 0.3s ease;
   }
 
   /* 游戏进行中 */
   .playing-state {
     width: 100%;
     height: 100%;
+    min-height: 400px;
     position: relative;
+    transition: all 0.3s ease;
   }
 
   /* 目标元素 */
@@ -1068,8 +1083,10 @@
     justify-content: center;
     align-items: center;
     height: 100%;
+    min-height: 400px;
     z-index: 10;
     position: relative;
+    transition: all 0.3s ease;
   }
 
   .game-over-state h3 {
@@ -1135,6 +1152,8 @@
     margin-left: 0;
     margin-right: 0;
     text-align: center;
+    min-height: 400px;
+    transition: min-height 0.3s ease;
   }
 
   /* FAQ 部分 */
@@ -1202,6 +1221,7 @@
     .external-settings-panel {
       width: clamp(240px, 35%, 300px);
       max-height: 500px;
+      transition: all 0.3s ease;
     }
   }
 
@@ -1215,6 +1235,7 @@
       align-items: center;
       gap: 20px;
       width: 100%;
+      transition: all 0.3s ease;
     }
 
     /* 游戏区域容器 - 宽度100% */
@@ -1224,6 +1245,7 @@
       width: 100%;
       min-width: auto;
       gap: 12px;
+      transition: all 0.3s ease;
     }
 
     /* 外部设置面板 - 显示在游戏点击区域下方 */
@@ -1240,6 +1262,7 @@
       height: auto;
       transform: translateX(0px);
       align-self: center;
+      transition: all 0.3s ease;
     }
 
     /* 游戏容器优化 */

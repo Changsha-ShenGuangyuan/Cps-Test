@@ -35,14 +35,163 @@ export default defineConfig({
       name: 'optimize-css-loading',
       enforce: 'post',
       transformIndexHtml(html) {
+        // 提取关键CSS并内联
+        const criticalCSS = `
+          <style>
+            /* ResultModal关键样式 */
+            .modal-overlay {
+              position: fixed;
+              inset: 0;
+              background-color: rgba(0, 0, 0, 0.4);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              z-index: 1000;
+            }
+            
+            .modal-content {
+              background-color: #282828;
+              border-radius: 20px;
+              padding: 30px;
+              width: 90%;
+              max-width: 500px;
+              position: relative;
+              box-shadow: 0 8px 32px rgba(76, 175, 80, 0.2);
+              border: 2px solid #333;
+            }
+            
+            .close-btn {
+              position: absolute;
+              top: 15px;
+              right: 15px;
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+              color: #4caf50;
+              width: 40px;
+              height: 40px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border-radius: 50%;
+              z-index: 10;
+            }
+            
+            .cps-result h2 {
+              color: #4caf50;
+              font-size: 48px;
+              margin: 0;
+              font-weight: bold;
+              text-align: center;
+            }
+            
+            .modal-buttons {
+              display: flex;
+              justify-content: center;
+              gap: 15px;
+            }
+            
+            .ok-btn {
+              padding: 12px 24px;
+              background-color: #4caf50;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: 16px;
+              font-weight: 700;
+            }
+            
+            /* Breadcrumb关键样式 */
+            .breadcrumb {
+              margin: 10px 0 20px 0;
+              padding: 12px 15px;
+              font-size: 14px;
+              color: #ccc;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              flex-wrap: wrap;
+              background-color: rgba(30, 30, 30, 0.5);
+              border-radius: 6px;
+              border-left: 3px solid #4caf50;
+            }
+            
+            .breadcrumb-link {
+              color: #66cc66;
+              text-decoration: none;
+              padding: 3px 5px;
+              border-radius: 3px;
+              font-weight: 500;
+            }
+            
+            .breadcrumb-text {
+              color: #ffffff;
+              font-weight: 500;
+            }
+            
+            .breadcrumb-separator {
+              color: #666;
+              margin: 0 4px;
+              font-size: 12px;
+            }
+            
+            /* 响应式关键样式 */
+            @media (max-width: 768px) {
+              .modal-content {
+                padding: 20px;
+                width: 95%;
+                max-width: 400px;
+              }
+              
+              .close-btn {
+                top: 10px;
+                right: 10px;
+                font-size: 20px;
+                width: 35px;
+                height: 35px;
+              }
+              
+              .cps-result h2 {
+                font-size: 36px;
+              }
+              
+              .ok-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+              }
+              
+              .breadcrumb {
+                padding: 8px 12px;
+                margin: 8px 0 16px 0;
+                font-size: 12px;
+                gap: 6px;
+              }
+              
+              .breadcrumb-link {
+                padding: 2px 4px;
+              }
+              
+              .breadcrumb-separator {
+                margin: 0 2px;
+                font-size: 10px;
+              }
+            }
+          </style>
+        `;
+
         // 将非关键CSS链接修改为异步加载
-        return html.replace(/<link rel="stylesheet"[^>]*?href="([^"]+)"[^>]*?>/g, (_, href) => {
+        const optimizedHtml = html.replace(/<link rel="stylesheet"[^>]*?href="([^"]+)"[^>]*?>/g, (_, href) => {
           // 创建异步加载的CSS链接
           const asyncLink = `<link rel="preload" href="${href}" as="style" onload="this.onload=null;this.rel='stylesheet'">`;
           // 添加noscript回退
           const noscriptFallback = `<noscript><link rel="stylesheet" href="${href}"></noscript>`;
           return asyncLink + noscriptFallback;
         });
+
+        // 将关键CSS内联到head中
+        return optimizedHtml.replace('</head>', `${criticalCSS}</head>`);
       },
     },
     // 资源提示插件
@@ -52,11 +201,12 @@ export default defineConfig({
       transformIndexHtml(html, ctx) {
         // 只在生产模式下添加预加载链接
         if (ctx.server?.config.mode === 'production') {
-          // 只添加关键资源预加载
+          // 只添加关键资源预加载，移除 ResultModal 的预加载
+          // ResultModal 将通过父组件的智能预加载逻辑处理
           const preloadLinks = `
             <link rel="preload" href="/assets/js/vendor-vue-[hash].js" as="script">
             <link rel="preload" href="/assets/js/components-home-[hash].js" as="script">
-            <link rel="preload" href="/assets/js/components-result-[hash].js" as="script">
+            <link rel="preload" href="/assets/js/components-breadcrumb-[hash].js" as="script" fetchpriority="high">
           `;
           // 将资源提示插入到head标签中
           return html.replace('</head>', `${preloadLinks}</head>`);
@@ -441,6 +591,9 @@ export default defineConfig({
             }
             if (componentName === 'ResultModal') {
               return 'components-result'; // 为ResultModal创建单独的chunk
+            }
+            if (componentName === 'Breadcrumb') {
+              return 'components-breadcrumb'; // 为Breadcrumb创建单独的chunk
             }
           }
         },

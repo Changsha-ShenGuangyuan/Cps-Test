@@ -49,6 +49,19 @@ const getPathInfo = (path: string) => {
   return { basePath, paramPath, paramIndex };
 };
 
+// 路由配置映射，减少重复代码
+const routeConfigMap: Record<string, string> = {
+  '/kohi-click-test': 'kohiClickTest',
+  '/reaction-time-test': 'reactionTest',
+  '/color-reaction-test': 'colorReactionTest',
+  '/key-reaction-test': 'keyReactionTest',
+  '/target-elimination-game': 'targetEliminationGame',
+  '/mouse-scroll-test': 'mouseScrollTest',
+  '/mouse-drag-test': 'mouseDragTest',
+  '/keyboard-test': 'keyboardTest',
+  '/spacebar-clicker': 'spacebarClicker'
+};
+
 // 计算面包屑数据
 const breadcrumbs = computed(() => {
   const path = route.path || '/';
@@ -59,16 +72,22 @@ const breadcrumbs = computed(() => {
   // 处理带参数的路由
   if (basePath.startsWith('/click-test/')) {
     const time = paramPath.split('/')[paramIndex];
-    items.push({ name: t('clickTest'), path: path.replace(/\/\d+$/, '/5') });
-    items.push({ name: `${time}${t('sec')} ${t('clickTest')}`, path: path });
+    if (time) {
+      items.push({ name: t('clickTest'), path: path.replace(/\/\d+$/, '/5') });
+      items.push({ name: `${time}${t('sec')} ${t('clickTest')}`, path: path });
+    }
   } else if (basePath.startsWith('/space-click-test/')) {
     const time = paramPath.split('/')[paramIndex];
-    items.push({ name: t('spaceClickTest'), path: path.replace(/\/\d+$/, '/5') });
-    items.push({ name: `${time}${t('sec')} ${t('spaceClickTest')}`, path: path });
+    if (time) {
+      items.push({ name: t('spaceClickTest'), path: path.replace(/\/\d+$/, '/5') });
+      items.push({ name: `${time}${t('sec')} ${t('spaceClickTest')}`, path: path });
+    }
   } else if (basePath.startsWith('/typing-test/')) {
     const time = paramPath.split('/')[paramIndex];
-    items.push({ name: t('typingTest'), path: path.replace(/\/\d+$/, '/1') });
-    items.push({ name: `${time}${t('minTypingTest')}`, path: path });
+    if (time) {
+      items.push({ name: t('typingTest'), path: path.replace(/\/\d+$/, '/1') });
+      items.push({ name: `${time}${t('minTypingTest')}`, path: path });
+    }
   } else if (basePath.startsWith('/multi-click-test/')) {
     const type = paramPath.split('/')[paramIndex] || '';
     items.push({ name: t('clickSeriesTest'), path: path.replace(/\/[^/]+$/, '/double') });
@@ -78,25 +97,9 @@ const breadcrumbs = computed(() => {
       items.push({ name: t('tripleClickTest'), path: path });
     }
   }
-  // 处理固定路由
-  else if (basePath === '/kohi-click-test') {
-    items.push({ name: t('kohiClickTest'), path: path });
-  } else if (basePath === '/reaction-time-test') {
-    items.push({ name: t('reactionTest'), path: path });
-  } else if (basePath === '/color-reaction-test') {
-    items.push({ name: t('colorReactionTest'), path: path });
-  } else if (basePath === '/key-reaction-test') {
-    items.push({ name: t('keyReactionTest'), path: path });
-  } else if (basePath === '/target-elimination-game') {
-    items.push({ name: t('targetEliminationGame'), path: path });
-  } else if (basePath === '/mouse-scroll-test') {
-    items.push({ name: t('mouseScrollTest'), path: path });
-  } else if (basePath === '/mouse-drag-test') {
-    items.push({ name: t('mouseDragTest'), path: path });
-  } else if (basePath === '/keyboard-test') {
-    items.push({ name: t('keyboardTest'), path: path });
-  } else if (basePath === '/spacebar-clicker') {
-    items.push({ name: t('spacebarClicker'), path: path });
+  // 处理固定路由（使用映射表优化）
+  else if (routeConfigMap[basePath]) {
+    items.push({ name: t(routeConfigMap[basePath]), path: path });
   }
 
   return items;
@@ -104,15 +107,15 @@ const breadcrumbs = computed(() => {
 </script>
 
 <style scoped>
-.breadcrumb, .breadcrumb-link, .breadcrumb-text, .breadcrumb-separator {
+/* 基础字体样式 */
+.breadcrumb {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   letter-spacing: 0.2px;
-}
-
-.breadcrumb {
+  
+  /* 容器样式 */
   margin: 10px 0 20px 0;
   padding: 12px 15px;
   font-size: 14px;
@@ -126,6 +129,7 @@ const breadcrumbs = computed(() => {
   border-left: 3px solid #4caf50;
 }
 
+/* 链接样式 */
 .breadcrumb-link {
   color: #66cc66;
   text-decoration: none;
@@ -141,11 +145,13 @@ const breadcrumbs = computed(() => {
   background-color: rgba(102, 204, 102, 0.3);
 }
 
+/* 文本样式 */
 .breadcrumb-text {
   color: #ffffff;
   font-weight: 500;
 }
 
+/* 分隔符样式 */
 .breadcrumb-separator {
   color: #666;
   margin: 0 4px;

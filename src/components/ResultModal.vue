@@ -64,7 +64,7 @@
           try {
             sessionStorage.setItem('sharedParams', JSON.stringify(decodedParams));
           } catch (error) {
-            console.error('Failed to save shared params to sessionStorage:', error);
+            // 静默处理错误，不影响用户体验
           }
           sharedParams = decodedParams;
         }
@@ -72,18 +72,13 @@
     }
 
     if (sharedParams) {
-      // 打印解密后的参数（可以根据需要使用这些参数）
-      console.log('Decoded share params in ResultModal:', sharedParams);
-
       // 检查是否与当前测试匹配
       if (sharedParams.type === props.type && sharedParams.time === props.time) {
         // 匹配成功，保存对比数据
         friendData.value = sharedParams;
-        console.log('好友对比数据匹配成功:', friendData.value);
       } else {
         // 匹配失败，清空对比数据
         friendData.value = null;
-        console.log('好友对比数据不匹配:', sharedParams, props);
       }
     } else {
       // 没有获取到分享参数，清空对比数据
@@ -368,21 +363,7 @@
         <p class="share-title">{{ t('resultModal.shareTitle') }}</p>
         <div class="share-buttons">
           <button class="share-btn x-btn" title="Share to X" @click="shareTo('x')">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"
-              ></path>
-            </svg>
+            <img src="/src/assets/svg/x-icon.svg" alt="X" width="20" height="20" />
             <span>{{ t('resultModal.shareX') }}</span>
           </button>
           <button
@@ -390,21 +371,7 @@
             title="Share to WhatsApp"
             @click="shareTo('whatsapp')"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-              ></path>
-            </svg>
+            <img src="/src/assets/svg/whatsapp-icon.svg" alt="WhatsApp" width="20" height="20" />
             <span>{{ t('resultModal.shareWhatsApp') }}</span>
           </button>
         </div>
@@ -533,7 +500,6 @@
     font-size: 24px;
     cursor: pointer;
     color: #4caf50;
-    padding: 0;
     width: 40px;
     height: 40px;
     display: flex;
@@ -542,7 +508,6 @@
     border-radius: 50%;
     transition: all 0.2s ease;
     outline: none;
-    /* 优化居中显示 */
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
     z-index: 10;
@@ -605,7 +570,6 @@
     height: 1px;
     background-color: #3a3a3a;
     margin: 20px 0;
-    opacity: 0.5;
     transition: opacity 0.3s ease;
     animation: fadeInUp 0.6s ease-out 1s forwards;
     opacity: 0;
@@ -791,28 +755,25 @@
     animation: fadeInUp 0.6s ease-out 1.5s forwards;
   }
 
-  /* 结果更好样式 */
+  /* 结果样式 */
+  .result-better,
+  .result-worse,
+  .result-equal {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
   .result-better {
     color: #4caf50;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.6;
   }
 
-  /* 结果更差样式 */
   .result-worse {
     color: #f44336;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.6;
   }
 
-  /* 结果平局样式 */
   .result-equal {
     color: #ff9800;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.6;
   }
 
   /* 按钮区域 */
