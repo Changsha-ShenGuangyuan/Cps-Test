@@ -18,26 +18,19 @@
   const GAME_STATE_KEY = 'spacebarClickerGameState';
 
   // 自动点击的时间间隔（毫秒）
-  const AUTO_CLICK_INTERVAL = 100; // 每100ms增加一次点击
+  const AUTO_CLICK_INTERVAL = 200; // 改为200ms，减少性能消耗
   // 保存自动点击的累积点击数（包括小数）
   const autoClickAccumulator = ref(0);
+
+  // 保存游戏状态的防抖定时器
+  let saveTimeout: number | null = null;
 
   // 空格键按钮引用
   const spacebarButton = ref<HTMLElement | null>(null);
 
-  // 位置缓存
-  const elementRectCache = ref<Map<string, DOMRect>>(new Map());
-
-  // 获取元素位置，优先使用缓存
-  const getElementRect = (key: string, element: HTMLElement) => {
-    // 检查缓存是否存在
-    if (elementRectCache.value.has(key)) {
-      return elementRectCache.value.get(key)!;
-    }
-    // 缓存不存在时获取新位置并缓存
-    const rect = element.getBoundingClientRect();
-    elementRectCache.value.set(key, rect);
-    return rect;
+  // 获取元素位置，每次都获取最新位置，避免滚动后使用过期缓存
+  const getElementRect = (_key: string, element: HTMLElement) => {
+    return element.getBoundingClientRect();
   };
 
   // BUFF类型定义
@@ -342,23 +335,28 @@
     }
   };
 
-  // 保存游戏状态到localStorage
+  // 保存游戏状态到localStorage（添加防抖）
   const saveGameState = () => {
-    try {
-      const gameState = {
-        clickCount: clickCount.value,
-        manualClickCount: manualClickCount.value,
-        autoClickCount: autoClickCount.value,
-        buffs: buffs.value.map((buff) => ({
-          id: buff.id,
-          currentLevel: buff.currentLevel,
-          unlocked: buff.unlocked,
-        })),
-      };
-      localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
-    } catch (error) {
-      console.error('Failed to save game state:', error);
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
     }
+    saveTimeout = window.setTimeout(() => {
+      try {
+        const gameState = {
+          clickCount: clickCount.value,
+          manualClickCount: manualClickCount.value,
+          autoClickCount: autoClickCount.value,
+          buffs: buffs.value.map((buff) => ({
+            id: buff.id,
+            currentLevel: buff.currentLevel,
+            unlocked: buff.unlocked,
+          })),
+        };
+        localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
+      } catch (error) {
+        console.error('Failed to save game state:', error);
+      }
+    }, 1000); // 延迟1秒保存，避免频繁写入
   };
 
   // 从localStorage加载游戏状态
@@ -459,9 +457,15 @@
     saveGameState();
   };
 
-  // 为键盘操作创建点击特效
+  // 为键盘操作创建点击特效（优化：添加元素数量限制和更好的清理机制）
   const createClickEffectForKeyboard = () => {
     if (!spacebarButton.value) return;
+
+    // 限制同时存在的特效数量，避免内存泄漏
+    const existingEffects = document.querySelectorAll('.click-effect');
+    if (existingEffects.length > 10) {
+      return; // 超过限制时不再创建新特效
+    }
 
     // 计算点击倍数（量子纠缠触发器）：每次点击的数值翻倍
     const quantumBuff = buffs.value.find((b) => b.id === 'quantumTwin');
@@ -491,12 +495,16 @@
 
     // 动画结束后移除元素
     effectElement.addEventListener('animationend', () => {
-      effectElement.remove();
+      if (effectElement.parentNode) {
+        effectElement.remove();
+      }
     });
 
     // 添加备用机制，确保元素被移除
     setTimeout(() => {
-      effectElement.remove();
+      if (effectElement.parentNode) {
+        effectElement.remove();
+      }
     }, 800);
   };
 
@@ -569,8 +577,14 @@
     return result;
   };
 
-  // 创建点击特效
+  // 创建点击特效（优化：添加元素数量限制和更好的清理机制）
   const createClickEffect = (event: MouseEvent) => {
+    // 限制同时存在的特效数量，避免内存泄漏
+    const existingEffects = document.querySelectorAll('.click-effect');
+    if (existingEffects.length > 10) {
+      return; // 超过限制时不再创建新特效
+    }
+
     // 计算点击倍数（量子纠缠触发器）：每次点击的数值翻倍
     const quantumBuff = buffs.value.find((b) => b.id === 'quantumTwin');
     const clickMultiplier = quantumBuff
@@ -592,18 +606,28 @@
 
     // 动画结束后移除元素
     effectElement.addEventListener('animationend', () => {
-      effectElement.remove();
+      if (effectElement.parentNode) {
+        effectElement.remove();
+      }
     });
 
     // 添加备用机制，确保元素被移除
     setTimeout(() => {
-      effectElement.remove();
+      if (effectElement.parentNode) {
+        effectElement.remove();
+      }
     }, 800);
   };
 
-  // 创建BUFF购买特效
+  // 创建BUFF购买特效（优化：添加元素数量限制和更好的清理机制）
   const createBuyBuffEffect = (buff: Buff, element: HTMLElement) => {
-    // 获取BUFF卡片的位置信息，使用缓存
+    // 限制同时存在的特效数量，避免内存泄漏
+    const existingEffects = document.querySelectorAll('.buy-buff-effect');
+    if (existingEffects.length > 5) {
+      return; // 超过限制时不再创建新特效
+    }
+
+    // 获取BUFF卡片的位置信息
     const rect = getElementRect(`buff-${buff.id}`, element);
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -625,18 +649,28 @@
 
     // 动画结束后移除元素
     effectElement.addEventListener('animationend', () => {
-      effectElement.remove();
+      if (effectElement.parentNode) {
+        effectElement.remove();
+      }
     });
 
     // 添加备用机制，确保元素被移除
     setTimeout(() => {
-      effectElement.remove();
+      if (effectElement.parentNode) {
+        effectElement.remove();
+      }
     }, 1000);
   };
 
-  // 创建BUFF购买粒子爆发特效
+  // 创建BUFF购买粒子爆发特效（优化：添加元素数量限制和更好的清理机制）
   const createBuyBuffParticleEffect = (element: HTMLElement, buffId: string) => {
-    // 获取BUFF卡片的位置信息，使用缓存
+    // 限制同时存在的粒子容器数量，避免内存泄漏
+    const existingContainers = document.querySelectorAll('.particles-container');
+    if (existingContainers.length > 3) {
+      return; // 超过限制时不再创建新粒子特效
+    }
+
+    // 获取BUFF卡片的位置信息
     const rect = getElementRect(`buff-${buffId}`, element);
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -682,7 +716,9 @@
 
     // 动画结束后移除容器
     setTimeout(() => {
-      particlesContainer.remove();
+      if (particlesContainer.parentNode) {
+        particlesContainer.remove();
+      }
     }, 1000);
   };
 
@@ -690,6 +726,12 @@
   let cpsUpdateTimer: number;
   // 全局自动点击定时器
   let globalAutoClickTimer: number;
+
+  // 滚动事件处理函数
+  const handleScroll = () => {
+    // 滚动时可以添加一些处理逻辑
+    // 例如：清空不需要的缓存等
+  };
 
   // 组件挂载时添加事件监听
   onMounted(async () => {
@@ -716,11 +758,13 @@
       // 添加键盘事件监听
       window.addEventListener('keydown', handleKeyDown);
       window.addEventListener('keyup', handleKeyUp);
+      // 添加滚动事件监听
+      window.addEventListener('scroll', handleScroll);
 
-      // 每秒更新一次点击速度
-      cpsUpdateTimer = window.setInterval(updateClicksPerSecond, 100);
+      // 每500ms更新一次点击速度，减少性能消耗
+      cpsUpdateTimer = window.setInterval(updateClicksPerSecond, 500);
 
-      // 设置全局自动点击定时器，每100ms触发一次，实现平滑增加
+      // 设置全局自动点击定时器，每200ms触发一次，实现平滑增加
       globalAutoClickTimer = window.setInterval(() => {
         // 根据当前autoCPS计算这段时间应增加的点击数
         // autoCPS是每秒点击数，所以每100ms增加的点击数是 autoCPS * 0.1
@@ -752,6 +796,7 @@
   onBeforeUnmount(() => {
     window.removeEventListener('keydown', handleKeyDown);
     window.removeEventListener('keyup', handleKeyUp);
+    window.removeEventListener('scroll', handleScroll);
 
     // 清除CPS更新定时器
     if (cpsUpdateTimer) {
@@ -761,6 +806,11 @@
     // 清除全局自动点击定时器
     if (globalAutoClickTimer) {
       clearInterval(globalAutoClickTimer);
+    }
+
+    // 清除保存游戏状态的防抖定时器
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
     }
   });
 </script>

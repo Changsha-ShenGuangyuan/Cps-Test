@@ -442,7 +442,6 @@ export default defineConfig({
             if (componentName === 'ResultModal') {
               return 'components-result'; // 为ResultModal创建单独的chunk
             }
-            return 'components-other';
           }
         },
       },
