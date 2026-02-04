@@ -86,7 +86,7 @@
         // 确保只提取需要的字段，忽略旧格式的title和time字段
         return rawItems.map((item: any) => ({
           id: item.id,
-          path: addLanguagePrefix(item.path),
+          path: item.path,
           timestamp: item.timestamp,
         }));
       }
@@ -137,7 +137,12 @@
 
   // 初始化历史记录数据
   const initHistoryItems = () => {
-    historyItems.value = loadHistoryFromStorage();
+    const rawItems = loadHistoryFromStorage();
+    // 加载后添加语言前缀
+    historyItems.value = rawItems.map(item => ({
+      ...item,
+      path: addLanguagePrefix(item.path)
+    }));
   };
 
   // 监听语言变化，更新历史记录数据

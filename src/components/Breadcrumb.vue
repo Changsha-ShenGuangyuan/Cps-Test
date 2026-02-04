@@ -51,7 +51,7 @@ const getPathInfo = (path: string) => {
 
 // 计算面包屑数据
 const breadcrumbs = computed(() => {
-  const path = route.path;
+  const path = route.path || '/';
   const items: BreadcrumbItem[] = [{ name: t('home'), path: getHomePath() }];
 
   const { basePath, paramPath, paramIndex } = getPathInfo(path);
@@ -59,44 +59,44 @@ const breadcrumbs = computed(() => {
   // 处理带参数的路由
   if (basePath.startsWith('/click-test/')) {
     const time = paramPath.split('/')[paramIndex];
-    items.push({ name: t('clickTest'), path: route.path.replace(/\/\d+$/, '/5') });
-    items.push({ name: `${time}${t('sec')} ${t('clickTest')}`, path: route.path });
+    items.push({ name: t('clickTest'), path: path.replace(/\/\d+$/, '/5') });
+    items.push({ name: `${time}${t('sec')} ${t('clickTest')}`, path: path });
   } else if (basePath.startsWith('/space-click-test/')) {
     const time = paramPath.split('/')[paramIndex];
-    items.push({ name: t('spaceClickTest'), path: route.path.replace(/\/\d+$/, '/5') });
-    items.push({ name: `${time}${t('sec')} ${t('spaceClickTest')}`, path: route.path });
+    items.push({ name: t('spaceClickTest'), path: path.replace(/\/\d+$/, '/5') });
+    items.push({ name: `${time}${t('sec')} ${t('spaceClickTest')}`, path: path });
   } else if (basePath.startsWith('/typing-test/')) {
     const time = paramPath.split('/')[paramIndex];
-    items.push({ name: t('typingTest'), path: route.path.replace(/\/\d+$/, '/1') });
-    items.push({ name: `${time}${t('minTypingTest')}`, path: route.path });
+    items.push({ name: t('typingTest'), path: path.replace(/\/\d+$/, '/1') });
+    items.push({ name: `${time}${t('minTypingTest')}`, path: path });
   } else if (basePath.startsWith('/multi-click-test/')) {
     const type = paramPath.split('/')[paramIndex] || '';
-    items.push({ name: t('clickSeriesTest'), path: route.path.replace(/\/[^/]+$/, '/double') });
+    items.push({ name: t('clickSeriesTest'), path: path.replace(/\/[^/]+$/, '/double') });
     if (type === 'double') {
-      items.push({ name: t('doubleClickTest'), path: route.path });
+      items.push({ name: t('doubleClickTest'), path: path });
     } else if (type === 'triple') {
-      items.push({ name: t('tripleClickTest'), path: route.path });
+      items.push({ name: t('tripleClickTest'), path: path });
     }
   }
   // 处理固定路由
   else if (basePath === '/kohi-click-test') {
-    items.push({ name: t('kohiClickTest'), path: route.path });
+    items.push({ name: t('kohiClickTest'), path: path });
   } else if (basePath === '/reaction-time-test') {
-    items.push({ name: t('reactionTest'), path: route.path });
+    items.push({ name: t('reactionTest'), path: path });
   } else if (basePath === '/color-reaction-test') {
-    items.push({ name: t('colorReactionTest'), path: route.path });
+    items.push({ name: t('colorReactionTest'), path: path });
   } else if (basePath === '/key-reaction-test') {
-    items.push({ name: t('keyReactionTest'), path: route.path });
+    items.push({ name: t('keyReactionTest'), path: path });
   } else if (basePath === '/target-elimination-game') {
-    items.push({ name: t('targetEliminationGame'), path: route.path });
+    items.push({ name: t('targetEliminationGame'), path: path });
   } else if (basePath === '/mouse-scroll-test') {
-    items.push({ name: t('mouseScrollTest'), path: route.path });
+    items.push({ name: t('mouseScrollTest'), path: path });
   } else if (basePath === '/mouse-drag-test') {
-    items.push({ name: t('mouseDragTest'), path: route.path });
+    items.push({ name: t('mouseDragTest'), path: path });
   } else if (basePath === '/keyboard-test') {
-    items.push({ name: t('keyboardTest'), path: route.path });
+    items.push({ name: t('keyboardTest'), path: path });
   } else if (basePath === '/spacebar-clicker') {
-    items.push({ name: t('spacebarClicker'), path: route.path });
+    items.push({ name: t('spacebarClicker'), path: path });
   }
 
   return items;

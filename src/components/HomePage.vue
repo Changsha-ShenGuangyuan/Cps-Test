@@ -849,7 +849,7 @@
       '@context': 'https://schema.org',
       '@type': 'HowTo',
       name: t('testGuide'),
-      description: 'CPSTest 平台使用指南，帮助您快速开始测试',
+      description: t('testGuideDescription'),
       step: [
         {
           '@type': 'HowToStep',

@@ -45,6 +45,25 @@ export default defineConfig({
         });
       },
     },
+    // 资源提示插件
+    {
+      name: 'optimize-resource-hints',
+      enforce: 'post',
+      transformIndexHtml(html, ctx) {
+        // 只在生产模式下添加预加载链接
+        if (ctx.server?.config.mode === 'production') {
+          // 只添加关键资源预加载
+          const preloadLinks = `
+            <link rel="preload" href="/assets/js/vendor-vue-[hash].js" as="script">
+            <link rel="preload" href="/assets/js/components-home-[hash].js" as="script">
+            <link rel="preload" href="/assets/js/components-result-[hash].js" as="script">
+          `;
+          // 将资源提示插入到head标签中
+          return html.replace('</head>', `${preloadLinks}</head>`);
+        }
+        return html;
+      },
+    },
     viteCompression({
       algorithm: 'gzip',
       ext: '.gz',
@@ -346,7 +365,7 @@ export default defineConfig({
   cacheDir: '.vite/cache',
   build: {
     minify: 'terser',
-    chunkSizeWarningLimit: 100, // 进一步降低chunk大小警告阈值
+    chunkSizeWarningLimit: 50, // 进一步降低chunk大小警告阈值
     cssCodeSplit: true, // 启用CSS代码分割
     cssMinify: 'lightningcss', // 使用更高效的CSS压缩
     target: ['es2015', 'edge88', 'firefox78', 'chrome87', 'safari14'], // 优化目标浏览器
@@ -368,13 +387,26 @@ export default defineConfig({
       },
       // 配置输出选项
       output: {
+        // 优化chunk命名
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        // 生成更小的chunk
+        minifyInternalExports: true,
         // 手动分包配置
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // 更精细的vendor分包
             if (id.includes('vue') || id.includes('vue-router')) {
-              return 'vendor';
+              return 'vendor-vue';
             }
-            return 'vendor';
+            if (id.includes('@vueuse')) {
+              return 'vendor-vueuse';
+            }
+            if (id.includes('vue-i18n')) {
+              return 'vendor-i18n';
+            }
+            return 'vendor-other';
           }
           if (id.includes('src/i18n')) {
             if (id.includes('locales/en')) {
@@ -398,11 +430,21 @@ export default defineConfig({
           if (id.includes('src/composables')) {
             return 'composables';
           }
+          // 按组件分包
+          if (id.includes('src/components/')) {
+            const componentName = id.split('/').pop()?.replace(/\.vue$/, '');
+            if (componentName === 'HomePage') {
+              return 'components-home';
+            }
+            if (componentName === 'ClickTest') {
+              return 'components-test';
+            }
+            if (componentName === 'ResultModal') {
+              return 'components-result'; // 为ResultModal创建单独的chunk
+            }
+            return 'components-other';
+          }
         },
-        // 优化chunk命名
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js',
-        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
       // 增强tree shaking
       treeshake: {
@@ -438,10 +480,10 @@ export default defineConfig({
       localsConvention: 'camelCase',
     },
   },
-  // 优化资源加载
+  // 优化后的预构建配置
   optimizeDeps: {
     // 预构建依赖
-    include: ['vue', 'vue-router', '@vueuse/head'],
+    include: ['vue', 'vue-router', '@vueuse/head', 'vue-i18n'],
     // 禁用自动依赖发现，提高构建速度
     force: false,
   },

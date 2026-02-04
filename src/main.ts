@@ -4,7 +4,6 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { createHead } from '@vueuse/head';
-import i18n from './i18n';
 
 // 延迟初始化函数，确保DOM已经解析完成
 function initApp() {
@@ -21,19 +20,20 @@ function initApp() {
       try {
         // 先初始化语言资源
         await module.initLanguage();
+        // 无论语言初始化是否成功，都使用i18n插件
+        app.use(module.default);
+        // 挂载应用
+        app.mount('#app');
       } catch (error) {
         console.error('初始化语言资源失败:', error);
-      } finally {
-        // 无论语言初始化是否成功，都使用i18n插件
-        app.use(i18n);
-        // 挂载应用
+        // 即使加载失败也要挂载应用
+        app.use(module.default);
         app.mount('#app');
       }
     })
     .catch((error) => {
       console.error('加载i18n模块失败:', error);
       // 即使加载失败也要挂载应用
-      app.use(i18n);
       app.mount('#app');
     });
 }

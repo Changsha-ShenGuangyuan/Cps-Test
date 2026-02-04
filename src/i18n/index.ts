@@ -188,7 +188,9 @@ export const initLanguage = async () => {
 
   // 更新meta标签
   nextTick(() => {
-    updateMetaTags(router.currentRoute.value);
+    if (router && router.currentRoute && router.currentRoute.value) {
+      updateMetaTags(router.currentRoute.value);
+    }
   });
 };
 

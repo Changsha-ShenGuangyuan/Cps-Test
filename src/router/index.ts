@@ -355,6 +355,11 @@ let lastLang: string = '';
 
 // 提取meta标签更新逻辑为独立函数，支持响应式更新
 export const updateMetaTags = (to: any) => {
+  // 检查to参数是否存在
+  if (!to || !to.path) {
+    return;
+  }
+  
   // 避免重复更新相同路由的meta标签，同时考虑语言变化
   if (
     lastRoute &&
@@ -371,7 +376,7 @@ export const updateMetaTags = (to: any) => {
 
   // 设置页面标题
   let pageTitle = '';
-  if (to.meta.i18n && to.meta.i18n.titleKey) {
+  if (to.meta && to.meta.i18n && to.meta.i18n.titleKey) {
     // 获取不带语言前缀的路径
     const pathWithoutLang = getPathWithoutLangPrefix(to.path);
 
@@ -550,21 +555,108 @@ export const updateMetaTags = (to: any) => {
   const schemaScript = document.querySelector('script[type="application/ld+json"]');
   if (schemaScript) {
     try {
+      // 获取当前日期，格式为YYYY-MM-DD
+      const currentDate = new Date().toISOString().split('T')[0];
+      
       // 根据页面类型生成不同的结构化数据
-      let schemaData: any = {};
+      const schemaData: any[] = [];
+
+      // 基础网页结构化数据
+      const webPageData = {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: pageTitle,
+        description: metaDesc,
+        url: currentUrl,
+        keywords: metaKeywords,
+        inLanguage: langState.current,
+        image: {
+          '@type': 'ImageObject',
+          url: `${baseUrl}/logo.png`,
+          width: 512,
+          height: 512,
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: t('schemaPublisher'),
+          logo: {
+            '@type': 'ImageObject',
+            url: `${baseUrl}/logo.png`,
+            width: 512,
+            height: 512,
+          },
+          url: baseUrl,
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': currentUrl,
+        },
+        datePublished: '2025-01-01',
+        dateModified: currentDate,
+        potentialAction: {
+          '@type': 'UseAction',
+          target: currentUrl,
+          description: `开始${pageTitle}`,
+        },
+      };
+      
+      schemaData.push(webPageData);
 
       // 检测页面类型
-      const isTestPage = to.path.includes('-test') || to.path.includes('game');
+      const pathWithoutLang = getPathWithoutLangPrefix(to.path);
+      const isTestPage = pathWithoutLang.includes('-test') || pathWithoutLang.includes('game');
 
       if (isTestPage) {
-        // 测试页面结构化数据
-        schemaData = {
+        // 测试页面详细结构化数据
+        const testPathRegex = /^\/([^/]+)\/(\d+)$/;
+        const match = pathWithoutLang.match(testPathRegex);
+        
+        let testType = 'GeneralTest';
+        let testTime = '';
+        
+        if (match) {
+          const [, type, time] = match;
+          testTime = time || '';
+          
+          // 根据测试类型设置更准确的类型
+          switch (type) {
+            case 'click-test':
+              testType = 'ClickTest';
+              break;
+            case 'space-click-test':
+              testType = 'SpaceClickTest';
+              break;
+            case 'typing-test':
+              testType = 'TypingTest';
+              break;
+            case 'reaction-time-test':
+            case 'color-reaction-test':
+            case 'key-reaction-test':
+              testType = 'ReactionTest';
+              break;
+            case 'mouse-scroll-test':
+            case 'mouse-drag-test':
+              testType = 'MouseTest';
+              break;
+            case 'keyboard-test':
+              testType = 'KeyboardTest';
+              break;
+            case 'target-elimination-game':
+            case 'spacebar-clicker':
+              testType = 'GameApplication';
+              break;
+            default:
+              testType = 'GeneralTest';
+          }
+        }
+        
+        // 测试工具结构化数据
+        const testToolData = {
           '@context': 'https://schema.org',
           '@type': 'WebApplication',
           name: pageTitle,
           description: metaDesc,
           url: currentUrl,
-          keywords: metaKeywords,
           applicationCategory: 'GameApplication',
           operatingSystem: 'Any',
           offers: {
@@ -572,72 +664,128 @@ export const updateMetaTags = (to: any) => {
             price: '0',
             priceCurrency: 'CNY',
           },
-          inLanguage: ['zh-CN', 'en', 'ja', 'ko'],
-          image: {
-            '@type': 'ImageObject',
-            url: `${baseUrl}/logo.png`,
-            width: 512,
-            height: 512,
-          },
-          publisher: {
-            '@type': 'Organization',
-            name: t('schemaPublisher'),
-            logo: {
-              '@type': 'ImageObject',
-              url: `${baseUrl}/logo.png`,
-              width: 512,
-              height: 512,
-            },
-            url: baseUrl,
-          },
-          mainEntityOfPage: {
-            '@type': 'WebPage',
-            '@id': currentUrl,
-          },
-          // 使用固定发布日期，避免每次访问都更新
-          datePublished: '2025-01-01',
-          dateModified: '2025-06-01',
-          potentialAction: {
-            '@type': 'UseAction',
-            target: currentUrl,
-            description: `开始${pageTitle}`,
-          },
+          inLanguage: langState.current,
+          softwareVersion: '1.0.0',
+          features: [
+            t('testFeatureRealTimeFeedback'),
+            t('testFeatureHistoryRecords'),
+            t('testFeatureMultiLanguageSupport'),
+            t('testFeatureResponsiveDesign')
+          ],
+          testType: testType,
+          testTime: testTime,
         };
+        
+        schemaData.push(testToolData);
       } else {
-        // 非测试页面使用默认结构化数据
-        schemaData = {
-          '@context': 'https://schema.org',
-          '@type': 'WebSite',
-          name: t('schemaName'),
-          description: metaDesc,
-          url: currentUrl,
-          keywords: metaKeywords,
-          publisher: {
-            '@type': 'Organization',
-            name: t('schemaPublisher'),
-            logo: {
-              '@type': 'ImageObject',
-              url: `${baseUrl}/logo.png`,
-              width: 512,
-              height: 512,
-            },
+        // 非测试页面 - 添加搜索功能结构化数据
+        if (to.name === 'Home') {
+          const searchActionData = {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: t('websiteName'),
             url: baseUrl,
-          },
-          inLanguage: ['zh-CN', 'en', 'ja', 'ko'],
-          mainEntityOfPage: {
-            '@type': 'WebPage',
-            '@id': currentUrl,
-          },
-          // 使用固定发布日期，避免每次访问都更新
-          datePublished: '2025-01-01',
-          dateModified: '2025-06-01',
-          potentialAction: {
-            '@type': 'SearchAction',
-            target: `${baseUrl}/search?q={search_term_string}`,
-            'query-input': 'required name=search_term_string',
-          },
-        };
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: `${baseUrl}/?q={search_term_string}`,
+              'query-input': 'required name=search_term_string',
+            },
+          };
+          
+          schemaData.push(searchActionData);
+        }
       }
+      
+      // 添加面包屑导航结构化数据
+      const breadcrumbData = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: t('homePage'),
+            item: baseUrl,
+          },
+        ],
+      };
+      
+      // 根据当前路径生成面包屑导航
+      const pathSegments = pathWithoutLang.split('/').filter(segment => segment !== '');
+      if (pathSegments.length > 0) {
+        pathSegments.forEach((segment, index) => {
+          // 生成当前 segment 的 URL
+          const segmentPath = `/${pathSegments.slice(0, index + 1).join('/')}`;
+          const fullSegmentUrl = `${baseUrl}${generateLangPath(segmentPath, langState.current)}`;
+          
+          // 转换 segment 为可读名称
+          let segmentName = segment;
+          switch (segment) {
+            case 'click-test':
+              segmentName = t('clickTest');
+              break;
+            case 'space-click-test':
+              segmentName = t('spaceClickTest');
+              break;
+            case 'typing-test':
+              segmentName = t('typingTest');
+              break;
+            case 'reaction-time-test':
+              segmentName = t('reactionTest');
+              break;
+            case 'color-reaction-test':
+              segmentName = t('colorReactionTest');
+              break;
+            case 'key-reaction-test':
+              segmentName = t('keyReactionTest');
+              break;
+            case 'mouse-scroll-test':
+              segmentName = t('mouseScrollTest');
+              break;
+            case 'mouse-drag-test':
+              segmentName = t('mouseDragTest');
+              break;
+            case 'keyboard-test':
+              segmentName = t('keyboardTest');
+              break;
+            case 'target-elimination-game':
+              segmentName = t('targetEliminationGame');
+              break;
+            case 'spacebar-clicker':
+              segmentName = t('spacebarClicker');
+              break;
+            case 'kohi-click-test':
+              segmentName = t('kohiClickTest');
+              break;
+            case 'multi-click-test':
+              segmentName = t('multiClickTest');
+              break;
+            case 'double':
+              segmentName = t('doubleClickTest');
+              break;
+            case 'triple':
+              segmentName = t('tripleClickTest');
+              break;
+            case 'privacy-policy':
+              segmentName = t('privacyPolicyTitle');
+              break;
+          }
+          
+          // 检查是否是数字（如测试时间）
+          if (!isNaN(Number(segment)) && segment.length <= 2) {
+            segmentName = `${segment}${pathSegments[index - 1] === 'typing-test' ? t('minutes') : t('seconds')}`;
+          }
+          
+          breadcrumbData.itemListElement.push({
+            '@type': 'ListItem',
+            position: index + 2,
+            name: segmentName,
+            item: fullSegmentUrl,
+          });
+        });
+      }
+      
+      schemaData.push(breadcrumbData);
 
       // 更新结构化数据
       schemaScript.textContent = JSON.stringify(schemaData);
