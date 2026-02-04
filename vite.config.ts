@@ -30,6 +30,21 @@ export default defineConfig({
           .replace(/<link rel="stylesheet"[^>]*href="[^"]*(click-test|ClickTest)[^>]*>/g, '');
       },
     },
+    // 自定义插件，用于优化CSS加载策略
+    {
+      name: 'optimize-css-loading',
+      enforce: 'post',
+      transformIndexHtml(html) {
+        // 将非关键CSS链接修改为异步加载
+        return html.replace(/<link rel="stylesheet"[^>]*?href="([^"]+)"[^>]*?>/g, (_, href) => {
+          // 创建异步加载的CSS链接
+          const asyncLink = `<link rel="preload" href="${href}" as="style" onload="this.onload=null;this.rel='stylesheet'">`;
+          // 添加noscript回退
+          const noscriptFallback = `<noscript><link rel="stylesheet" href="${href}"></noscript>`;
+          return asyncLink + noscriptFallback;
+        });
+      },
+    },
     viteCompression({
       algorithm: 'gzip',
       ext: '.gz',

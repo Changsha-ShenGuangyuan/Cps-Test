@@ -494,8 +494,7 @@
   }
 
   .logo:focus {
-    outline: 2px solid #4caf50;
-    outline-offset: 2px;
+    outline: none;
   }
 
   .desktop-logo {
@@ -569,8 +568,7 @@
 
   /* 主导航项焦点样式 */
   .main-nav-item:focus {
-    outline: 2px solid #4caf50;
-    outline-offset: 2px;
+    outline: none;
   }
 
   /* 移动端导航栏优化 */
@@ -689,8 +687,7 @@
 
   /* 汉堡菜单焦点样式 */
   .hamburger-menu:focus {
-    outline: 2px solid #4caf50;
-    outline-offset: 2px;
+    outline: none;
   }
 
   /* 汉堡菜单图标 */

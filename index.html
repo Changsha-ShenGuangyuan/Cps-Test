@@ -23,304 +23,33 @@
     
     <!-- 首屏关键CSS内联 - 减少CSS请求 -->
     <style>
-      /* 基础样式重置 */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        -webkit-tap-highlight-color: transparent;
-        user-select: none;
-      }
-      
-      /* 基础样式 */
-      body {
-        min-width: 320px;
-        min-height: 100vh;
-        width: 100%;
-        overflow-x: hidden;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        line-height: 1.5;
-        font-weight: 400;
-        color: rgba(255, 255, 255, 0.87);
-        background-color: #1a1a1a;
-        font-synthesis: none;
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-      
-      /* 容器样式 */
-      #app {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        background-color: #1a1a1a;
-        color: #ffffff;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      }
-      
-      /* 触摸优化 */
-      button, [role="button"] {
-        touch-action: manipulation;
-      }
-      
-      /* 顶部导航栏 */
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        background-color: #000000;
-        border-bottom: 1px solid #333;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        height: 60px;
-        box-sizing: border-box;
-        transition: height 0.3s ease, padding 0.3s ease;
-      }
-      
-      /* 导航栏左侧区域 */
-      .header-left {
-        display: flex;
-        align-items: center;
-        flex: 1;
-      }
-      
-      /* Logo样式 */
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        padding: 4px 8px;
-        border-radius: 4px;
-        transition: background-color 0.2s ease;
-      }
-      
-      .logo:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-      
-      .logo-image {
-        border-radius: 4px;
-        width: 32px;
-        height: 32px;
-      }
-      
-      .desktop-logo {
-        font-size: 18px;
-        font-weight: 600;
-        color: #4caf50;
-      }
-      
-      .mobile-logo {
-        font-size: 16px;
-        font-weight: 600;
-        color: #4caf50;
-      }
-      
-      /* 导航栏右侧区域 */
-      .header-right {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      
-      /* 主导航区域 */
-      .main-nav {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        justify-content: center;
-      }
-      
-      .main-nav-list {
-        display: flex;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        gap: 15px;
-      }
-      
-      .main-nav-item {
-        padding: 6px 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-weight: 500;
-        color: #cccccc;
-        font-size: 14px;
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        letter-spacing: 0.2px;
-        text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
-      }
-      
-      .main-nav-item:hover {
-        color: #4caf50;
-      }
-      
-      /* 汉堡菜单 */
-      .hamburger-menu {
-        display: none;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 8px;
-        margin-right: 10px;
-        z-index: 1002;
-        color: #ffffff;
-        transition: all 0.2s ease;
-        border-radius: 4px;
-        outline: none;
-      }
-      
-      /* 主内容区域 */
-      .main-content {
-        display: flex;
-        flex: 1;
-        margin-top: 60px;
-        min-height: calc(100vh - 60px);
-        transition: margin-top 0.3s ease;
-      }
-      
-      /* 路由视图内容区域 */
-      .content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        margin-left: 280px;
-        transition: margin-left 0.3s ease, padding 0.3s ease;
-      }
-      
-      /* 页脚样式 */
-      .footer {
-        background-color: #000000;
-        border-top: 1px solid #333;
-        padding: 20px 0;
-        margin-top: auto;
-        text-align: center;
-        font-size: 14px;
-        color: #888;
-        min-height: 80px;
-        display: flex;
-        align-items: center;
-        transition: padding 0.3s ease, font-size 0.3s ease;
-      }
-      
-      .footer-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-        width: 100%;
-      }
-      
-      /* 移动端适配 */
-      @media (max-width: 1000px) {
-        /* 导航栏 */
-        .header {
-          padding: 10px 15px !important;
-          height: 50px !important;
-          background-color: #000000 !important;
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          z-index: 1000 !important;
-        }
-        
-        /* 主导航 */
-        .main-nav {
-          display: none !important;
-        }
-        
-        /* 汉堡菜单 */
-        .hamburger-menu {
-          display: block !important;
-          background: transparent !important;
-          border: none !important;
-          cursor: pointer !important;
-          padding: 8px !important;
-          margin-right: 10px !important;
-          z-index: 1002 !important;
-          color: #ffffff !important;
-        }
-        
-        /* 内容区域 */
-        .content {
-          margin-left: 0 !important;
-          padding: 15px !important;
-          flex: 1 !important;
-          overflow-y: auto !important;
-        }
-        
-        /* 主内容区域 */
-        .main-content {
-          margin-top: 50px !important;
-          min-height: calc(100vh - 50px) !important;
-          display: flex !important;
-          flex: 1 !important;
-        }
-        
-        /* Logo */
-        .header-left .logo {
-          display: none !important;
-        }
-        
-        /* 页脚 */
-        .footer {
-          padding: 15px 0 !important;
-          font-size: 13px !important;
-          background-color: #000000 !important;
-          border-top: 1px solid #333 !important;
-        }
-        
-        .footer-content {
-          padding: 0 15px !important;
-          text-align: center !important;
-        }
-        
-        /* 移动端触摸优化 */
-        button, [role="button"] {
-          touch-action: manipulation !important;
-          -webkit-tap-highlight-color: transparent !important;
-        }
-        
-        /* 移动端容器优化 */
-        #app {
-          min-height: 100vh !important;
-          overflow-x: hidden !important;
-        }
-        
-        /* 移动端滚动优化 */
-        body {
-          overflow-x: hidden !important;
-          -webkit-overflow-scrolling: touch !important;
-        }
-      }
-      
-      /* 桌面端适配 */
-      @media (min-width: 1001px) {
-        .desktop-logo {
-          display: inline;
-        }
-        
-        .mobile-logo {
-          display: none;
-        }
-        
-        .header-left .logo {
-          display: flex;
-        }
-        
-        .hamburger-menu {
-          display: none;
-        }
-      }
+      *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+      body{min-width:320px;min-height:100vh;width:100%;overflow-x:hidden;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;font-weight:400;color:rgba(255,255,255,0.87);background-color:#1a1a1a;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+      #app{display:flex;flex-direction:column;min-height:100vh;background-color:#1a1a1a;color:#ffffff;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+      button,[role="button"]{touch-action:manipulation}
+      .header{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background-color:#000000;border-bottom:1px solid #333;position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;box-sizing:border-box}
+      .main-content{display:flex;flex:1;margin-top:60px;min-height:calc(100vh - 60px)}
+      .content{flex:1;overflow-y:auto;padding:20px;margin-left:280px}
+      .home-container{max-width:1200px;margin:0 auto;padding:20px}
+      .space-test-section{background:linear-gradient(135deg,#000000 0%,#000000 100%);border-radius:10px;padding:10px;margin-bottom:40px;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+      .game-container{margin:0 auto;text-align:center;padding:clamp(5px,1vw,10px);width:100%;box-sizing:border-box}
+      .game-area{flex:1;width:100%;min-width:0}
+      .game-title{color:#4caf50;margin:0 0 clamp(10px,2vw,20px) 0;font-size:clamp(20px,4vw,26px);font-weight:bold;text-align:center;word-wrap:break-word;line-height:1.2}
+      .stats-cards{display:flex;justify-content:center;margin:clamp(15px,3vw,25px) auto;max-width:900px;width:95%;background-color:#333;border-radius:15px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.4);border:2px solid #444}
+      .stat-card{flex:1;min-width:clamp(80px,22vw,160px);padding:clamp(12px,2.5vw,18px) clamp(8px,1.5vw,12px);color:white;font-weight:bold;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
+      .timer-card{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+      .click-rate-card{background:linear-gradient(135deg,#f5576c 0%,#f093fb 100%)}
+      .score-card{background:linear-gradient(135deg,#00f2fe 0%,#4facfe 100%)}
+      .stat-value{font-size:clamp(20px,3.5vw,30px);margin-bottom:4px;line-height:1;font-weight:800;white-space:nowrap;text-align:center}
+      .stat-label{font-size:clamp(12px,1.6vw,14px);opacity:0.95;line-height:1;font-weight:500;text-align:center}
+      .click-area{width:100%;height:clamp(300px,50vh,450px);background-color:#000000;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;border-radius:20px;cursor:pointer;font-size:clamp(20px,4vw,24px);font-weight:bold;margin:0 auto clamp(15px,3vw,20px);border:2px solid #333;position:relative;box-sizing:border-box}
+      .spacebar-key{width:300px;height:60px;background:linear-gradient(145deg,#3a3a3a,#2a2a2a);border:1px solid #444;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);display:flex;justify-content:center;align-items:center;font-size:18px;font-weight:bold;color:#ffffff;text-transform:uppercase;letter-spacing:2px;outline:none;-webkit-tap-highlight-color:transparent}
+      .time-select-section{padding:15px 10px 0;text-align:center;margin-top:-180px}
+      .time-select-title{color:#4caf50;font-size:clamp(18px,4vw,20px);font-weight:bold;margin-bottom:clamp(16px,3vw,20px);text-align:center;text-transform:uppercase;letter-spacing:1px}
+      .time-select-list{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;gap:clamp(8px,1.5vw,15px);margin:0 auto;width:100%}
+      .time-select-item{background:linear-gradient(145deg,#3a3a3a,#2a2a2a);border:none;border-radius:8px;padding:clamp(10px,3vw,15px) clamp(12px,4vw,20px);color:#ffffff;font-size:clamp(13px,3vw,16px);font-weight:500;cursor:pointer;text-align:center;text-transform:uppercase;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(0,0,0,0.2);outline:none;min-width:80px}
+      .time-select-item.active{background:linear-gradient(145deg,#4caf50,#45a049);box-shadow:0 0 20px rgba(76,175,80,0.4);color:#ffffff}
+      .start-content,.playing-content{display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;z-index:2}
     </style>
     
     <!-- 禁止字体加载阻塞渲染 -->
@@ -333,6 +62,10 @@
         src: local('System UI'), local('Segoe UI'), local('Roboto'), local('Helvetica Neue'), local('Arial');
       }
     </style>
+    
+    <!-- 异步加载非关键CSS -->
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/src/style.css">
+    <noscript><link rel="stylesheet" href="/src/style.css"></noscript>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta name="google-site-verification" content="VVE4U7sSEqQxzsAhM9zU6766DDGVfq60D7bqGzONBzs" />

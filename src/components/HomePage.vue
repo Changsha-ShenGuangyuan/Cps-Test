@@ -6,7 +6,7 @@
         <div class="main-content">
           <!-- 左侧游戏区域 -->
           <div class="game-area">
-            <h1 class="game-title">Spacebar clicker - {{ t('fiveSecondSpaceTest') }}</h1>
+            <h1 class="game-title" :key="localeKey">Spacebar clicker - {{ gameTitle }}</h1>
 
             <!-- 统计卡片 -->
             <div class="stats-cards">
@@ -183,9 +183,9 @@
 
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
+  import { ref, onMounted, computed, onBeforeUnmount, watch } from 'vue';
 
-  import { t } from '../i18n/index';
+  import { t, langState } from '../i18n/index';
   // 懒加载结果弹窗组件 - 优化版本
   import { defineAsyncComponent } from 'vue';
   const ResultModal = defineAsyncComponent({
@@ -194,6 +194,19 @@
     timeout: 5000, // 增加超时时间
     suspensible: false, // 避免Suspense相关性能问题
   });
+
+  // 优化LCP：预计算游戏标题，减少h1渲染延迟
+  const gameTitle = ref('5 Second Space Test');
+  const localeKey = ref(langState.current);
+
+  // 监听语言变化，更新标题
+  watch(() => langState.current, (newLang) => {
+    localeKey.value = newLang;
+    // 延迟更新游戏标题，避免阻塞初始渲染
+    setTimeout(() => {
+      gameTitle.value = t('fiveSecondSpaceTest');
+    }, 0);
+  }, { immediate: false });
 
   // 预加载ResultModal组件（当用户接近可能触发结果的区域时）
   let resultModalPreloaded = false;
@@ -591,39 +604,45 @@
 
   // 组件挂载时添加事件监听
   onMounted(() => {
+    // 立即更新游戏标题，确保h1快速渲染
+    gameTitle.value = t('fiveSecondSpaceTest');
+
     // 检测设备类型 - 关键操作，立即执行
     isMobile.value = window.innerWidth <= 768;
-
-    // 监听窗口 resize 事件 - 关键操作，立即执行
-    window.addEventListener('resize', handleResize);
 
     // 监听键盘事件 - 关键操作，立即执行
     window.addEventListener('keydown', handleSpaceDown);
     window.addEventListener('keyup', handleSpaceUp);
 
-    // 监听滚动事件，用于预加载
-    window.addEventListener('scroll', handleScroll);
+    // 延迟执行其他非关键操作，避免阻塞初始渲染
+    setTimeout(() => {
+      // 监听窗口 resize 事件
+      window.addEventListener('resize', handleResize);
 
-    // 延迟执行非关键操作，避免阻塞移动端渲染
-    if (typeof requestIdleCallback === 'function') {
-      // 使用 requestIdleCallback 延迟执行
-      requestIdleCallback(() => {
-        renderFeatureStructuredData();
-        renderGuideStructuredData();
-        setupIntersectionObservers();
-        // 空闲时预加载ResultModal
-        preloadResultModal();
-      });
-    } else {
-      // 降级方案：使用 setTimeout 延迟执行
-      setTimeout(() => {
-        renderFeatureStructuredData();
-        renderGuideStructuredData();
-        setupIntersectionObservers();
-        // 延迟后预加载ResultModal
-        preloadResultModal();
-      }, 100);
-    }
+      // 监听滚动事件，用于预加载
+      window.addEventListener('scroll', handleScroll);
+
+      // 执行非关键操作
+      if (typeof requestIdleCallback === 'function') {
+        // 使用 requestIdleCallback 延迟执行
+        requestIdleCallback(() => {
+          renderFeatureStructuredData();
+          renderGuideStructuredData();
+          setupIntersectionObservers();
+          // 空闲时预加载ResultModal
+          preloadResultModal();
+        });
+      } else {
+        // 降级方案：使用 setTimeout 延迟执行
+        setTimeout(() => {
+          renderFeatureStructuredData();
+          renderGuideStructuredData();
+          setupIntersectionObservers();
+          // 延迟后预加载ResultModal
+          preloadResultModal();
+        }, 100);
+      }
+    }, 0);
   });
 
   // 按需渲染相关变量
@@ -911,7 +930,7 @@
   .time-select-section {
     padding: 15px 10px 0;
     text-align: center;
-    margin-top: 0;
+    margin-top: -180px;
   }
 
   /* 时间选择标题 */
@@ -1005,6 +1024,7 @@
     .time-select-section {
       padding: 10px;
       margin-bottom: 10px;
+      margin-top: -300px;
     }
 
     /* 时间选择列表横向排列，缩小样式 */
