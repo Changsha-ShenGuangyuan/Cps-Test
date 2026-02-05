@@ -320,7 +320,7 @@
   const menuItems = ref<MenuItem[]>([]);
   initMenuItems();
 
-  const mobileWebsiteName = computed(() => t('websiteName').split(' - ')[0]);
+  const computedMobileWebsiteName = computed(() => t('websiteName').split(' - ')[0]);
 
   // 切换侧边栏显示状态
   const toggleSidebar = () => {
@@ -563,7 +563,7 @@
           :priority="true"
           :skip-device-suffix="true"
         />
-        <span class="sidebar-logo-text">{{ mobileWebsiteName }}</span>
+        <span class="sidebar-logo-text">{{ computedMobileWebsiteName }}</span>
       </div>
       <button class="close-sidebar-btn" aria-label="关闭侧边栏" @click="closeSidebar">
         <svg

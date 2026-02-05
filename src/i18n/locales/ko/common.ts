@@ -302,7 +302,8 @@ export default {
   communityFeatures: '커뮤니티 기능',
   communityFeaturesDesc: '다른 사용자와 성적을 비교하고, 당신의 진행 상황을 공유하세요',
   testGuide: '테스트 가이드',
-  testGuideDescription: 'Spacebar Clicker - CPSTestGo 플랫폼 가이드, 스페이스바 클릭 속도와 반응 능력 테스트를 빠르게 시작하는 데 도움이 됩니다',
+  testGuideDescription:
+    'Spacebar Clicker - CPSTestGo 플랫폼 가이드, 스페이스바 클릭 속도와 반응 능력 테스트를 빠르게 시작하는 데 도움이 됩니다',
   testFeatureRealTimeFeedback: '실시간 피드백',
   testFeatureHistoryRecords: '기록 관리',
   testFeatureMultiLanguageSupport: '다국어 지원',

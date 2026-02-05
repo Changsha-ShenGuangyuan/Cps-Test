@@ -207,7 +207,8 @@ export default {
   communityFeatures: 'Community Features',
   communityFeaturesDesc: 'Compare scores with other users and share your progress',
   testGuide: 'Test Guide',
-  testGuideDescription: 'Spacebar Clicker - CPSTestGo platform guide, helping you quickly start testing spacebar click speed and reaction abilities',
+  testGuideDescription:
+    'Spacebar Clicker - CPSTestGo platform guide, helping you quickly start testing spacebar click speed and reaction abilities',
   testFeatureRealTimeFeedback: 'Real-time Feedback',
   testFeatureHistoryRecords: 'History Records',
   testFeatureMultiLanguageSupport: 'Multi-language Support',

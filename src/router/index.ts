@@ -359,7 +359,7 @@ export const updateMetaTags = (to: any) => {
   if (!to || !to.path) {
     return;
   }
-  
+
   // 避免重复更新相同路由的meta标签，同时考虑语言变化
   if (
     lastRoute &&
@@ -557,7 +557,7 @@ export const updateMetaTags = (to: any) => {
     try {
       // 获取当前日期，格式为YYYY-MM-DD
       const currentDate = new Date().toISOString().split('T')[0];
-      
+
       // 根据页面类型生成不同的结构化数据
       const schemaData: any[] = [];
 
@@ -599,7 +599,7 @@ export const updateMetaTags = (to: any) => {
           description: `开始${pageTitle}`,
         },
       };
-      
+
       schemaData.push(webPageData);
 
       // 检测页面类型
@@ -610,14 +610,14 @@ export const updateMetaTags = (to: any) => {
         // 测试页面详细结构化数据
         const testPathRegex = /^\/([^/]+)\/(\d+)$/;
         const match = pathWithoutLang.match(testPathRegex);
-        
+
         let testType = 'GeneralTest';
         let testTime = '';
-        
+
         if (match) {
           const [, type, time] = match;
           testTime = time || '';
-          
+
           // 根据测试类型设置更准确的类型
           switch (type) {
             case 'click-test':
@@ -649,7 +649,7 @@ export const updateMetaTags = (to: any) => {
               testType = 'GeneralTest';
           }
         }
-        
+
         // 测试工具结构化数据
         const testToolData = {
           '@context': 'https://schema.org',
@@ -670,12 +670,12 @@ export const updateMetaTags = (to: any) => {
             t('testFeatureRealTimeFeedback'),
             t('testFeatureHistoryRecords'),
             t('testFeatureMultiLanguageSupport'),
-            t('testFeatureResponsiveDesign')
+            t('testFeatureResponsiveDesign'),
           ],
           testType: testType,
           testTime: testTime,
         };
-        
+
         schemaData.push(testToolData);
       } else {
         // 非测试页面 - 添加搜索功能结构化数据
@@ -691,11 +691,11 @@ export const updateMetaTags = (to: any) => {
               'query-input': 'required name=search_term_string',
             },
           };
-          
+
           schemaData.push(searchActionData);
         }
       }
-      
+
       // 添加面包屑导航结构化数据
       const breadcrumbData = {
         '@context': 'https://schema.org',
@@ -709,15 +709,15 @@ export const updateMetaTags = (to: any) => {
           },
         ],
       };
-      
+
       // 根据当前路径生成面包屑导航
-      const pathSegments = pathWithoutLang.split('/').filter(segment => segment !== '');
+      const pathSegments = pathWithoutLang.split('/').filter((segment) => segment !== '');
       if (pathSegments.length > 0) {
         pathSegments.forEach((segment, index) => {
           // 生成当前 segment 的 URL
           const segmentPath = `/${pathSegments.slice(0, index + 1).join('/')}`;
           const fullSegmentUrl = `${baseUrl}${generateLangPath(segmentPath, langState.current)}`;
-          
+
           // 转换 segment 为可读名称
           let segmentName = segment;
           switch (segment) {
@@ -770,12 +770,12 @@ export const updateMetaTags = (to: any) => {
               segmentName = t('privacyPolicyTitle');
               break;
           }
-          
+
           // 检查是否是数字（如测试时间）
           if (!isNaN(Number(segment)) && segment.length <= 2) {
             segmentName = `${segment}${pathSegments[index - 1] === 'typing-test' ? t('minutes') : t('seconds')}`;
           }
-          
+
           breadcrumbData.itemListElement.push({
             '@type': 'ListItem',
             position: index + 2,
@@ -784,7 +784,7 @@ export const updateMetaTags = (to: any) => {
           });
         });
       }
-      
+
       schemaData.push(breadcrumbData);
 
       // 更新结构化数据

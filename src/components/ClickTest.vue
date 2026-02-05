@@ -202,7 +202,7 @@
   // 初始化游戏实例
   const initGame = async (time: number) => {
     await loadComposables();
-    
+
     // 确保 useClickTestGame 不为 null
     if (useClickTestGame) {
       gameInstance = useClickTestGame(time);
@@ -383,7 +383,7 @@
       if (addRipple) {
         addRipple(x, y);
         rippleCount++;
-        
+
         // 300ms后减少涟漪计数，允许新的涟漪生成
         setTimeout(() => {
           rippleCount = Math.max(0, rippleCount - 1);
@@ -427,7 +427,7 @@
         // 优化触摸坐标计算，确保在不同设备和屏幕方向下都能准确计算
         x = touch.clientX - rect.left;
         y = touch.clientY - rect.top;
-        
+
         // 限制坐标范围，确保触摸位置在点击区域内
         x = Math.max(0, Math.min(x, rect.width));
         y = Math.max(0, Math.min(y, rect.height));
@@ -462,12 +462,17 @@
       <!-- 左侧游戏区域 -->
       <div class="game-area">
         <!-- 标题栏 -->
-        <h2 class="game-title" aria-label="{{ testTime }} {{ t('secClickTest') }}">{{ testTime }} {{ t('secClickTest') }}</h2>
+        <h2 class="game-title" aria-label="{{ testTime }} {{ t('secClickTest') }}">
+          {{ testTime }} {{ t('secClickTest') }}
+        </h2>
         <!-- 统计卡片 -->
         <div class="stats-cards" role="group" aria-label="{{ t('gameStats') }}">
           <div class="stat-card timer-card" role="status" aria-live="polite">
-            <div class="stat-value" aria-label="{{ t('timer') }}: {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.elapsedTime.toFixed(3) }} {{ t('seconds') }}">
-              {{ 
+            <div
+              class="stat-value"
+              aria-label="{{ t('timer') }}: {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.elapsedTime.toFixed(3) }} {{ t('seconds') }}"
+            >
+              {{
                 !gameState.isPlaying && gameState.clicks === 0
                   ? 0
                   : gameState.elapsedTime.toFixed(3)
@@ -476,21 +481,30 @@
             <div class="stat-label">{{ t('timer') }}</div>
           </div>
           <div class="stat-card click-rate-card" role="status" aria-live="polite">
-            <div class="stat-value" aria-label="{{ t('clickPerSecond') }}: {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.currentCps.toFixed(2) }}">
-              {{ 
+            <div
+              class="stat-value"
+              aria-label="{{ t('clickPerSecond') }}: {{ !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.currentCps.toFixed(2) }}"
+            >
+              {{
                 !gameState.isPlaying && gameState.clicks === 0 ? 0 : gameState.currentCps.toFixed(2)
               }}
             </div>
             <div class="stat-label">{{ t('clickPerSecond') }}</div>
           </div>
           <div class="stat-card score-card" role="status" aria-live="polite">
-            <div class="stat-value" aria-label="{{ t('score') }}: {{ gameState.clicks }}">{{ gameState.clicks }}</div>
+            <div class="stat-value" aria-label="{{ t('score') }}: {{ gameState.clicks }}">
+              {{ gameState.clicks }}
+            </div>
             <div class="stat-label">{{ t('score') }}</div>
           </div>
         </div>
 
         <!-- 鼠标按键选择器 -->
-        <div class="mouse-button-selector" role="radiogroup" aria-label="{{ t('selectMouseButton') }}">
+        <div
+          class="mouse-button-selector"
+          role="radiogroup"
+          aria-label="{{ t('selectMouseButton') }}"
+        >
           <h3>{{ t('selectMouseButton') }}</h3>
           <div class="button-options">
             <button
@@ -498,11 +512,11 @@
               :key="option.value"
               class="button-option"
               :class="{ active: gameState.selectedMouseButton === option.value }"
-              @click="selectMouseButton(option.value)"
               role="radio"
               :aria-checked="gameState.selectedMouseButton === option.value"
               :aria-label="option.label"
               tabindex="0"
+              @click="selectMouseButton(option.value)"
             >
               <span>{{ option.label }}</span>
             </button>
@@ -514,15 +528,17 @@
           ref="clickAreaRef"
           class="click-area"
           :class="{ playing: gameState.isPlaying, 'time-up': gameState.isTimeUp }"
+          role="button"
+          :aria-label="
+            !gameState.isPlaying ? t('clickHere') + ' ' + t('startGame') : t('clickToPlay')
+          "
+          :aria-pressed="gameState.isPlaying"
+          tabindex="0"
           @click="(e) => handleClick(e)"
           @contextmenu.prevent="(e) => handleClick(e)"
           @touchstart.prevent="(e) => handleTouch(e)"
           @touchmove.prevent
           @touchend.prevent
-          role="button"
-          :aria-label="!gameState.isPlaying ? t('clickHere') + ' ' + t('startGame') : t('clickToPlay')"
-          :aria-pressed="gameState.isPlaying"
-          tabindex="0"
           @keydown="handleKeyDown"
         >
           <!-- 涟漪特效容器 -->
@@ -561,10 +577,7 @@
             </h3>
           </div>
 
-          <div 
-            ref="historyContainerRef" 
-            class="history-list"
-          >
+          <div ref="historyContainerRef" class="history-list">
             <div v-if="filteredHistory.length === 0" class="no-history">
               {{ t('noHistory') }}
             </div>
@@ -619,10 +632,7 @@
           </h3>
         </div>
 
-        <div 
-            ref="historyContainerRef" 
-            class="history-list"
-          >
+        <div ref="historyContainerRef" class="history-list">
           <div v-if="filteredHistory.length === 0" class="no-history">
             {{ t('noHistory') }}
           </div>

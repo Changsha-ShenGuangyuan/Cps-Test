@@ -16,7 +16,6 @@
   const historySelectorRef = ref<InstanceType<typeof HistorySelector> | null>(null);
   const contentRef = ref<HTMLElement | null>(null);
 
-
   const websiteName = computed(() => t('websiteName'));
   const mobileWebsiteName = computed(() => t('websiteName').split(' - ')[0]);
 
@@ -27,11 +26,13 @@
   // 节流函数，减少频繁触发
   const throttle = (func: Function, delay: number) => {
     let inThrottle = false;
-    return function(this: any, ...args: any[]) {
+    return function (this: any, ...args: any[]) {
       if (!inThrottle) {
         func.apply(this, args);
         inThrottle = true;
-        setTimeout(() => { inThrottle = false; }, delay);
+        setTimeout(() => {
+          inThrottle = false;
+        }, delay);
       }
     };
   };
@@ -141,7 +142,7 @@
   const handleResize = throttle(() => {
     const width = window.innerWidth;
     isMobile.value = width <= 1000;
-    
+
     // 当窗口宽度大于1000px时，自动关闭侧边栏
     if (width > 1000) {
       closeSidebar();
@@ -153,12 +154,12 @@
     if (contentRef.value) {
       contentRef.value.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     } else {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   };
@@ -268,11 +269,11 @@
       <!-- 导航栏左侧区域：汉堡菜单 + logo -->
       <div class="header-left">
         <!-- 汉堡菜单按钮（移动端） -->
-        <button 
-          class="hamburger-menu" 
-          aria-label="{{ t('menu') }}" 
-          @click="toggleSidebar"
+        <button
+          class="hamburger-menu"
+          aria-label="{{ t('menu') }}"
           :aria-expanded="isSidebarOpen"
+          @click="toggleSidebar"
         >
           <svg
             class="menu-icon"
@@ -291,11 +292,11 @@
           </svg>
         </button>
         <!-- 桌面端logo -->
-        <div 
-          class="logo" 
-          @click="navigateTo('/')"
+        <div
+          class="logo"
           role="button"
           tabindex="0"
+          @click="navigateTo('/')"
           @keydown.enter="navigateTo('/')"
         >
           <ResponsiveImage
@@ -314,47 +315,47 @@
       <!-- 主导航区域：主要测试类型快捷导航 -->
       <nav class="main-nav" role="navigation" aria-label="{{ t('mainNavigation') }}">
         <ul class="main-nav-list">
-          <li 
-            class="main-nav-item" 
-            @click="navigateTo('/click-test/5')"
+          <li
+            class="main-nav-item"
             role="button"
             tabindex="0"
+            @click="navigateTo('/click-test/5')"
             @keydown.enter="navigateTo('/click-test/5')"
           >
             <span>{{ t('clickTest') }}</span>
           </li>
-          <li 
-            class="main-nav-item" 
-            @click="navigateTo('/space-click-test/5')"
+          <li
+            class="main-nav-item"
             role="button"
             tabindex="0"
+            @click="navigateTo('/space-click-test/5')"
             @keydown.enter="navigateTo('/space-click-test/5')"
           >
             <span>{{ t('spaceClickTest') }}</span>
           </li>
-          <li 
-            class="main-nav-item" 
-            @click="navigateTo('/keyboard-test')"
+          <li
+            class="main-nav-item"
             role="button"
             tabindex="0"
+            @click="navigateTo('/keyboard-test')"
             @keydown.enter="navigateTo('/keyboard-test')"
           >
             <span>{{ t('keyboardTest') }}</span>
           </li>
-          <li 
-            class="main-nav-item" 
-            @click="navigateTo('/reaction-time-test')"
+          <li
+            class="main-nav-item"
             role="button"
             tabindex="0"
+            @click="navigateTo('/reaction-time-test')"
             @keydown.enter="navigateTo('/reaction-time-test')"
           >
             <span>{{ t('reactionTest') }}</span>
           </li>
-          <li 
-            class="main-nav-item" 
-            @click="navigateTo('/typing-test/1')"
+          <li
+            class="main-nav-item"
             role="button"
             tabindex="0"
+            @click="navigateTo('/typing-test/1')"
             @keydown.enter="navigateTo('/typing-test/1')"
           >
             <span>{{ t('typingTest') }}</span>
@@ -382,16 +383,9 @@
       />
 
       <!-- 右侧主内容 - 路由视图 -->
-      <main
-        ref="contentRef"
-        class="content"
-        role="main"
-        @click="handleContentClick"
-      >
+      <main ref="contentRef" class="content" role="main" @click="handleContentClick">
         <!-- 面包屑导航 - 404页面不显示 -->
-        <Breadcrumb 
-          v-if="route.name !== 'NotFound' && route.name !== 'PrivacyPolicy'"
-        />
+        <Breadcrumb v-if="route.name !== 'NotFound' && route.name !== 'PrivacyPolicy'" />
         <!-- 路由视图 -->
         <router-view></router-view>
       </main>
@@ -402,7 +396,11 @@
       <div class="footer-content">
         <p>{{ t('copyright', { year: new Date().getFullYear() }) }}</p>
         <div class="footer-links">
-          <router-link to="/privacy-policy" class="footer-link" aria-label="{{ t('privacyPolicy') }}">
+          <router-link
+            to="/privacy-policy"
+            class="footer-link"
+            aria-label="{{ t('privacyPolicy') }}"
+          >
             {{ t('privacyPolicy') }}
           </router-link>
         </div>
@@ -441,7 +439,9 @@
     z-index: 1000;
     height: 60px;
     box-sizing: border-box;
-    transition: height 0.3s ease, padding 0.3s ease;
+    transition:
+      height 0.3s ease,
+      padding 0.3s ease;
   }
 
   /* 导航栏左侧区域：汉堡菜单 + logo */
@@ -683,7 +683,9 @@
     overflow-y: auto;
     padding: 20px;
     margin-left: 280px;
-    transition: margin-left 0.3s ease, padding 0.3s ease;
+    transition:
+      margin-left 0.3s ease,
+      padding 0.3s ease;
   }
 
   /* 移动端适配 */
@@ -722,7 +724,9 @@
     min-height: 80px;
     display: flex;
     align-items: center;
-    transition: padding 0.3s ease, font-size 0.3s ease;
+    transition:
+      padding 0.3s ease,
+      font-size 0.3s ease;
   }
 
   .footer-content {

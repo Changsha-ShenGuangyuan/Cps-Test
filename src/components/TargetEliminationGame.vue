@@ -692,7 +692,9 @@
     border: 2px solid #333;
     box-sizing: border-box;
     margin: 0;
-    transition: height 0.3s ease, width 0.3s ease;
+    transition:
+      height 0.3s ease,
+      width 0.3s ease;
   }
 
   /* 外部设置面板 */

@@ -201,7 +201,8 @@ export default {
   communityFeatures: '社区功能',
   communityFeaturesDesc: '与其他用户比较成绩，分享你的进步',
   testGuide: '测试指南',
-  testGuideDescription: 'Spacebar Clicker - CPSTestGo 平台使用指南，帮助您快速开始测试空格键点击速度和反应能力',
+  testGuideDescription:
+    'Spacebar Clicker - CPSTestGo 平台使用指南，帮助您快速开始测试空格键点击速度和反应能力',
   testFeatureRealTimeFeedback: '实时反馈',
   testFeatureHistoryRecords: '历史记录',
   testFeatureMultiLanguageSupport: '多语言支持',

@@ -122,11 +122,11 @@
     // 保存当前滚动位置
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    
+
     // 保存滚动位置到body数据集
     document.body.dataset.scrollTop = scrollTop.toString();
     document.body.dataset.scrollLeft = scrollLeft.toString();
-    
+
     // 使用CSS固定定位阻止滚动
     document.body.style.position = 'fixed';
     document.body.style.top = `-${scrollTop}px`;
@@ -141,7 +141,7 @@
     // 恢复滚动位置
     const scrollTop = parseInt(document.body.dataset.scrollTop || '0');
     const scrollLeft = parseInt(document.body.dataset.scrollLeft || '0');
-    
+
     // 恢复原始样式
     document.body.style.position = '';
     document.body.style.top = '';
@@ -149,10 +149,10 @@
     document.body.style.width = '';
     document.body.style.height = '';
     document.body.style.overflow = '';
-    
+
     // 恢复滚动位置
     window.scrollTo(scrollLeft, scrollTop);
-    
+
     // 清除保存的属性
     delete document.body.dataset.scrollTop;
     delete document.body.dataset.scrollLeft;

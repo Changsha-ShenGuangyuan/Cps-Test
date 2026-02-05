@@ -97,7 +97,6 @@ class PreloadService {
       { path: 'KeyboardTest', priority: 'medium' },
       { path: 'ReactionTimeTest', priority: 'medium' },
       { path: 'TypingTest', priority: 'medium' },
-      { path: 'ResultModal', priority: 'high' },
       { path: 'RelatedTests', priority: 'low' },
     ];
 
@@ -204,7 +203,7 @@ class PreloadService {
       // 早晨时段，预加载常用测试
       componentsToPreload = [
         { path: 'SpaceClickTest', priority: 'high' },
-        { path: 'ResultModal', priority: 'high' },
+        { path: 'ResultModal', priority: 'medium' },
       ];
     } else if (currentHour >= 12 && currentHour < 18) {
       // 下午时段，预加载更多测试类型
@@ -212,7 +211,7 @@ class PreloadService {
         { path: 'SpaceClickTest', priority: 'high' },
         { path: 'KeyboardTest', priority: 'medium' },
         { path: 'ReactionTimeTest', priority: 'medium' },
-        { path: 'ResultModal', priority: 'high' },
+        { path: 'ResultModal', priority: 'medium' },
       ];
     } else {
       // 晚上时段，预加载所有常用组件
@@ -221,7 +220,7 @@ class PreloadService {
         { path: 'KeyboardTest', priority: 'medium' },
         { path: 'ReactionTimeTest', priority: 'medium' },
         { path: 'TypingTest', priority: 'medium' },
-        { path: 'ResultModal', priority: 'high' },
+        { path: 'ResultModal', priority: 'medium' },
       ];
     }
 

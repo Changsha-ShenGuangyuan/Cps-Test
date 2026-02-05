@@ -24,8 +24,44 @@ module.exports = {
   ignorePatterns: [
     'dist/**',
     'router-backup.ts',
-    'test-meta-tags.html'
+    'test-meta-tags.html',
+    'auto-imports.d.ts'
   ],
+  globals: {
+    // Vue 3 Composition API
+    ref: 'readonly',
+    computed: 'readonly',
+    watch: 'readonly',
+    watchEffect: 'readonly',
+    onMounted: 'readonly',
+    onUnmounted: 'readonly',
+    onBeforeMount: 'readonly',
+    onBeforeUnmount: 'readonly',
+    onUpdated: 'readonly',
+    onBeforeUpdate: 'readonly',
+    onErrorCaptured: 'readonly',
+    onRenderTracked: 'readonly',
+    onRenderTriggered: 'readonly',
+    onActivated: 'readonly',
+    onDeactivated: 'readonly',
+    defineAsyncComponent: 'readonly',
+    shallowRef: 'readonly',
+    triggerRef: 'readonly',
+    customRef: 'readonly',
+    provide: 'readonly',
+    inject: 'readonly',
+    nextTick: 'readonly',
+    // Vue Router
+    useRouter: 'readonly',
+    useRoute: 'readonly',
+    onBeforeRouteUpdate: 'readonly',
+    onBeforeRouteLeave: 'readonly',
+    // Vue I18n
+    useI18n: 'readonly',
+    // Pinia
+    defineStore: 'readonly',
+    storeToRefs: 'readonly'
+  },
   rules: {
     'prettier/prettier': 'error',
     'vue/multi-word-component-names': 'off',

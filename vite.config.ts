@@ -21,11 +21,7 @@ export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      imports: [
-        'vue',
-        'vue-router',
-        'pinia'
-      ],
+      imports: ['vue', 'vue-router', 'pinia'],
       dts: true, // 生成自动导入的TS声明文件
     }),
     // 自定义插件，用于移除ClickTest相关的预加载链接
@@ -191,13 +187,16 @@ export default defineConfig({
         `;
 
         // 将非关键CSS链接修改为异步加载
-        const optimizedHtml = html.replace(/<link rel="stylesheet"[^>]*?href="([^"]+)"[^>]*?>/g, (_, href) => {
-          // 创建异步加载的CSS链接
-          const asyncLink = `<link rel="preload" href="${href}" as="style" onload="this.onload=null;this.rel='stylesheet'">`;
-          // 添加noscript回退
-          const noscriptFallback = `<noscript><link rel="stylesheet" href="${href}"></noscript>`;
-          return asyncLink + noscriptFallback;
-        });
+        const optimizedHtml = html.replace(
+          /<link rel="stylesheet"[^>]*?href="([^"]+)"[^>]*?>/g,
+          (_, href) => {
+            // 创建异步加载的CSS链接
+            const asyncLink = `<link rel="preload" href="${href}" as="style" onload="this.onload=null;this.rel='stylesheet'">`;
+            // 添加noscript回退
+            const noscriptFallback = `<noscript><link rel="stylesheet" href="${href}"></noscript>`;
+            return asyncLink + noscriptFallback;
+          }
+        );
 
         // 将关键CSS内联到head中
         return optimizedHtml.replace('</head>', `${criticalCSS}</head>`);
@@ -598,7 +597,10 @@ export default defineConfig({
           }
           // 按组件分包
           if (id.includes('src/components/')) {
-            const componentName = id.split('/').pop()?.replace(/\.vue$/, '');
+            const componentName = id
+              .split('/')
+              .pop()
+              ?.replace(/\.vue$/, '');
             if (componentName === 'HomePage') {
               return 'components-home';
             }

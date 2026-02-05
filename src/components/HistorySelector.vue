@@ -40,7 +40,7 @@
   };
 
   // 从路径中移除语言前缀
-  const removeLanguagePrefix = (path: string) => {
+  function removeLanguagePrefix(path: string) {
     const supportedLanguages = ['zh-CN', 'ja', 'ko'];
     const pathSegments = path.split('/').filter((segment) => segment !== '');
 
@@ -54,10 +54,10 @@
     }
 
     return path;
-  };
+  }
 
   // 根据当前语言添加语言前缀
-  const addLanguagePrefix = (path: string) => {
+  function addLanguagePrefix(path: string) {
     // 先移除可能存在的语言前缀，避免重复添加
     const basePath = removeLanguagePrefix(path);
 
@@ -73,10 +73,10 @@
     }
 
     return fullPath;
-  };
+  }
 
   // 从localStorage加载历史记录
-  const loadHistoryFromStorage = (): HistoryItem[] => {
+  function loadHistoryFromStorage(): HistoryItem[] {
     try {
       const stored = localStorage.getItem(HISTORY_STORAGE_KEY);
       if (stored) {
@@ -92,7 +92,7 @@
       console.error('Failed to load history from localStorage:', error);
     }
     return [];
-  };
+  }
 
   // 防抖保存历史记录到localStorage
   const debouncedSaveHistory = debounce((history: HistoryItem[]) => {
@@ -104,12 +104,12 @@
   }, 300);
 
   // 保存历史记录到localStorage
-  const saveHistoryToStorage = (history: HistoryItem[]) => {
+  function saveHistoryToStorage(history: HistoryItem[]) {
     debouncedSaveHistory(history);
-  };
+  }
 
   // 格式化时间显示
-  const formatTime = (timestamp: number): string => {
+  function formatTime(timestamp: number): string {
     const now = Date.now();
     const diff = now - timestamp;
     const minutes = Math.floor(diff / 60000);
@@ -128,7 +128,7 @@
       const date = new Date(timestamp);
       return date.toLocaleDateString();
     }
-  };
+  }
 
   // 历史记录数据
   const historyItems = ref<HistoryItem[]>([]);
@@ -137,9 +137,9 @@
   const initHistoryItems = () => {
     const rawItems = loadHistoryFromStorage();
     // 加载后添加语言前缀
-    historyItems.value = rawItems.map(item => ({
+    historyItems.value = rawItems.map((item) => ({
       ...item,
-      path: addLanguagePrefix(item.path)
+      path: addLanguagePrefix(item.path),
     }));
   };
 

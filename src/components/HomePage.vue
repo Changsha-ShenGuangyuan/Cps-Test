@@ -6,7 +6,7 @@
         <div class="main-content">
           <!-- 左侧游戏区域 -->
           <div class="game-area">
-            <h1 class="game-title" :key="localeKey">Spacebar clicker - {{ gameTitle }}</h1>
+            <h1 :key="localeKey" class="game-title">Spacebar clicker - {{ gameTitle }}</h1>
 
             <!-- 统计卡片 -->
             <div class="stats-cards">
@@ -126,8 +126,9 @@
 
     <!-- 结果弹窗组件 -->
     <component
-      :is="ResultModal"
-      :visible="gameState.showResultModal"
+      :is="resultModalComponent"
+      v-if="gameState.showResultModal && resultModalComponent"
+      :visible="true"
       :type="'space'"
       :cps="gameState.cps"
       :time="testDuration"
@@ -184,30 +185,37 @@
 <script setup lang="ts">
   import { t, langState } from '../i18n/index';
   // 懒加载结果弹窗组件 - 优化版本
-  const ResultModal = defineAsyncComponent({
-    loader: () => import('./ResultModal.vue'),
-    delay: 0, // 立即开始加载，不延迟
-    timeout: 5000, // 增加超时时间
-    suspensible: false, // 避免Suspense相关性能问题
-  });
+  const resultModalComponent = ref<any>(null);
+  // 只有在需要时才加载 ResultModal
+  const loadResultModal = async () => {
+    if (!resultModalComponent.value) {
+      const module = await import('./ResultModal.vue');
+      resultModalComponent.value = module.default;
+    }
+    return resultModalComponent.value;
+  };
 
   // 优化LCP：预计算游戏标题，减少h1渲染延迟
   const gameTitle = ref('5 Second Space Test');
   const localeKey = ref(langState.current);
 
   // 监听语言变化，更新标题
-  watch(() => langState.current, (newLang) => {
-    localeKey.value = newLang;
-    // 延迟更新游戏标题，避免阻塞初始渲染
-    setTimeout(() => {
-      gameTitle.value = t('fiveSecondSpaceTest');
-    }, 0);
-  }, { immediate: false });
+  watch(
+    () => langState.current,
+    (newLang) => {
+      localeKey.value = newLang;
+      // 延迟更新游戏标题，避免阻塞初始渲染
+      setTimeout(() => {
+        gameTitle.value = t('fiveSecondSpaceTest');
+      }, 0);
+    },
+    { immediate: false }
+  );
 
   // 预加载ResultModal组件（当用户接近可能触发结果的区域时）
   let resultModalPreloaded = false;
   const preloadResultModal = () => {
-    if (ResultModal && !resultModalPreloaded) {
+    if (!resultModalPreloaded) {
       resultModalPreloaded = true;
       // 触发预加载
       import('./ResultModal.vue').catch(() => {});
@@ -422,7 +430,7 @@
   };
 
   // 游戏结束函数
-  const endGame = () => {
+  const endGame = async () => {
     gameState.value.isPlaying = false; // 标记游戏结束
     gameState.value.isGameOver = true; // 设置最终结束状态
 
@@ -439,6 +447,8 @@
       rafId = null;
     }
 
+    // 先加载 ResultModal 组件，然后再显示结果弹窗
+    await loadResultModal();
     // 显示结果弹窗
     gameState.value.showResultModal = true;
   };
@@ -637,10 +647,10 @@
     setTimeout(() => {
       // 监听滚动事件，用于预加载
       window.addEventListener('scroll', handleScroll);
-      
+
       // 测试开始按钮点击时预加载
       const startButtons = document.querySelectorAll('.start-test-btn');
-      startButtons.forEach(button => {
+      startButtons.forEach((button) => {
         button.addEventListener('click', preloadResultModal);
       });
     }, 3000);
