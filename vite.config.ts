@@ -5,6 +5,7 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import sitemapPlugin from 'vite-plugin-sitemap';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import path from 'path';
+import AutoImport from 'unplugin-auto-import/vite';
 
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -19,6 +20,14 @@ export default defineConfig({
   },
   plugins: [
     vue(),
+    AutoImport({
+      imports: [
+        'vue',
+        'vue-router',
+        'pinia'
+      ],
+      dts: true, // 生成自动导入的TS声明文件
+    }),
     // 自定义插件，用于移除ClickTest相关的预加载链接
     {
       name: 'remove-click-test-preload',
@@ -547,12 +556,19 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules')) {
             // 更精细的vendor分包
-            if (id.includes('vue') || id.includes('vue-router')) {
+            // 优先匹配 Vue 核心包
+            if (id.includes('node_modules/vue/')) {
               return 'vendor-vue';
             }
+            // 匹配 Vue Router
+            if (id.includes('node_modules/vue-router/')) {
+              return 'vendor-vue';
+            }
+            // 匹配 @vueuse
             if (id.includes('@vueuse')) {
               return 'vendor-vueuse';
             }
+            // 匹配 vue-i18n
             if (id.includes('vue-i18n')) {
               return 'vendor-i18n';
             }
@@ -600,7 +616,7 @@ export default defineConfig({
       },
       // 增强tree shaking
       treeshake: {
-        moduleSideEffects: false,
+        moduleSideEffects: 'no-external',
         propertyReadSideEffects: false,
         unknownGlobalSideEffects: false,
       },

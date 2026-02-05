@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { ref, onMounted, computed } from 'vue';
-  import { useRouter } from 'vue-router';
   import { t } from '../i18n/index';
 
   // 组件挂载时添加结构化数据

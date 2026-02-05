@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
-  import { useRoute, onBeforeRouteUpdate } from 'vue-router';
   import { t } from '../i18n/index';
   // 懒加载通用FAQ组件
   const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));

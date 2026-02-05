@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { ref, onUnmounted, computed, defineAsyncComponent } from 'vue';
   import { t } from '../i18n'; // 导入翻译函数
   // 懒加载通用FAQ组件
   const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));

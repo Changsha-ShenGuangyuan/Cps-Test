@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import { useRouter } from 'vue-router';
   import { setLanguage, langState } from '../i18n/index';
   import ResponsiveImage from './ResponsiveImage.vue';
 

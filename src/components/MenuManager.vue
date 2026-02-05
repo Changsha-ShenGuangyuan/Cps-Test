@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
-  import { useRouter, useRoute } from 'vue-router';
   import { t, langState } from '../i18n/index';
   import ResponsiveImage from './ResponsiveImage.vue';
   import { iconManager } from '../utils/iconManager';

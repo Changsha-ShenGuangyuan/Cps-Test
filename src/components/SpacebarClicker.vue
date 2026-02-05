@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
   import { t } from '../i18n/index';
 
   // 游戏状态管理

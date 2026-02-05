@@ -33,10 +33,15 @@ Spacebar Clicker - CPSTestGo 是一个专业的点击速度与反应能力训练
 - **前端框架**: Vue 3 + TypeScript
 - **构建工具**: Vite
 - **路由管理**: Vue Router 4
+- **状态管理**: Pinia
+- **自动导入**: unplugin-auto-import
 - **国际化**: 自定义i18n方案
 - **UI组件**: 自定义组件
 - **样式**: CSS3
 - **打包优化**: Vite Plugin Compression
+- **图片优化**: vite-plugin-image-optimizer
+- **站点地图**: vite-plugin-sitemap
+- **HTML优化**: vite-plugin-html
 
 ## 安装和运行
 
@@ -128,24 +133,37 @@ src/
 │   ├── KeyboardTest.vue             # 键盘按键测试组件
 │   ├── KeyReactionTest.vue          # 按键反应测试组件
 │   ├── KohiClickTest.vue            # Kohi点击测试组件
+│   ├── LanguageSelector.vue         # 语言选择器组件
+│   ├── HistorySelector.vue          # 历史记录选择器组件
+│   ├── MenuManager.vue              # 菜单管理组件
 │   ├── MouseDragTest.vue            # 鼠标拖动测试组件
 │   ├── MouseScrollTest.vue          # 鼠标滚动测试组件
 │   ├── NotFound.vue                 # 404页面组件
 │   ├── PrivacyPolicy.vue            # 隐私政策组件
 │   ├── ReactionTimeTest.vue         # 简单反应时间测试组件
 │   ├── RelatedTests.vue             # 相关测试推荐组件
+│   ├── ResponsiveImage.vue          # 响应式图片组件
 │   ├── ResultModal.vue              # 结果弹窗组件
 │   ├── SpaceClickTest.vue           # 空格点击测试组件
 │   ├── SpacebarClicker.vue          # 空格键点击器游戏组件
 │   ├── TargetEliminationGame.vue    # 目标消除游戏组件
 │   ├── TripleClickTest.vue          # 三击测试组件
 │   └── TypingTest.vue               # 打字测试组件
+├── composables/      # 组合式API工具函数
+│   ├── useClickTestGame.ts          # 点击测试游戏逻辑
+│   ├── useClickTestHistory.ts       # 点击测试历史记录
+│   └── useRippleEffect.ts           # 涟漪特效
 ├── data/             # 数据文件
 ├── i18n/             # 国际化配置
-│   └── index.ts      # 多语言支持
+│   ├── index.ts      # 多语言支持
+│   └── locales/      # 语言包文件
 ├── router/           # 路由配置
 │   └── index.ts      # 路由定义
+├── services/         # 服务
+│   └── PreloadService.ts            # 预加载服务
 ├── utils/            # 工具函数
+│   ├── iconManager.ts                # 图标管理
+│   └── cacheManager.ts               # 缓存管理
 ├── App.vue           # 根组件
 ├── main.ts           # 入口文件
 └── style.css         # 全局样式

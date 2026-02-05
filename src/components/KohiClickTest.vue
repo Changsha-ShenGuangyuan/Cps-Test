@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
-  import { onBeforeRouteUpdate } from 'vue-router';
   import { t } from '../i18n'; // 导入翻译函数
 
   // 导入图标资源

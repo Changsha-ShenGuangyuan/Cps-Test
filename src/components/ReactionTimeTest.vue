@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, defineAsyncComponent } from 'vue';
   import { t } from '../i18n/index';
 
   // 导入图标资源

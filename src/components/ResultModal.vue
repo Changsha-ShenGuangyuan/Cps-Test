@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { computed, onMounted, onUnmounted, watch, shallowRef } from 'vue';
   import { t } from '../i18n/index';
 
   // 组件属性

@@ -117,7 +117,6 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, defineAsyncComponent } from 'vue';
   import { t } from '../i18n/index';
   // 懒加载通用FAQ组件
   const FAQComponent = defineAsyncComponent(() => import('./FAQComponent.vue'));

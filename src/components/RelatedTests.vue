@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { computed } from 'vue';
-  import { useRouter } from 'vue-router';
   import { t, langState } from '../i18n/index';
 
   const router = useRouter();

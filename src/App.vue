@@ -1,14 +1,4 @@
 <script setup lang="ts">
-  import {
-    ref,
-    watch,
-    onMounted,
-    onUnmounted,
-    computed,
-    nextTick,
-    defineAsyncComponent,
-  } from 'vue';
-  import { useRouter, useRoute } from 'vue-router';
   import { t, setLanguage, langState } from './i18n/index';
   // 导入ResponsiveImage组件（首屏关键组件）
   import ResponsiveImage from './components/ResponsiveImage.vue';
@@ -17,11 +7,8 @@
   import LanguageSelector from './components/LanguageSelector.vue';
   import HistorySelector from './components/HistorySelector.vue';
   import MenuManager from './components/MenuManager.vue';
+  import Breadcrumb from './components/Breadcrumb.vue';
 
-  // 懒加载非首屏组件
-  const Breadcrumb = defineAsyncComponent(() => import('./components/Breadcrumb.vue'));
-  // 导入预加载服务
-  import { preloadService } from './services/PreloadService';
   import { updateMetaTags } from './router/index';
   // 导入工具类（仅在生产环境中预加载）
   import { iconManager } from './utils/iconManager';
@@ -122,18 +109,6 @@
     }
   };
 
-  // 用户交互后触发预加载
-  const handleUserInteraction = () => {
-    // 只在生产环境中进行预加载
-    if (import.meta.env.PROD) {
-      // 预加载常用测试组件
-      preloadService.preloadCommonTestComponents();
-    }
-    // 移除事件监听器，避免重复触发
-    window.removeEventListener('click', handleUserInteraction);
-    window.removeEventListener('touchstart', handleUserInteraction);
-  };
-
   onMounted(() => {
     // 添加路由导航监听，自动记录访问历史
     const removeRouterListener = router.afterEach((to) => {
@@ -152,10 +127,6 @@
 
     // 预加载常用图标（轻量级操作）
     iconManager.preloadCommonIcons();
-
-    // 添加用户交互监听器，在用户首次交互后触发预加载
-    window.addEventListener('click', handleUserInteraction, { once: true });
-    window.addEventListener('touchstart', handleUserInteraction, { once: true });
 
     // 组件卸载时移除事件监听
     onUnmounted(() => {
@@ -418,7 +389,9 @@
         @click="handleContentClick"
       >
         <!-- 面包屑导航 - 404页面不显示 -->
-        <Breadcrumb v-if="route.name !== 'NotFound' && route.name !== 'PrivacyPolicy'" />
+        <Breadcrumb 
+          v-if="route.name !== 'NotFound' && route.name !== 'PrivacyPolicy'"
+        />
         <!-- 路由视图 -->
         <router-view></router-view>
       </main>

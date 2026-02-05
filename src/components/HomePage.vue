@@ -182,12 +182,8 @@
 </template>
 
 <script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  import { ref, onMounted, computed, onBeforeUnmount, watch } from 'vue';
-
   import { t, langState } from '../i18n/index';
   // 懒加载结果弹窗组件 - 优化版本
-  import { defineAsyncComponent } from 'vue';
   const ResultModal = defineAsyncComponent({
     loader: () => import('./ResultModal.vue'),
     delay: 0, // 立即开始加载，不延迟

@@ -61,7 +61,6 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
   import { t } from '../i18n';
 
   // 定义FAQ项类型
