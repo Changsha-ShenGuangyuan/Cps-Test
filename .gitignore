@@ -1,46 +1,43 @@
-# Logs - 忽略日志文件
-# 日志目录
+# Logs
 logs
-# 所有.log文件
 *.log
-# npm调试日志
 npm-debug.log*
-# Yarn调试日志
 yarn-debug.log*
-# Yarn错误日志
 yarn-error.log*
-# PNPM调试日志
 pnpm-debug.log*
-# Lerna调试日志
 lerna-debug.log*
 
-# Environment variables - 忽略环境变量文件
-# 主环境变量文件
-.env
-# 本地环境变量文件
-.env.local
-# 特定环境的本地环境变量文件
-.env.*.local
-
-# Dependencies and Build Output - 忽略依赖和构建输出
-# 依赖包目录
 node_modules
-# 生产构建输出目录
 dist
-# SSR构建输出目录
 dist-ssr
-# 本地环境配置文件
 *.local
 
-# Editor directories and files - 忽略编辑器相关文件
-# VS Code配置目录
-.vscode
-# Vim交换文件
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 *.sw?
-docker-compose_back.yml
 
-# Additional files - 额外忽略文件
-# 备用国旗文件夹
-/src/assets/spareFlag/
-# Vite 缓存目录
-.vite
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build files
+*.tsbuildinfo
+
+# Test coverage
+coverage
+*.lcov
+
+# Temporary files
+*.tmp
+*.temp
+
+# Mobile performance optimizer
+mobile-performance-optimizer/
