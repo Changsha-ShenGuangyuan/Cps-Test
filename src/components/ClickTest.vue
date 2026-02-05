@@ -359,7 +359,7 @@
 
   // 处理键盘事件的函数
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === 'Enter') {
       event.preventDefault();
       // 使用点击区域的中心作为默认点击位置
       const x = clickAreaRef.value ? clickAreaRef.value.offsetWidth / 2 : 0;
@@ -1002,6 +1002,12 @@
     border: 2px solid #333;
     position: relative;
     overflow: hidden;
+  }
+
+  /* 点击区域焦点样式 */
+  .click-area:focus {
+    outline: none;
+    box-shadow: none;
   }
 
   /* 涟漪特效容器 */
