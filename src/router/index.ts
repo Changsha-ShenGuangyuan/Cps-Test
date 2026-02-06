@@ -389,77 +389,11 @@ export const updateMetaTags = (to: any) => {
 
       // 根据测试类型和时间参数生成标题
       if (testType === 'click-test') {
-        switch (time) {
-          case '1':
-            pageTitle = t('1secClickTest');
-            break;
-          case '2':
-            pageTitle = t('2secClickTest');
-            break;
-          case '5':
-            pageTitle = t('5secClickTest');
-            break;
-          case '10':
-            pageTitle = t('10secClickTest');
-            break;
-          case '15':
-            pageTitle = t('15secClickTest');
-            break;
-          case '30':
-            pageTitle = t('30secClickTest');
-            break;
-          case '60':
-            pageTitle = t('60secClickTest');
-            break;
-          default:
-            pageTitle = t(to.meta.i18n.titleKey);
-        }
+        pageTitle = t('secClickTestTitle', { sec: time });
       } else if (testType === 'space-click-test') {
-        switch (time) {
-          case '1':
-            pageTitle = t('1secSpaceTest');
-            break;
-          case '2':
-            pageTitle = t('2secSpaceTest');
-            break;
-          case '5':
-            pageTitle = t('5secSpaceTest');
-            break;
-          case '10':
-            pageTitle = t('10secSpaceTest');
-            break;
-          case '15':
-            pageTitle = t('15secSpaceTest');
-            break;
-          case '30':
-            pageTitle = t('30secSpaceTest');
-            break;
-          case '60':
-            pageTitle = t('60secSpaceTest');
-            break;
-          default:
-            pageTitle = t(to.meta.i18n.titleKey);
-        }
+        pageTitle = t('secSpaceTestTitle', { sec: time });
       } else if (testType === 'typing-test') {
-        switch (time) {
-          case '1':
-            pageTitle = t('1minTypingTest');
-            break;
-          case '3':
-            pageTitle = t('3minTypingTest');
-            break;
-          case '5':
-            pageTitle = t('5minTypingTest');
-            break;
-          case '10':
-            pageTitle = t('10minTypingTest');
-            break;
-          case '15':
-            pageTitle = t('15minTypingTest');
-            break;
-          default:
-            pageTitle = t(to.meta.i18n.titleKey);
-        }
+        pageTitle = t('typingTestTitle', { min: time });
       } else {
         pageTitle = t(to.meta.i18n.titleKey);
       }
@@ -578,7 +512,7 @@ export const updateMetaTags = (to: any) => {
         },
         publisher: {
           '@type': 'Organization',
-          name: t('schemaPublisher'),
+          name: t('websiteName'),
           logo: {
             '@type': 'ImageObject',
             url: `${baseUrl}/logo.png`,

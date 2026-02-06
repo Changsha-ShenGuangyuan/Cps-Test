@@ -555,12 +555,8 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules')) {
             // 更精细的vendor分包
-            // 优先匹配 Vue 核心包
-            if (id.includes('node_modules/vue/')) {
-              return 'vendor-vue';
-            }
-            // 匹配 Vue Router
-            if (id.includes('node_modules/vue-router/')) {
+            // 优先匹配 Vue 核心包 和 Vue Router
+            if (id.includes('node_modules/vue/') || id.includes('node_modules/vue-router/')) {
               return 'vendor-vue';
             }
             // 匹配 @vueuse

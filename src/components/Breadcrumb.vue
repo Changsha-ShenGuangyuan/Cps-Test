@@ -73,19 +73,19 @@
       const time = paramPath.split('/')[paramIndex];
       if (time) {
         items.push({ name: t('clickTest'), path: path.replace(/\/\d+$/, '/5') });
-        items.push({ name: `${time}${t('sec')} ${t('clickTest')}`, path: path });
+        items.push({ name: `${t('secClickTestTitle', { sec: time })}`, path: path });
       }
     } else if (basePath.startsWith('/space-click-test/')) {
       const time = paramPath.split('/')[paramIndex];
       if (time) {
         items.push({ name: t('spaceClickTest'), path: path.replace(/\/\d+$/, '/5') });
-        items.push({ name: `${time}${t('sec')} ${t('spaceClickTest')}`, path: path });
+        items.push({ name: `${t('secSpaceTestTitle', { sec: time })}`, path: path });
       }
     } else if (basePath.startsWith('/typing-test/')) {
       const time = paramPath.split('/')[paramIndex];
       if (time) {
         items.push({ name: t('typingTest'), path: path.replace(/\/\d+$/, '/1') });
-        items.push({ name: `${time}${t('minTypingTest')}`, path: path });
+        items.push({ name: `${t('minTypingTestTitle', { min: time })}`, path: path });
       }
     } else if (basePath.startsWith('/multi-click-test/')) {
       const type = paramPath.split('/')[paramIndex] || '';

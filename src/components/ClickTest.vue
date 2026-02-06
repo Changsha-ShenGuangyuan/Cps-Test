@@ -462,8 +462,8 @@
       <!-- 左侧游戏区域 -->
       <div class="game-area">
         <!-- 标题栏 -->
-        <h2 class="game-title" aria-label="{{ testTime }} {{ t('secClickTest') }}">
-          {{ testTime }} {{ t('secClickTest') }}
+        <h2 class="game-title" aria-label="{{ t('secClickTestTitle', { sec: testTime }) }}">
+          {{ t('secClickTestTitle', { sec: testTime }) }}
         </h2>
         <!-- 统计卡片 -->
         <div class="stats-cards" role="group" aria-label="{{ t('gameStats') }}">

@@ -300,23 +300,23 @@
     if (basePath.startsWith('/click-test/')) {
       const time = basePath.split('/')[2];
       if (time && /^[1-9]\d*$/.test(time)) {
-        return `${time}${t('sec')} ${t('clickTest')}`;
+        return `${t('secClickTestTitle', { sec: time })}`;
       } else {
         return t('clickTest');
       }
     } else if (basePath.startsWith('/space-click-test/')) {
       const time = basePath.split('/')[2];
       if (time && /^[1-9]\d*$/.test(time)) {
-        return `${time}${t('sec')} ${t('spaceClickTest')}`;
+        return `${t('spaceClickTest', { sec: time })}`;
       } else {
         return t('spaceClickTest');
       }
     } else if (basePath.startsWith('/typing-test/')) {
       const time = basePath.split('/')[2];
       if (time && /^[1-9]\d*$/.test(time)) {
-        return `${time}${t('minTypingTest')} ${t('typingTest')}`;
+        return `${t('minTypingTest', { min: time })}}`;
       } else {
-        return t('typingTest');
+        return t('minTypingTest', { min: 1 });
       }
     } else if (basePath === '/kohi-click-test') {
       return t('kohiClickTest');

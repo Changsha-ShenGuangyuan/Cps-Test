@@ -60,49 +60,49 @@
         children: [
           {
             id: 11,
-            name: t('1secClickTest'),
+            name: t('secClickTestTitle', { sec: '1' }),
             path: '/click-test/1',
             children: [],
             isExpanded: false,
           },
           {
             id: 12,
-            name: t('2secClickTest'),
+            name: t('secClickTestTitle', { sec: '2' }),
             path: '/click-test/2',
             children: [],
             isExpanded: false,
           },
           {
             id: 13,
-            name: t('5secClickTest'),
+            name: t('secClickTestTitle', { sec: '5' }),
             path: '/click-test/5',
             children: [],
             isExpanded: false,
           },
           {
             id: 14,
-            name: t('10secClickTest'),
+            name: t('secClickTestTitle', { sec: '10' }),
             path: '/click-test/10',
             children: [],
             isExpanded: false,
           },
           {
             id: 15,
-            name: t('15secClickTest'),
+            name: t('secClickTestTitle', { sec: '15' }),
             path: '/click-test/15',
             children: [],
             isExpanded: false,
           },
           {
             id: 16,
-            name: t('30secClickTest'),
+            name: t('secClickTestTitle', { sec: '30' }),
             path: '/click-test/30',
             children: [],
             isExpanded: false,
           },
           {
             id: 17,
-            name: t('60secClickTest'),
+            name: t('secClickTestTitle', { sec: '60' }),
             path: '/click-test/60',
             children: [],
             isExpanded: false,
@@ -139,49 +139,49 @@
         children: [
           {
             id: 21,
-            name: t('1secSpaceTest'),
+            name: t('secSpaceTestTitle', { sec: '1' }),
             path: '/space-click-test/1',
             children: [],
             isExpanded: false,
           },
           {
             id: 22,
-            name: t('2secSpaceTest'),
+            name: t('secSpaceTestTitle', { sec: '2' }),
             path: '/space-click-test/2',
             children: [],
             isExpanded: false,
           },
           {
             id: 23,
-            name: t('5secSpaceTest'),
+            name: t('secSpaceTestTitle', { sec: '5' }),
             path: '/space-click-test/5',
             children: [],
             isExpanded: false,
           },
           {
             id: 24,
-            name: t('10secSpaceTest'),
+            name: t('secSpaceTestTitle', { sec: '10' }),
             path: '/space-click-test/10',
             children: [],
             isExpanded: false,
           },
           {
             id: 25,
-            name: t('15secSpaceTest'),
+            name: t('secSpaceTestTitle', { sec: '15' }),
             path: '/space-click-test/15',
             children: [],
             isExpanded: false,
           },
           {
             id: 26,
-            name: t('30secSpaceTest'),
+            name: t('secSpaceTestTitle', { sec: '30' }),
             path: '/space-click-test/30',
             children: [],
             isExpanded: false,
           },
           {
             id: 27,
-            name: t('60secSpaceTest'),
+            name: t('secSpaceTestTitle', { sec: '60' }),
             path: '/space-click-test/60',
             children: [],
             isExpanded: false,
@@ -228,35 +228,35 @@
         children: [
           {
             id: 41,
-            name: t('1minTypingTest'),
+            name: t('typingTestTitle', { min: '1' }),
             path: '/typing-test/1',
             children: [],
             isExpanded: false,
           },
           {
             id: 42,
-            name: t('3minTypingTest'),
+            name: t('typingTestTitle', { min: '3' }),
             path: '/typing-test/3',
             children: [],
             isExpanded: false,
           },
           {
             id: 43,
-            name: t('5minTypingTest'),
+            name: t('typingTestTitle', { min: '5' }),
             path: '/typing-test/5',
             children: [],
             isExpanded: false,
           },
           {
             id: 44,
-            name: t('10minTypingTest'),
+            name: t('typingTestTitle', { min: '10' }),
             path: '/typing-test/10',
             children: [],
             isExpanded: false,
           },
           {
             id: 45,
-            name: t('15minTypingTest'),
+            name: t('typingTestTitle', { min: '15' }),
             path: '/typing-test/15',
             children: [],
             isExpanded: false,
@@ -640,7 +640,7 @@
           <h3 class="auxiliary-nav-title">{{ t('popularTests') }}</h3>
           <ul class="auxiliary-nav-list">
             <li class="auxiliary-nav-item" @click="navigateTo('/click-test/5')">
-              <span>{{ t('5secClickTest') }}</span>
+              <span>{{ t('secClickTestTitle', { sec: '5' }) }}</span>
             </li>
             <li class="auxiliary-nav-item" @click="navigateTo('/reaction-time-test')">
               <span>{{ t('simpleReactionTest') }}</span>
